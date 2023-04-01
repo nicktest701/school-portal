@@ -74,7 +74,7 @@ router.post(
   '/level',
   asyncHandler(async (req, res) => {
     const { level, term } = req.body;
-    console.log(level, term);
+    //console.log(level, term);
     const currentFee = await CurrentFee.find({
       term: ObjectId(term),
       level: ObjectId(level),
@@ -98,7 +98,7 @@ router.get(
   '/day',
   asyncHandler(async (req, res) => {
     const { session, term, date } = req.query;
-    console.log(date);
+    //console.log(date);
 
     const currentFees = await CurrentFee.find({
       session: ObjectId(session),
@@ -173,7 +173,7 @@ router.post(
     if (_.isEmpty(studentFeeHistory)) {
       return res.status(200).json({});
     }
-    // console.log(studentFeeHistory);
+    // //console.log(studentFeeHistory);
     const { student, term, level, payment } = studentFeeHistory;
 
     const modifiedFeeHistory = {
@@ -193,7 +193,6 @@ router.get(
   '/history/all',
   asyncHandler(async (req, res) => {
     const { student } = req.query;
- 
 
     //Find All Student fee info
     const studentFeeHistory = await CurrentFee.find({
@@ -221,7 +220,7 @@ router.get(
       }
     );
 
-    // console.log(feeHistory);
+    // //console.log(feeHistory);
 
     //Group selected terms in ascending order
     const groupedByTerms = _.groupBy(
@@ -258,7 +257,7 @@ router.post(
       .select('payment')
       .select('createdAt');
 
-    console.log(allStudentFee);
+    //console.log(allStudentFee);
 
     ///GET all fees for the terms
     const allFees = [];
@@ -391,11 +390,16 @@ router.post(
         $push: {
           payment: payment[0],
         },
+      },
+      {
+        new: true,
       }
     );
 
     if (!modifiedCurrentFee) {
-      return res.status(404).json('Error add new  Fees info.Try again later');
+      return res
+        .status(404)
+        .json('Error adding new  Fees info.Try again later');
     }
 
     return res.status(200).json(modifiedCurrentFee);

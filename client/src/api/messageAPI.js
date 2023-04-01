@@ -12,7 +12,7 @@ export const getAllMessages = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -28,7 +28,7 @@ export const getMessage = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -42,7 +42,7 @@ export const postMessage = async (newMessage) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -56,7 +56,7 @@ export const putMessage = async (updatedMessage) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -69,6 +69,6 @@ export const deleteMessage = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };

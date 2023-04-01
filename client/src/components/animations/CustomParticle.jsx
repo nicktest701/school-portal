@@ -6,7 +6,7 @@ import { particlesOptions } from "../../config/particlesOption";
 
 const CustomParticle = () => {
   const particlesInit = async (main) => {
-    //console.log(main);
+    ////console.log(main);
     await loadFull(main);
   };
 

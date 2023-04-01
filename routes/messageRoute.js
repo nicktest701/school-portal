@@ -15,7 +15,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const messages = await Message.find({}).sort({ createdAt: -1 });
 
-    // console.log(messages);
+    // //console.log(messages);
 
     res.status(200).json(messages);
   })
@@ -26,7 +26,7 @@ router.post(
   "/quick",
   asyncHandler(async (req, res) => {
     const newMessage = req.body;
-    console.log(newMessage);
+    //console.log(newMessage);
     const message = await Message.create({
       type: newMessage?.type,
       recipient: {

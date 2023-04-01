@@ -13,7 +13,7 @@ export const getAllFees = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -30,7 +30,7 @@ export const getFee = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -44,7 +44,7 @@ export const getAllFeesByCurrentLevel = async (session) => {
     });
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -60,7 +60,7 @@ export const getFeeForCurrentLevel = async (session, level) => {
     });
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -75,7 +75,7 @@ export const postFee = async (newFee) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -90,7 +90,7 @@ export const putFee = async (updatedFee) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -104,7 +104,7 @@ export const deleteFee = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };

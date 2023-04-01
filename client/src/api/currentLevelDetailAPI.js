@@ -16,7 +16,7 @@ export const getAllCurrentLevelDetails = async (sessionId, termId) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -30,7 +30,7 @@ export const postCurrentLevelDetails = async (newLevel) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -44,7 +44,7 @@ export const putCurrentLevelDetails = async (updatedLevel) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -59,7 +59,7 @@ export const getTeacherLevel = async (assignedLevelDetails) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -73,7 +73,7 @@ export const assignTeacherLevel = async (updatedLevel) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -89,7 +89,7 @@ export const unassignTeacherLevel = async (updatedLevel) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -103,7 +103,7 @@ export const putCurrentSubjectsByCurrentLevelDetails = async (newSubjects) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -119,6 +119,6 @@ export const deleteCurrentLevelDetails = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };

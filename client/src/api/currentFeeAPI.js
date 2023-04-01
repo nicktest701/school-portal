@@ -12,7 +12,7 @@ export const getAllCurrentFees = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -27,7 +27,7 @@ export const getAllCurrentFeesPaymentHistoryByDate = async (data) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -42,7 +42,7 @@ export const getAllCurrentFeesSummary = async (sessionInfo) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -57,7 +57,7 @@ export const getAllCurrentFeesByLevel = async (sessionInfo) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -74,7 +74,7 @@ export const getCurrentFee = async (session, level) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -88,7 +88,7 @@ export const getCurrentFeeForStudent = async (info) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -104,7 +104,7 @@ export const getStudentAllFeeHistory = async (student) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 export const getStudentFeeHistory = async (info) => {
@@ -117,7 +117,7 @@ export const getStudentFeeHistory = async (info) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -131,7 +131,7 @@ export const postCurrentFee = async (newCurrentFee) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -145,7 +145,7 @@ export const putCurrentFee = async (updatedCurrentFee) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -158,6 +158,6 @@ export const deleteCurrentFee = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };

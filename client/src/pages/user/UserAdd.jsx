@@ -40,7 +40,7 @@ function UserAdd({ open, setOpen }) {
   const { mutateAsync } = useMutation(postUser);
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format("L");
-    // console.log(values);
+    // //console.log(values);
 
     mutateAsync(values, {
       onSettled: () => {

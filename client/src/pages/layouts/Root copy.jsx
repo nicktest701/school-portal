@@ -12,20 +12,17 @@ import SMSNew from '../sms/SMSNew';
 import User from '../user';
 // import UserHome from '../user/UserHome';
 import Login from '../Login';
-// import Dashboard from '../Dashboard';
-// import Session from '../Session';
+import Dashboard from '../Dashboard';
+import Session from '../Session';
 // import Assessment from "../Assessment";
 
 // const Login = lazy(() => import('../Login'));
-const Dashboard = lazy(() => import('../Dashboard'));
-const Session = lazy(() => import('../session'));
-
-const Shell = lazy(() => import('../Shell'));
 const Fees = lazy(() => import('../fees'));
 const Examination = lazy(() => import('../examination'));
 const Student = lazy(() => import('../student'));
 const Teacher = lazy(() => import('../teacher'));
 const Report = lazy(() => import('../report'));
+// const Dashboard = lazy(() => import('../Dashboard'));
 const SMS = lazy(() => import('../sms'));
 const UserHome = lazy(() => import('../user/UserHome'));
 //
@@ -43,12 +40,16 @@ const StudentAcademicsReport = lazy(() =>
   import('../student/StudentAcademicsReport')
 );
 const StudentFeesReport = lazy(() => import('../student/StudentFeesReport'));
+const PrintPage = lazy(() => import('../print'));
+const FeesReportPrintPage = lazy(() => import('../print/FeesReportPrintPage'));
+// const Session = lazy(() => import('../session'));
 const FeeHome = lazy(() => import('../fees/FeeHome'));
 const FeeMakePayment = lazy(() => import('../fees/FeeMakePayment'));
 const FeeHistory = lazy(() => import('../fees/FeeHistory'));
 const FeeSettings = lazy(() => import('../fees/FeeSettings'));
 const Level = lazy(() => import('../level'));
 const LevelDashboard = lazy(() => import('../level/LevelDashboard'));
+//const AddStudentModal = lazy(() => import("../level/AddStudentModal"));
 const CurrentLevel = lazy(() => import('../level/CurrentLevel'));
 const StudentDetails = lazy(() => import('../student/StudentDetails'));
 
@@ -57,27 +58,21 @@ const Root = () => {
     <>
       <GlobalAlert />
       <Routes>
-        <Route
-          path='/'
-          element={
-            <Suspense fallback={<Loader />}>
-              <Shell />
-            </Suspense>
-          }
-        >
+        <Route path='/' element={<Loader />}>
           <Route
             index
             element={
-              <Suspense fallback={<Loader />}>
-                <Dashboard />
-              </Suspense>
+              // <Suspense fallback={<Loader />}>
+              <Dashboard />
+              // </Suspense>
             }
           />
+
           <Route
             element={
-              <Suspense fallback={<Loader />}>
-                <Session />
-              </Suspense>
+              // <Suspense fallback={<Loader />}>
+              <Session />
+              // </Suspense>
             }
             path='/session'
           />

@@ -17,8 +17,8 @@ module.exports = getPosition;
 
 //  function rankings(arr) {
 //    const sorted = [...arr].sort((a, b) => b - a);
-// console.log(sorted);
+// //console.log(sorted);
 //   return arr.map((x) => sorted.indexOf(x) + 1);
 //  }
 
-//  console.log(rankings([10, 5, 20, 20,20]));
+//  //console.log(rankings([10, 5, 20, 20,20]));

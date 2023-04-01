@@ -12,7 +12,7 @@ export const getAllParents = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -28,7 +28,7 @@ export const getParentByStudentId = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 export const getParent = async (id) => {
@@ -40,7 +40,7 @@ export const getParent = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -54,7 +54,7 @@ export const postParent = async (newParent) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -68,7 +68,7 @@ export const putParent = async (updatedParent) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -81,6 +81,6 @@ export const deleteParent = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };

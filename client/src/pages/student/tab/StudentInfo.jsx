@@ -56,7 +56,7 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
 
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format("L");
-    // console.log(values);
+    // //console.log(values);
 
     try {
       studentDispatch({ type: "addNewStudent", payload: values });
@@ -105,7 +105,7 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
         }
       };
     } catch (error) {
-      console.log(error.message);
+      //console.log(error.message);
     }
   }
   return (

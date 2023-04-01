@@ -44,6 +44,7 @@ function ViewUserProfile({ open, setOpen }) {
       schoolSessionDispatch(alertError(error));
     }
     queryClient.invalidateQueries(['users']);
+    queryClient.invalidateQueries(['verify-user']);
   };
 
   return (

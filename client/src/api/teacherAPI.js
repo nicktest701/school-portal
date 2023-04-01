@@ -12,7 +12,7 @@ export const getAllTeachers = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -25,7 +25,7 @@ export const getTeacher = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -56,7 +56,7 @@ export const postTeacher = async (teacher) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -78,7 +78,7 @@ export const updateTeacherProfileImage = async ({ _id, profile }) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw new Error(error.response.data || "Error Updating profile");
   }
 };
@@ -93,7 +93,7 @@ export const putTeacher = async (updatedTeacher) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -106,6 +106,6 @@ export const deleteTeacher = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };

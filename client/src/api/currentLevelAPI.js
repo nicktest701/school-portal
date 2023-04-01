@@ -12,7 +12,7 @@ export const getAllPreviousLevels = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 export const getAllCurrentLevels = async (sessionId, termId) => {
@@ -28,7 +28,7 @@ export const getAllCurrentLevels = async (sessionId, termId) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 export const getCurrentLevel = async (id) => {
@@ -43,7 +43,7 @@ export const getCurrentLevel = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -61,7 +61,7 @@ export const getAllStudentsBySession = async (session, type) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 export const getStudentByLevel = async (session) => {
@@ -76,7 +76,7 @@ export const getStudentByLevel = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 export const getStudentsByLevel = async (session) => {
@@ -91,7 +91,7 @@ export const getStudentsByLevel = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -105,7 +105,7 @@ export const postCurrentLevel = async (newLevel) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -119,7 +119,7 @@ export const putCurrentLevel = async (updatedLevel) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -135,6 +135,6 @@ export const deleteCurrentLevel = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };

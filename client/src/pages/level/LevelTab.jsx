@@ -104,7 +104,7 @@ const LevelTab = () => {
                 type: 'currentLevel',
                 payload: rowData,
               });
-              // console.log(rowData);
+              // //console.log(rowData);
               setOpenAddSubjects(true);
             }}
           >

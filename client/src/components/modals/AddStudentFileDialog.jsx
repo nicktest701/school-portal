@@ -49,7 +49,7 @@ function AddStudentFileDialog() {
 
   useEffect(() => {
     if (fileData.data.length > 0) {
-      console.log(fileData);
+      //console.log(fileData);
       let modifiedColumns = fileData.columns.map((column) => {
         return {
           title: _.upperCase(column),
@@ -73,7 +73,7 @@ function AddStudentFileDialog() {
         setIsLoading(false);
         return;
       }
-      // console.log(modifiedColumns);
+      // //console.log(modifiedColumns);
 
       const students = replaceKeys(fileData.data, modifiedColumns);
 

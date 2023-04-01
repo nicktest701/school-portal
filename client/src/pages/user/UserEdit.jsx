@@ -63,7 +63,7 @@ const UserEdit = () => {
     delete values.profile;
     values.dateofbirth = moment(dob).format("L");
 
-    // console.log(values);
+    // //console.log(values);
     mutateAsync(values, {
       onSettled: () => {
         queryClient.invalidateQueries(["users"]);

@@ -120,7 +120,7 @@ const AddFee = ({ open, setOpen }) => {
       return;
     }
 
-    // console.log(newValues);
+    // //console.log(newValues);
     mutateAsync(newValues, {
       onSettled: () => {
         queryClient.invalidateQueries(["fees"]);

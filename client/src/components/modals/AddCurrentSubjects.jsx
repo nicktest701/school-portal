@@ -38,7 +38,7 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
     {
       enabled: !!currentLevel._id,
       onSuccess: (currentSubject) => {
-        // console.log(currentSubject);
+        // //console.log(currentSubject);
         setSubjectList(currentSubject.subjects);
       },
     }

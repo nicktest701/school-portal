@@ -20,7 +20,7 @@ router.get(
       active: true,
     });
 
-    // console.log(levels);
+    // //console.log(levels);
 
     res.status(200).json(levels);
   })
@@ -237,7 +237,7 @@ router.get(
         ...level?._doc,
         students: modifiedStudents,
       };
-      // console.log(modifiedLevel);
+      // //console.log(modifiedLevel);
       return res.status(200).json(modifiedLevel);
     }
 
@@ -251,7 +251,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const newLevel = req.body;
 
-    // console.log(newLevel);
+    // //console.log(newLevel);
 
     const level = await Level.create(newLevel);
 
@@ -380,9 +380,9 @@ router.get(
   "/subject",
   asyncHandler(async (req, res) => {
     const levelId = req.query.levelId;
-    console.log(levelId);
+    //console.log(levelId);
     const subjects = await Level.findById(levelId).select("subjects");
-    console.log(subjects);
+    //console.log(subjects);
 
     res.status(200).json(subjects);
   })

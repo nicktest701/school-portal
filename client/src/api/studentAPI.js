@@ -13,7 +13,7 @@ export const getAllStudentsDetails = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -28,7 +28,7 @@ export const getAllStudents = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -46,7 +46,7 @@ export const getAllStudentsByCurrentLevel = async (currentLevelId) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -63,7 +63,7 @@ export const getAllStudentsForSearch = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -82,7 +82,7 @@ export const getStudentsByID = async (studentId, levelId, levelName) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -96,7 +96,7 @@ export const getStudent = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -113,7 +113,7 @@ export const getParentByStudentId = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -158,7 +158,7 @@ export const postStudent = async ({ student, parent }) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -173,7 +173,7 @@ export const postManyStudents = async (data) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -187,7 +187,7 @@ export const putStudent = async (updatedStudent) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -201,7 +201,7 @@ export const deleteStudent = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -219,7 +219,7 @@ export const disableStudentAccount = async ({ id, active }) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };

@@ -65,7 +65,7 @@ const FeeNew = () => {
   };
 
   const handleEdit = (rowData) => {
-    // console.log(rowData);
+    // //console.log(rowData);
     schoolSessionDispatch({
       type: 'setFeeEditData',
       payload: {
@@ -76,7 +76,7 @@ const FeeNew = () => {
   };
 
   const handleGetLevelFeeInfo = ({ levelId, level, fee, noOfStudents }) => {
-    // console.log(levelId);
+    // //console.log(levelId);
     schoolSessionDispatch({
       type: 'viewLevelFeeInfo',
       payload: {

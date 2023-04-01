@@ -33,7 +33,7 @@ const TeacherAssignLevel = ({ open, setOpen, teacher }) => {
 
   const { mutateAsync } = useMutation(assignTeacherLevel);
   const onSubmit = (values, options) => {
-    console.log(values);
+    //console.log(values);
     mutateAsync(values, {
       onSettled: () => {
         queryClient.invalidateQueries(["teacher-level"]);

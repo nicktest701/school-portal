@@ -61,9 +61,9 @@ const sendMail = async (body, emailList) => {
     };
 
     const result = await transportMail.sendMail(mailOptions);
-    console.log(result);
+    //console.log(result);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     throw new Error("Error sending message.Try again later");
   }
 };

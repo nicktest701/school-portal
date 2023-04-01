@@ -43,9 +43,8 @@ const FeeMakePayment = () => {
 
   //Get Session id
   const {
-    userState: { session },
+    userState: { user, session },
   } = useContext(UserContext);
-
 
   const { studentDispatch } = useContext(StudentContext);
   const queryClient = useQueryClient();
@@ -194,6 +193,7 @@ const FeeMakePayment = () => {
         paid: totalOutStanding,
         outstanding: Number(0),
         balance: Math.abs(remainingFees),
+        issuer: user?.fullname,
       };
     }
 
@@ -202,6 +202,7 @@ const FeeMakePayment = () => {
       paid: currentAmount,
       outstanding: remainingFees,
       balance: 0,
+      issuer: user?.fullname,
     };
   }, [currentAmount, totalOutStanding, totalAmountPaid, totalFees]);
 
@@ -225,9 +226,9 @@ const FeeMakePayment = () => {
         queryClient.invalidateQueries(['current-fees-summary']);
         options.setSubmitting(false);
       },
-      onSuccess: () => {
+      onSuccess: (fees) => {
         setMsg({ severity: 'info', text: 'Payment made successfully!!!' });
-        // console.log(fees);
+         console.log(fees);
         options.resetForm();
       },
     });

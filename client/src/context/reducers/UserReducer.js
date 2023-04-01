@@ -1,5 +1,10 @@
 const UserReducer = (state, action) => {
   switch (action.type) {
+    case 'setLoading':
+      return {
+        ...state,
+        isLoading: true,
+      };
     case 'setSession':
       return {
         ...state,
@@ -14,14 +19,12 @@ const UserReducer = (state, action) => {
       };
     case 'signIn':
       return {
-        ...state,
         isLoading: false,
         user: action.payload.user,
         session: action.payload.session,
       };
     case 'signOut':
       return {
-        ...state,
         isLoading: false,
         user: {},
         session: {},

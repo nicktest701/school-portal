@@ -56,7 +56,7 @@ const SessionHome = () => {
 
   //Edit session
   const handlEditSession = (rowData) => {
-    // console.log(rowData);
+    // //console.log(rowData);
     schoolSessionDispatch({
       type: 'setSessionEditData',
       payload: rowData,

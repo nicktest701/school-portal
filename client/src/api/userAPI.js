@@ -12,7 +12,7 @@ export const getAllUsers = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -43,7 +43,7 @@ export const verifyUser = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data)
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -57,7 +57,7 @@ export const getUser = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -89,7 +89,7 @@ export const postUser = async (user) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -111,7 +111,7 @@ export const updateUserProfileImage = async ({ _id, profile }) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw new Error(error.response.data || 'Error Updating profile');
   }
 };
@@ -126,7 +126,7 @@ export const putUser = async (updatedUser) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -139,6 +139,6 @@ export const deleteUser = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };

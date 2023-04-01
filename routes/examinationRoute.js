@@ -145,7 +145,7 @@ router.get(
 
       const position =
         positions.find((exams) => {
-          console.log(exams._id);
+          //console.log(exams._id);
           return exams._id.toString() === _id.toString();
         }).position || "";
 
@@ -217,7 +217,7 @@ router.post(
 
     const position =
       positions.find((exams) => {
-        console.log(exams._id);
+        //console.log(exams._id);
         return exams._id.toString() === _id.toString();
       }).position || "";
 
@@ -241,7 +241,7 @@ router.post(
       grade,
       comments,
     };
-    // console.log(modifiedStudentRecord);
+    // //console.log(modifiedStudentRecord);
 
     res.status(200).json(modifiedStudentRecord);
   })

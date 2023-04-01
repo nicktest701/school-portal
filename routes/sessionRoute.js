@@ -30,7 +30,7 @@ router.post(
     if (!session) {
       return res.status(404).send("Error creating new session.Try again later");
     }
-    console.log(session);
+    //console.log(session);
     res.send(session);
   })
 );

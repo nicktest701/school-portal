@@ -18,7 +18,6 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { EditRounded, NotificationsRounded } from '@mui/icons-material';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import LineChart from '../components/charts/LineChart';
-import avatarTwo from '../assets/images/avatars/avatar_2.png';
 import BarChart from '../components/charts/BarChart';
 import { useQuery } from '@tanstack/react-query';
 import { generateNewCurrentLevelDetailsFromLevels } from '../api/levelAPI';
@@ -36,13 +35,13 @@ const Dashboard = () => {
   } = useContext(UserContext);
 
   const navigate = useNavigate();
+
   const { palette } = useTheme();
 
   const [openUserProfile, setOpenUserProfile] = useState(false);
   const [value, onChange] = useState(new Date());
 
   useEffect(() => {
-   
     if (_.isEmpty(user?.id)) {
       navigate('/login', { replace: true });
       return;
@@ -74,7 +73,7 @@ const Dashboard = () => {
         userDispatch({ type: 'signOut' });
         localStorage.removeItem('@school_session');
         localStorage.removeItem('@user');
-        navigate('/school-session');
+        navigate('/login');
       }
     });
   };
@@ -130,7 +129,7 @@ const Dashboard = () => {
             </Typography>
 
             <Typography variant='h6' sx={{ paddingY: 2 }}>
-              Available School Sessions
+              Dashboard
             </Typography>
             <Divider />
             {/* <React.Suspense fallback={<small>Loading....</small>}> */}

@@ -10,7 +10,7 @@ const {
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    console.log(req.query);
+    //console.log(req.query);
     const sessionId = req.query.sessionId;
     const termId = req.query.termId;
 
@@ -31,7 +31,7 @@ router.get(
       }
     );
 
-    console.log(modifiedCurrentLevel);
+    //console.log(modifiedCurrentLevel);
 
     res.status(200).json(modifiedCurrentLevel);
   })
@@ -43,7 +43,7 @@ router.get(
     const currentLevelId = req.query.currentLevelId;
     const currentLevel = await CurrentLevel.findById(currentLevelId);
 
-    // console.log(currentLevel);
+    // //console.log(currentLevel);
 
     res.status(200).json(currentLevel);
   })

@@ -12,7 +12,7 @@ export const getAllTerms = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -29,7 +29,7 @@ export const getTerm = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -44,7 +44,7 @@ export const postTerm = async (newTerm) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -59,7 +59,7 @@ export const putTerm = async (updatedSession) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -73,7 +73,7 @@ export const deleteTerm = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };

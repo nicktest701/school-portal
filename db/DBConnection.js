@@ -14,11 +14,11 @@ const db = mongoose.createConnection(MONGO_URL, {
 
 
 db.on("connected", () => {
-  console.log("db connected");
+  //console.log("db connected");
 });
 
 db.on("disconnected", () => {
-  console.log("db disconnected");
+  //console.log("db disconnected");
 });
 
 process.on("SIGINT", async () => {

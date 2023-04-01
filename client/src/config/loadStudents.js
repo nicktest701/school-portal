@@ -28,6 +28,6 @@ export function handleLoadFile(e) {
     };
     return students;
   } catch (error) {
-    console.log(error.message);
+    //console.log(error.message);
   }
 }

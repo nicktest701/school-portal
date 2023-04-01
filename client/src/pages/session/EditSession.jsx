@@ -59,7 +59,7 @@ const EditSession = ({ open, setOpen }) => {
   const { mutateAsync } = useMutation(putTerm);
 
   const onSubmit = (values, options) => {
-    console.log(values);
+    //console.log(values);
     mutateAsync(values, {
       onSettled: () => {
         options.setSubmitting(false);

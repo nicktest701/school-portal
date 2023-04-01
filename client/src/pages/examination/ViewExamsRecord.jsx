@@ -30,7 +30,7 @@ const ViewExamsRecord = () => {
     queryFn: () => getExams(examsRecord.id),
     enabled: !!examsRecord.id,
     onSuccess: (studentRecords) => {
-      console.log(studentRecords);
+      //console.log(studentRecords);
     },
   });
 

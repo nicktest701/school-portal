@@ -58,7 +58,7 @@ function PreviousSession({ open, setOpen }) {
     queryFn: () => getAllPreviousLevels(selectedSession),
     enabled: !!selectedSession?.termId,
     onSuccess: (levels) => {
-      // console.log(levels);
+      // //console.log(levels);
       const modifiedLevels = levels.map(({ _id, level, students }) => {
         return {
           _id,

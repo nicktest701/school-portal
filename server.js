@@ -87,6 +87,6 @@ db.asPromise()
     app.listen(port, () => console.log(`listening on port ${port}!`));
   })
   .catch((error) => {
-    console.log(error);
+    //console.log(error);
     throw error;
   });

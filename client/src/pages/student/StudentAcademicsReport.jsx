@@ -33,7 +33,7 @@ const StudentAcademicsReport = () => {
     {
       enabled: !!examsId,
       onSuccess: (studentRecords) => {
-        // console.log(studentRecords);
+        // //console.log(studentRecords);
         studentDispatch({
           type: "showCurrentStudentAcademicsReportView",
           payload: {

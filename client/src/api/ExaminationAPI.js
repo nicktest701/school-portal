@@ -17,7 +17,7 @@ export const getAllExams = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -33,7 +33,7 @@ export const getExamsDetails = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -49,7 +49,7 @@ export const generateReports = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -73,7 +73,7 @@ export const getStudentAcademics = async (session, student, level) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -91,7 +91,7 @@ export const getExams = async (examsId) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -106,7 +106,7 @@ export const getCurrentExams = async (session) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -122,7 +122,7 @@ export const postExamsRemarks = async (comments) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -137,7 +137,7 @@ export const postExams = async (newExam) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -152,7 +152,7 @@ export const updateExams = async (updatedScores) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -167,7 +167,7 @@ export const putExams = async (updatedExam) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -184,7 +184,7 @@ export const deleteExams = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };

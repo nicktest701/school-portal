@@ -60,7 +60,7 @@ const sendMail = async (htmlText, email) => {
     };
 
     const mailResult = await transportMail.sendMail(mailOptions);
-    // console.log(mailResult);
+    // //console.log(mailResult);
   } catch (error) {
     throw error.message;
   }

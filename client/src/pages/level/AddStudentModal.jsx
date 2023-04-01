@@ -56,7 +56,7 @@ const AddStudentModal = () => {
   };
   const { mutateAsync } = useMutation(postStudent);
   const onSubmit = (values, options) => {
-    // console.log(values);
+    // //console.log(values);
     mutateAsync(values, {
       onSettled: () => {
         options.setSubmitting(false);

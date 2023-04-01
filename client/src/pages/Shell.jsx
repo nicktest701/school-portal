@@ -1,41 +1,57 @@
-import React, { useContext, useRef, useEffect } from 'react';
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
+import React, { useContext, useEffect, useRef } from 'react';
 import { UserContext } from '../context/providers/userProvider';
+import _ from 'lodash';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { verifyUser } from '../api/userAPI';
 
-export default function Shell({ children }) {
-  Shell.propTypes = {
-    children: PropTypes.node,
-  };
-
+const Shell = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const { userState, userDispatch } = useContext(UserContext);
+  const { userDispatch, userState } = useContext(UserContext);
 
   const schoolSession = useRef(
     JSON.parse(localStorage.getItem('@school_session'))
   );
 
-  useEffect(() => {
-    if (_.isEmpty(schoolSession.current)) {
-      userDispatch({
-        type: 'unsetSession',
-      });
-      // navigate(location.pathname);
-       return;
-    }
-    userDispatch({
-      type: 'setSession',
-      payload: schoolSession.current,
-    });
-    // navigate('/');
-  }, [schoolSession.current]);
+  const path = location.pathname || '/';
 
-  return _.isEmpty(userState.session) ? (
-    <Navigate to='school-session' state={{ path: location.pathname }} />
-  ) : _.isEmpty(userState.user) ? (
-    <Navigate to='/login' state={{ path: location.pathname }} />
-  ) : (
-    children
-  );
-}
+  useEffect(() => {
+    userDispatch({ type: 'setLoading' });
+    async function getData() {
+      try {
+        const data = await verifyUser();
+        // //console.log(data);
+        if (_.isEmpty(data?.id) || _.isEmpty(schoolSession.current)) {
+          userDispatch({
+            type: 'signOut',
+          });
+          navigate('/login', {
+            state: { path },
+            replace: true,
+          });
+        } else {
+          userDispatch({
+            type: 'signIn',
+            payload: { user: data, session: schoolSession.current },
+          });
+
+          navigate(path, {
+            replace: true,
+          });
+        }
+      } catch (error) {
+        navigate('/login', {
+          replace: true,
+          state: { error },
+        });
+      }
+    }
+    getData();
+
+    return () => getData;
+  }, [location.pathname]);
+
+  return <Outlet />;
+};
+
+export default Shell;

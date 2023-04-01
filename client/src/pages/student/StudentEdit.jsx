@@ -69,7 +69,7 @@ const StudentEdit = () => {
   const { mutateAsync } = useMutation(putStudent);
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format("L");
-    // console.log(values);
+    // //console.log(values);
     delete values.profile;
 
     mutateAsync(values, {

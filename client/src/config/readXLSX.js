@@ -14,6 +14,6 @@ export const readXLSX = (result) => {
 
     return dataParse;
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 };

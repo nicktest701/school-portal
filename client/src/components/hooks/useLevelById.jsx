@@ -9,12 +9,12 @@ function useLevelById(id) {
   const levels = useQuery(["level", id], () => getLevel(id), {
     enabled: !!id,
     onSuccess: (level) => {
-      // console.log(level);
+      // //console.log(level);
       setStudents(level?.students);
       setRollNumber(level?.students?.length);
     },
     onError: (error) => {
-      console.log(error);
+      //console.log(error);
     },
   });
 

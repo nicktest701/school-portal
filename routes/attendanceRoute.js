@@ -26,7 +26,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { date } = req.query;
-    // console.log(id, date);
+    // //console.log(id, date);
     const attendance = await Attendance.findOne({
       level: ObjectId(id),
       date,

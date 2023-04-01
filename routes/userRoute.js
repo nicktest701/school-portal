@@ -25,7 +25,7 @@ router.get(
   '/',
   AsyncHandler(async (req, res) => {
     const users = await User.find({}).select('-password');
-    // console.log(users);
+    // //console.log(users);
 
     // if (_.isEmpty(users)) {
     //   return res.status(404).json("Error fetching user information");
@@ -342,7 +342,7 @@ router.delete(
   '/:id',
   AsyncHandler(async (req, res) => {
     const id = req.params.id;
-    console.log(id);
+    //console.log(id);
 
     // if (!mongoose.isValidObjectId(id)) {
     //   return res.status(401).json("Invalid User information");

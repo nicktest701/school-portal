@@ -110,7 +110,7 @@ router.get(
       females: femaleStudents.length ?? 0,
     };
 
-    console.log(details);
+    //console.log(details);
 
     res.status(200).json(details);
   })
@@ -163,7 +163,7 @@ router.post(
         levelType: `${currentLevel.level?.name}${currentLevel.level?.type}`,
       };
     });
-    console.log(uniqueStudents);
+    //console.log(uniqueStudents);
 
     res.status(200).json(uniqueStudents);
   })

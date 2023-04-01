@@ -62,7 +62,7 @@ const AddLevel = ({ open, setOpen }) => {
       },
     };
 
-    // console.log(newLevel);
+    // //console.log(newLevel);
 
     mutateAsync(newLevel, {
       onSettled: () => {

@@ -16,7 +16,7 @@ export const getAllLevels = async (session, term) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -33,7 +33,7 @@ export const getLevel = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -48,7 +48,7 @@ export const postLevel = async (newLevel) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -63,7 +63,7 @@ export const generateNewCurrentLevelDetailsFromLevels = async (data) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -78,7 +78,7 @@ export const putLevel = async (updatedLevel) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -97,7 +97,7 @@ export const deleteLevel = async ({ id, sessionId, termId }) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -116,7 +116,7 @@ export const getSubjectsForLevel = async (levelId) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };
@@ -131,7 +131,7 @@ export const addSubjectsToLevel = async (data) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw error.response.data;
   }
 };

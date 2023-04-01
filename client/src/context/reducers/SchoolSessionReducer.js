@@ -30,6 +30,12 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         sessionEditData: payload,
       };
 
+    case 'setFeesReceiptData':
+      return {
+        ...state,
+        feesReceiptData: payload,
+      };
+
     case 'setFeeEditData':
       return {
         ...state,

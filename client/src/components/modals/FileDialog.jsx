@@ -91,10 +91,10 @@ function FileDialog() {
             setIsLoading(false);
           },
           onSuccess: (data) => {
-            console.log(data);
+            //console.log(data);
           },
           onError: (error) => {
-            console.log(error);
+            //console.log(error);
           },
         });
       }

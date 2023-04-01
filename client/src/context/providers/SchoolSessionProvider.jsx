@@ -19,6 +19,13 @@ const SchoolSessionProvider = ({ children }) => {
       },
     },
 
+
+//Receipt
+    feesReceiptData: {
+      open: false,
+      data: {},
+    },
+
     feeEditData: {
       open: false,
       data: {},

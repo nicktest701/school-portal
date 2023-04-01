@@ -137,7 +137,7 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     const { session, term, level } = req.body;
-    console.log(req.body);
+    //console.log(req.body);
     //Create new Fees
 
     const exists = await Fee.findOne({
@@ -170,7 +170,7 @@ router.post(
       path: "students",
       match: { active: true },
     });
-    console.log(currentStudents);
+    //console.log(currentStudents);
 
     const modifiedStudents = currentStudents.students.map((student) => {
       return {
@@ -184,7 +184,7 @@ router.post(
 
     const studentCurrentFees = await CurrentFee.insertMany(modifiedStudents);
 
-    console.log(studentCurrentFees);
+    //console.log(studentCurrentFees);
 
     res.status(201).json("New Fee created");
   })

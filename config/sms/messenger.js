@@ -20,7 +20,7 @@ const sendSMS = async (body, telephoneNumber) => {
       },
       data: data,
     });
-    console.log(res.data);
+    //console.log(res.data);
     return res.data;
   } catch (error) {
     throw new Error("Error sending message.Try again later");

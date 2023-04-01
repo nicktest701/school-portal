@@ -12,7 +12,7 @@ export const getAllSessions = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -28,7 +28,7 @@ export const getSession = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -42,7 +42,7 @@ export const postSession = async (newSession) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -56,7 +56,7 @@ export const putSession = async (updatedSession) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -69,7 +69,7 @@ export const deleteSession = async (id) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
   }
 };
 
@@ -91,7 +91,7 @@ export const uploadProfileImage = async ({ _id, profile, type }) => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+    //console.log(error.response.data);
     throw new Error(error.response.data || "Error Updating profile");
   }
 };
