@@ -10,17 +10,17 @@ import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvi
 import { useNavigate } from 'react-router-dom';
 import { deleteLevel } from '../../api/levelAPI';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import EmptyDataContainer from '../../components/EmptyDataContainer';
 import { EMPTY_IMAGES } from '../../config/images';
 import useLevel from '../../components/hooks/useLevel';
 import { UserContext } from '../../context/providers/userProvider';
+import teacher_icon from '../../assets/images/header/teacher_ico.svg';
+
 
 const LevelTab = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
     userState: { session },
   } = useContext(UserContext);
-
 
   const navigate = useNavigate();
   const { palette } = useTheme();
@@ -30,7 +30,7 @@ const LevelTab = () => {
   const [openAddSubjects, setOpenAddSubjects] = useState(false);
 
   //Get Session id
- 
+
   const { levelsOption, levelLoading, levelRefetch } = useLevel();
   const { mutateAsync } = useMutation(deleteLevel);
 
@@ -128,30 +128,21 @@ const LevelTab = () => {
 
   return (
     <>
-      <Container>
-        {levelLoading && <Typography>Loading......</Typography>}
-        {levelsOption && levelsOption.length === 0 ? (
-          <EmptyDataContainer
-            img={EMPTY_IMAGES.level}
-            message="😑 Oops! It seems you don't have any level at the moment.Create a new one"
-            buttonText='New Level'
-            onClick={() => setOpenAddCurrentLevel(true)}
-          />
-        ) : (
-          <CustomizedMaterialTable
-            title='Levels'
-            search={true}
-            isLoading={levelLoading}
-            columns={newLevelColumns}
-            data={levelsOption}
-            actions={[]}
-            showAddButton={true}
-            addButtonText='New Level'
-            onAddButtonClicked={() => setOpenAddCurrentLevel(true)}
-            handleRefresh={levelRefetch}
-          />
-        )}
-      </Container>
+      <CustomizedMaterialTable
+        title='Levels'
+        icon={teacher_icon}
+        search={true}
+        isLoading={levelLoading}
+        columns={newLevelColumns}
+        data={levelsOption}
+        actions={[]}
+        showAddButton={true}
+        addButtonText='New Level'
+        addButtonImg={EMPTY_IMAGES.level}
+        addButtonMessage="😑 Oops! It seems you don't have any level at the moment.Create a new one"
+        onAddButtonClicked={() => setOpenAddCurrentLevel(true)}
+        handleRefresh={levelRefetch}
+      />
       <AddLevel open={openAddCurrentLevel} setOpen={setOpenAddCurrentLevel} />
       <AddCurrentSubjects open={openAddSubjects} setOpen={setOpenAddSubjects} />
     </>

@@ -20,7 +20,7 @@ const Shell = () => {
     async function getData() {
       try {
         const data = await verifyUser();
-        // //console.log(data);
+        //  console.log(data);
         if (_.isEmpty(data?.id) || _.isEmpty(schoolSession.current)) {
           userDispatch({
             type: 'signOut',
@@ -29,6 +29,7 @@ const Shell = () => {
             state: { path },
             replace: true,
           });
+       
         } else {
           userDispatch({
             type: 'signIn',
@@ -44,6 +45,7 @@ const Shell = () => {
           replace: true,
           state: { error },
         });
+   
       }
     }
     getData();

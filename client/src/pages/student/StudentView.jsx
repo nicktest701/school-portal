@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 
 import {
   Container,
@@ -7,20 +7,22 @@ import {
   Stack,
   Autocomplete,
   TextField,
-} from "@mui/material";
-import {} from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import { STUDENTS_COLUMN } from "../../mockup/columns/studentColumns";
-import { StudentContext } from "../../context/providers/StudentProvider";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import useLevel from "../../components/hooks/useLevel";
-import useLevelById from "../../components/hooks/useLevelById";
+} from '@mui/material';
+import {} from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { STUDENTS_COLUMN } from '../../mockup/columns/studentColumns';
+import { StudentContext } from '../../context/providers/StudentProvider';
+import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
+import useLevel from '../../components/hooks/useLevel';
+import useLevelById from '../../components/hooks/useLevelById';
+import student_icon from '../../assets/images/header/student_ico.svg';
+import { EMPTY_IMAGES } from '../../config/images';
 
 const StudentView = () => {
   const { studentState } = useContext(StudentContext);
   const navigate = useNavigate();
 
-  const [currentLevel, setCurrentLevel] = useState({ _id: "", type: "" });
+  const [currentLevel, setCurrentLevel] = useState({ _id: '', type: '' });
 
   //GET all current academic levels
   const { levelsOption } = useLevel();
@@ -40,35 +42,39 @@ const StudentView = () => {
 
   return (
     <Container sx={{ padding: 2 }}>
-      <Typography variant="h4">Students Information</Typography>
+      <Typography variant='h4'>Students Information</Typography>
       <Divider flexItem />
       <Stack rowGap={3} paddingY={3}>
         <Autocomplete
           disableClearable
-          clearText=" "
+          clearText=' '
           sx={{ width: 280 }}
           options={levelsOption}
           isOptionEqualToValue={(option, value) =>
             value._id === undefined ||
-            value._id === "" ||
+            value._id === '' ||
             option._id === value._id
           }
-          getOptionLabel={(option) => option.type || ""}
+          getOptionLabel={(option) => option.type || ''}
           value={currentLevel}
           onChange={(e, value) => setCurrentLevel(value)}
           renderInput={(params) => (
-            <TextField {...params} label="Select Class" size="small" />
+            <TextField {...params} label='Select Class' size='small' />
           )}
         />
 
         <CustomizedMaterialTable
-          title={currentLevel?.type || "Students"}
-          search={true}
           isLoading={levelLoading}
+          title={currentLevel?.type || 'Students'}
+          icon={student_icon}
+          search={true}
           columns={STUDENTS_COLUMN}
           actions={[]}
           data={students.length === 0 ? studentState.allStudents : students}
+
           onRowClick={handleRowClick}
+          addButtonImg={EMPTY_IMAGES.student}
+          addButtonMessage='😑 No Students recently added !!!!'
         />
       </Stack>
     </Container>

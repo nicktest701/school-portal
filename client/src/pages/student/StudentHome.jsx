@@ -1,14 +1,16 @@
-import React, { useContext } from "react";
-import Scrollbars from "react-custom-scrollbars";
-import { Box, Container, Stack, Typography } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { STUDENTS_COLUMN } from "../../mockup/columns/studentColumns";
-import StudentDashboardBarChart from "../../components/cards/StudentDashboardBarChart";
-import StudentDashboardPieChart from "../../components/cards/StudentDashboardPieChart";
-import { getAllStudentsDetails } from "../../api/studentAPI";
-import StudentDashboardLineChart from "../../components/cards/StudentDashboardLineChart";
-import { UserContext } from "../../context/providers/userProvider";
+import React, { useContext } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
+import { Box, Container, Stack, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
+import { STUDENTS_COLUMN } from '../../mockup/columns/studentColumns';
+import StudentDashboardBarChart from '../../components/cards/StudentDashboardBarChart';
+import StudentDashboardPieChart from '../../components/cards/StudentDashboardPieChart';
+import { getAllStudentsDetails } from '../../api/studentAPI';
+import StudentDashboardLineChart from '../../components/cards/StudentDashboardLineChart';
+import { UserContext } from '../../context/providers/userProvider';
+import student_icon from '../../assets/images/header/student_ico.svg';
+import { EMPTY_IMAGES } from '../../config/images';
 
 const StudentHome = () => {
   // const session = JSON.parse(localStorage.getItem("@school_session"));
@@ -16,9 +18,8 @@ const StudentHome = () => {
     userState: { session },
   } = useContext(UserContext);
 
-
   const studentDetails = useQuery({
-    queryKey: ["student-details"],
+    queryKey: ['student-details'],
     queryFn: () =>
       getAllStudentsDetails({
         sessionId: session.sessionId,
@@ -28,26 +29,26 @@ const StudentHome = () => {
   });
 
   return (
-    <Scrollbars style={{ width: "100%", height: "100vh" }} autoHide>
+    <Scrollbars style={{ width: '100%', height: '100vh' }} autoHide>
       <Box
-        bgcolor="primary.main"
-        width="inherit"
+        bgcolor='primary.main'
+        width='inherit'
         sx={{
-          position: "relative",
+          position: 'relative',
           height: 200,
         }}
       >
         <Container
           sx={{
-            position: "absolute",
+            position: 'absolute',
             left: 0,
             right: 0,
-            marginLeft: "auto",
-            marginRight: "auto",
+            marginLeft: 'auto',
+            marginRight: 'auto',
           }}
         >
-          <Stack color="primary.contrastText" sx={{ paddingY: 4 }}>
-            <Typography variant="h4">Student Portal</Typography>
+          <Stack color='primary.contrastText' sx={{ paddingY: 4 }}>
+            <Typography variant='h4'>Student Portal</Typography>
             <Typography>
               Track,manage and control student information
             </Typography>
@@ -55,8 +56,8 @@ const StudentHome = () => {
 
           <Box
             sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
               gap: 3,
               paddingY: 4,
             }}
@@ -69,12 +70,16 @@ const StudentHome = () => {
           </Box>
 
           <CustomizedMaterialTable
-            title="Recently Added Students"
+            title='Recently Added Students'
+            icon={student_icon}
             isLoading={studentDetails.isFetching}
             columns={STUDENTS_COLUMN}
-            data={studentDetails.data?.recentStudents ?? []}
+            // data={[]}
+             data={studentDetails.data?.recentStudents ?? []}
             actions={[]}
             handleRefresh={studentDetails.refetch}
+            addButtonImg={EMPTY_IMAGES.student}
+            addButtonMessage='😑 No Students recently added !!!!'
           />
         </Container>
       </Box>

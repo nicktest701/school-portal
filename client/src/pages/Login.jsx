@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SchoolRounded } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -15,16 +15,23 @@ import { useMutation } from '@tanstack/react-query';
 import { loginUserValidationSchema } from '../config/validationSchema';
 import { getUserAuth } from '../api/userAPI';
 import { UserContext } from '../context/providers/userProvider';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const { userState, userDispatch } = useContext(UserContext);
   const initialValues = {
     username: '',
     password: '',
   };
   const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    if (typeof state?.error === 'string') {
+      setMsg(state?.error);
+    }
+  }, [state]);
 
   const { mutateAsync } = useMutation({
     mutationFn: getUserAuth,

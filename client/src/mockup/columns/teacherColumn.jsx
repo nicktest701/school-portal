@@ -1,75 +1,129 @@
-import { Avatar } from "@mui/material";
-
+import { CircleRounded } from '@mui/icons-material';
+import { Avatar, Button, ListItemText, Stack, Typography } from '@mui/material';
+import _ from 'lodash';
+import moment from 'moment';
 export const TEACHERS_COLUMN = [
   {
-    field: "_id",
-    label: "ID",
+    field: '_id',
+    title: 'ID',
     hidden: true,
   },
   {
-    field: "profile",
-    label: "Profile",
+    field: 'fullName',
+    title: 'FullName',
+    hidden: true,
+    export: true,
+  },
+  {
+    title: 'Profile',
+    field: 'profile',
     export: false,
+    width: 400,
     render: (rowData) => (
-      <Avatar
-        src={
-          rowData.profile === undefined || rowData.profile === ""
-            ? null
-            : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/teachers/${rowData.profile}`
+      <Stack
+        direction='row'
+        columnGap={1}
+        justifyContent='center'
+        alignItems='center'
+      >
+        <Avatar
+          src={
+            rowData.profile === undefined || rowData.profile === ''
+              ? null
+              : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/teachers/${
+                  rowData.profile
+                }`
+          }
+        />
+        <ListItemText
+          primary={
+            <Typography
+              variant='body2'
+              sx={{
+                whiteSpace: 'nowrap',
+                fontWeight: 'bold',
+              }}
+            >
+              {rowData.fullName}
+            </Typography>
+          }
+          secondary={
+            <Typography variant='caption'>{`${_.startCase(rowData.gender)},${
+              new Date().getFullYear() -
+              new Date(rowData.dateofbirth).getUTCFullYear()
+            }yrs`}</Typography>
+          }
+        />
+      </Stack>
+    ),
+  },
+  {
+    field: 'active',
+    title: 'Status',
+    export: false,
+    render: ({ active }) => (
+      <Button
+        startIcon={
+          <CircleRounded
+            sx={{ color: active ? 'green' : 'red', width: 10, height: 10 }}
+          />
+        }
+      >
+        {active ? 'Active' : 'Disabled'}
+      </Button>
+    ),
+  },
+
+  {
+    field: 'dateofbirth',
+    title: 'Date Of Birth',
+    hidden: true,
+    export: true,
+  },
+  {
+    field: 'gender',
+    title: 'Gender',
+    hidden: true,
+    export: true,
+  },
+  {
+    field: null,
+    title: 'Contact Info',
+    render: (rowData) => (
+      <ListItemText
+        primary={<Typography variant='body2'>{rowData.email}</Typography>}
+        secondary={
+          <Typography variant='caption' color='primary' fontWeight='bold'>
+            {rowData.phonenumber}
+          </Typography>
         }
       />
     ),
   },
   {
-    field: "firstname",
-    title: "First Name",
-    export: false,
-    hidden: true,
-  },
-  {
-    field: "surname",
-    title: "Surname",
-    export: false,
-    hidden: true,
-  },
-  {
-    field: "othername",
-    title: "Other Name",
-    export: false,
-    hidden: true,
-  },
-  {
-    field: "fullName",
-    title: "FullName",
-  },
-  {
-    field: "dateofbirth",
-    title: "Date Of Birth",
-  },
-  {
-    field: "gender",
-    title: "Gender",
-  },
-  {
-    field: "email",
-    title: "Email",
-  },
-  {
-    field: "phonenumber",
-    title: "Telephone No.",
-  },
-  {
-    field: "address",
-    title: "Address",
+    field: 'email',
+    title: 'Email',
     export: true,
-  },
-  {
-    field: "residence",
-    title: "Residence",
-  },
-  {
-    field: "nationality",
-    title: "Nationality",
     hidden: true,
+  },
+  {
+    field: 'phonenumber',
+    title: 'Telephone No.',
+    export: true,
+    hidden: true,
+  },
+  {
+    field: 'address',
+    title: 'Address',
+    export: true,
+    hidden: true,
+  },
+  {
+    field: 'residence',
+    title: 'Residence',
+  },
+  {
+    field: 'nationality',
+    title: 'Nationality',
   },
 ];

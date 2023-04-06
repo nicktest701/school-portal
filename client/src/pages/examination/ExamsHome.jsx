@@ -9,6 +9,8 @@ import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialT
 import { EXAMS_COLUMNS } from '../../mockup/columns/sessionColumns';
 import { useNavigate } from 'react-router-dom';
 import useLevel from '../../components/hooks/useLevel';
+import exams_icon from '../../assets/images/header/exams_ico.svg';
+import { EMPTY_IMAGES } from '../../config/images';
 
 const ExamsHome = () => {
   const navigate = useNavigate();
@@ -83,11 +85,14 @@ const ExamsHome = () => {
 
                 <CustomizedMaterialTable
                   title='Current Levels'
+                  icon={exams_icon}
                   isLoading={levelLoading}
-                  columns={EXAMS_COLUMNS}
-                  data={levelsOption !== undefined ? levelsOption : []}
+                  columns={EXAMS_COLUMNS}     
+                data={levelsOption !== undefined ? levelsOption : []}
                   actions={[]}
                   onRowClick={(rowData) => handleRowClick(rowData?._id)}
+                  addButtonImg={EMPTY_IMAGES.student}
+                  addButtonMessage='😑 No Students recently added !!!!'
                 />
               </Container>
             </TabPanel>

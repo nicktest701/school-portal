@@ -5,7 +5,8 @@ import FeesDashboardCard from '../../components/cards/FeesDashboardCard';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { getAllCurrentFeesSummary } from '../../api/currentFeeAPI';
 import { UserContext } from '../../context/providers/userProvider';
-
+import { EMPTY_IMAGES } from '../../config/images';
+import teacher_icon from '../../assets/images/header/teacher_ico.svg';
 const FeeHome = () => {
   const {
     userState: {
@@ -81,7 +82,15 @@ const FeeHome = () => {
           <StudentDashboardCard />
           <StudentDashboardCard />
         </Box> */}
-        <CustomizedMaterialTable columns={[]} data={[]} actions={[]} />
+        <CustomizedMaterialTable
+          icon={teacher_icon}
+          columns={[]}
+          data={[]}
+          actions={[]}
+          showAddButton={false}
+          addButtonImg={EMPTY_IMAGES.level}
+          addButtonMessage='😑 Add your first teacher by clicking on the button below !'
+        />
       </Container>
     </Box>
   );

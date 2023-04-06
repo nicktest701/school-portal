@@ -32,6 +32,7 @@ export const getUserAuth = async (userInfo) => {
 
 export const verifyUser = async () => {
   const token = JSON.parse(localStorage.getItem('@user')) || '';
+
   try {
     const res = await axios({
       method: 'GET',
@@ -40,11 +41,11 @@ export const verifyUser = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-
+    console.log(res);
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
-    throw error.response.data;
+    console.log(error.response.data);
+    throw error?.response?.data || 'Session has expired.Please login again';
   }
 };
 

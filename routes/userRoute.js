@@ -39,6 +39,7 @@ router.get(
   '/verify',
   verifyJWT,
   AsyncHandler(async (req, res) => {
+    console.log("22")
     res.json(req.session.user);
   })
 );

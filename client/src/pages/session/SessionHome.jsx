@@ -13,6 +13,7 @@ import {
   alertError,
   alertSuccess,
 } from '../../context/actions/globalAlertActions';
+import teacher_icon from '../../assets/images/header/teacher_ico.svg';
 
 const SessionHome = () => {
   const { palette } = useTheme();
@@ -70,40 +71,23 @@ const SessionHome = () => {
 
   return (
     <>
-      <Container>
-        <Stack
-          spacing={1}
-          direction={{ xs: 'column', sm: 'row' }}
-          justifyContent={{ xs: 'center', sm: 'space-between' }}
-          alignItems='center'
-        ></Stack>
-        {sessions?.data?.length === 0 ? (
-          <EmptyDataContainer
-            img={EMPTY_IMAGES.session}
-            message='😑 No School Session available!.Create a new one!'
-            buttonText='New Session'
-            onClick={handleOpenSession}
-          />
-        ) : (
-          <CustomizedMaterialTable
-            title='School Sessions'
-            isLoading={sessions.isFetching}
-            columns={SCHOOL_SESSION_COLUMN(
-              handlEditSession,
-              handleDeleteSession
-            )}
-            data={sessions.data ? sessions.data : []}
-            actions={[]}
-            handleEdit={handlEditSession}
-            handleDelete={handleDeleteSession}
-            showAddButton={true}
-            addButtonText='New Session'
-            onAddButtonClicked={handleOpenSession}
-            handleRefresh={sessions.refetch}
-          />
-        )}
-      </Container>
-      {/* <AddSession /> */}
+      <CustomizedMaterialTable
+        title='School Sessions'
+        icon={teacher_icon}
+        isLoading={sessions.isFetching}
+        columns={SCHOOL_SESSION_COLUMN(handlEditSession, handleDeleteSession)}
+        data={sessions.data ? sessions.data : []}
+        actions={[]}
+        handleEdit={handlEditSession}
+        handleDelete={handleDeleteSession}
+        showAddButton={true}
+        addButtonImg={EMPTY_IMAGES.session}
+        addButtonMessage='😑 No School Session available!.Create a new one!'
+        addButtonText='New Session'
+        onAddButtonClicked={handleOpenSession}
+        handleRefresh={sessions.refetch}
+      />
+
       <EditSession open={openEditSession} setOpen={setOpenEditSession} />
     </>
   );

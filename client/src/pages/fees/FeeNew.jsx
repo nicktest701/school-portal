@@ -12,7 +12,7 @@ import EmptyDataContainer from '../../components/EmptyDataContainer';
 import { EMPTY_IMAGES } from '../../config/images';
 import ViewLevelFeeInfo from './ViewLevelFeeInfo';
 import { UserContext } from '../../context/providers/userProvider';
-
+import fee_icon from '../../assets/images/header/fee_ico.svg';
 const FeeNew = () => {
   const {
     userState: { session },
@@ -98,27 +98,21 @@ const FeeNew = () => {
         <Typography variant='h5'>New Fee</Typography>
         <Typography>Add new fees for a particular level</Typography>
         <Divider />
-        {fees?.data?.length === 0 ? (
-          <EmptyDataContainer
-            img={EMPTY_IMAGES.sms}
-            message='😑 No School Fees available!.Create a new one'
-            buttonText='New Fee'
-            onClick={() => setOpenAddFee(true)}
-          />
-        ) : (
-          <CustomizedMaterialTable
-            title='School Fees'
-            columns={SCHOOL_FEES_COLUMNS(handleEdit, handleDeleteFee)}
-            data={fees.data ? fees.data : []}
-            isLoading={fees.isFetching}
-            actions={[]}
-            search={true}
-            onRowClick={handleGetLevelFeeInfo}
-            showAddButton={true}
-            addButtonText='New Fee'
-            onAddButtonClicked={() => setOpenAddFee(true)}
-          />
-        )}
+        <CustomizedMaterialTable
+          title='School Fees'
+          icon={fee_icon}
+          columns={SCHOOL_FEES_COLUMNS(handleEdit, handleDeleteFee)}
+          data={fees.data ? fees.data : []}
+          isLoading={fees.isFetching}
+          actions={[]}
+          search={true}
+          onRowClick={handleGetLevelFeeInfo}
+          showAddButton={true}
+          addButtonText='New Fee'
+          addButtonImg={EMPTY_IMAGES.sms}
+          addButtonMessage='😑 No School Fees available!.Create a new one'
+          onAddButtonClicked={() => setOpenAddFee(true)}
+        />
       </Container>
       <AddFee open={openAddFee} setOpen={setOpenAddFee} />
       <EditFee />

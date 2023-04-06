@@ -1,6 +1,13 @@
 import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
-import { FormLabel, useTheme, Input, Typography } from '@mui/material';
+import {
+  FormLabel,
+  useTheme,
+  Input,
+  Typography,
+  Container,
+  Stack,
+} from '@mui/material';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import { tableIcons } from '../../config/tableIcons';
 import { Add, Delete, Refresh } from '@mui/icons-material';
@@ -13,9 +20,12 @@ import { readXLSX } from '../../config/readXLSX';
 import { readCSV } from '../../config/readCSV';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import { alertError } from '../../context/actions/globalAlertActions';
+import CustomTableTitle from '../custom/CustomTableTitle';
+import EmptyDataContainer from '../EmptyDataContainer';
 
 function CustomizedMaterialTable({
   title,
+  icon,
   exportFileName,
   isLoading,
   search,
@@ -26,7 +36,9 @@ function CustomizedMaterialTable({
   onRowClick,
   handleRefresh,
   showAddButton,
+  addButtonImg,
   addButtonText,
+  addButtonMessage,
   onAddButtonClicked,
   showImportButton,
   importButtonText,
@@ -77,7 +89,7 @@ function CustomizedMaterialTable({
       <Box paddingY={2} marginY={1} width='100%'>
         <MaterialTable
           isLoading={isLoading}
-          title={title}
+          title={<CustomTableTitle title={title} icon={icon} />}
           icons={tableIcons}
           columns={modifiedColumns}
           data={data === undefined ? [] : data}
@@ -94,6 +106,15 @@ function CustomizedMaterialTable({
             pageSizeOptions: [5, 10, 20, 30, 40, 50],
             actionsColumnIndex: -1,
             overflowY: 'scroll',
+            header: data === undefined || data.length === 0 ? false : true,
+            headerStyle: {
+              // backgroundColor: 'whitesmoke',
+              fontWeight: 'bold',
+            },
+            rowStyle: {
+              boxShadow: '0 2px 3px rgba(0,0,0,0.2)',
+              paddingBlock: 2,
+            },
             ...options,
           }}
           style={{
@@ -121,7 +142,7 @@ function CustomizedMaterialTable({
           onRowClick={(e, rowData) => onRowClick && onRowClick(rowData)}
           components={{
             Toolbar: (props) => {
-              return (
+              return data === undefined || data.length === 0 ? null : (
                 <>
                   <Box
                     sx={{
@@ -193,12 +214,26 @@ function CustomizedMaterialTable({
             //   );
             // },
           }}
+          localization={{
+            body: {
+              emptyDataSourceMessage: (
+                <EmptyDataContainer
+                  img={addButtonImg}
+                  message={addButtonMessage}
+                  buttonText={addButtonText}
+                  onClick={onAddButtonClicked}
+                  showAddButton={showAddButton}
+                />
+              ),
+            },
+          }}
         />
       </Box>
     </AnimatedContainer>
   );
 }
 CustomizedMaterialTable.propTypes = {
+  icon: PropTypes.node,
   isLoading: PropTypes.bool,
   search: PropTypes.bool,
   showAddButton: PropTypes.bool,
