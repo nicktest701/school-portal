@@ -1,19 +1,19 @@
 import { useContext, useState } from 'react';
 import Swal from 'sweetalert2';
-import { Container, Stack, Typography, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { SCHOOL_SESSION_COLUMN } from '../../mockup/columns/sessionColumns';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import { deleteTerm, getAllTerms } from '../../api/termAPI';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import EmptyDataContainer from '../../components/EmptyDataContainer';
+
 import EditSession from './EditSession';
 import { EMPTY_IMAGES } from '../../config/images';
 import {
   alertError,
   alertSuccess,
 } from '../../context/actions/globalAlertActions';
-import teacher_icon from '../../assets/images/header/teacher_ico.svg';
+import session_icon from '../../assets/images/header/session_ico.svg';
 
 const SessionHome = () => {
   const { palette } = useTheme();
@@ -72,12 +72,13 @@ const SessionHome = () => {
   return (
     <>
       <CustomizedMaterialTable
-        title='School Sessions'
-        icon={teacher_icon}
+        title='Sessions'
+        icon={session_icon}
         isLoading={sessions.isFetching}
         columns={SCHOOL_SESSION_COLUMN(handlEditSession, handleDeleteSession)}
         data={sessions.data ? sessions.data : []}
         actions={[]}
+        showRowShadow={false}
         handleEdit={handlEditSession}
         handleDelete={handleDeleteSession}
         showAddButton={true}

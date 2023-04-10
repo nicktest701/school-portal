@@ -171,6 +171,15 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         },
       };
 
+    case 'viewMessage':
+      return {
+        ...state,
+        messageData: {
+          open: payload.open,
+          data: payload.data,
+        },
+      };
+
     default:
       return state;
   }

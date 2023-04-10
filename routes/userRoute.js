@@ -7,6 +7,7 @@ const multer = require('multer');
 const { randomUUID } = require('crypto');
 const verifyJWT = require('../middlewares/verifyJWT');
 const User = require('../models/userModel');
+const School = require('../models/schoolModel');
 
 const Storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -39,7 +40,6 @@ router.get(
   '/verify',
   verifyJWT,
   AsyncHandler(async (req, res) => {
-    console.log("22")
     res.json(req.session.user);
   })
 );
@@ -142,6 +142,11 @@ router.put(
   upload.single('profile'),
   AsyncHandler(async (req, res) => {
     const { _id } = req.body;
+
+    if (req.body.school) {
+      // console.log(req.file?.filename);
+      return res.status(200).send(req.file?.filename);
+    }
 
     const updatedUser = await User.findByIdAndUpdate(_id, {
       $set: {
@@ -369,6 +374,43 @@ router.delete(
       return res.status(403).json('No User with such id');
     }
     res.status(200).json('User has been removed successfully !!!');
+  })
+);
+
+// GET School Information
+router.get(
+  '/school',
+  AsyncHandler(async (req, res) => {
+    const school = await School.findOne();
+
+    res.status(200).json(school);
+  })
+);
+
+// EDIT School Information
+router.put(
+  '/school',
+  AsyncHandler(async (req, res) => {
+    const schoolInfo = req.body;
+    const school = await School.findOneAndUpdate(
+      {
+        unique: schoolInfo.unique,
+      },
+
+      schoolInfo,
+
+      {
+        upsert: true,
+        new: true,
+      }
+    );
+
+    if (_.isEmpty(school)) {
+      return res
+        .status(403)
+        .json('Couldn"t save school information.Please try again later.!!');
+    }
+    res.status(200).json('School Information has been saved successfully !!!');
   })
 );
 

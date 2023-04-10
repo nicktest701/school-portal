@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {
+  Avatar,
   Button,
   Container,
   IconButton,
@@ -14,21 +15,18 @@ import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import Person2Rounded from '@mui/icons-material/Person2Rounded';
 import LocalLibraryRounded from '@mui/icons-material/LocalLibraryRounded';
 import PaymentsRounded from '@mui/icons-material/PaymentsRounded';
-import StyleRoundedIcon from '@mui/icons-material/StyleRounded';
 import SmsRounded from '@mui/icons-material/SmsRounded';
 import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import BedroomBabyRoundedIcon from '@mui/icons-material/BedroomBabyRounded';
 import DataThresholdingRoundedIcon from '@mui/icons-material/DataThresholdingRounded';
 import DrawerItem from '../../components/DrawerItem';
-import { ExitToAppSharp } from '@mui/icons-material';
+import { ExitToAppSharp, SchoolRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 
-
-
-
-
 const Sidebar = ({ onLogOut }) => {
+  const school_info = JSON.parse(localStorage.getItem('@school_info'));
+
   return (
     <Container
       sx={{
@@ -43,21 +41,30 @@ const Sidebar = ({ onLogOut }) => {
         transition: 'all 0.4s ease-in-out',
       }}
     >
-      <Stack alignItems={{ xs: 'center', sm: 'flex-start' }}>
+      <Stack alignItems={{ xs: 'center', sm: 'center' }}>
         <IconButton color='primary'>
-          <StyleRoundedIcon sx={{ width: 40, height: 40 }} />
+          {school_info?.badge ? (
+            <Avatar
+              alt='school logo'
+              loading='lazy'
+              srcSet={`/api/images/users/${
+                school_info?.badge
+              }`}
+              sx={{
+                width: 70,
+                height: 70,
+              }}
+            />
+          ) : (
+            <SchoolRounded sx={{ width: 80, height: 80 }} />
+          )}
         </IconButton>
         <Stack alignItems='start' display={{ xs: 'none', md: 'block' }}>
-          <Typography sx={{ fontSize: '15px', fontWeight: '900' }}>
-            Wonder Goodness
+          <Typography fontWeight='bold' textAlign='center'>
+            {school_info?.name}
           </Typography>
-          <Typography
-            variant='body2'
-            sx={{
-              whiteSpace: 'nowrap',
-            }}
-          >
-            Management System
+          <Typography variant='body2' textAlign='center'>
+            &ldquo; {school_info?.motto} &rdquo;
           </Typography>
         </Stack>
       </Stack>

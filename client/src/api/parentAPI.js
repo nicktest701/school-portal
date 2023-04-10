@@ -7,7 +7,7 @@ export const getAllParents = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/parents`,
+      url: `/api/parents`,
     });
 
     return res.data;
@@ -20,7 +20,7 @@ export const getParentByStudentId = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/parents/student`,
+      url: `/api/parents/student`,
       params: {
         id,
       },
@@ -35,7 +35,7 @@ export const getParent = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/parents/${id}`,
+      url: `/api/parents/${id}`,
     });
 
     return res.data;
@@ -48,7 +48,7 @@ export const postParent = async (newParent) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/parents`,
+      url: `/api/parents`,
       data: newParent,
     });
 
@@ -62,7 +62,7 @@ export const putParent = async (updatedParent) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `${BASE_URL}/parents`,
+      url: `/api/parents`,
       data: updatedParent,
     });
 
@@ -76,7 +76,7 @@ export const deleteParent = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `${BASE_URL}/parents/${id}`,
+      url: `/api/parents/${id}`,
     });
 
     return res.data;

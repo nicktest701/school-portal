@@ -75,7 +75,7 @@ const FeeNew = () => {
     });
   };
 
-  const handleGetLevelFeeInfo = ({ levelId, level, fee, noOfStudents }) => {
+  const handleView = ({ levelId, level, fee, noOfStudents }) => {
     // //console.log(levelId);
     schoolSessionDispatch({
       type: 'viewLevelFeeInfo',
@@ -101,12 +101,12 @@ const FeeNew = () => {
         <CustomizedMaterialTable
           title='School Fees'
           icon={fee_icon}
-          columns={SCHOOL_FEES_COLUMNS(handleEdit, handleDeleteFee)}
+          columns={SCHOOL_FEES_COLUMNS(handleView, handleEdit, handleDeleteFee)}
           data={fees.data ? fees.data : []}
           isLoading={fees.isFetching}
           actions={[]}
           search={true}
-          onRowClick={handleGetLevelFeeInfo}
+          // onRowClick={handleGetLevelFeeInfo}
           showAddButton={true}
           addButtonText='New Fee'
           addButtonImg={EMPTY_IMAGES.sms}

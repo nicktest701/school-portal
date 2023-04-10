@@ -1,12 +1,12 @@
-import { PersonRounded, StyleOutlined } from '@mui/icons-material';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Stack, Tab, Typography } from '@mui/material';
 import React, { useState } from 'react';
-
+import { PersonRounded,} from '@mui/icons-material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { Box, Container, Divider,  Tab, } from '@mui/material';
+import session_icon from '../../assets/images/header/session_ico.svg';
 import SessionHome from './SessionHome';
-import Back from '../../components/Back';
 import CustomParticle from '../../components/animations/CustomParticle';
-import bg_img from '../../assets/images/empty/about.svg';
+import CustomTitle from '../../components/custom/CustomTitle';
+
 const Session = () => {
   const [tab, setTab] = useState('1');
 
@@ -18,12 +18,8 @@ const Session = () => {
         width: '100%',
         color: 'primary.contrastText',
         bgcolor: 'secondary.main',
-        // background: `linear-gradient(rgba(1, 46, 84,.5),transparent),url(${bg_img}) no-repeat`,
-        // backgroundPositionX: "right",
-        // backgroundSize: "cover",
       }}
     >
-      <CustomParticle />
       <Container
         sx={{
           position: 'absolute',
@@ -33,24 +29,12 @@ const Session = () => {
           marginRight: 'auto',
         }}
       >
-        <Back />
-        <Container
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column-reverse', sm: 'row' },
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingY: 2,
-          }}
-        >
-          <Stack color='primary.main'>
-            <Typography variant='h5'>School Session</Typography>
-            <Typography>
-              Track,manage and control academic and class activities
-            </Typography>
-          </Stack>
-          <StyleOutlined color='inherit' sx={{ width: 50, height: 50 }} />
-        </Container>
+        <CustomTitle
+          title='School Session'
+          subtitle='  Track,manage and control academic and class activities'
+          img={session_icon}
+          color='primary.main'
+        />
 
         <Box paddingY={3}>
           <TabContext value={tab}>
@@ -69,6 +53,7 @@ const Session = () => {
           </TabContext>
         </Box>
       </Container>
+      <CustomParticle />
     </Box>
   );
 };

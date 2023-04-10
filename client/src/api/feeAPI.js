@@ -7,7 +7,7 @@ export const getAllFees = async (session) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `${BASE_URL}/fees/all`,
+      url: `/api/fees/all`,
       data: session,
     });
 
@@ -25,7 +25,7 @@ export const getFee = async (id) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `${BASE_URL}/fees/${id}`,
+      url: `/api/fees/${id}`,
     });
 
     return res.data;
@@ -39,7 +39,7 @@ export const getAllFeesByCurrentLevel = async (session) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `${BASE_URL}/fees/current-level/all`,
+      url: `/api/fees/current-level/all`,
       data: session,
     });
     return res.data;
@@ -52,7 +52,7 @@ export const getFeeForCurrentLevel = async (session, level) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `${BASE_URL}/fees/current-level`,
+      url: `/api/fees/current-level`,
       data: {
         ...session,
         level,
@@ -69,7 +69,7 @@ export const postFee = async (newFee) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `${BASE_URL}/fees`,
+      url: `/api/fees`,
       data: newFee,
     });
 
@@ -84,7 +84,7 @@ export const putFee = async (updatedFee) => {
   try {
     const res = await axios({
       method: "PUT",
-      url: `${BASE_URL}/fees`,
+      url: `/api/fees`,
       data: updatedFee,
     });
 
@@ -99,7 +99,7 @@ export const deleteFee = async (id) => {
   try {
     const res = await axios({
       method: "DELETE",
-      url: `${BASE_URL}/fees/${id}`,
+      url: `/api/fees/${id}`,
     });
 
     return res.data;

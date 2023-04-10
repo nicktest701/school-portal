@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, IconButton, Stack, Toolbar } from "@mui/material";
+import { AppBar, Container, IconButton, Stack, Toolbar } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import Back from "../../../components/Back";
 import NavLinkItem from "../../../components/list/NavLinkItem";
@@ -10,24 +10,39 @@ const FeeNav = () => {
       <AppBar position="sticky">
         <Back />
         <Toolbar>
-          <Stack
-            display={{ xs: "none", md: "flex" }}
-            direction="row"
-            width="100%"
-            justifyContent="center"
+          <Container
+            // display={{ xs: "none", md: "flex" }}
+            // direction="row"
+            // width="100%"
+            // justifyContent="center"
+         
+            sx={{
+              width: { xs: 400, sm: '100%' },
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              columnGap: 1,
+
+              overflowX: 'scroll',
+              overscrollBehaviorInline: 'contain',
+              '&::-webkit-scrollbar': {
+                width: '10px',
+              },
+              paddingY: 1,
+            }}
           >
             <NavLinkItem to="" color="secondary" text="Home" />
             <NavLinkItem to="new" color="secondary" text="New Fees" />
             <NavLinkItem to="payment" color="secondary" text="Make Payment" />
             <NavLinkItem to="history" color="secondary" text="Fees History" />
             <NavLinkItem to="settings" color="secondary" text="Settings" />
-          </Stack>
-          <IconButton
+          </Container>
+          {/* <IconButton
             color="inherit"
             sx={{ display: { xs: "block", md: "none" } }}
           >
             <Menu />
-          </IconButton>
+          </IconButton> */}
         </Toolbar>
       </AppBar>
     </>

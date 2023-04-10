@@ -7,7 +7,7 @@ export const getAllStudentsDetails = async (session) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/students/details`,
+      url: `/api/students/details`,
       params: session,
     });
 
@@ -23,7 +23,7 @@ export const getAllStudents = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/students`,
+      url: `/api/students`,
     });
 
     return res.data;
@@ -38,7 +38,7 @@ export const getAllStudentsByCurrentLevel = async (currentLevelId) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/students/current`,
+      url: `/api/students/current`,
       params: {
         currentLevelId,
       },
@@ -57,7 +57,7 @@ export const getAllStudentsForSearch = async (session) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/students/search/all`,
+      url: `/api/students/search/all`,
       data: session,
     });
 
@@ -72,7 +72,7 @@ export const getStudentsByID = async (studentId, levelId, levelName) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/students/current`,
+      url: `/api/students/current`,
       data: {
         studentId,
         levelId,
@@ -91,7 +91,7 @@ export const getStudent = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/students/${id}`,
+      url: `/api/students/${id}`,
     });
 
     return res.data;
@@ -105,7 +105,7 @@ export const getParentByStudentId = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/students/parent`,
+      url: `/api/students/parent`,
       params: {
         id,
       },
@@ -149,7 +149,7 @@ export const postStudent = async ({ student, parent }) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/students`,
+      url: `/api/students`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -167,7 +167,7 @@ export const postManyStudents = async (data) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/students/many`,
+      url: `/api/students/many`,
       data,
     });
 
@@ -181,7 +181,7 @@ export const putStudent = async (updatedStudent) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `${BASE_URL}/students`,
+      url: `/api/students`,
       data: updatedStudent,
     });
 
@@ -196,7 +196,7 @@ export const deleteStudent = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `${BASE_URL}/students/${id}`,
+      url: `/api/students/${id}`,
     });
 
     return res.data;
@@ -210,7 +210,7 @@ export const disableStudentAccount = async ({ id, active }) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/students/disable`,
+      url: `/api/students/disable`,
       params: {
         id,
         active,
@@ -223,3 +223,4 @@ export const disableStudentAccount = async ({ id, active }) => {
     throw error.response.data;
   }
 };
+

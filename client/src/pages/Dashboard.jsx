@@ -15,18 +15,23 @@ import {
 } from '@mui/material';
 import Swal from 'sweetalert2';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { EditRounded, NotificationsRounded } from '@mui/icons-material';
+import {
+  EditRounded,
+  NotificationsRounded,
+  Person3,
+} from '@mui/icons-material';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
-import LineChart from '../components/charts/LineChart';
-import BarChart from '../components/charts/BarChart';
 import { useQuery } from '@tanstack/react-query';
 import { generateNewCurrentLevelDetailsFromLevels } from '../api/levelAPI';
 import ViewUserProfile from '../components/dialog/ViewUserProfile';
 import DashboardSwiper from '../components/swiper/DashboardSwiper';
 import CustomParticle from '../components/animations/CustomParticle';
+import Birthday from '../components/items/Birthday';
 import 'react-calendar/dist/Calendar.css';
 import '../theme/Calendar.css';
 import { UserContext } from '../context/providers/userProvider';
+import HorizontalSidebar from './layouts/HorizontalSidebar';
+import DashboardCardsContainer from '../components/cards/DashboardCardsContainer';
 
 const Dashboard = () => {
   const {
@@ -81,8 +86,7 @@ const Dashboard = () => {
     <>
       <Box
         sx={{
-          width: '100%',
-          height: '100%',
+          height: '100vh',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -93,8 +97,8 @@ const Dashboard = () => {
         <Scrollbars autoHide autoHideTimeout={1000} autoHideDuration={200}>
           <Container
             sx={{
-              paddingY: 4,
               height: '100vh',
+              overscrollBehaviorInline: 'contain',
             }}
           >
             <Box
@@ -102,11 +106,13 @@ const Dashboard = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                paddingBottom: 3,
               }}
             >
               <Stack>
-                <Typography variant='h6'>Welcome,Nana !</Typography>
+                <HorizontalSidebar onLogOut={handleLogOut} />
+                <Typography variant='h4' textTransform='capitalize'>
+                  Welcome, {user?.fullname?.split(' ')[0]}!
+                </Typography>
                 <Typography variant='body2'>
                   {new Date().toDateString()}
                 </Typography>
@@ -128,30 +134,16 @@ const Dashboard = () => {
               {session?.academicYear}-{session?.term}
             </Typography>
 
-            <Typography variant='h6' sx={{ paddingY: 2 }}>
+            <Typography variant='h6' sx={{ paddingY: 1 }}>
               Dashboard
             </Typography>
             <Divider />
-            {/* <React.Suspense fallback={<small>Loading....</small>}> */}
-            <DashboardSwiper />
-            {/* </React.Suspense> */}
-            <Typography variant='h6' sx={{ paddingY: 2 }}>
-              School Summary
+            <DashboardCardsContainer />
+            <Typography variant='h6' sx={{ paddingY: 1 }}>
+              Recent News
             </Typography>
             <Divider />
-            <Box
-              sx={{
-                width: '100%',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
-                placeItems: 'center',
-                gap: 1,
-                paddingY: 3,
-              }}
-            >
-              <LineChart />
-              <BarChart />
-            </Box>
+            <DashboardSwiper />
           </Container>
         </Scrollbars>
         <Container
@@ -159,7 +151,7 @@ const Dashboard = () => {
             width: 300,
             display: { xs: 'none', md: 'inline-block' },
             backgroundColor: '#F7F7F7',
-            height: '100%',
+            height: '100vh',
             padding: 2,
             paddingY: 4,
             transition: 'all 0.4s ease-in-out',
@@ -173,23 +165,28 @@ const Dashboard = () => {
               </IconButton>
             </Stack>
 
-            <Stack alignItems='center'>
+            <Stack alignItems='center' paddingBottom={2}>
               <Avatar
-                src={`${import.meta.env.VITE_BASE_NET_LOCAL}/images/users/${
+                src={`/api/images/users/${
                   user?.profile
                 }`}
                 sx={{ width: 80, height: 80 }}
               />
-              <Typography variant='subtitle2'>{user?.fullname}</Typography>
+              <Typography variant='subtitle2' color='primary'>
+                {_.startCase(user?.fullname)}
+              </Typography>
               <Typography variant='body2'>@{user?.username}</Typography>
             </Stack>
           </Box>
-          <Box>
-            <Typography variant='subtitle2'>Calendar</Typography>
+          <Stack rowGap={2}>
+            {/* <Typography variant='subtitle2'>Calendar</Typography> */}
             <Box>
               <Calendar onChange={onChange} value={value} />
             </Box>
-          </Box>
+
+            {/* birthday */}
+            <Birthday />
+          </Stack>
         </Container>
       </Box>
       <CustomParticle />

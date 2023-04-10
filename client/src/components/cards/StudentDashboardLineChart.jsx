@@ -1,81 +1,82 @@
-import React from 'react';
-import { PieChartRounded } from '@mui/icons-material';
-import { Box, Button, Chip, Stack, useTheme } from '@mui/material';
-import { Line } from 'react-chartjs-2';
-
-const StudentDashboardLineChart = ({ students, females, males }) => {
+import React, { useEffect, useState } from 'react';
+import { BubbleChartRounded } from '@mui/icons-material';
+import { Box, Card, CardContent, CardHeader, useTheme } from '@mui/material';
+import { Pie } from 'react-chartjs-2';
+import _ from 'lodash';
+const StudentDashboardLineChart = ({ data }) => {
   const { palette } = useTheme();
 
+  const [labels, setLabels] = useState([]);
+  const [dataset, setDataset] = useState([]);
+
+  useEffect(() => {
+    if (data) {
+      setLabels(_.map(data, 'level'));
+      setDataset(_.map(data, 'students'));
+    }
+  }, [data]);
+
   return (
-    <Stack
-      sx={{
-        bgcolor: 'primary.contrastText',
-        padding: 1,
-        borderRadius: '8px',
-        boxShadow: '0px 1px 20px 10px rgba(84,84,84,0.10)',
-      }}
-    >
-      <Stack direction='row' justifyContent='space-between' alignItems='center'>
-        <Button startIcon={<PieChartRounded />}>Total Students</Button>
-        <Chip
-          label={students ?? 0}
-          color='primary'
-          size='medium'
-          sx={{ fontSize: 20 }}
-        />
-      </Stack>
-      <Box
-        sx={{
-          minWidth: 150,
-          height: 150,
-        }}
-      >
-        <Line
-          datasetIdKey='id'
-          data={{
-            labels: ['Males', 'Females'],
-
-            datasets: [
-              {
-                data: [0, males || 0],
-                backgroundColor: [palette.primary.main],
-                label: ['Males'],
-              },
-              {
-                data: [0, females || 0],
-                backgroundColor: [palette.secondary.main],
-                label: ['Females'],
-              },
-            ],
+    <Card>
+      <CardHeader
+        avatar={<BubbleChartRounded />}
+        title='Students In Each Level'
+      />
+      <CardContent>
+        <Box
+          sx={{
+            minWidth: 150,
+            height: 150,
           }}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
+        >
+          <Pie
+            datasetIdKey='id'
+            data={{
+              labels,
 
-            layout: {
-              padding: 10,
-            },
-            scales: {
-              x: {
-                ticks: {
-                  display: false,
+              datasets: [
+                {
+                  label: 'Level',
+                  data: dataset,
+                  // backgroundColor: 'rgb(213,143,125)',
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+
+              layout: {
+                padding: 10,
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    display: false,
+                  },
+                  grid: {
+                    display: false,
+                  },
+                },
+                y: {
+                  ticks: {
+                    display: false,
+                  },
+                  grid: {
+                    display: false,
+                  },
                 },
               },
-              y: {
-                ticks: {
-                  display: false,
+              plugins: {
+                legend: {
+                  // display: false,
                 },
               },
-            },
-            plugins: {
-              legend: {
-                // display: false,
-              },
-            },
-          }}
-        />
-      </Box>
-    </Stack>
+            }}
+          />
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 

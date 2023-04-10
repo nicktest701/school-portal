@@ -1,5 +1,11 @@
+
 const UserReducer = (state, action) => {
   switch (action.type) {
+    case 'setSchoolInfo':
+      return {
+        ...state,
+        school_info: action.payload,
+      };
     case 'setLoading':
       return {
         ...state,

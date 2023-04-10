@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const db = require("../db/DBConnection");
+const mongoose = require('mongoose');
+const db = require('../db/DBConnection');
 
 const MessageSchema = new mongoose.Schema(
   {
@@ -8,11 +8,11 @@ const MessageSchema = new mongoose.Schema(
     body: Object,
     active: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   {
     timestamps: true,
   }
 );
-module.exports = db.model("Message", MessageSchema);
+module.exports = db.model('Message', MessageSchema);

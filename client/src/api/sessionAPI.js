@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_BASE_NET_LOCAL;
 
@@ -6,8 +6,8 @@ const BASE_URL = import.meta.env.VITE_BASE_NET_LOCAL;
 export const getAllSessions = async () => {
   try {
     const res = await axios({
-      method: "GET",
-      url: `${BASE_URL}/sessions`,
+      method: 'GET',
+      url: `/api/sessions`,
     });
 
     return res.data;
@@ -19,8 +19,8 @@ export const getAllSessions = async () => {
 export const getSession = async (id) => {
   try {
     const res = await axios({
-      method: "GET",
-      url: `${BASE_URL}/sessions`,
+      method: 'GET',
+      url: `/api/sessions`,
       params: {
         id,
       },
@@ -35,8 +35,8 @@ export const getSession = async (id) => {
 export const postSession = async (newSession) => {
   try {
     const res = await axios({
-      method: "POST",
-      url: `${BASE_URL}/sessions`,
+      method: 'POST',
+      url: `/api/sessions`,
       data: newSession,
     });
 
@@ -49,8 +49,8 @@ export const postSession = async (newSession) => {
 export const putSession = async (updatedSession) => {
   try {
     const res = await axios({
-      method: "PUT",
-      url: `${BASE_URL}/sessions`,
+      method: 'PUT',
+      url: `/api/sessions`,
       data: updatedSession,
     });
 
@@ -63,8 +63,8 @@ export const putSession = async (updatedSession) => {
 export const deleteSession = async (id) => {
   try {
     const res = await axios({
-      method: "DELETE",
-      url: `${BASE_URL}/sessions/${id}`,
+      method: 'DELETE',
+      url: `/api/sessions/${id}`,
     });
 
     return res.data;
@@ -76,22 +76,24 @@ export const deleteSession = async (id) => {
 export const uploadProfileImage = async ({ _id, profile, type }) => {
   const formData = new FormData();
   //Teacher
-  formData.append("profile", profile);
-  formData.append("_id", _id);
+  formData.append('profile', profile);
+  formData.append('_id', _id);
+  formData.append('school', '456-456');
 
   try {
     const res = await axios({
-      method: "PUT",
-      url: `${BASE_URL}/${type}/profile`,
+      method: 'PUT',
+      url: `/api/${type}/profile`,
       data: formData,
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
 
     return res.data;
   } catch (error) {
     //console.log(error.response.data);
-    throw new Error(error.response.data || "Error Updating profile");
+    throw new Error(error.response.data || 'Error Updating profile');
   }
 };
+

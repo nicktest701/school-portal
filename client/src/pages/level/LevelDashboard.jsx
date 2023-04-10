@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { PersonRounded, StyleOutlined } from '@mui/icons-material';
+import ClassIcon from '@mui/icons-material/Class';
+import SubjectIcon from '@mui/icons-material/Subject';
+import  Person3  from '@mui/icons-material/Person3';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Container, Divider, Stack, Tab, Typography } from '@mui/material';
 import LevelDashboardCard from '../../components/cards/LevelDashboardCard';
 import Back from '../../components/Back';
 import LevelTab from './LevelTab';
 import useLevel from '../../components/hooks/useLevel';
+import CustomTitle from '../../components/custom/CustomTitle';
+import level_icon from '../../assets/images/header/level_ico.svg';
+import DashboardCard from '../../components/cards/DashboardCard';
 
 const LevelDashboard = () => {
   const [tab, setTab] = useState('1');
@@ -15,7 +21,7 @@ const LevelDashboard = () => {
     <Box
       sx={{
         position: 'relative',
-        height: 250,
+        height: 300,
         color: 'primary.contrastText',
         bgcolor: 'secondary.main',
       }}
@@ -29,23 +35,12 @@ const LevelDashboard = () => {
           marginRight: 'auto',
         }}
       >
-        <Back />
-        <Container
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column-reverse', sm: 'row' },
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 2,
-            paddingY: 2,
-          }}
-        >
-          <Stack color='primary.main'>
-            <Typography variant='h5'>School Class & Subjects</Typography>
-            <Typography>Add and Track new Classes and Subjects</Typography>
-          </Stack>
-          <StyleOutlined color='inherit' sx={{ width: 50, height: 50 }} />
-        </Container>
+        <CustomTitle
+          title='School Class & Subjects'
+          subtitle='Add and Track new Classes and Subjects'
+          img={level_icon}
+          color='primary.main'
+        />
 
         <Typography
           variant='h6'
@@ -65,17 +60,44 @@ const LevelDashboard = () => {
               gap: 2,
             }}
           >
-            <LevelDashboardCard
+            <DashboardCard
               title='Levels'
               value={levelSummary.noOfLevels}
+              icon={
+                <SubjectIcon
+                  sx={{
+                    width: 50,
+                    height: 50,
+                    color: '#ffc09f',
+                  }}
+                />
+              }
             />
-            <LevelDashboardCard
-              title='Subjects Offered'
+            <DashboardCard
+              title='Courses Offered'
               value={levelSummary.noOfSubjects}
+              icon={
+                <ClassIcon
+                  sx={{
+                    width: 50,
+                    height: 50,
+                    color: '#ffc09f',
+                  }}
+                />
+              }
             />
-            <LevelDashboardCard
+            <DashboardCard
               title='Assigned Teachers'
               value={levelSummary.noOfAssignedTeachers}
+              icon={
+                <Person3
+                  sx={{
+                    width: 50,
+                    height: 50,
+                    color: '#ffc09f',
+                  }}
+                />
+              }
             />
           </Box>
         )}

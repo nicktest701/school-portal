@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_BASE_NET_LOCAL;
 
@@ -6,8 +6,8 @@ const BASE_URL = import.meta.env.VITE_BASE_NET_LOCAL;
 export const getAllMessages = async () => {
   try {
     const res = await axios({
-      method: "GET",
-      url: `${BASE_URL}/messages`,
+      method: 'GET',
+      url: `/api/messages`,
     });
 
     return res.data;
@@ -19,8 +19,8 @@ export const getAllMessages = async () => {
 export const getMessage = async (id) => {
   try {
     const res = await axios({
-      method: "GET",
-      url: `${BASE_URL}/messages`,
+      method: 'GET',
+      url: `/api/messages`,
       params: {
         id,
       },
@@ -35,9 +35,23 @@ export const getMessage = async (id) => {
 export const postMessage = async (newMessage) => {
   try {
     const res = await axios({
-      method: "POST",
-      url: `${BASE_URL}/messages/${newMessage.rate}`,
+      method: 'POST',
+      url: `/api/messages/${newMessage.rate}`,
       data: newMessage,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
+export const resendMessage = async (messageInfo) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `/api/messages/resend`,
+      data: messageInfo,
     });
 
     return res.data;
@@ -49,8 +63,8 @@ export const postMessage = async (newMessage) => {
 export const putMessage = async (updatedMessage) => {
   try {
     const res = await axios({
-      method: "PUT",
-      url: `${BASE_URL}/messages`,
+      method: 'PUT',
+      url: `/api/messages`,
       data: updatedMessage,
     });
 
@@ -63,8 +77,8 @@ export const putMessage = async (updatedMessage) => {
 export const deleteMessage = async (id) => {
   try {
     const res = await axios({
-      method: "DELETE",
-      url: `${BASE_URL}/messages/${id}`,
+      method: 'DELETE',
+      url: `/api/messages/${id}`,
     });
 
     return res.data;

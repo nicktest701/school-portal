@@ -8,6 +8,11 @@ const Loader = () => {
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
         backgroundColor: 'transparent',
+        display: 'flex',
+        flexDirection:'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap:2
       }}
       open={true}
     >

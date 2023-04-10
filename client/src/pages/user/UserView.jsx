@@ -44,7 +44,7 @@ const UserView = () => {
 
   useEffect(() => {
     setProfileImage(
-      `${import.meta.env.VITE_BASE_NET_LOCAL}/images/users/${user?.profile}`
+      `/api/images/users/${user?.profile}`
     );
   }, [user]);
 

@@ -1,42 +1,76 @@
-import React from 'react';
-import { Container, Divider, Stack, Typography } from '@mui/material';
-import Back from '../../components/Back';
-import { MessageRounded } from '@mui/icons-material';
+import React, { useContext, useState } from 'react';
+import { Container, Divider, Stack } from '@mui/material';
 import SMSCards from '../../components/cards/SMSCards';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { useNavigate } from 'react-router-dom';
 import { MESSAGE_COLUMNS } from '../../mockup/columns/sessionColumns';
 import { useQuery } from '@tanstack/react-query';
 import { getAllMessages } from '../../api/messageAPI';
-import EmptyDataContainer from '../../components/EmptyDataContainer';
 import { EMPTY_IMAGES } from '../../config/images';
+import CustomTitle from '../../components/custom/CustomTitle';
+import sms_icon from '../../assets/images/header/sms_ico.svg';
+import { Delete, Edit } from '@mui/icons-material';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import SMSView from './layout/SMSView';
 const SMSHome = () => {
-  const messages = useQuery(['messages'], getAllMessages);
+  const messages = useQuery({
+    queryKey: ['messages'],
+    queryFn: () => getAllMessages(),
+  });
   const navigate = useNavigate();
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+
+  const handleView = (data) => {
+    schoolSessionDispatch({
+      type: 'viewMessage',
+      payload: {
+        data,
+        open: true,
+      },
+    });
+  };
+  const handleDelete = (data) => {
+    console.log(data);
+  };
+
+  const columns = [
+    ...MESSAGE_COLUMNS,
+    {
+      title: '',
+      field: null,
+      render: (rowData) => {
+        return (
+          <Stack direction='row' spacing={3}>
+            <Edit
+              className='ico'
+              onClick={() => handleView(rowData)}
+              title='Edit'
+              titleAccess='Edit'
+            />
+            <Delete
+              className='ico'
+              onClick={() => handleDelete(rowData)}
+              title='Delete'
+              titleAccess='Delete'
+            />
+          </Stack>
+        );
+      },
+    },
+  ];
+
   return (
     <Container>
-      <Back color={'#012e54'} />
-      <Container
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column-reverse', sm: 'row' },
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: 2,
-          paddingY: 3,
-        }}
-      >
-        <Stack color='primary.main'>
-          <Typography variant='h5'>SMS & Notifications</Typography>
-          <Typography>
-            Send single and bulk SMS to students and parents
-          </Typography>
-        </Stack>
-        <MessageRounded color='inherit' sx={{ width: 50, height: 50 }} />
-      </Container>
+      <CustomTitle
+        title='SMS & Notifications'
+        subtitle=' Send single and bulk SMS to students and parents'
+        img={sms_icon}
+        color='text.main'
+        backColor='#012e54'
+      />
 
       <>
-        <Container
+        {/* <Container
           sx={{
             width: '100%',
             display: 'grid',
@@ -49,12 +83,13 @@ const SMSHome = () => {
           <SMSCards />
           <SMSCards />
           <SMSCards />
-        </Container>
+        </Container> */}
         <Divider />
 
         <CustomizedMaterialTable
           title='Recent Messages'
-          isLoading={messages.isFetching}
+          icon={sms_icon}
+          isLoading={messages.isLoading}
           columns={MESSAGE_COLUMNS}
           // data={ []}
           data={messages.data ? messages.data : []}
@@ -64,7 +99,10 @@ const SMSHome = () => {
           addButtonText='New Message'
           addButtonMessage='😑 Send your first SMS with just a button click !!!!'
           onAddButtonClicked={() => navigate('new')}
+          onRowClick={handleView}
         />
+
+        <SMSView />
       </>
     </Container>
   );

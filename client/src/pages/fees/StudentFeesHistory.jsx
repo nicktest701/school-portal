@@ -105,7 +105,7 @@ const StudentFeesHistory = ({ open, setOpen }) => {
               studentFee?.data?.profile === undefined ||
               studentFee?.data?.profile === ''
                 ? null
-                : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/students/${
+                : `/api/images/students/${
                     studentFee?.data?.profile
                   }`
             }

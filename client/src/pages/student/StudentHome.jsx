@@ -57,14 +57,18 @@ const StudentHome = () => {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
+              gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
               gap: 3,
               paddingY: 4,
             }}
           >
-            <StudentDashboardPieChart {...studentDetails.data} />
-            <StudentDashboardBarChart />
-            <StudentDashboardLineChart {...studentDetails.data} />
+            <StudentDashboardBarChart
+              data={studentDetails?.data?.noOfStudentsForEachTerm}
+            />
+            <StudentDashboardLineChart
+              data={studentDetails?.data?.noOfStudentsInEachLevel}
+            />
+            <StudentDashboardPieChart {...studentDetails?.data} />
 
             {/* <StudentDashboardCard /> */}
           </Box>
@@ -75,7 +79,7 @@ const StudentHome = () => {
             isLoading={studentDetails.isFetching}
             columns={STUDENTS_COLUMN}
             // data={[]}
-             data={studentDetails.data?.recentStudents ?? []}
+            data={studentDetails.data?.recentStudents ?? []}
             actions={[]}
             handleRefresh={studentDetails.refetch}
             addButtonImg={EMPTY_IMAGES.student}

@@ -1,8 +1,16 @@
-import { Delete } from '@mui/icons-material';
+import { CircleRounded, Delete, RemoveRedEye } from '@mui/icons-material';
 import Edit from '@mui/icons-material/Edit';
-import { Avatar, Box, Chip, ListItemText, Stack } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  ListItemText,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { currencyFormatter } from '../../config/currencyFormatter';
-
+import _ from 'lodash';
 const session = JSON.parse(localStorage.getItem('@school_session'));
 
 export const SCHOOL_SESSION_COLUMN = (handleEdit, handleDelete) => {
@@ -215,7 +223,7 @@ export const FEES_COLUMNS = [
   },
 ];
 
-export const SCHOOL_FEES_COLUMNS = (handleEdit, handleDelete) => [
+export const SCHOOL_FEES_COLUMNS = (handleView, handleEdit, handleDelete) => [
   {
     field: '_id',
     title: 'ID',
@@ -252,6 +260,12 @@ export const SCHOOL_FEES_COLUMNS = (handleEdit, handleDelete) => [
     render: (rowData) => {
       return (
         <Stack direction='row' spacing={3}>
+          <RemoveRedEye
+            className='ico'
+            onClick={() => handleView(rowData)}
+            title='Edit'
+            titleAccess='Edit'
+          />
           <Edit
             className='ico'
             onClick={() => handleEdit(rowData)}
@@ -386,10 +400,11 @@ export const MESSAGE_COLUMNS = [
   {
     field: 'status',
     title: 'Status',
+    export: true,
     render: (rowData) => (
       <Chip
-        label={rowData?.status ? 'Delivered' : 'Not Delivered'}
-        color={rowData?.status ? 'success' : 'error'}
+        label={rowData?.active ? 'Delivered' : 'Not Delivered'}
+        color={rowData?.active ? 'success' : 'error'}
         size='small'
       />
     ),
@@ -420,54 +435,132 @@ export const USERS_COLUMNS = [
     title: 'Profile',
     field: 'profile',
     export: false,
+    width: 400,
     render: (rowData) => (
-      <Avatar
-        src={
-          rowData.profile === undefined || rowData.profile === ''
-            ? null
-            : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/users/${
-                rowData?.profile
-              }`
-        }
-      />
+      <Stack
+        direction='row'
+        columnGap={1}
+        justifyContent='center'
+        alignItems='center'
+      >
+        <Avatar
+          src={
+            rowData.profile === undefined || rowData.profile === ''
+              ? null
+              : `/api/images/users/${
+                  rowData.profile
+                }`
+          }
+        />
+        <ListItemText
+          primary={
+            <Typography
+              variant='body2'
+              sx={{
+                whiteSpace: 'nowrap',
+                fontWeight: 'bold',
+              }}
+            >
+              {_.startCase(rowData.fullname)}
+            </Typography>
+          }
+          secondary={
+            <Typography variant='caption'>{`${_.startCase(rowData.gender)} ,${
+              new Date().getFullYear() -
+              new Date(rowData.dateofbirth).getUTCFullYear()
+            }yrs`}</Typography>
+          }
+        />
+      </Stack>
     ),
   },
   {
     title: 'Name',
     field: 'fullname',
+    hidden: true,
+    export: true,
+  },
+  {
+    field: null,
+    title: 'Role',
+    render: (rowData) => (
+      <ListItemText
+        primary={<Typography variant='body2'>{rowData.username}</Typography>}
+        secondary={
+          <Typography variant='caption' color='primary' fontWeight='bold'>
+            {rowData.role}
+          </Typography>
+        }
+      />
+    ),
   },
   {
     title: 'Username',
     field: 'username',
-  },
-  {
-    title: 'Date Of Birth',
-    field: 'dateofbirth',
-  },
-  {
-    title: 'Telephone No.',
-    field: 'phonenumber',
-  },
-  {
-    title: 'Email Address',
-    field: 'email',
+    hidden: true,
+    export: true,
   },
   {
     title: 'Role',
     field: 'role',
+    hidden: true,
+    export: true,
   },
   {
+    title: 'Date Of Birth',
+    field: 'dateofbirth',
+    export: true,
+    hidden: true,
+  },
+  {
+    title: 'Telephone No.',
+    field: 'phonenumber',
+    export: true,
+    hidden: true,
+  },
+  {
+    title: 'Email Address',
+    field: 'email',
+    export: true,
+    hidden: true,
+  },
+  {
+    field: 'active',
     title: 'Status',
-    field: null,
+    export: false,
     render: ({ active }) => (
-      <Chip
-        label={active ? 'Active' : 'Disabled'}
-        color={active ? 'success' : 'error'}
-        size='small'
-        sx={{
-          color: '#fff',
-        }}
+      <Button
+        startIcon={
+          <CircleRounded
+            sx={{ color: active ? 'green' : 'red', width: 10, height: 10 }}
+          />
+        }
+      >
+        {active ? 'Active' : 'Disabled'}
+      </Button>
+    ),
+  },
+  {
+    field: null,
+    title: 'Contact Info',
+    render: (rowData) => (
+      <ListItemText
+        primary={<Typography variant='body2'>{rowData.email}</Typography>}
+        secondary={
+          <Typography variant='caption' color='primary' fontWeight='bold'>
+            {rowData.phonenumber}
+          </Typography>
+        }
       />
     ),
+  },
+  {
+    field: 'address',
+    title: 'Address',
+    export: true,
+  },
+  {
+    field: 'nationality',
+    title: 'Nationality',
   },
 ];

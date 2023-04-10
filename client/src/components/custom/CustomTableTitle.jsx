@@ -9,7 +9,7 @@ function CustomTableTitle({ icon, title }) {
       justifyContent='center'
       alignItems='center'
     >
-      <img alt='ico' src={icon} style={{ width: '50px', heigth: '50px' }} />
+      <img alt='ico' src={icon} style={{ width: '45px', heigth: '45px' }} />
       <Typography variant='h5'>{title}</Typography>
     </Stack>
   );

@@ -7,7 +7,8 @@ import { USERS_COLUMNS } from "../../mockup/columns/sessionColumns";
 import UserAdd from "./UserAdd";
 import UserEdit from "./UserEdit";
 import UserView from "./UserView";
-
+import users_icon from '../../assets/images/header/users_ico.svg';
+import { EMPTY_IMAGES } from "../../config/images";
 function UserTab() {
   const {
     // schoolSessionState: { userViewData },
@@ -31,15 +32,20 @@ function UserTab() {
     <>
       <CustomizedMaterialTable
         isLoading={users.isFetching}
-        title="Users Information"
+        title="Users"
+        icon={users_icon}
         search={true}
         columns={USERS_COLUMNS}
+        // data={[]}
         data={users.data !== undefined ? users.data : []}
         actions={[]}
         showAddButton
         addButtonText="New User"
+        addButtonImg={EMPTY_IMAGES.sms}
+        addButtonMessage='No Users available !'
         onAddButtonClicked={() => setOpenAddUser(true)}
         onRowClick={handleOpenViewUser}
+        showRowShadow={true}
       />
       <UserView />
       <UserAdd open={openAddUser} setOpen={setOpenAddUser} />

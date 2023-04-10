@@ -3,17 +3,19 @@ import { SchoolRounded } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
   Alert,
+  Avatar,
   Box,
   Container,
   Stack,
   TextField,
   Typography,
 } from '@mui/material';
+import _ from 'lodash';
 import CustomParticle from '../components/animations/CustomParticle';
 import { Formik } from 'formik';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { loginUserValidationSchema } from '../config/validationSchema';
-import { getUserAuth } from '../api/userAPI';
+import { getSchoolInfo, getUserAuth } from '../api/userAPI';
 import { UserContext } from '../context/providers/userProvider';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -26,6 +28,26 @@ const Login = () => {
     password: '',
   };
   const [msg, setMsg] = useState('');
+
+  useQuery({
+    queryKey: ['school'],
+    queryFn: getSchoolInfo,
+    onSuccess: (data) => {
+      if (!_.isEmpty(data)) {
+        userDispatch({
+          type: 'setSchoolInfo',
+          payload: data,
+        });
+
+        localStorage.setItem('@school_info', JSON.stringify(data));
+      } else {
+        localStorage.setItem(
+          '@school_info',
+          JSON.stringify(userState?.school_info)
+        );
+      }
+    },
+  });
 
   useEffect(() => {
     if (typeof state?.error === 'string') {
@@ -84,9 +106,27 @@ const Login = () => {
               padding: 4,
             }}
           >
-            <SchoolRounded sx={{ width: 100, height: 100 }} />
+            {userState?.school_info?.badge ? (
+              <Avatar
+                alt='school logo'
+                loading='lazy'
+                srcSet={`/api/images/users/${
+                  userState?.school_info?.badge
+                }`}
+                sx={{
+                  width: 150,
+                  height: 150,
+                }}
+              />
+            ) : (
+              <SchoolRounded sx={{ width: 100, height: 100 }} />
+            )}
+
             <Typography variant='h3' textAlign='center'>
-              Frebbys School Portal
+              {userState?.school_info?.name}
+            </Typography>
+            <Typography variant='body2' fontStyle='italic' textAlign='center'>
+              {`" ${userState?.school_info?.motto} "`}
             </Typography>
           </Stack>
         </Box>
@@ -102,14 +142,31 @@ const Login = () => {
             rowGap: 2,
           }}
         >
-          <SchoolRounded
-            sx={{
-              width: 100,
-              height: 100,
-              display: { sm: 'block', md: 'none' },
-              color: 'primary.main',
-            }}
-          />
+          {userState?.school_info?.badge ? (
+            <Avatar
+              alt='school logo'
+              loading='lazy'
+              srcSet={`/api/images/users/${
+                userState?.school_info?.badge
+              }`}
+              sx={{
+                width: 150,
+                height: 150,
+                display: { sm: 'block', md: 'none' },
+                color: 'primary.main',
+              }}
+            />
+          ) : (
+            <SchoolRounded
+              sx={{
+                width: 150,
+                height: 150,
+                display: { sm: 'block', md: 'none' },
+                color: 'primary.main',
+              }}
+            />
+          )}
+
           <Typography variant='h3' alignSelf='flex-start'>
             Welcome
           </Typography>

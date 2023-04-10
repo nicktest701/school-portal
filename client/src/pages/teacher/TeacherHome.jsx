@@ -1,8 +1,7 @@
-import { Add, PersonRounded, StyleOutlined } from '@mui/icons-material';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Stack, Tab, Typography } from '@mui/material';
 import React, { useContext, useState } from 'react';
-import Back from '../../components/Back';
+import { Add, PersonRounded,  } from '@mui/icons-material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { Box, Container, Divider,  Tab,} from '@mui/material';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import TeacherAdd from './TeacherAdd';
 import { TEACHERS_COLUMN } from '../../mockup/columns/teacherColumn';
@@ -11,6 +10,7 @@ import { getAllTeachers } from '../../api/teacherAPI';
 import { TeacherContext } from '../../context/providers/TeacherProvider';
 import { EMPTY_IMAGES } from '../../config/images';
 import teacher_icon from '../../assets/images/header/teacher_ico.svg';
+import CustomTitle from '../../components/custom/CustomTitle';
 
 const TeacherHome = () => {
   const [tab, setTab] = useState('1');
@@ -51,23 +51,12 @@ const TeacherHome = () => {
           marginRight: 'auto',
         }}
       >
-        <Back />
-        <Container
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column-reverse', sm: 'row' },
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 2,
-            paddingY: 2,
-          }}
-        >
-          <Stack color='primary.main'>
-            <Typography variant='h5'>Teacher's Portal</Typography>
-            <Typography>Manage teaching staff information</Typography>
-          </Stack>
-          <StyleOutlined color='inherit' sx={{ width: 50, height: 50 }} />
-        </Container>
+        <CustomTitle
+          title='Teachers Portal'
+          subtitle='Manage teaching staff information'
+          img={teacher_icon}
+          color='primary.main'
+        />
 
         <TabContext value={tab}>
           <TabList onChange={(e, value) => setTab(value)}>
@@ -92,7 +81,7 @@ const TeacherHome = () => {
               isLoading={teachers.isFetching}
               columns={TEACHERS_COLUMN}
               // data={[]}
-             data={teachers.data ? teachers.data : []}
+              data={teachers.data ? teachers.data : []}
               actions={[]}
               onRowClick={viewTeacherInfo}
               showAddButton={true}

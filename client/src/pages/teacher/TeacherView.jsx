@@ -65,7 +65,7 @@ const TeacherView = () => {
 
   useEffect(() => {
     setProfileImage(
-      `${import.meta.env.VITE_BASE_NET_LOCAL}/images/teachers/${teacher?.profile}`
+      `/api/images/teachers/${teacher?.profile}`
     );
   }, [teacher]);
 

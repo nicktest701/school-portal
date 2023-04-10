@@ -41,7 +41,7 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [openPreviousSession, setOpenPreviousSession] = useState(false);
-  const [profileImg, setProfieImg] = useState(null);
+  const [profileImg, setProfileImg] = useState(null);
   const [initValues, setInitValues] = useState(studentInitialValues);
   const [dob, setDob] = useState(null);
   useEffect(() => {
@@ -205,7 +205,7 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
                     hidden
                     onChange={(e) => {
                       setFieldValue("profile", e.target.files[0]);
-                      setProfieImg(URL.createObjectURL(e.target.files[0]));
+                      setProfileImg(URL.createObjectURL(e.target.files[0]));
                     }}
                   />
                 </Stack>

@@ -25,7 +25,7 @@ function ViewUserProfile({ open, setOpen }) {
   } = useContext(UserContext);
   const queryClient = useQueryClient();
   const [profileImage, setProfileImage] = useState(
-    `${import.meta.env.VITE_BASE_NET_LOCAL}/images/users/${user?.profile}`
+    `/api/images/users/${user?.profile}`
   );
 
   const uploadProfile = async (e) => {

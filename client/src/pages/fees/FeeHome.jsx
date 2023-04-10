@@ -89,7 +89,7 @@ const FeeHome = () => {
           actions={[]}
           showAddButton={false}
           addButtonImg={EMPTY_IMAGES.level}
-          addButtonMessage='😑 Add your first teacher by clicking on the button below !'
+          addButtonMessage=' No recent fee payment !'
         />
       </Container>
     </Box>

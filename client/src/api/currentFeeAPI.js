@@ -7,7 +7,7 @@ export const getAllCurrentFees = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/current-fees`,
+      url: `/api/current-fees`,
     });
 
     return res.data;
@@ -21,7 +21,7 @@ export const getAllCurrentFeesPaymentHistoryByDate = async (data) => {
   try {
     const res = await axios({
       method: 'get',
-      url: `${BASE_URL}/current-fees/day`,
+      url: `/api/current-fees/day`,
       params: data,
     });
 
@@ -36,7 +36,7 @@ export const getAllCurrentFeesSummary = async (sessionInfo) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/current-fees/summary`,
+      url: `/api/current-fees/summary`,
       data: sessionInfo,
     });
 
@@ -51,7 +51,7 @@ export const getAllCurrentFeesByLevel = async (sessionInfo) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/current-fees/level`,
+      url: `/api/current-fees/level`,
       data: sessionInfo,
     });
 
@@ -65,7 +65,7 @@ export const getCurrentFee = async (session, level) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/current-fees/current-level`,
+      url: `/api/current-fees/current-level`,
       data: {
         ...session,
         level,
@@ -82,7 +82,7 @@ export const getCurrentFeeForStudent = async (info) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/current-fees/student`,
+      url: `/api/current-fees/student`,
       data: info,
     });
 
@@ -96,7 +96,7 @@ export const getStudentAllFeeHistory = async (student) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/current-fees/history/all`,
+      url: `/api/current-fees/history/all`,
       params: {
         student,
       },
@@ -111,7 +111,7 @@ export const getStudentFeeHistory = async (info) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/current-fees/history`,
+      url: `/api/current-fees/history`,
       data: info,
     });
 
@@ -125,7 +125,7 @@ export const postCurrentFee = async (newCurrentFee) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/current-fees`,
+      url: `/api/current-fees`,
       data: newCurrentFee,
     });
 
@@ -139,7 +139,7 @@ export const putCurrentFee = async (updatedCurrentFee) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `${BASE_URL}/current-fees`,
+      url: `/api/current-fees`,
       data: updatedCurrentFee,
     });
 
@@ -153,7 +153,7 @@ export const deleteCurrentFee = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `${BASE_URL}/fees/${id}`,
+      url: `/api/fees/${id}`,
     });
 
     return res.data;

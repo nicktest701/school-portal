@@ -345,7 +345,7 @@ const FeeMakePayment = () => {
                   studentInfo?.profile === undefined ||
                   studentInfo?.profile === ''
                     ? null
-                    : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/students/${
+                    : `/api/images/students/${
                         studentInfo?.profile
                       }`
                 }

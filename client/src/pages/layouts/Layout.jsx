@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Footer from "./Footer";
-import Main from "./Main";
-import Header from "./Header";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Footer from './Footer';
+import Main from './Main';
+import Header from './Header';
 
 function Layout({ children }) {
   return (
@@ -14,6 +14,8 @@ function Layout({ children }) {
   );
 }
 
-Layout.propTypes = {};
+Layout.propTypes = {
+  children: PropTypes.node,
+};
 
 export default Layout;

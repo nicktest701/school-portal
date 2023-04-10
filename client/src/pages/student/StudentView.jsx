@@ -75,8 +75,11 @@ const StudentView = () => {
           onRowClick={handleRowClick}
           addButtonImg={EMPTY_IMAGES.student}
           addButtonMessage='😑 No Students recently added !!!!'
+          showRowShadow={true}
         />
       </Stack>
+
+
     </Container>
   );
 };

@@ -30,7 +30,7 @@ export const TEACHERS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/teachers/${
+              : `/api/images/teachers/${
                   rowData.profile
                 }`
           }

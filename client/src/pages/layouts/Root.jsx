@@ -9,18 +9,15 @@ import FeeNew from '../fees/FeeNew';
 import AddSession from '../session/AddSession';
 import SMSHome from '../sms/SMSHome';
 import SMSNew from '../sms/SMSNew';
+import Shell from '../Shell';
 import User from '../user';
-// import UserHome from '../user/UserHome';
 import Login from '../Login';
-// import Dashboard from '../Dashboard';
-// import Session from '../Session';
-// import Assessment from "../Assessment";
 
-// const Login = lazy(() => import('../Login'));
+
 const Dashboard = lazy(() => import('../Dashboard'));
 const Session = lazy(() => import('../session'));
 
-const Shell = lazy(() => import('../Shell'));
+// const Shell = lazy(() => import('../Shell'));
 const Fees = lazy(() => import('../fees'));
 const Examination = lazy(() => import('../examination'));
 const Student = lazy(() => import('../student'));
@@ -36,7 +33,7 @@ const StudentView = lazy(() => import('../student/StudentView'));
 
 const TeacherHome = lazy(() => import('../teacher/TeacherHome'));
 const About = lazy(() => import('../About'));
-const Settings = lazy(() => import('../Settings'));
+const Settings = lazy(() => import('../settings/Settings'));
 const PageNotFound = lazy(() => import('../404'));
 const SchoolSession = lazy(() => import('../SchoolSession'));
 const StudentAcademicsReport = lazy(() =>
@@ -57,14 +54,7 @@ const Root = () => {
     <>
       <GlobalAlert />
       <Routes>
-        <Route
-          path='/'
-          element={
-            <Suspense fallback={<Loader />}>
-              <Shell />
-            </Suspense>
-          }
-        >
+        <Route path='/' element={<Shell />}>
           <Route
             index
             element={

@@ -73,6 +73,50 @@ router.get(
   '/details',
   AsyncHandler(async (req, res) => {
     const { sessionId, termId } = req.query;
+
+    const allLevels = await Level.find({
+      session: ObjectId(sessionId),
+    })
+      .populate({
+        path: 'students',
+        match: { active: true },
+      })
+      .populate('term')
+      .select('level students');
+
+    if (_.isEmpty(allLevels)) {
+      return res.status(200).json({
+        recentStudents: [],
+        noOfStudentsInEachLevel: [],
+        noOfStudentsForEachTerm: [],
+        students: 0,
+        males: 0,
+        females: 0,
+      });
+    }
+
+    //group students into terms
+    const groupedLevels = _.groupBy(allLevels, 'term.term');
+
+    const groupedTerms = Object.values(groupedLevels).map((level) => {
+      return level.flatMap(({ term: { term, academicYear }, students }) => {
+        return {
+          academicYear,
+          term,
+          noOfStudents: students.length,
+        };
+      });
+    });
+
+    //No of students for each term
+    const noOfStudents = groupedTerms.map((term) => {
+      return {
+        academicYear: term[0].academicYear,
+        term: term[0].term,
+        student: _.sumBy(term, 'noOfStudents'),
+      };
+    });
+
     const students = await Level.find({
       session: ObjectId(sessionId),
       term: ObjectId(termId),
@@ -84,6 +128,7 @@ router.get(
     const maleStudents = [];
     const femaleStudents = [];
 
+    //Get number of males and females
     const modifiedStudents = students.flatMap(({ students }) => {
       return students.map((student) => {
         if (student.gender === 'male') {
@@ -100,11 +145,23 @@ router.get(
       });
     });
 
+    //Get all recently added students
     const recentStudents =
       _.orderBy(modifiedStudents, 'createdAt', 'desc').slice(0, 10) ?? [];
 
+    //Get total no of students in each class
+    const noOfStudentsInEachLevel = students.map(({ students, level }) => {
+      return {
+        level:`${ level.name} ${ level.type}`,
+        students: students.length,
+      };
+    });
+    // console.log(noOfStudentsInEachLevel);
+
     const details = {
       recentStudents,
+      noOfStudentsInEachLevel,
+      noOfStudentsForEachTerm: noOfStudents,
       students: modifiedStudents.length ?? 0,
       males: maleStudents.length ?? 0,
       females: femaleStudents.length ?? 0,

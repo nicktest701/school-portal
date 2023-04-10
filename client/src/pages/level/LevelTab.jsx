@@ -13,7 +13,7 @@ import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialT
 import { EMPTY_IMAGES } from '../../config/images';
 import useLevel from '../../components/hooks/useLevel';
 import { UserContext } from '../../context/providers/userProvider';
-import teacher_icon from '../../assets/images/header/teacher_ico.svg';
+import level_icon from '../../assets/images/header/level_ico.svg';
 
 
 const LevelTab = () => {
@@ -130,7 +130,7 @@ const LevelTab = () => {
     <>
       <CustomizedMaterialTable
         title='Levels'
-        icon={teacher_icon}
+        icon={level_icon}
         search={true}
         isLoading={levelLoading}
         columns={newLevelColumns}

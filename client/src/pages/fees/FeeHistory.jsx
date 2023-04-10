@@ -80,7 +80,7 @@ const FeeHistory = () => {
           setProfileImage(
             fees.profile === undefined || fees.profile === ""
               ? null
-              : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/students/${fees.profile}`
+              : `/api/images/students/${fees.profile}`
           );
         }
       },

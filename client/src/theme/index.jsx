@@ -6,7 +6,6 @@ import {
   StyledEngineProvider,
   CssBaseline,
   ThemeProvider as MUIThemeProvider,
-  useMediaQuery,
 } from '@mui/material';
 
 import palette from './palette';

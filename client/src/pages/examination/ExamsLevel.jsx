@@ -21,6 +21,8 @@ import ViewReports from './ViewReports';
 import { UserContext } from '../../context/providers/userProvider';
 import student_icon from '../../assets/images/header/student_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
+import CustomTitle from '../../components/custom/CustomTitle';
+import exams_icon from '../../assets/images/header/exams_ico.svg';
 
 const ExamsLevel = () => {
   const {
@@ -97,15 +99,12 @@ const ExamsLevel = () => {
 
   return (
     <Container>
-      <Back bg={'#333'} />
-
-      <Stack color='primary.main' paddingX={3} paddingY={6}>
-        <Typography variant='h5'>Examination Portal</Typography>
-        <Typography>
-          Track,manage and control academic and class activities
-        </Typography>
-      </Stack>
-
+      <CustomTitle
+        title='Examination Portal'
+        subtitle='Track,manage and control academic and class activities'
+        img={exams_icon}
+        backColor='#012e54'
+      />
       <Box
         sx={{
           width: '100%',

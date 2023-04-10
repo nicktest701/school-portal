@@ -1,4 +1,4 @@
-import { StyleOutlined } from '@mui/icons-material';
+import { SchoolRounded, StyleOutlined } from '@mui/icons-material';
 import { useTheme } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
@@ -12,7 +12,9 @@ import ReportItem from '../../components/list/ReportItem';
 import ExamsItem from '../../components/list/ExamsItem';
 import ReportItemUnderline from '../../components/list/ReportItemUnderline';
 
+import _ from 'lodash';
 const Report = ({ student }) => {
+  const school_info = JSON.parse(localStorage.getItem('@school_info'));
   const { palette } = useTheme();
 
   return (
@@ -34,13 +36,30 @@ const Report = ({ student }) => {
           alignItems='center'
           columnGap={2}
         >
-          <StyleOutlined sx={{ width: 70, height: 70 }} />
+          {school_info?.badge ? (
+            <Avatar
+              alt='school logo'
+              loading='lazy'
+              srcSet={`/api/images/users/${
+                school_info?.badge
+              }`}
+              sx={{
+                width: 80,
+                height: 80,
+              }}
+            />
+          ) : (
+            <SchoolRounded sx={{ width: 70, height: 70 }} />
+          )}
           <Stack justifyContent='center' alignItems='center'>
             <Typography variant='h5'>
-              FrebbyTech International School
+              {_.startCase(school_info?.name)}
             </Typography>
-            <Typography variant='caption'>Post Office Box KS 134</Typography>
-            <Typography variant='caption'>Kumasi</Typography>
+            <Typography variant='caption'>{school_info?.address}</Typography>
+            <Typography variant='caption'>{school_info?.location}</Typography>
+            <Typography variant='caption' fontStyle='italic'>
+              {school_info?.motto}
+            </Typography>
           </Stack>
         </Stack>
         <Typography
@@ -66,7 +85,7 @@ const Report = ({ student }) => {
               student?.profile === undefined ||
               student?.profile === null
                 ? null
-                : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/students/${
+                : `/api/images/students/${
                     student?.profile
                   }`
             }

@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import _ from 'lodash';
-import moment from 'moment';
+
 export const STUDENTS_COLUMN = [
   {
     field: '_id',
@@ -39,7 +39,7 @@ export const STUDENTS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/students/${
+              : `/api/images/students/${
                   rowData.profile
                 }`
           }
@@ -172,7 +172,7 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
         src={
           rowData.profile === undefined || rowData.profile === ''
             ? null
-            : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/students/${
+            : `/api/images/students/${
                 rowData.profile
               }`
         }
@@ -226,7 +226,7 @@ export const STUDENTS_EXAMS_COLUMN = [
         src={
           rowData.profile === undefined || rowData.profile === ''
             ? null
-            : `${import.meta.env.VITE_BASE_NET_LOCAL}/images/students/${
+            : `/api/images/students/${
                 rowData.profile
               }`
         }

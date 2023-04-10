@@ -15,9 +15,10 @@ function CustomImageChooser({ handleImageUpload }) {
           marginInline: "auto",
           textAlign: "center",
           bgcolor: "primary.main",
-          height: 40,
-          width: 40,
+          height: 35,
+          width: 35,
           borderRadius: 50,
+          marginY:2
         }}
       >
         <Edit sx={{ color: "primary.contrastText", marginTop: 1 }} />

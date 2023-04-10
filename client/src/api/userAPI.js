@@ -7,7 +7,7 @@ export const getAllUsers = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/users`,
+      url: `/api/users`,
     });
 
     return res.data;
@@ -20,7 +20,7 @@ export const getUserAuth = async (userInfo) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/users/auth`,
+      url: `/api/users/auth`,
       data: userInfo,
     });
 
@@ -36,12 +36,12 @@ export const verifyUser = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/users/verify`,
+      url: `/api/users/verify`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(res);
+
     return res.data;
   } catch (error) {
     console.log(error.response.data);
@@ -53,7 +53,7 @@ export const getUser = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${BASE_URL}/users/${id}`,
+      url: `/api/users/${id}`,
     });
 
     return res.data;
@@ -81,7 +81,7 @@ export const postUser = async (user) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/users`,
+      url: `/api/users`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -103,7 +103,7 @@ export const updateUserProfileImage = async ({ _id, profile }) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `${BASE_URL}/users/profile`,
+      url: `/api/users/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -121,7 +121,7 @@ export const putUser = async (updatedUser) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `${BASE_URL}/users`,
+      url: `/api/users`,
       data: updatedUser,
     });
 
@@ -131,11 +131,36 @@ export const putUser = async (updatedUser) => {
   }
 };
 
+export const getSchoolInfo = async () => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `/api/users/school`,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error.response.data);
+  }
+};
+export const putSchoolInfo = async (schoolInfo) => {
+  try {
+    const res = await axios({
+      method: 'PUT',
+      url: `/api/users/school`,
+      data: schoolInfo,
+    });
+
+    return res.data;
+  } catch (error) {
+    console.log(error.response.data);
+  }
+};
 export const deleteUser = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `${BASE_URL}/users/${id}`,
+      url: `/api/users/${id}`,
     });
 
     return res.data;

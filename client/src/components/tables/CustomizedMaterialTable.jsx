@@ -42,6 +42,7 @@ function CustomizedMaterialTable({
   onAddButtonClicked,
   showImportButton,
   importButtonText,
+  showRowShadow,
 }) {
   const modifiedColumns = columns.map((column) => {
     return { ...column };
@@ -112,7 +113,7 @@ function CustomizedMaterialTable({
               fontWeight: 'bold',
             },
             rowStyle: {
-              boxShadow: '0 2px 3px rgba(0,0,0,0.2)',
+              boxShadow: showRowShadow ? '0 2px 3px rgba(0,0,0,0.2)' : 'none',
               paddingBlock: 2,
             },
             ...options,
@@ -241,6 +242,9 @@ CustomizedMaterialTable.propTypes = {
   exportFileName: PropTypes.string,
   showImportButton: PropTypes.bool,
   importButtonText: PropTypes.string,
+  addButtonMessage: PropTypes.string,
+  showRowShadow: PropTypes.bool,
+  addButtonImg: PropTypes.node,
   addButtonText: PropTypes.string,
   actions: PropTypes.array,
   columns: PropTypes.array,

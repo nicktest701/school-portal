@@ -1,27 +1,27 @@
-import {  BarChartRounded } from "@mui/icons-material";
-import { Button, Chip, Stack, Typography } from "@mui/material";
-import React from "react";
-import BarChart from "../charts/BarChart";
+import { BarChartRounded } from '@mui/icons-material';
 
-const StudentDashboardBarChart = () => {
+import PropTypes from 'prop-types';
+import { Card, CardContent, CardHeader } from '@mui/material';
+import React from 'react';
+import BarChart from '../charts/BarChart';
+
+const StudentDashboardBarChart = ({ data }) => {
   return (
-    <Stack
-      sx={{
-        bgcolor: "primary.contrastText",
-        padding: 2,
-        borderRadius: "8px",
-        boxShadow: "0px 1px 20px 10px rgba(84,84,84,0.10)",
-      }}
-    >
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Button startIcon={<BarChartRounded />}>Total Students</Button>
-        <Chip label="3.2k" color="primary" size="medium" />
-      </Stack>
-      <BarChart />
-    </Stack>
+    <Card>
+      <CardHeader
+        avatar={<BarChartRounded />}
+        title={`Total Students for ${data && data[0]?.academicYear}`}
+      />
+      <CardContent>
+        <BarChart data={data} />
+      </CardContent>
+    </Card>
   );
 };
 
+StudentDashboardBarChart.propTypes = {
+  data: PropTypes.array,
+};
 export default StudentDashboardBarChart;
 
 // sx={{

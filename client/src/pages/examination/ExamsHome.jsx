@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import useLevel from '../../components/hooks/useLevel';
 import exams_icon from '../../assets/images/header/exams_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
+import CustomTitle from '../../components/custom/CustomTitle';
 
 const ExamsHome = () => {
   const navigate = useNavigate();
@@ -41,26 +42,12 @@ const ExamsHome = () => {
           marginRight: 'auto',
         }}
       >
-        <Back />
-        <Container
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column-reverse', sm: 'row' },
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 2,
-            paddingY: 2,
-            color: 'primary.contrastText',
-          }}
-        >
-          <Stack color='primary.contrastText'>
-            <Typography variant='h5'>Examination Portal</Typography>
-            <Typography>
-              Track,manage and control academic and class activities
-            </Typography>
-          </Stack>
-          <StyleOutlined color='inherit' sx={{ width: 50, height: 50 }} />
-        </Container>
+        <CustomTitle
+          title='Examination Portal'
+          subtitle=' Track,manage and control academic and class activities'
+          img={exams_icon}
+          color='text.main'
+        />
 
         <Box paddingY={3}>
           <TabContext value={tab}>
@@ -87,8 +74,8 @@ const ExamsHome = () => {
                   title='Current Levels'
                   icon={exams_icon}
                   isLoading={levelLoading}
-                  columns={EXAMS_COLUMNS}     
-                data={levelsOption !== undefined ? levelsOption : []}
+                  columns={EXAMS_COLUMNS}
+                  data={levelsOption !== undefined ? levelsOption : []}
                   actions={[]}
                   onRowClick={(rowData) => handleRowClick(rowData?._id)}
                   addButtonImg={EMPTY_IMAGES.student}

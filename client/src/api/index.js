@@ -16,6 +16,8 @@ import {
   putLevel,
   deleteLevel,
   generateNewCurrentLevelDetailsFromLevels,
+  getTodaysBirth,
+  getDashboardInfo,
 } from './levelAPI';
 import {
   getAllCurrentLevelDetails,
@@ -65,6 +67,8 @@ import {
   updateUserProfileImage,
   putUser,
   deleteUser,
+  putSchoolInfo,
+  getSchoolInfo,
 } from './userAPI';
 import {
   generateReports,
@@ -107,6 +111,7 @@ import {
   getAllMessages,
   getMessage,
   postMessage,
+  resendMessage,
   putMessage,
   deleteMessage,
 } from './messageAPI';
@@ -152,6 +157,8 @@ export default {
   putLevel,
   deleteLevel,
   generateNewCurrentLevelDetailsFromLevels,
+  getTodaysBirth,
+  getDashboardInfo,
 
   //current level details
   getAllCurrentLevelDetails,
@@ -181,6 +188,8 @@ export default {
   updateUserProfileImage,
   putUser,
   deleteUser,
+  putSchoolInfo,
+  getSchoolInfo,
 
   //students
   getAllStudents,
@@ -248,6 +257,7 @@ export default {
   getAllMessages,
   getMessage,
   postMessage,
+  resendMessage,
   putMessage,
   deleteMessage,
 
