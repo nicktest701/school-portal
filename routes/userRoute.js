@@ -141,6 +141,8 @@ router.put(
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       req.body.password = hashedPassword;
+    } else {
+      delete req.body.password;
     }
 
     const updatedUser = await User.findByIdAndUpdate(_id, req.body, {
@@ -187,7 +189,7 @@ router.get(
       return res.sendStatus(403);
     }
     const newUser = {
-      fulname: 'Nick Test',
+      fullname: 'Nick Test',
       username: 'admin',
       gender: 'male',
       email: 'nicktest701@gmail.com',
@@ -323,44 +325,6 @@ router.put(
         ? 'User account enabled'
         : 'User account disabled'
     );
-  })
-);
-
-//get Token from email
-router.post(
-  '/token',
-  asyncHandler(async (req, res) => {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-    if (!_.isEmpty(user)) {
-      const uuid = v4();
-      const generatedToken = uuid.split('-')[0];
-      const { _id, email } = user;
-
-      const token = await Token.findOneAndUpdate(
-        _id,
-        {
-          email,
-          userId: _id,
-          token: generatedToken,
-        },
-        {
-          new: true,
-          upsert: true,
-        }
-      );
-
-      if (process.env.NODE_ENV === 'production') {
-        const htmlText = `<div>
-      <h2 style='color:#8C1438;text-decoration:underline;'>AAMUSTED</h2>;
-      <p>You reset token is  <b style='font-size:18px;'>${generatedToken}</b>.</p>
-      <p>Thank You !!!</p>
-      </div>`;
-      }
-
-      return res.status(200).json(token);
-    }
-    res.sendStatus(200);
   })
 );
 
