@@ -1,12 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { Box, Container, Link, Stack, Typography } from '@mui/material';
+import { Box, Container, Link,  } from '@mui/material';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import FunctionsOutlinedIcon from '@mui/icons-material/FunctionsOutlined';
 import DoNotDisturbOnTotalSilenceOutlinedIcon from '@mui/icons-material/DoNotDisturbOnTotalSilenceOutlined';
 import BookmarksOutlinedIcon from '@mui/icons-material/BookmarksOutlined';
-import Back from '../../components/Back';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -16,13 +15,14 @@ import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvi
 import ExamsScore from './ExamsScore';
 import { getExamsDetails, generateReports } from '../../api/ExaminationAPI';
 import useLevelById from '../../components/hooks/useLevelById';
-import { Note, RefreshTwoTone } from '@mui/icons-material';
+import { Note, } from '@mui/icons-material';
 import ViewReports from './ViewReports';
-import { UserContext } from '../../context/providers/userProvider';
+
 import student_icon from '../../assets/images/header/student_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
 import CustomTitle from '../../components/custom/CustomTitle';
 import exams_icon from '../../assets/images/header/exams_ico.svg';
+import { UserContext } from '../../context/providers/UserProvider';
 
 const ExamsLevel = () => {
   const {

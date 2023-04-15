@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Container, Divider, Stack } from '@mui/material';
-import SMSCards from '../../components/cards/SMSCards';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { useNavigate } from 'react-router-dom';
 import { MESSAGE_COLUMNS } from '../../mockup/columns/sessionColumns';

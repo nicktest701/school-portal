@@ -1,6 +1,5 @@
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import React from 'react';

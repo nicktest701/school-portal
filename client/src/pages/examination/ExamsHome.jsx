@@ -1,9 +1,7 @@
-import { PersonRounded, StyleOutlined } from '@mui/icons-material';
+import { PersonRounded} from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Stack, Tab, Typography } from '@mui/material';
+import { Box, Container, Divider, Stack, Tab,y } from '@mui/material';
 import React, { useState } from 'react';
-
-import Back from '../../components/Back';
 import CustomParticle from '../../components/animations/CustomParticle';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { EXAMS_COLUMNS } from '../../mockup/columns/sessionColumns';

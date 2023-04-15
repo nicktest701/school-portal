@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import { Formik } from 'formik';
 import { useMutation } from '@tanstack/react-query';
-import { quickMessageInitialValues } from '../../config/initialValues';
 import CustomDialogTitle from '../dialog/CustomDialogTitle';
 import { postMessage } from '../../api/messageAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';

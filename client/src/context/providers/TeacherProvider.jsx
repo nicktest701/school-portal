@@ -1,4 +1,5 @@
 import React, { useReducer } from "react";
+import PropTypes from 'prop-types'
 import TeacherReducer from "../reducers/TeacherReducer";
 
 export const TeacherContext = React.createContext();
@@ -27,6 +28,9 @@ const TeacherProvider = ({ children }) => {
       {children}
     </TeacherContext.Provider>
   );
+};
+TeacherProvider.propTypes = {
+  children: PropTypes.node,
 };
 
 export default TeacherProvider;

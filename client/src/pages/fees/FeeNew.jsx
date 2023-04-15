@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Container, Divider, Typography, useTheme, Alert } from '@mui/material';
+import { Container, Divider, Typography, useTheme } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import { deleteFee, getAllFees } from '../../api/feeAPI';
@@ -8,11 +8,11 @@ import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvi
 import { SCHOOL_FEES_COLUMNS } from '../../mockup/columns/sessionColumns';
 import AddFee from './AddFee';
 import EditFee from './EditFee';
-import EmptyDataContainer from '../../components/EmptyDataContainer';
 import { EMPTY_IMAGES } from '../../config/images';
 import ViewLevelFeeInfo from './ViewLevelFeeInfo';
-import { UserContext } from '../../context/providers/userProvider';
 import fee_icon from '../../assets/images/header/fee_ico.svg';
+import { UserContext } from '../../context/providers/UserProvider';
+
 const FeeNew = () => {
   const {
     userState: { session },
@@ -53,7 +53,7 @@ const FeeNew = () => {
               text: 'Fee has been removed successfully!!!',
             });
           },
-          onError: (error) => {
+          onError: () => {
             setMsg({
               severity: 'error',
               text: 'Error removing Fee!!!',
