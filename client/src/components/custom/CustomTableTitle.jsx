@@ -1,7 +1,7 @@
 import React from 'react';
-import { Stack, Typography } from '@mui/material';
+import { ListItemText, Stack, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
-function CustomTableTitle({ icon, title }) {
+function CustomTableTitle({ icon, title,subtitle }) {
   return (
     <Stack
       direction='row'
@@ -10,7 +10,9 @@ function CustomTableTitle({ icon, title }) {
       alignItems='center'
     >
       <img alt='ico' src={icon} style={{ width: '45px', heigth: '45px' }} />
-      <Typography variant='h5'>{title}</Typography>
+     <ListItemText primary={title} primaryTypographyProps={{
+      fontSize:20,fontWeight:'bold'
+     }} secondary={subtitle}/>
     </Stack>
   );
 }
@@ -18,5 +20,6 @@ function CustomTableTitle({ icon, title }) {
 CustomTableTitle.propTypes = {
   icon: PropTypes.node,
   title: PropTypes.string,
+ subtitle: PropTypes.string,
 };
 export default CustomTableTitle;

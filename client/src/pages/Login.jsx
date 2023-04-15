@@ -22,7 +22,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { userState, userDispatch } = useContext(UserContext);
+  const {
+    userState: { school_info, default_school_info },
+    userDispatch,
+  } = useContext(UserContext);
   const initialValues = {
     username: '',
     password: '',
@@ -31,21 +34,16 @@ const Login = () => {
 
   useQuery({
     queryKey: ['school'],
-    queryFn: getSchoolInfo,
+    queryFn: () => getSchoolInfo(),
     onSuccess: (data) => {
-      if (!_.isEmpty(data)) {
-        userDispatch({
-          type: 'setSchoolInfo',
-          payload: data,
-        });
-
-        localStorage.setItem('@school_info', JSON.stringify(data));
-      } else {
-        localStorage.setItem(
-          '@school_info',
-          JSON.stringify(userState?.school_info)
-        );
-      }
+      userDispatch({
+        type: 'setSchoolInfo',
+        payload: !_.isEmpty(data) ? data : default_school_info,
+      });
+      localStorage.setItem(
+        '@school_info',
+        JSON.stringify(!_.isEmpty(data) ? data : default_school_info)
+      );
     },
   });
 
@@ -106,13 +104,11 @@ const Login = () => {
               padding: 4,
             }}
           >
-            {userState?.school_info?.badge ? (
+            {school_info?.badge ? (
               <Avatar
                 alt='school logo'
                 loading='lazy'
-                srcSet={`/api/images/users/${
-                  userState?.school_info?.badge
-                }`}
+                srcSet={`/api/images/users/${school_info?.badge}`}
                 sx={{
                   width: 150,
                   height: 150,
@@ -123,10 +119,10 @@ const Login = () => {
             )}
 
             <Typography variant='h3' textAlign='center'>
-              {userState?.school_info?.name}
+              {school_info?.name}
             </Typography>
             <Typography variant='body2' fontStyle='italic' textAlign='center'>
-              {`" ${userState?.school_info?.motto} "`}
+              {`" ${school_info?.motto} "`}
             </Typography>
           </Stack>
         </Box>
@@ -142,13 +138,11 @@ const Login = () => {
             rowGap: 2,
           }}
         >
-          {userState?.school_info?.badge ? (
+          {school_info?.badge ? (
             <Avatar
               alt='school logo'
               loading='lazy'
-              srcSet={`/api/images/users/${
-                userState?.school_info?.badge
-              }`}
+              srcSet={`/api/images/users/${school_info?.badge}`}
               sx={{
                 width: 150,
                 height: 150,

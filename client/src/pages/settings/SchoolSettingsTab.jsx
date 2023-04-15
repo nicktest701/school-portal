@@ -1,6 +1,6 @@
 import { Avatar, Box, Container, Stack, TextField } from '@mui/material';
 import { Formik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { LoadingButton } from '@mui/lab';
 import CustomImageChooser from '../../components/inputs/CustomImageChooser';
@@ -10,48 +10,33 @@ import {
   alertError,
   alertSuccess,
 } from '../../context/actions/globalAlertActions';
-import { useMutation } from '@tanstack/react-query';
-import { putSchoolInfo } from '../../api/userAPI';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { putSchoolInfo, updateSchoolLogo } from '../../api/userAPI';
+import { UserContext } from '../../context/providers/userProvider';
 
 function SchoolSettingsTab() {
   const school_info = JSON.parse(localStorage.getItem('@school_info'));
+  const {
+    // userState: { school_info },
+    userDispatch,
+  } = useContext(UserContext);
+
+  const [badge, setBadge] = useState(`/api/images/users/${school_info?.badge}`);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
-  const [profileImg, setProfileImg] = useState(null);
-  const [badge, setBadge] = useState('');
-
-  useEffect(() => {
-    setBadge(school_info?.badge);
-    setProfileImg(
-      `/api/images/users/${
-        school_info?.badge
-      }`
-    );
-  }, [school_info]);
-
-  const initialValues = {
-    badge,
-    name: school_info?.name,
-    address: school_info?.address,
-    location: school_info?.location,
-    email: school_info?.email,
-    phonenumber: school_info?.phonenumber,
-    motto: school_info?.motto,
-  };
-
+  const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
     mutationFn: putSchoolInfo,
   });
 
   const onSubmit = (values, options) => {
-    values.unique = 'school-info';
-
     mutateAsync(values, {
       onSettled: () => {
         options.setSubmitting(false);
+        queryClient.invalidateQueries(['school']);
       },
       onSuccess: (data) => {
         localStorage.setItem('@school_info', JSON.stringify(values));
+        userDispatch({ type: 'setUserInfo', payload: data });
         schoolSessionDispatch(alertSuccess(data));
       },
       onError: (error) => {
@@ -61,27 +46,25 @@ function SchoolSettingsTab() {
   };
 
   const uploadProfile = async (e) => {
-    const profile = e.target?.files[0];
-    const info = {
-      _id: '456-456',
-      profile,
-      type: 'users',
-    };
+    const badge = e.target?.files[0];
 
     try {
-      const uploadedBadge = await uploadProfileImage(info);
+      const updatedBadge = await updateSchoolLogo(badge);
       schoolSessionDispatch(alertSuccess('School Image Uploaded'));
-      setBadge(uploadedBadge);
-      setProfileImg(URL.createObjectURL(profile));
+
+      queryClient.invalidateQueries(['school']);
+      setBadge(`/api/images/users/${updatedBadge}`);
+      school_info.badge = updatedBadge;
+      localStorage.setItem('@school_info', JSON.stringify(school_info));
     } catch (error) {
-      schoolSessionDispatch(alertError(error));
+      schoolSessionDispatch(alertError('Error updating school logo'));
     }
   };
 
   return (
     <Container maxWidth='sm'>
       <Formik
-        initialValues={initialValues}
+        initialValues={school_info}
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
@@ -108,11 +91,10 @@ function SchoolSettingsTab() {
                 }}
               >
                 <Avatar
-                  variant='square'
-                  src={profileImg}
+                  src={badge}
                   sx={{
-                    width: 100,
-                    height: 100,
+                    width: 120,
+                    height: 120,
                     justifySelf: 'center',
                     alignSelf: 'center',
                   }}

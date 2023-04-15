@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_BASE_NET_LOCAL;
 
@@ -6,7 +6,7 @@ const BASE_URL = import.meta.env.VITE_BASE_NET_LOCAL;
 export const getAllAttendances = async () => {
   try {
     const res = await axios({
-      method: "GET",
+      method: 'GET',
       url: `/api/attendances`,
     });
 
@@ -19,7 +19,7 @@ export const getAllAttendances = async () => {
 export const getAttendance = async (id, date) => {
   try {
     const res = await axios({
-      method: "GET",
+      method: 'GET',
       url: `/api/attendances/${id}`,
       params: {
         date,
@@ -35,7 +35,7 @@ export const getAttendance = async (id, date) => {
 export const postAttendance = async (newAttendance) => {
   try {
     const res = await axios({
-      method: "POST",
+      method: 'POST',
       url: `/api/attendances`,
       data: newAttendance,
     });
@@ -49,7 +49,7 @@ export const postAttendance = async (newAttendance) => {
 export const putAttendance = async (updatedAttendance) => {
   try {
     const res = await axios({
-      method: "PUT",
+      method: 'PUT',
       url: `/api/attendances`,
       data: updatedAttendance,
     });
@@ -63,8 +63,21 @@ export const putAttendance = async (updatedAttendance) => {
 export const deleteAttendance = async (id) => {
   try {
     const res = await axios({
-      method: "DELETE",
+      method: 'DELETE',
       url: `/api/attendances/${id}`,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
+export const getAttendanceHistory = async (levelId) => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `/api/attendances/history/${levelId}`,
     });
 
     return res.data;

@@ -13,7 +13,11 @@ import { currencyFormatter } from '../../config/currencyFormatter';
 import _ from 'lodash';
 const session = JSON.parse(localStorage.getItem('@school_session'));
 
-export const SCHOOL_SESSION_COLUMN = (handleEdit, handleDelete) => {
+export const SCHOOL_SESSION_COLUMN = (
+  handleActive,
+  handleEdit,
+  handleDelete
+) => {
   return [
     {
       field: 'termId',
@@ -49,8 +53,29 @@ export const SCHOOL_SESSION_COLUMN = (handleEdit, handleDelete) => {
       hidden: true,
     },
     {
-      field: 'status',
+      field: 'active',
       title: 'Status',
+      export: false,
+      render: ({ termId, active }) => (
+        <Button
+          onClick={() => handleActive({ _id: termId, active })}
+          startIcon={
+            <CircleRounded
+              sx={{
+                color: active ? 'green' : 'red',
+                width: 10,
+                height: 10,
+              }}
+            />
+          }
+        >
+          {active ? 'Active' : 'Disabled'}
+        </Button>
+      ),
+    },
+    {
+      field: '',
+      title: 'Session ',
       export: false,
       render: (rowData) =>
         rowData.termId === session?.termId ? (
@@ -61,7 +86,7 @@ export const SCHOOL_SESSION_COLUMN = (handleEdit, handleDelete) => {
         ) : null,
     },
     {
-      title: 'Action',
+      title: '',
       field: null,
       render: (rowData) => {
         return (
@@ -447,9 +472,7 @@ export const USERS_COLUMNS = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              : `/api/images/users/${
-                  rowData.profile
-                }`
+              : `/api/images/users/${rowData.profile}`
           }
         />
         <ListItemText

@@ -1,4 +1,4 @@
-import { LoadingButton } from "@mui/lab";
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Container,
@@ -8,25 +8,26 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-} from "@mui/material";
-import moment from "moment";
-import React, { useContext, useState } from "react";
-import { useEffect } from "react";
-import Transition from "../../components/animations/Transition";
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import _ from "lodash";
-import { useParams } from "react-router-dom";
-import useLevelById from "../../components/hooks/useLevelById";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAttendance, postAttendance } from "../../api/attendanceAPI";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+} from '@mui/material';
+import moment from 'moment';
+import React, { useContext, useState } from 'react';
+import { useEffect } from 'react';
+import Transition from '../../components/animations/Transition';
+import CustomDatePicker from '../../components/inputs/CustomDatePicker';
+import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
+import useLevelById from '../../components/hooks/useLevelById';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getAttendance, postAttendance } from '../../api/attendanceAPI';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import {
   alertError,
   alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
-import PropTypes from "prop-types";
+} from '../../context/actions/globalAlertActions';
+import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
+import student_icon from '../../assets/images/header/student_ico.svg';
 
 function NewAttendance({ open, setOpen }) {
   const { id, type } = useParams();
@@ -40,8 +41,8 @@ function NewAttendance({ open, setOpen }) {
 
   //GET attendance by level id and date
   useQuery({
-    queryKey: ["attendance", date],
-    queryFn: () => getAttendance(id, date.format("L")),
+    queryKey: ['attendance', date],
+    queryFn: () => getAttendance(id, date.format('L')),
     enabled: !!id && !!date,
     onSuccess: (attendance) => {
       if (!_.isEmpty(attendance)) {
@@ -65,7 +66,7 @@ function NewAttendance({ open, setOpen }) {
         return {
           _id: stud?._id,
           fullName: stud?.fullName,
-          status: "present",
+          status: 'present',
         };
       });
       setAllStudents(modifiedStudents);
@@ -76,7 +77,7 @@ function NewAttendance({ open, setOpen }) {
     rowData.status = _.startCase(value);
 
     const updatedStudents = _.values(
-      _.merge(_.keyBy([...allstudents, rowData], "_id"))
+      _.merge(_.keyBy([...allstudents, rowData], '_id'))
     );
     localStorage.setItem(id, JSON.stringify(updatedStudents));
     setAttendanceList(updatedStudents);
@@ -91,7 +92,7 @@ function NewAttendance({ open, setOpen }) {
   const handleSaveAttendance = () => {
     const newAttendance = {
       level: id,
-      date: date.format("L"),
+      date: date.format('L'),
       status: attendanceList.length !== 0 ? attendanceList : allstudents,
     };
 
@@ -111,25 +112,25 @@ function NewAttendance({ open, setOpen }) {
     <Dialog
       open={open}
       fullWidth
-      maxWidth="md"
+      maxWidth='md'
       TransitionComponent={Transition}
     >
       <CustomDialogTitle
-        title="New Attendance"
+        title='New Attendance'
         onClose={() => setOpen(false)}
       />
       <DialogActions sx={{ padding: 2 }}>
         {isAttendancePresent ? null : (
-          <LoadingButton variant="contained" onClick={handleSaveAttendance}>
+          <LoadingButton variant='contained' onClick={handleSaveAttendance}>
             Save Attendance
           </LoadingButton>
         )}
       </DialogActions>
       <DialogContent sx={{ padding: 2 }}>
         <Container>
-          <Box display="flex" justifyContent="flex-start" width={280}>
+          <Box display='flex' justifyContent='flex-start' width={280}>
             <CustomDatePicker
-              label="Date of Attendance"
+              label='Date of Attendance'
               date={date}
               setDate={setDate}
               disableFuture={true}
@@ -138,46 +139,47 @@ function NewAttendance({ open, setOpen }) {
           <CustomizedMaterialTable
             search={true}
             // isLoading={levelLoading}
-            title={`Attendance History for ${type}`}
+            icon={student_icon}
+            title={`Attendance for ${type}`}
             exportFileName={`Attendance for ${type} on ${date.format(
-              "dddd,Do MMMM YYYY"
+              'dddd,Do MMMM YYYY'
             )}`}
             columns={[
               {
-                field: "_id",
-                title: "ID",
+                field: '_id',
+                title: 'ID',
                 hidden: true,
               },
               {
-                field: "fullName",
-                title: "FullName",
+                field: 'fullName',
+                title: 'FullName',
                 export: true,
               },
               {
-                field: "status",
-                title: "Status",
+                field: 'status',
+                title: 'Status',
                 render: (rowData) => {
                   return isAttendancePresent ? (
                     rowData.status
                   ) : (
                     <RadioGroup
                       row
-                      aria-labelledby="attendance-status"
-                      name="status"
+                      aria-labelledby='attendance-status'
+                      name='status'
                       value={rowData?.status}
                       onChange={(e) =>
                         handleCheckAttendance(e.target.value, rowData)
                       }
                     >
                       <FormControlLabel
-                        value="Present"
-                        control={<Radio size="small" />}
-                        label="Present"
+                        value='Present'
+                        control={<Radio size='small' />}
+                        label='Present'
                       />
                       <FormControlLabel
-                        value="Absent"
-                        control={<Radio size="small" />}
-                        label="Absent"
+                        value='Absent'
+                        control={<Radio size='small' />}
+                        label='Absent'
                       />
                     </RadioGroup>
                   );

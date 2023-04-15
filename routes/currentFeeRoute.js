@@ -6,6 +6,7 @@ const moment = require('moment');
 const {
   Types: { ObjectId },
 } = require('mongoose');
+const { currencyConverter } = require('../config/currencyConverter');
 
 //@GET All school current fees
 router.get(
@@ -135,6 +136,39 @@ router.get(
   })
 );
 
+// @GET all recently paid fees
+router.get(
+  '/recent',
+  asyncHandler(async (req, res) => {
+    const { session, term } = req.query;
+    const recentFeePayment = await CurrentFee.find({
+      session: ObjectId(session),
+      term: ObjectId(term),
+    })
+      .populate('level')
+      .populate('student')
+      .sort({ updatedAt: -1 })
+      .limit(10);
+    const modifiedFees = recentFeePayment.flatMap(
+      ({ _id, level: { level }, student, payment }) => {
+        return payment.map(({ date, paid, outstanding }) => {
+          return {
+            _id,
+            date,
+            student: student.fullName,
+            level: `${level?.name}${level.type}`,
+            paid: currencyConverter(paid),
+            outstanding: currencyConverter(outstanding),
+          };
+        });
+      }
+    );
+    // console.log(modifiedFees);
+
+    res.status(200).json(_.orderBy(modifiedFees, 'date', 'desc'));
+  })
+);
+
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -177,7 +211,7 @@ router.post(
     const { student, term, level, payment } = studentFeeHistory;
 
     const modifiedFeeHistory = {
-      fullName: `${student?.surname} ${student?.firstname} ${student?.othername}`,
+      fullName: student.fullName,
       profile: student?.profile,
       term: term.term,
       levelType: `${level?.level?.name}${level?.level?.type}`,
@@ -232,7 +266,7 @@ router.get(
 
     const allFeeHistory = {
       studentId: currentStudent?._id,
-      fullName: `${currentStudent.surname} ${currentStudent.firstname} ${currentStudent.othername}`,
+      fullName: student.fullName,
       profile: currentStudent.profile,
       fees: Object.entries(groupedByTerms),
     };

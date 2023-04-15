@@ -1,17 +1,18 @@
-const router = require("express").Router();
-const _ = require("lodash");
-const asyncHandler = require("express-async-handler");
-const Term = require("../models/termModel");
-const Session = require("../models/sessionModel");
+const router = require('express').Router();
+const _ = require('lodash');
+const asyncHandler = require('express-async-handler');
+const Term = require('../models/termModel');
+const Session = require('../models/sessionModel');
 const {
   Types: { ObjectId },
-} = require("mongoose");
+} = require('mongoose');
 
 //@GET All school Terms
 router.get(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {
-    const terms = await Term.find({ active: true }).populate("session");
+    const terms = await Term.find().populate('session');
+    // const terms = await Term.find({ active: true }).populate('session');
 
     if (_.isEmpty(terms)) {
       return res.status(200).json([]);
@@ -27,10 +28,11 @@ router.get(
         to: term?.to,
         vacationDate: term.vacationDate,
         reOpeningDate: term.reOpeningDate,
+        active: term.active,
       };
     });
 
-    const sortedTerms = _.sortBy(modifiedTerms, ["academicYear", "term"]);
+    const sortedTerms = _.sortBy(modifiedTerms, ['academicYear', 'term']);
 
     res.status(200).json(sortedTerms);
   })
@@ -38,20 +40,20 @@ router.get(
 
 //@GET School Term by id
 router.get(
-  "/:id",
+  '/:id',
   asyncHandler(async (req, res) => {
     const sessionId = req.query.sessionId;
     const term = await Term.findOne({
       session: ObjectId(sessionId),
       active: true,
-    }).populate("session");
+    }).populate('session');
     res.status(200).json(term);
   })
 );
 
 //Add new School Term
 router.post(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {
     const { academicYear, term } = req.body;
 
@@ -63,7 +65,7 @@ router.post(
     });
 
     if (!_.isEmpty(exists)) {
-      return res.status(400).json("Session already exists.");
+      return res.status(400).json('Session already exists.');
     }
 
     //Find if a session already exits
@@ -78,14 +80,14 @@ router.post(
       if (_.isEmpty(term)) {
         return res
           .status(404)
-          .json("Error creating new session.Try again later!!!");
+          .json('Error creating new session.Try again later!!!');
       }
 
-      return res.status(201).json("New Session created Successfully!!!");
+      return res.status(201).json('New Session created Successfully!!!');
     }
 
     //Create new Session
-    const splittedAcademicYear = academicYear.split("/");
+    const splittedAcademicYear = academicYear.split('/');
     const newSession = await Session.create({
       from: splittedAcademicYear[0],
       to: splittedAcademicYear[1],
@@ -95,7 +97,7 @@ router.post(
     if (_.isEmpty(newSession)) {
       return res
         .status(404)
-        .json("Error creating new session.Try again later!!!");
+        .json('Error creating new session.Try again later!!!');
     }
     //Create new term with new Session id
     req.body.session = newSession._id;
@@ -104,53 +106,58 @@ router.post(
     if (_.isEmpty(newTerm)) {
       return res
         .status(404)
-        .json("Error creating new session.Try again later!!!");
+        .json('Error creating new session.Try again later!!!');
     }
 
-    res.status(201).json("New Session created Successfully!!!");
+    res.status(201).json('New Session created Successfully!!!');
   })
 );
 
 //@PUT Update Existing School Session
 router.put(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {
     const modifiedSession = await Term.findByIdAndUpdate(req.body.id, req.body);
 
     if (_.isEmpty(modifiedSession)) {
       return res
         .status(404)
-        .send("Error updating session info.Try again later");
+        .send('Error updating session info.Try again later');
     }
 
     res
       .status(201)
-      .json("Session information has been updated successfully!!!");
+      .json('Session information has been updated successfully!!!');
   })
 );
 
-//@PUT Update Existing School Session
+//Enable or Disable User Account
 router.put(
-  "/enable",
+  '/account',
   asyncHandler(async (req, res) => {
-    const modifiedSession = await Term.findByIdAndUpdate(req.body.id, {
-      $set: { enabled: false },
-    });
+    const { id, active } = req.body;
+    console.log(req.body);
 
-    if (_.isEmpty(modifiedSession)) {
-      return res
-        .status(404)
-        .json("Error updating session info.Try again later");
+    const updatedSession = await Term.findByIdAndUpdate(
+      id,
+      { $set: { active } },
+      {
+        new: true,
+      }
+    );
+
+    if (_.isEmpty(updatedSession)) {
+      return res.status(404).json('Error updating Session info');
     }
 
-    res
-      .status(201)
-      .json("Session information has been updated successfully!!!");
+    res.json(
+      updatedSession.active === true ? 'Session  enabled' : 'Session  disabled'
+    );
   })
 );
 
 router.delete(
-  "/:id",
+  '/:id',
   asyncHandler(async (req, res) => {
     const id = req.params.id;
     const deletedTerm = await Term.findByIdAndUpdate(id, {
@@ -162,10 +169,10 @@ router.delete(
     if (_.isEmpty(deletedTerm)) {
       return res
         .status(404)
-        .json("Error removing session info.Try again later");
+        .json('Error removing session info.Try again later');
     }
 
-    res.status(201).json(" Session have been removed successfully!!!");
+    res.status(201).json(' Session have been removed successfully!!!');
   })
 );
 

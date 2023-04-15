@@ -25,6 +25,7 @@ import EmptyDataContainer from '../EmptyDataContainer';
 
 function CustomizedMaterialTable({
   title,
+  subtitle,
   icon,
   exportFileName,
   isLoading,
@@ -90,7 +91,9 @@ function CustomizedMaterialTable({
       <Box paddingY={2} marginY={1} width='100%'>
         <MaterialTable
           isLoading={isLoading}
-          title={<CustomTableTitle title={title} icon={icon} />}
+          title={
+            <CustomTableTitle title={title} subtitle={subtitle} icon={icon} />
+          }
           icons={tableIcons}
           columns={modifiedColumns}
           data={data === undefined ? [] : data}
@@ -239,6 +242,7 @@ CustomizedMaterialTable.propTypes = {
   search: PropTypes.bool,
   showAddButton: PropTypes.bool,
   title: PropTypes.string,
+  subtitle: PropTypes.string,
   exportFileName: PropTypes.string,
   showImportButton: PropTypes.bool,
   importButtonText: PropTypes.string,

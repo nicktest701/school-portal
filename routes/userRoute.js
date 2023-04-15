@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const AsyncHandler = require('express-async-handler');
+const asyncHandler = require('express-async-handler');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -24,9 +24,9 @@ const upload = multer({ storage: Storage });
 //@PGET all users
 router.get(
   '/',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const users = await User.find({}).select('-password');
-    // //console.log(users);
+    // console.log(users);
 
     // if (_.isEmpty(users)) {
     //   return res.status(404).json("Error fetching user information");
@@ -39,15 +39,28 @@ router.get(
 router.get(
   '/verify',
   verifyJWT,
-  AsyncHandler(async (req, res) => {
-    res.json(req.session.user);
+  asyncHandler(async (req, res) => {
+    const { id } = req.session.user;
+    const user = await User.findById(id).select('-password');
+
+    loggedInUser = {
+      id: user._id,
+      profile: user.profile,
+      fullname: user.fullname,
+      username: user.username,
+      email: user.email,
+      phonenumber: user.phonenumber,
+      role: user.role,
+      active: user.active,
+    };
+    res.json(loggedInUser);
   })
 );
 
 //@GET user by username
 router.post(
   '/auth',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const username = req.body.username;
     const user = await User.findByUsername(username);
 
@@ -73,6 +86,7 @@ router.post(
       fullname: user[0].fullname,
       username: user[0].username,
       email: user[0].email,
+      phonenumber: user[0].phonenumber,
       role: user[0].role,
       active: user[0].active,
     };
@@ -80,7 +94,7 @@ router.post(
     req.session.user = loggedInUser;
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '12h',
     });
 
     loggedInUser.token = token;
@@ -93,7 +107,7 @@ router.post(
 router.post(
   '/',
   upload.single('profile'),
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const newUser = req.body;
     const username = req.body.username;
 
@@ -121,8 +135,13 @@ router.post(
 //@Update User Information
 router.put(
   '/',
-  AsyncHandler(async (req, res) => {
-    const { _id } = req.body;
+  asyncHandler(async (req, res) => {
+    const { _id, password } = req.body;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      req.body.password = hashedPassword;
+    }
 
     const updatedUser = await User.findByIdAndUpdate(_id, req.body, {
       new: true,
@@ -140,14 +159,8 @@ router.put(
 router.put(
   '/profile',
   upload.single('profile'),
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { _id } = req.body;
-
-    if (req.body.school) {
-      // console.log(req.file?.filename);
-      return res.status(200).send(req.file?.filename);
-    }
-
     const updatedUser = await User.findByIdAndUpdate(_id, {
       $set: {
         profile: req.file?.filename,
@@ -166,14 +179,21 @@ router.put(
 
 //@PUT add new user
 router.get(
-  '/admin/add',
-  AsyncHandler(async (req, res) => {
+  '/admin/add/:token',
+  asyncHandler(async (req, res) => {
+    const token = req.params.token;
+
+    if (token !== process.env.TOKEN) {
+      return res.sendStatus(403);
+    }
     const newUser = {
+      fulname: 'Nick Test',
       username: 'admin',
-      email: 'admin@gmail.com',
-      password: 'admin12345',
+      gender: 'male',
+      email: 'nicktest701@gmail.com',
+      password: 'Akwasi21guy',
       role: 'administrator',
-      active: true,
+      phonenumber: '0543772591',
     };
 
     const hashedPassword = await bcrypt.hash(newUser.password, 10);
@@ -183,14 +203,14 @@ router.get(
       return res.status(404).json('Error Saving user info!');
     }
 
-    res.json('hello');
+    res.json('done');
   })
 );
 
 //@PUT Reset Password
 router.put(
   '/reset',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id, oldPassword, newPassword } = req.body;
     const user = await User.findById(id);
 
@@ -217,7 +237,7 @@ router.put(
 //@POST Reset User Password
 router.post(
   '/reset-password',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -243,7 +263,7 @@ router.post(
 //@PUT Reset Password
 router.patch(
   '/admin/reset-password',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id, password } = req.body;
     const user = await User.findById(id);
 
@@ -267,7 +287,7 @@ router.patch(
 
 router.patch(
   '/',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(req.body.id, req.body, {
       new: true,
     });
@@ -280,14 +300,15 @@ router.patch(
   })
 );
 
+//Enable or Disable User Account
 router.put(
   '/account',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id, active } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { active },
+      { $set: { active } },
       {
         new: true,
       }
@@ -308,7 +329,7 @@ router.put(
 //get Token from email
 router.post(
   '/token',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!_.isEmpty(user)) {
@@ -346,29 +367,17 @@ router.post(
 //@DELETE student
 router.delete(
   '/:id',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const id = req.params.id;
     //console.log(id);
 
-    // if (!mongoose.isValidObjectId(id)) {
-    //   return res.status(401).json("Invalid User information");
-    // }
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(401).json('Invalid User information');
+    }
 
-    // const user = await User.findByIdAndRemove(id, {
-    //   new: true,
-    // });
-
-    const user = await User.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          active: false,
-        },
-      },
-      {
-        new: true,
-      }
-    );
+    const user = await User.findByIdAndRemove(id, {
+      new: true,
+    });
 
     if (_.isEmpty(user)) {
       return res.status(403).json('No User with such id');
@@ -380,7 +389,7 @@ router.delete(
 // GET School Information
 router.get(
   '/school',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const school = await School.findOne();
 
     res.status(200).json(school);
@@ -390,7 +399,7 @@ router.get(
 // EDIT School Information
 router.put(
   '/school',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const schoolInfo = req.body;
     const school = await School.findOneAndUpdate(
       {
@@ -411,6 +420,35 @@ router.put(
         .json('Couldn"t save school information.Please try again later.!!');
     }
     res.status(200).json('School Information has been saved successfully !!!');
+  })
+);
+
+//@POST Update User profile
+router.put(
+  '/school/profile',
+  upload.single('badge'),
+  asyncHandler(async (req, res) => {
+    console.log('school');
+    const updatedBadge = await School.findOneAndUpdate(
+      {
+        unique: 'school-info',
+      },
+      {
+        $set: {
+          badge: req.file?.filename,
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+      }
+    );
+
+    if (_.isEmpty(updatedBadge)) {
+      return res.status(400).json('Error updating logo.Try again later.');
+    }
+
+    return res.status(200).json(req.file?.filename);
   })
 );
 

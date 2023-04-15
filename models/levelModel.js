@@ -1,23 +1,23 @@
-const mongoose = require("mongoose");
-const db = require("../db/DBConnection");
+const mongoose = require('mongoose');
+const db = require('../db/DBConnection');
 
 const LevelSchema = new mongoose.Schema(
   {
     session: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "Session",
+      ref: 'Session',
     },
     term: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "Term",
+      ref: 'Term',
     },
     teacher: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "Teacher",
+      ref: 'Teacher',
     },
     fee: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: "Fee",
+      ref: 'Fee',
     },
     level: Object,
     subjects: {
@@ -25,7 +25,7 @@ const LevelSchema = new mongoose.Schema(
       default: [],
     },
     students: [
-      { type: mongoose.SchemaTypes.ObjectId, ref: "Student", default: [] },
+      { type: mongoose.SchemaTypes.ObjectId, ref: 'Student', default: [] },
     ],
     rollNumber: {
       type: Number,
@@ -43,6 +43,14 @@ const LevelSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    virtuals: {
+      levelName: {
+        get() {
+          const name = `${this.level?.name} ${this.level?.type} `;
+          return name;
+        },
+      },
+    },
   }
 );
-module.exports = db.model("Level", LevelSchema);
+module.exports = db.model('Level', LevelSchema);

@@ -32,6 +32,7 @@ import '../theme/Calendar.css';
 import { UserContext } from '../context/providers/userProvider';
 import HorizontalSidebar from './layouts/HorizontalSidebar';
 import DashboardCardsContainer from '../components/cards/DashboardCardsContainer';
+import UpdateUserProfile from '../components/dialog/UpdateUserProfile';
 
 const Dashboard = () => {
   const {
@@ -44,6 +45,7 @@ const Dashboard = () => {
   const { palette } = useTheme();
 
   const [openUserProfile, setOpenUserProfile] = useState(false);
+
   const [value, onChange] = useState(new Date());
 
   useEffect(() => {
@@ -167,9 +169,7 @@ const Dashboard = () => {
 
             <Stack alignItems='center' paddingBottom={2}>
               <Avatar
-                src={`/api/images/users/${
-                  user?.profile
-                }`}
+                src={`/api/images/users/${user?.profile}`}
                 sx={{ width: 80, height: 80 }}
               />
               <Typography variant='subtitle2' color='primary'>
@@ -192,6 +192,7 @@ const Dashboard = () => {
       <CustomParticle />
 
       <ViewUserProfile open={openUserProfile} setOpen={setOpenUserProfile} />
+   
     </>
   );
 };

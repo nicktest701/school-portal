@@ -7,14 +7,18 @@ import { EMPTY_IMAGES } from '../../config/images';
 import EmptyDataContainer from '../../components/EmptyDataContainer';
 import FileDialog from '../../components/modals/FileDialog';
 import useLevelById from '../../components/hooks/useLevelById';
+import student_icon from '../../assets/images/header/student_ico.svg';
 
 import SummarizeRoundedIcon from '@mui/icons-material/SummarizeRounded';
 import { useEffect, useState } from 'react';
 import NewAttendance from './NewAttendance';
+import AttendanceHistory from './AttendanceHistory';
+import { History } from '@mui/icons-material';
 const CurrentLevelTab = () => {
   const navigate = useNavigate();
   const { id, type } = useParams();
   const [openAttendance, setOpenAttendance] = useState(false);
+  const [openAttendanceHistory, setOpenAttendanceHistory] = useState(false);
 
   //Get Students in Current Level id
   const { students, rollNumber, levelLoading } = useLevelById(id, true);
@@ -34,15 +38,15 @@ const CurrentLevelTab = () => {
     }
   }, [id, students]);
 
-  //Go to student profile
-  const handleGotoNewStudent = () => {
-    navigate(`/level/student/new`, {
-      state: {
-        id,
-        type,
-      },
-    });
-  };
+  // //Go to student profile
+  // const handleGotoNewStudent = () => {
+  //   navigate(`/level/student/new`, {
+  //     state: {
+  //       id,
+  //       type,
+  //     },
+  //   });
+  // };
 
   //Go to student profile
   const handleGotoStudentProfile = (rowData) => {
@@ -56,13 +60,22 @@ const CurrentLevelTab = () => {
     });
   };
 
-  const newAttendanceAction = {
-    icon: () => <SummarizeRoundedIcon />,
-    position: 'toolbar',
-    tooltip: 'New Attendance',
-    onClick: () => setOpenAttendance(true),
-    isFreeAction: true,
-  };
+  const attendanceAction = [
+    {
+      icon: () => <SummarizeRoundedIcon />,
+      position: 'toolbar',
+      tooltip: 'New Attendance',
+      onClick: () => setOpenAttendance(true),
+      isFreeAction: true,
+    },
+    {
+      icon: () => <History />,
+      position: 'toolbar',
+      tooltip: 'Attendance History',
+      onClick: () => setOpenAttendanceHistory(true),
+      isFreeAction: true,
+    },
+  ];
 
   return (
     <>
@@ -86,14 +99,16 @@ const CurrentLevelTab = () => {
           <CustomizedMaterialTable
             search={true}
             isLoading={levelLoading}
-            title={`Roll Number- ${rollNumber}`}
+            title={type}
+            subtitle={`${rollNumber} Students`}
             exportFileName={type || ''}
             columns={STUDENTS_COLUMN}
             data={students}
-            actions={[newAttendanceAction]}
+            actions={[...attendanceAction]}
             // showImportButton={true}
             // importButtonText="Import Students"
-            onRowClick={handleGotoStudentProfile}
+            icon={student_icon}
+            // onRowClick={handleGotoStudentProfile}
           />
         )}
       </Container>
@@ -101,6 +116,10 @@ const CurrentLevelTab = () => {
         open={openAttendance}
         setOpen={setOpenAttendance}
         student={students}
+      />
+      <AttendanceHistory
+        open={openAttendanceHistory}
+        setOpen={setOpenAttendanceHistory}
       />
       <FileDialog />
     </>

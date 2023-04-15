@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_BASE_NET_LOCAL;
+const user = JSON.parse(localStorage.getItem('@user'));
+axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
 //Get all Students details
 export const getAllStudentsDetails = async (session) => {
@@ -223,4 +224,3 @@ export const disableStudentAccount = async ({ id, active }) => {
     throw error.response.data;
   }
 };
-

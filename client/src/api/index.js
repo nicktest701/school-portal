@@ -62,6 +62,7 @@ import {
   getAllUsers,
   getUser,
   getUserAuth,
+  enableOrDisableAccount,
   verifyUser,
   postUser,
   updateUserProfileImage,
@@ -98,6 +99,7 @@ import {
   getAllCurrentFeesSummary,
   getAllCurrentFeesByLevel,
   getAllCurrentFeesPaymentHistoryByDate,
+  getAllRecentlyPaidFees,
   getCurrentFee,
   getCurrentFeeForStudent,
   getStudentAllFeeHistory,
@@ -119,6 +121,7 @@ import {
 import {
   getAllAttendances,
   getAttendance,
+  getAttendanceHistory,
   postAttendance,
   putAttendance,
   deleteAttendance,
@@ -182,6 +185,7 @@ export default {
   //users
   getAllUsers,
   getUserAuth,
+  enableOrDisableAccount,
   verifyUser,
   getUser,
   postUser,
@@ -245,6 +249,7 @@ export default {
   getAllCurrentFeesSummary,
   getAllCurrentFeesByLevel,
   getAllCurrentFeesPaymentHistoryByDate,
+  getAllRecentlyPaidFees,
   getCurrentFee,
   getCurrentFeeForStudent,
   getStudentAllFeeHistory,
@@ -264,6 +269,7 @@ export default {
   //Atendance
   getAllAttendances,
   getAttendance,
+  getAttendanceHistory,
   postAttendance,
   putAttendance,
   deleteAttendance,

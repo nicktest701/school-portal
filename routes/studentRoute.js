@@ -13,6 +13,7 @@ const Parent = require('../models/parentModel');
 const Examination = require('../models/examinationModel');
 const CurrentFee = require('../models/currentFeeModel');
 const Fee = require('../models/feeModel');
+const verifyJWT = require('../middlewares/verifyJWT');
 
 const Storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,6 +26,8 @@ const Storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: Storage });
+
+router.use(verifyJWT);
 
 //@GET All students
 router.get(
@@ -152,7 +155,7 @@ router.get(
     //Get total no of students in each class
     const noOfStudentsInEachLevel = students.map(({ students, level }) => {
       return {
-        level:`${ level.name} ${ level.type}`,
+        level: `${level.name} ${level.type}`,
         students: students.length,
       };
     });

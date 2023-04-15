@@ -4,7 +4,11 @@ import { useTheme } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { SCHOOL_SESSION_COLUMN } from '../../mockup/columns/sessionColumns';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { deleteTerm, getAllTerms } from '../../api/termAPI';
+import {
+  deleteTerm,
+  disableSessionAccount,
+  getAllTerms,
+} from '../../api/termAPI';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 
 import EditSession from './EditSession';
@@ -29,7 +33,7 @@ const SessionHome = () => {
   const sessions = useQuery(['terms'], getAllTerms);
 
   ///Delete session by id
-  const { mutateAsync } = useMutation(deleteTerm);
+  const { mutateAsync: deleteMutate } = useMutation(deleteTerm);
 
   const handleDeleteSession = (id) => {
     Swal.fire({
@@ -40,7 +44,7 @@ const SessionHome = () => {
       backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
-        mutateAsync(id, {
+        deleteMutate(id, {
           onSettled: () => {
             queryClient.invalidateQueries(['terms']);
           },
@@ -69,13 +73,48 @@ const SessionHome = () => {
     schoolSessionDispatch({ type: 'displayAddSession', payload: true });
   };
 
+  ///Disable or Enable User Account by id
+  const { mutateAsync: enableMutate } = useMutation(disableSessionAccount);
+  const handleActivateSession = ({ _id, active }) => {
+    Swal.fire({
+      title: active
+        ? 'Do you want to disable this session'
+        : 'Do you want to enable this session',
+      text: active ? 'Disabling Session' : 'Enabling Session',
+      confirmButtonColor: palette.primary.main,
+      showCancelButton: true,
+      backdrop: false,
+    }).then((data) => {
+      if (data.isConfirmed) {
+        const info = {
+          _id,
+          active: active ? false : true,
+        };
+
+        enableMutate(info, {
+          onSuccess: (data) => {
+            queryClient.invalidateQueries(['terms']);
+            schoolSessionDispatch(alertSuccess(data));
+          },
+          onError: (error) => {
+            schoolSessionDispatch(alertError(error));
+          },
+        });
+      }
+    });
+  };
+
   return (
     <>
       <CustomizedMaterialTable
         title='Sessions'
         icon={session_icon}
         isLoading={sessions.isFetching}
-        columns={SCHOOL_SESSION_COLUMN(handlEditSession, handleDeleteSession)}
+        columns={SCHOOL_SESSION_COLUMN(
+          handleActivateSession,
+          handlEditSession,
+          handleDeleteSession
+        )}
         data={sessions.data ? sessions.data : []}
         actions={[]}
         showRowShadow={false}

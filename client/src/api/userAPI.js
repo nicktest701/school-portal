@@ -156,11 +156,48 @@ export const putSchoolInfo = async (schoolInfo) => {
     console.log(error.response.data);
   }
 };
+
+export const updateSchoolLogo = async (badge) => {
+  const formData = new FormData();
+  formData.append('unique', 'school-info');
+  formData.append('badge', badge);
+
+  try {
+    const res = await axios({
+      method: 'PUT',
+      url: `/api/users/school/profile`,
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw new Error(error.response.data || 'Error Updating profile');
+  }
+};
+
 export const deleteUser = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
       url: `/api/users/${id}`,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
+export const enableOrDisableAccount = async (info) => {
+  try {
+    const res = await axios({
+      method: 'PUT',
+      url: `/api/users/account`,
+      data: info,
     });
 
     return res.data;

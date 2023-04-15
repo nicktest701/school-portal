@@ -2,15 +2,32 @@ import React, { useContext, useEffect } from 'react';
 import { UserContext } from '../context/providers/userProvider';
 import _ from 'lodash';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { verifyUser } from '../api/userAPI';
+import { getSchoolInfo, verifyUser } from '../api/userAPI';
+import { useQuery } from '@tanstack/react-query';
 
 const Shell = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userDispatch } = useContext(UserContext);
+  const {
+    userState: { default_school_info },
+    userDispatch,
+  } = useContext(UserContext);
 
   const schoolSession = JSON.parse(localStorage.getItem('@school_session'));
   const path = location.pathname || '/';
+
+  useQuery({
+    queryKey: ['school'],
+    queryFn: () => getSchoolInfo(),
+    onSuccess: (data) => {
+
+      userDispatch({
+        type: 'setSchoolInfo',
+        payload: !_.isEmpty(data) ? data : default_school_info,
+      });
+      // localStorage.setItem('@school_info', JSON.stringify(data));
+    },
+  });
 
   useEffect(() => {
     //Set default loading

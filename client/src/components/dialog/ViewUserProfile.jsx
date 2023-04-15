@@ -6,6 +6,8 @@ import {
   Stack,
   Button,
 } from '@mui/material';
+import PropTypes from 'prop-types';
+
 import React, { useContext, useState } from 'react';
 import Transition from '../animations/Transition';
 import CustomDialogTitle from './CustomDialogTitle';
@@ -18,7 +20,9 @@ import {
 } from '../../context/actions/globalAlertActions';
 import { useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '../../context/providers/userProvider';
+import UpdateUserProfile from './UpdateUserProfile';
 function ViewUserProfile({ open, setOpen }) {
+  const [openUpdateUserProfile, setOpenUpdateUserProfile] = useState(false);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
     userState: { user },
@@ -47,6 +51,10 @@ function ViewUserProfile({ open, setOpen }) {
     queryClient.invalidateQueries(['verify-user']);
   };
 
+  const handleOpenUpdateUserProfile = () => {
+    setOpenUpdateUserProfile(true);
+  };
+
   return (
     <Dialog
       open={open}
@@ -59,7 +67,7 @@ function ViewUserProfile({ open, setOpen }) {
         <Stack justifyContent='center' alignItems='center' rowGap={2}>
           <Stack sx={{ position: 'relative' }}>
             <Avatar src={profileImage} sx={{ height: 75, width: 75 }} />
-            <CustomImageChooser handleImageUpload={uploadProfile} />
+            {/* <CustomImageChooser handleImageUpload={uploadProfile} /> */}
           </Stack>
           <Typography
             variant='h6'
@@ -70,11 +78,23 @@ function ViewUserProfile({ open, setOpen }) {
           </Typography>
           <Typography variant='body2'>@{user?.username}</Typography>
           <Typography variant='caption'>{user?.email}</Typography>
-          <Button variant='outlined'>Edit</Button>
+          <Button variant='outlined' onClick={handleOpenUpdateUserProfile}>
+            Edit
+          </Button>
         </Stack>
       </DialogContent>
+      <UpdateUserProfile
+        open={openUpdateUserProfile}
+        setOpen={setOpenUpdateUserProfile}
+      />
     </Dialog>
   );
 }
+
+ViewUserProfile.propTypes = {
+  open: PropTypes.bool,
+  setOpen: PropTypes.func,
+};
+
 
 export default React.memo(ViewUserProfile);

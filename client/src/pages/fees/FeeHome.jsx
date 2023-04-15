@@ -1,12 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, ListItemText, Stack, Typography } from '@mui/material';
 import FeesDashboardCard from '../../components/cards/FeesDashboardCard';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import { getAllCurrentFeesSummary } from '../../api/currentFeeAPI';
+import {
+  getAllCurrentFeesSummary,
+  getAllRecentlyPaidFees,
+} from '../../api/currentFeeAPI';
 import { UserContext } from '../../context/providers/userProvider';
 import { EMPTY_IMAGES } from '../../config/images';
 import teacher_icon from '../../assets/images/header/teacher_ico.svg';
+import moment from 'moment';
 const FeeHome = () => {
   const {
     userState: {
@@ -27,6 +31,15 @@ const FeeHome = () => {
       setTodayFee(feeSummary?.today);
       setMonthFee(feeSummary?.month);
       setTermFee(feeSummary?.term);
+    },
+  });
+
+  const recentFees = useQuery({
+    queryKey: ['recent-fees'],
+    queryFn: () => getAllRecentlyPaidFees({ session: sessionId, term: termId }),
+    enabled: !!sessionId && !!termId,
+    onSuccess: (fees) => {
+      console.log(fees);
     },
   });
 
@@ -83,13 +96,44 @@ const FeeHome = () => {
           <StudentDashboardCard />
         </Box> */}
         <CustomizedMaterialTable
+          isLoading={recentFees.isLoading}
+          title='Recent Fee Payment'
           icon={teacher_icon}
-          columns={[]}
-          data={[]}
+          columns={[
+            {
+              title: 'Date of Payment',
+              field: 'date',
+              type: 'date',
+              render: ({ date }) => (
+                <ListItemText
+                  primary={moment(date).format('ddd, Do MMMM YYYY')}
+                  secondary={moment(date).format('hh:mm a')}
+                />
+              ),
+            },
+            {
+              title: 'Student',
+              field: 'student',
+            },
+            {
+              title: 'Level',
+              field: 'level',
+            },
+            {
+              title: 'Amount Paid',
+              field: 'paid',
+            },
+            {
+              title: 'Outstanding',
+              field: 'outstanding',
+            },
+          ]}
+          data={recentFees.data}
           actions={[]}
           showAddButton={false}
           addButtonImg={EMPTY_IMAGES.level}
           addButtonMessage=' No recent fee payment !'
+          handleRefresh={recentFees.refetch}
         />
       </Container>
     </Box>

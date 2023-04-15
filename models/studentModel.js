@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const db = require("../db/DBConnection");
+const mongoose = require('mongoose');
+const _ = require('lodash');
+const db = require('../db/DBConnection');
 
 const StudentSchema = new mongoose.Schema(
   {
@@ -38,6 +39,16 @@ const StudentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    virtuals: {
+      fullName: {
+        get() {
+          const name = _.startCase(
+            `${this.surname} ${this.firstname} ${this.othername}`
+          );
+          return name;
+        },
+      },
+    },
   }
 );
-module.exports = db.model("Student", StudentSchema);
+module.exports = db.model('Student', StudentSchema);

@@ -44,7 +44,7 @@ router.post(
         match: { active: true },
       });
 
-    if (!AllStudents) {
+    if (_.isEmpty(AllStudents)) {
       return res.status(200).json([]);
     }
 
@@ -70,12 +70,9 @@ router.post(
 
     const modifiedStudents = AllStudents.flatMap(({ _id, students, level }) => {
       return students.map((student) => {
-        const fullName = _.startCase(
-          `${student?.surname} ${student?.firstname} ${student?.othername}`
-        );
         return {
           ...student._doc,
-          fullName,
+          fullName: student.fullName,
           levelId: _id,
           levelName: `${level?.name}${level.type}`,
         };
@@ -108,12 +105,9 @@ router.post(
     }
 
     const modifiedStudents = students.students.map((student) => {
-      const fullName = _.startCase(
-        `${student?.surname} ${student?.firstname} ${student?.othername}`
-      );
       return {
         ...student?._doc,
-        fullName,
+        fullName: student.fullName,
         levelId: students.level._id,
         levelName: students.level.type,
       };
@@ -228,9 +222,7 @@ router.get(
       const modifiedStudents = level?.students.map((student) => {
         return {
           ...student?._doc,
-          fullName: _.startCase(
-            `${student?.surname} ${student?.firstname} ${student?.othername}`
-          ),
+          fullName: student.fullName,
           levelId: id,
           levelName: `${level.level?.name}${level.level?.type}`,
         };
@@ -554,12 +546,11 @@ router.get(
     //No of Levels
     const noOfLevels = levels.length;
 
-  // No of Subjects
+    // No of Subjects
     const noOfSubjects = _.flatMap(_.map(levels, 'subjects')).length;
 
     // No of Students
     const noOfStudents = _.flatMap(_.map(levels, 'students')).length;
-
 
     const dashboardInfo = {
       teachers: noOfTeachers,

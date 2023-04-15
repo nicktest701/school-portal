@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import {
   Avatar,
@@ -23,9 +23,14 @@ import DataThresholdingRoundedIcon from '@mui/icons-material/DataThresholdingRou
 import DrawerItem from '../../components/DrawerItem';
 import { ExitToAppSharp, SchoolRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
+import { UserContext } from '../../context/providers/userProvider';
 
 const Sidebar = ({ onLogOut }) => {
   const school_info = JSON.parse(localStorage.getItem('@school_info'));
+
+  const {
+    userState: { user },
+  } = useContext(UserContext);
 
   return (
     <Container
@@ -47,9 +52,7 @@ const Sidebar = ({ onLogOut }) => {
             <Avatar
               alt='school logo'
               loading='lazy'
-              srcSet={`/api/images/users/${
-                school_info?.badge
-              }`}
+              srcSet={`/api/images/users/${school_info?.badge}`}
               sx={{
                 width: 70,
                 height: 70,
@@ -71,11 +74,13 @@ const Sidebar = ({ onLogOut }) => {
       {/* <Divider /> */}
       <Stack padding={1}>
         <DrawerItem title='Dashboard' icon={<GridViewRoundedIcon />} to='/' />
-        <DrawerItem
-          title='Session'
-          icon={<ArticleRoundedIcon />}
-          to='/session'
-        />
+        {user?.role === 'administrator' && (
+          <DrawerItem
+            title='Session'
+            icon={<ArticleRoundedIcon />}
+            to='/session'
+          />
+        )}
         <DrawerItem
           title='Levels & Subjects'
           icon={<BedroomBabyRoundedIcon />}
@@ -99,12 +104,20 @@ const Sidebar = ({ onLogOut }) => {
           to="/assessment"
         /> */}
         <DrawerItem title='SMS Portal' icon={<SmsRounded />} to='/sms' />
-        <DrawerItem title='Users' icon={<PeopleAltRoundedIcon />} to='/users' />
-        <DrawerItem
-          title='Settings'
-          icon={<SettingsRoundedIcon />}
-          to='/settings'
-        />
+        {user?.role === 'administrator' && (
+          <>
+            <DrawerItem
+              title='Users'
+              icon={<PeopleAltRoundedIcon />}
+              to='/users'
+            />
+            <DrawerItem
+              title='Settings'
+              icon={<SettingsRoundedIcon />}
+              to='/settings'
+            />
+          </>
+        )}
         <DrawerItem title='About' icon={<InfoRoundedIcon />} to='/about' />
       </Stack>
 

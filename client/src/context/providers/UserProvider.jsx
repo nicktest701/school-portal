@@ -23,6 +23,17 @@ const UserProvider = ({ children }) => {
       role: '',
     },
     school_info: {
+      unique: 'school-info',
+      badge: '',
+      name: 'Frebby School Portal',
+      address: 'Plot 15,Block D,Kwaprah',
+      location: 'Kronum-Kwaprah',
+      email: 'frebbytechconsults@gmail.com',
+      phonenumber: '0543772591-0560372844-0239602580',
+      motto: 'Always at your tech service!',
+    },
+    default_school_info: {
+      unique: 'school-info',
       badge: '',
       name: 'Frebby School Portal',
       address: 'Plot 15,Block D,Kwaprah',

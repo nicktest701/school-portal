@@ -1,15 +1,14 @@
-const router = require("express").Router();
-const _ = require("lodash");
-const asyncHandler = require("express-async-handler");
-const Attendance = require("../models/attendanceModel");
+const router = require('express').Router();
+const _ = require('lodash');
+const asyncHandler = require('express-async-handler');
+const Attendance = require('../models/attendanceModel');
 const {
   Types: { ObjectId },
-} = require("mongoose");
-
+} = require('mongoose');
 
 //@GET All school Attendance
 router.get(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {
     const attendance = await Attendance.find({ active: true });
     if (_.isEmpty(attendance)) {
@@ -20,9 +19,42 @@ router.get(
   })
 );
 
+//@GET School Attendance History
+router.get(
+  '/history/:id',
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { date } = req.query;
+    // //console.log(id, date);
+    const attendance = await Attendance.find({
+      level: ObjectId(id),
+    });
+
+    // console.log(attendance);
+    const modifiedAttendance = attendance.map(({ status, date }) => {
+      const present = _.filter(
+        status,
+        ({ status }) => status === 'Present'
+      ).length;
+      const absent = _.filter(
+        status,
+        ({ status }) => status === 'Absent'
+      ).length;
+      return {
+        date,
+        present,
+        absent,
+      };
+    });
+
+    const attendanceHistory = _.orderBy(modifiedAttendance, 'date', 'desc');
+
+    res.status(200).json(attendanceHistory);
+  })
+);
 //@GET School Attendance by id
 router.get(
-  "/:id",
+  '/:id',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { date } = req.query;
@@ -35,10 +67,9 @@ router.get(
     res.status(200).json(attendance);
   })
 );
-
 //Add new School Attendance
 router.post(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {
     const { date, level } = req.body;
 
@@ -50,7 +81,7 @@ router.post(
     });
 
     if (!_.isEmpty(exists)) {
-      return res.status(400).json("Attendance already exists.");
+      return res.status(400).json('Attendance already exists.');
     }
 
     //Create new Attendance
@@ -58,16 +89,16 @@ router.post(
     if (_.isEmpty(attendance)) {
       return res
         .status(404)
-        .json("Error creating new attendance.Try again later!!!");
+        .json('Error creating new attendance.Try again later!!!');
     }
 
-    return res.status(201).json("New Attendance created Successfully!!!");
+    return res.status(201).json('New Attendance created Successfully!!!');
   })
 );
 
 //@PUT Update Existing School Attendance
 router.put(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {
     const modifiedAttendance = await Attendance.findByIdAndUpdate(
       req.body.id,
@@ -77,17 +108,17 @@ router.put(
     if (_.isEmpty(modifiedAttendance)) {
       return res
         .status(404)
-        .send("Error updating attendance info.Try again later");
+        .send('Error updating attendance info.Try again later');
     }
 
     res
       .status(201)
-      .json("Attendance information has been updated successfully!!!");
+      .json('Attendance information has been updated successfully!!!');
   })
 );
 
 router.delete(
-  "/:id",
+  '/:id',
   asyncHandler(async (req, res) => {
     const id = req.params.id;
     const deletedAttendance = await Attendance.findByIdAndUpdate(id, {
@@ -99,10 +130,10 @@ router.delete(
     if (_.isEmpty(deletedAttendance)) {
       return res
         .status(404)
-        .json("Error removing attendance info.Try again later");
+        .json('Error removing attendance info.Try again later');
     }
 
-    res.status(201).json(" Attendance have been removed successfully!!!");
+    res.status(201).json(' Attendance have been removed successfully!!!');
   })
 );
 

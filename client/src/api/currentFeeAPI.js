@@ -16,6 +16,21 @@ export const getAllCurrentFees = async () => {
   }
 };
 
+//Get all Students
+export const getAllRecentlyPaidFees = async (info) => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `/api/current-fees/recent`,
+      params: info,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
 //Get all fees Summary
 export const getAllCurrentFeesPaymentHistoryByDate = async (data) => {
   try {
