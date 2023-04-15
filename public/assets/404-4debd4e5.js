@@ -1,1 +1,0 @@
-import{f as e,S as a,j as t,T as n,b1 as o}from"./index-c85f4eb0.js";const s=()=>e(a,{rowGap:5,sx:{justifyContent:"center",alignItems:"center",width:"100vw",height:"100vh"},children:[t(n,{variant:"h1",children:"Page Not Found"}),t(o,{to:"/",children:"Go Home"})]});export{s as default};
