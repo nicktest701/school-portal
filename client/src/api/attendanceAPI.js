@@ -7,7 +7,7 @@ export const getAllAttendances = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/attendances`,
+      url:  `/attendances`,
     });
 
     return res.data;
@@ -20,7 +20,7 @@ export const getAttendance = async (id, date) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/attendances/${id}`,
+      url:  `/attendances/${id}`,
       params: {
         date,
       },
@@ -36,7 +36,7 @@ export const postAttendance = async (newAttendance) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/attendances`,
+      url:  `/attendances`,
       data: newAttendance,
     });
 
@@ -50,7 +50,7 @@ export const putAttendance = async (updatedAttendance) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `/api/attendances`,
+      url:  `/attendances`,
       data: updatedAttendance,
     });
 
@@ -64,7 +64,7 @@ export const deleteAttendance = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `/api/attendances/${id}`,
+      url:  `/attendances/${id}`,
     });
 
     return res.data;
@@ -77,7 +77,7 @@ export const getAttendanceHistory = async (levelId) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/attendances/history/${levelId}`,
+      url:  `/attendances/history/${levelId}`,
     });
 
     return res.data;

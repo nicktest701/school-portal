@@ -7,7 +7,7 @@ export const getAllLevels = async (session, term) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/levels/session`,
+      url:  `/levels/session`,
       params: {
         session,
         term,
@@ -25,7 +25,7 @@ export const getLevel = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/levels`,
+      url:  `/levels`,
       params: {
         id,
       },
@@ -42,7 +42,7 @@ export const postLevel = async (newLevel) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/levels`,
+      url:  `/levels`,
       data: newLevel,
     });
 
@@ -57,7 +57,7 @@ export const generateNewCurrentLevelDetailsFromLevels = async (data) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/levels/generate`,
+      url:  `/levels/generate`,
       data,
     });
 
@@ -72,7 +72,7 @@ export const putLevel = async (updatedLevel) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `/api/levels`,
+      url:  `/levels`,
       data: updatedLevel,
     });
 
@@ -87,7 +87,7 @@ export const deleteLevel = async ({ id, sessionId, termId }) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `/api/levels`,
+      url:  `/levels`,
       params: {
         id,
         sessionId,
@@ -108,7 +108,7 @@ export const getSubjectsForLevel = async (levelId) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/levels/subject`,
+      url:  `/levels/subject`,
       params: {
         levelId,
       },
@@ -125,7 +125,7 @@ export const addSubjectsToLevel = async (data) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `/api/levels/subject`,
+      url:  `/levels/subject`,
       data,
     });
 
@@ -140,7 +140,7 @@ export const getTodaysBirth = async (session, term) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/levels/recent/birthday`,
+      url:  `/levels/recent/birthday`,
       params: { session, term },
     });
 
@@ -156,7 +156,7 @@ export const getDashboardInfo = async (info) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/levels/dashboard-info`,
+      url:  `/levels/dashboard-info`,
       params: info,
     });
 

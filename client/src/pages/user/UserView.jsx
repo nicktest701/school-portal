@@ -45,7 +45,7 @@ const UserView = () => {
   const user = userViewData?.data;
 
   useEffect(() => {
-    setProfileImage(`/api/images/users/${user?.profile}`);
+    setProfileImage( `/images/users/${user?.profile}`);
   }, [user]);
 
   //DISABLE User Account

@@ -41,7 +41,7 @@ const UserEdit = () => {
   useEffect(() => {
     setDob(new Date(user?.dateofbirth));
     setProfileImage(
-      `/api/images/users/${user?.profile}`
+       `/images/users/${user?.profile}`
     );
   }, [user]);
 

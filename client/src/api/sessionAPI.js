@@ -7,7 +7,7 @@ export const getAllSessions = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/sessions`,
+      url:  `/sessions`,
     });
 
     return res.data;
@@ -20,7 +20,7 @@ export const getSession = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/sessions`,
+      url:  `/sessions`,
       params: {
         id,
       },
@@ -36,7 +36,7 @@ export const postSession = async (newSession) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/sessions`,
+      url:  `/sessions`,
       data: newSession,
     });
 
@@ -50,7 +50,7 @@ export const putSession = async (updatedSession) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `/api/sessions`,
+      url:  `/sessions`,
       data: updatedSession,
     });
 
@@ -64,7 +64,7 @@ export const deleteSession = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `/api/sessions/${id}`,
+      url:  `/sessions/${id}`,
     });
 
     return res.data;
@@ -83,7 +83,7 @@ export const uploadProfileImage = async ({ _id, profile, type }) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `/api/${type}/profile`,
+      url:  `/${type}/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',

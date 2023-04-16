@@ -87,7 +87,7 @@ const StudentAcademicsReportView = () => {
                 student?.profile === undefined ||
                 student?.profile === null
                   ? null
-                  : `/api/images/students/${student?.profile}`
+                  :  `/images/students/${student?.profile}`
               }
               sx={{ width: 65, height: 65 }}
             />

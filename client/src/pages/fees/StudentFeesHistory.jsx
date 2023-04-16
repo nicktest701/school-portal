@@ -105,7 +105,7 @@ const StudentFeesHistory = ({ open, setOpen }) => {
               studentFee?.data?.profile === undefined ||
               studentFee?.data?.profile === ''
                 ? null
-                : `/api/images/students/${
+                :  `/images/students/${
                     studentFee?.data?.profile
                   }`
             }

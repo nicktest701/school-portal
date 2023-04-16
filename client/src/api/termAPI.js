@@ -7,7 +7,7 @@ export const getAllTerms = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/terms`,
+      url:  `/terms`,
     });
 
     return res.data;
@@ -21,7 +21,7 @@ export const getTerm = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/terms`,
+      url:  `/terms`,
       params: {
         id,
       },
@@ -38,7 +38,7 @@ export const postTerm = async (newTerm) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/terms`,
+      url:  `/terms`,
       data: newTerm,
     });
 
@@ -53,7 +53,7 @@ export const putTerm = async (updatedSession) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `/api/terms`,
+      url:  `/terms`,
       data: updatedSession,
     });
 
@@ -67,7 +67,7 @@ export const disableSessionAccount = async ({ _id, active }) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `/api/terms/account`,
+      url:  `/terms/account`,
       data: {
         id: _id,
         active,
@@ -85,7 +85,7 @@ export const deleteTerm = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `/api/terms/${id}`,
+      url:  `/terms/${id}`,
     });
 
     return res.data;

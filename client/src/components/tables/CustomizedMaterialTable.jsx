@@ -44,8 +44,6 @@ function CustomizedMaterialTable({
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
-
-
   const CSV_FILE_TYPE = 'text/csv';
   const XLSX_FILE_TYPE =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -154,7 +152,7 @@ function CustomizedMaterialTable({
                         variant='contained'
                         startIcon={<Add />}
                         disableElevation
-                        onClick={onAddButtonClicked}
+                        onClick={() => onAddButtonClicked()}
                       >
                         {addButtonText}
                       </Button>

@@ -6,7 +6,7 @@ export const getAllCurrentFees = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/current-fees`,
+      url:  `/current-fees`,
     });
 
     return res.data;
@@ -20,7 +20,7 @@ export const getAllRecentlyPaidFees = async (info) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/current-fees/recent`,
+      url:  `/current-fees/recent`,
       params: info,
     });
 
@@ -35,7 +35,7 @@ export const getAllCurrentFeesPaymentHistoryByDate = async (data) => {
   try {
     const res = await axios({
       method: 'get',
-      url: `/api/current-fees/day`,
+      url:  `/current-fees/day`,
       params: data,
     });
 
@@ -50,7 +50,7 @@ export const getAllCurrentFeesSummary = async (sessionInfo) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/current-fees/summary`,
+      url:  `/current-fees/summary`,
       data: sessionInfo,
     });
 
@@ -65,7 +65,7 @@ export const getAllCurrentFeesByLevel = async (sessionInfo) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/current-fees/level`,
+      url:  `/current-fees/level`,
       data: sessionInfo,
     });
 
@@ -79,7 +79,7 @@ export const getCurrentFee = async (session, level) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/current-fees/current-level`,
+      url:  `/current-fees/current-level`,
       data: {
         ...session,
         level,
@@ -96,7 +96,7 @@ export const getCurrentFeeForStudent = async (info) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/current-fees/student`,
+      url:  `/current-fees/student`,
       data: info,
     });
 
@@ -110,7 +110,7 @@ export const getStudentAllFeeHistory = async (student) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `/api/current-fees/history/all`,
+      url:  `/current-fees/history/all`,
       params: {
         student,
       },
@@ -125,7 +125,7 @@ export const getStudentFeeHistory = async (info) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/current-fees/history`,
+      url:  `/current-fees/history`,
       data: info,
     });
 
@@ -139,7 +139,7 @@ export const postCurrentFee = async (newCurrentFee) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `/api/current-fees`,
+      url:  `/current-fees`,
       data: newCurrentFee,
     });
 
@@ -153,7 +153,7 @@ export const putCurrentFee = async (updatedCurrentFee) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `/api/current-fees`,
+      url:  `/current-fees`,
       data: updatedCurrentFee,
     });
 
@@ -167,7 +167,7 @@ export const deleteCurrentFee = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `/api/fees/${id}`,
+      url:  `/fees/${id}`,
     });
 
     return res.data;

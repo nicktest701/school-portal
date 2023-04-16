@@ -1,4 +1,4 @@
-import { SchoolRounded, StyleOutlined } from '@mui/icons-material';
+import { SchoolRounded } from '@mui/icons-material';
 import { useTheme } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
@@ -40,9 +40,7 @@ const Report = ({ student }) => {
             <Avatar
               alt='school logo'
               loading='lazy'
-              srcSet={`/api/images/users/${
-                school_info?.badge
-              }`}
+              srcSet={ `/images/users/${school_info?.badge}`}
               sx={{
                 width: 80,
                 height: 80,
@@ -85,9 +83,7 @@ const Report = ({ student }) => {
               student?.profile === undefined ||
               student?.profile === null
                 ? null
-                : `/api/images/students/${
-                    student?.profile
-                  }`
+                :  `/images/students/${student?.profile}`
             }
             sx={{ width: 70, height: 70, alignSelf: 'center' }}
           />

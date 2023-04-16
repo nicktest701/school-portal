@@ -77,7 +77,7 @@ const StudentDetails = () => {
           srcSet={
             student?.profile === '' || student?.profile === undefined
               ? null
-              : `/api/images/students/${
+              :  `/images/students/${
                   student?.profile
                 }`
           }

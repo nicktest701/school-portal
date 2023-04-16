@@ -20,7 +20,7 @@ function SchoolSettingsTab() {
     userDispatch,
   } = useContext(UserContext);
 
-  const [badge, setBadge] = useState(`/api/images/users/${school_info?.badge}`);
+  const [badge, setBadge] = useState( `/images/users/${school_info?.badge}`);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
@@ -52,7 +52,7 @@ function SchoolSettingsTab() {
       schoolSessionDispatch(alertSuccess('School Image Uploaded'));
 
       queryClient.invalidateQueries(['school']);
-      setBadge(`/api/images/users/${updatedBadge}`);
+      setBadge( `/images/users/${updatedBadge}`);
       school_info.badge = updatedBadge;
       localStorage.setItem('@school_info', JSON.stringify(school_info));
     } catch (error) {

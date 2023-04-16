@@ -165,7 +165,7 @@ const Dashboard = () => {
 
             <Stack alignItems='center' paddingBottom={2}>
               <Avatar
-                src={`/api/images/users/${user?.profile}`}
+                src={ `/images/users/${user?.profile}`}
                 sx={{ width: 80, height: 80 }}
               />
               <Typography variant='subtitle2' color='primary'>

@@ -80,7 +80,7 @@ const FeeHistory = () => {
           setProfileImage(
             fees.profile === undefined || fees.profile === ""
               ? null
-              : `/api/images/students/${fees.profile}`
+              :  `/images/students/${fees.profile}`
           );
         }
       },

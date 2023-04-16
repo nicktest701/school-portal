@@ -1,7 +1,6 @@
 import { CircleRounded } from '@mui/icons-material';
 import { Avatar, Button, ListItemText, Stack, Typography } from '@mui/material';
 import _ from 'lodash';
-import moment from 'moment';
 export const TEACHERS_COLUMN = [
   {
     field: '_id',
@@ -30,7 +29,7 @@ export const TEACHERS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              : `/api/images/teachers/${
+              :  `/images/teachers/${
                   rowData.profile
                 }`
           }

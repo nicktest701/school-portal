@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Stack, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
-import StudentReportListItem from '../../components/list/StudentReportListItem';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getStudentAllFeeHistory } from '../../api/currentFeeAPI';

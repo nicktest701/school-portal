@@ -345,7 +345,7 @@ const FeeMakePayment = () => {
                   studentInfo?.profile === undefined ||
                   studentInfo?.profile === ''
                     ? null
-                    : `/api/images/students/${
+                    :  `/images/students/${
                         studentInfo?.profile
                       }`
                 }

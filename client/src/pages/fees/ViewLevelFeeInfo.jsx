@@ -1,7 +1,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogTitle,
   Stack,
   Typography,
 } from "@mui/material";

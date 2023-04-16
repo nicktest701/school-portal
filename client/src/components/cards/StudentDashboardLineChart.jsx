@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BubbleChartRounded } from '@mui/icons-material';
-import { Box, Card, CardContent, CardHeader, useTheme } from '@mui/material';
+import { Box, Card, CardContent, CardHeader,} from '@mui/material';
 import { Pie } from 'react-chartjs-2';
 import _ from 'lodash';
 const StudentDashboardLineChart = ({ data }) => {
-  const { palette } = useTheme();
 
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);

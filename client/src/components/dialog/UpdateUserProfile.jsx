@@ -36,7 +36,7 @@ const UpdateUserProfile = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   useEffect(() => {
-    setProfileImage(`/api/images/users/${user?.profile}`);
+    setProfileImage( `/images/users/${user?.profile}`);
   }, [user]);
 
   //CLOSE Edit User

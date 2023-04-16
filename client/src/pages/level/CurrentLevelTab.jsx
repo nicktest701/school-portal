@@ -49,16 +49,16 @@ const CurrentLevelTab = () => {
   // };
 
   //Go to student profile
-  const handleGotoStudentProfile = (rowData) => {
-    const id = rowData.levelId;
-    const type = rowData.levelName;
-    navigate(`/student/profile/${id}/${type}/${rowData._id}`, {
-      state: {
-        id,
-        type,
-      },
-    });
-  };
+  // const handleGotoStudentProfile = (rowData) => {
+  //   const id = rowData.levelId;
+  //   const type = rowData.levelName;
+  //   navigate(`/student/profile/${id}/${type}/${rowData._id}`, {
+  //     state: {
+  //       id,
+  //       type,
+  //     },
+  //   });
+  // };
 
   const attendanceAction = [
     {

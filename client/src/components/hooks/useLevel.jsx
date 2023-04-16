@@ -55,7 +55,7 @@ function useLevel() {
         }
       },
       onError: (error) => {
-        //console.log(error);
+        console.log(error);
       },
     }
   );

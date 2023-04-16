@@ -30,7 +30,7 @@ const SessionHome = () => {
 
   const [openEditSession, setOpenEditSession] = useState(false);
 
-  const sessions = useQuery(['terms'], getAllTerms);
+  const sessions = useQuery(['terms'], () => getAllTerms());
 
   ///Delete session by id
   const { mutateAsync: deleteMutate } = useMutation(deleteTerm);

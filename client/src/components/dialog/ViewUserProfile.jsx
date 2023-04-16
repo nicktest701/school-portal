@@ -35,7 +35,7 @@ function ViewUserProfile({ open, setOpen }) {
         <Stack justifyContent='center' alignItems='center' rowGap={2}>
           <Stack sx={{ position: 'relative' }}>
             <Avatar
-              src={`/api/images/users/${user?.profile}`}
+              src={ `/images/users/${user?.profile}`}
               sx={{ height: 75, width: 75 }}
             />
           </Stack>

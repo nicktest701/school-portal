@@ -49,7 +49,7 @@ const StudentEdit = () => {
   useEffect(() => {
     setDob(new Date(student?.dateofbirth));
     setProfileImage(
-      `/api/images/students/${student?.profile}`
+       `/images/students/${student?.profile}`
     );
   }, [student]);
 

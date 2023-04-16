@@ -65,7 +65,7 @@ const TeacherView = () => {
 
   useEffect(() => {
     setProfileImage(
-      `/api/images/teachers/${teacher?.profile}`
+       `/images/teachers/${teacher?.profile}`
     );
   }, [teacher]);
 

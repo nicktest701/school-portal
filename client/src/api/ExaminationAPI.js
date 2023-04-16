@@ -6,7 +6,7 @@ export const getAllExams = async (id) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/examinations`,
+      url:  `/examinations`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -27,7 +27,7 @@ export const getExamsDetails = async (session) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/examinations/details`,
+      url:  `/examinations/details`,
       params: session,
     });
 
@@ -43,7 +43,7 @@ export const generateReports = async (session) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/examinations/reports`,
+      url:  `/examinations/reports`,
       params: session,
     });
 
@@ -59,7 +59,7 @@ export const getStudentAcademics = async (session, student, level) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `/api/examinations/student/all`,
+      url:  `/examinations/student/all`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -83,7 +83,7 @@ export const getExams = async (examsId) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/examinations/student`,
+      url:  `/examinations/student`,
       params: {
         examsId,
       },
@@ -100,7 +100,7 @@ export const getCurrentExams = async (session) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `/api/examinations/student/current`,
+      url:  `/examinations/student/current`,
       data: session,
     });
 
@@ -116,7 +116,7 @@ export const postExamsRemarks = async (comments) => {
   try {
     const res = await axios({
       method: "PUT",
-      url: `/api/examinations/comments`,
+      url:  `/examinations/comments`,
       data: comments,
     });
 
@@ -131,7 +131,7 @@ export const postExams = async (newExam) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `/api/examinations`,
+      url:  `/examinations`,
       data: newExam,
     });
 
@@ -146,7 +146,7 @@ export const updateExams = async (updatedScores) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `/api/examinations/update`,
+      url:  `/examinations/update`,
       data: updatedScores,
     });
 
@@ -161,7 +161,7 @@ export const putExams = async (updatedExam) => {
   try {
     const res = await axios({
       method: "PUT",
-      url: `/api/examinations`,
+      url:  `/examinations`,
       data: updatedExam,
     });
 
@@ -176,7 +176,7 @@ export const deleteExams = async (id) => {
   try {
     const res = await axios({
       method: "DELETE",
-      url: `/api/examinations`,
+      url:  `/examinations`,
       params: {
         _id: id,
       },

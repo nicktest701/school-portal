@@ -52,7 +52,7 @@ const Sidebar = ({ onLogOut }) => {
             <Avatar
               alt='school logo'
               loading='lazy'
-              srcSet={`/api/images/users/${school_info?.badge}`}
+              srcSet={ `/images/users/${school_info?.badge}`}
               sx={{
                 width: 70,
                 height: 70,

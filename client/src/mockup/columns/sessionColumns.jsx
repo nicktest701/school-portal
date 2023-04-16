@@ -472,7 +472,7 @@ export const USERS_COLUMNS = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              : `/api/images/users/${rowData.profile}`
+              :  `/images/users/${rowData.profile}`
           }
         />
         <ListItemText

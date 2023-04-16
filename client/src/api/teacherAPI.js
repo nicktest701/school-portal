@@ -7,7 +7,7 @@ export const getAllTeachers = async () => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/teachers`,
+      url:  `/teachers`,
     });
 
     return res.data;
@@ -20,7 +20,7 @@ export const getTeacher = async (id) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/teachers/${id}`,
+      url:  `/teachers/${id}`,
     });
 
     return res.data;
@@ -47,7 +47,7 @@ export const postTeacher = async (teacher) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `/api/teachers`,
+      url:  `/teachers`,
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -69,7 +69,7 @@ export const updateTeacherProfileImage = async ({ _id, profile }) => {
   try {
     const res = await axios({
       method: "PUT",
-      url: `/api/teachers/profile`,
+      url:  `/teachers/profile`,
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -87,7 +87,7 @@ export const putTeacher = async (updatedTeacher) => {
   try {
     const res = await axios({
       method: "PUT",
-      url: `/api/teachers`,
+      url:  `/teachers`,
       data: updatedTeacher,
     });
 
@@ -101,7 +101,7 @@ export const deleteTeacher = async (id) => {
   try {
     const res = await axios({
       method: "DELETE",
-      url: `/api/teachers/${id}`,
+      url:  `/teachers/${id}`,
     });
 
     return res.data;

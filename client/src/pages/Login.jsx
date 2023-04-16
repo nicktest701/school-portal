@@ -108,7 +108,7 @@ const Login = () => {
               <Avatar
                 alt='school logo'
                 loading='lazy'
-                srcSet={`/api/images/users/${school_info?.badge}`}
+                srcSet={ `/images/users/${school_info?.badge}`}
                 sx={{
                   width: 150,
                   height: 150,
@@ -142,7 +142,7 @@ const Login = () => {
             <Avatar
               alt='school logo'
               loading='lazy'
-              srcSet={`/api/images/users/${school_info?.badge}`}
+              srcSet={ `/images/users/${school_info?.badge}`}
               sx={{
                 width: 150,
                 height: 150,

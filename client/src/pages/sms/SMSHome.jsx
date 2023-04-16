@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Container, Divider, Stack } from '@mui/material';
+import { Container, Divider, } from '@mui/material';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { useNavigate } from 'react-router-dom';
 import { MESSAGE_COLUMNS } from '../../mockup/columns/sessionColumns';
@@ -8,7 +8,6 @@ import { getAllMessages } from '../../api/messageAPI';
 import { EMPTY_IMAGES } from '../../config/images';
 import CustomTitle from '../../components/custom/CustomTitle';
 import sms_icon from '../../assets/images/header/sms_ico.svg';
-import { Delete, Edit } from '@mui/icons-material';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import SMSView from './layout/SMSView';
 const SMSHome = () => {
@@ -28,9 +27,9 @@ const SMSHome = () => {
       },
     });
   };
-  const handleDelete = (data) => {
-    console.log(data);
-  };
+  // const handleDelete = (data) => {
+  //   console.log(data);
+  // };
 
   // const columns = [
   //   ...MESSAGE_COLUMNS,

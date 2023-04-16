@@ -6,7 +6,7 @@ export const getAllPreviousLevels = async (session) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/levels/previous`,
+      url:  `/levels/previous`,
       params: session,
     });
 
@@ -19,7 +19,7 @@ export const getAllCurrentLevels = async (sessionId, termId) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/current-levels`,
+      url:  `/current-levels`,
       params: {
         sessionId,
         termId,
@@ -35,7 +35,7 @@ export const getCurrentLevel = async (id) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/current-levels/current`,
+      url:  `/current-levels/current`,
       params: {
         currentLevelId: id,
       },
@@ -51,7 +51,7 @@ export const getAllStudentsBySession = async (session, type) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `/api/levels/students/all`,
+      url:  `/levels/students/all`,
       data: {
         sessionId: session.sessionId,
         termId: session.termId,
@@ -68,7 +68,7 @@ export const getStudentByLevel = async (session) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `/api/current-levels/student`,
+      url:  `/current-levels/student`,
       data: {
         ...session,
       },
@@ -83,7 +83,7 @@ export const getStudentsByLevel = async (session) => {
   try {
     const res = await axios({
       method: "GET",
-      url: `/api/current-levels/students`,
+      url:  `/current-levels/students`,
       data: {
         ...session,
       },
@@ -99,7 +99,7 @@ export const postCurrentLevel = async (newLevel) => {
   try {
     const res = await axios({
       method: "POST",
-      url: `/api/current-levels`,
+      url:  `/current-levels`,
       data: newLevel,
     });
 
@@ -113,7 +113,7 @@ export const putCurrentLevel = async (updatedLevel) => {
   try {
     const res = await axios({
       method: "PUT",
-      url: `/api/current-levels`,
+      url:  `/current-levels`,
       data: updatedLevel,
     });
 
@@ -127,7 +127,7 @@ export const deleteCurrentLevel = async (id) => {
   try {
     const res = await axios({
       method: "DELETE",
-      url: `/api/current-levels`,
+      url:  `/current-levels`,
       params: {
         _id: id,
       },
