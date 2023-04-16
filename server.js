@@ -46,22 +46,22 @@ app.use(
 
 //static path
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //routes
 // app.use("/user", userRoute);
-app.use('/api/sessions', sessionRoute);
-app.use('/api/terms', termRoute);
-app.use('/api/users', userRoute);
-app.use('/api/students', studentRoute);
-app.use('/api/parents', parentRoute);
-app.use('/api/teachers', teacherRoute);
-app.use('/api/levels', levelRoute);
-app.use('/api/examinations', examinationRoute);
-app.use('/api/fees', feeRoute);
-app.use('/api/current-fees', currentFeeRoute);
-app.use('/api/messages', messageRoute);
-app.use('/api/attendances', attendanceRoute);
+app.use('/sessions', sessionRoute);
+app.use('/terms', termRoute);
+app.use('/users', userRoute);
+app.use('/students', studentRoute);
+app.use('/parents', parentRoute);
+app.use('/teachers', teacherRoute);
+app.use('/levels', levelRoute);
+app.use('/examinations', examinationRoute);
+app.use('/fees', feeRoute);
+app.use('/current-fees', currentFeeRoute);
+app.use('/messages', messageRoute);
+app.use('/attendances', attendanceRoute);
 
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

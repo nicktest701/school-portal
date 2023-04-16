@@ -1,0 +1,1 @@
+import{j as e,S as n}from"./index-e9a2800d.js";const o=({children:t})=>e(n,{spacing:2,direction:{xs:"column",sm:"row"},paddingY:1,justifyContent:{xs:"center",md:"space-between"},alignItems:"center",children:t});export{o as C};
