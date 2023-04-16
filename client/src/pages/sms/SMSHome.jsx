@@ -32,31 +32,31 @@ const SMSHome = () => {
     console.log(data);
   };
 
-  const columns = [
-    ...MESSAGE_COLUMNS,
-    {
-      title: '',
-      field: null,
-      render: (rowData) => {
-        return (
-          <Stack direction='row' spacing={3}>
-            <Edit
-              className='ico'
-              onClick={() => handleView(rowData)}
-              title='Edit'
-              titleAccess='Edit'
-            />
-            <Delete
-              className='ico'
-              onClick={() => handleDelete(rowData)}
-              title='Delete'
-              titleAccess='Delete'
-            />
-          </Stack>
-        );
-      },
-    },
-  ];
+  // const columns = [
+  //   ...MESSAGE_COLUMNS,
+  //   {
+  //     title: '',
+  //     field: null,
+  //     render: (rowData) => {
+  //       return (
+  //         <Stack direction='row' spacing={3}>
+  //           <Edit
+  //             className='ico'
+  //             onClick={() => handleView(rowData)}
+  //             title='Edit'
+  //             titleAccess='Edit'
+  //           />
+  //           <Delete
+  //             className='ico'
+  //             onClick={() => handleDelete(rowData)}
+  //             title='Delete'
+  //             titleAccess='Delete'
+  //           />
+  //         </Stack>
+  //       );
+  //     },
+  //   },
+  // ];
 
   return (
     <Container>

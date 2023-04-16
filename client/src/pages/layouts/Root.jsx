@@ -39,7 +39,7 @@ const SchoolSession = lazy(() => import('../SchoolSession'));
 const StudentAcademicsReport = lazy(() =>
   import('../student/StudentAcademicsReport')
 );
-const StudentFeesReport = lazy(() => import('../student/StudentFeesReport'));
+// const StudentFeesReport = lazy(() => import('../student/StudentFeesReport'));
 const FeeHome = lazy(() => import('../fees/FeeHome'));
 const FeeMakePayment = lazy(() => import('../fees/FeeMakePayment'));
 const FeeHistory = lazy(() => import('../fees/FeeHistory'));
@@ -164,14 +164,14 @@ const Root = () => {
               }
               path='exam/:examsId'
             />
-            <Route
+            {/* <Route
               element={
                 <Suspense fallback={<Loader />}>
                   <StudentFeesReport />
                 </Suspense>
               }
               path='fee/:studentId'
-            />
+            /> */}
           </Route>
 
           {/* Teacher */}

@@ -8,13 +8,10 @@ import {
   DialogContent,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-
 import { LoadingButton } from '@mui/lab';
 import CustomFormControl from '../../../components/inputs/CustomFormControl';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
-import { postStudent } from '../../../api/studentAPI';
 import { StudentContext } from '../../../context/providers/StudentProvider';
 import { parentValidationSchema } from '../../../config/validationSchema';
 import { SchoolSessionContext } from '../../../context/providers/SchoolSessionProvider';

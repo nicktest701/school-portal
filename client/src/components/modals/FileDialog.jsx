@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -7,17 +7,21 @@ import {
   DialogTitle,
   Typography,
   useTheme,
-} from "@mui/material";
-import _ from "lodash";
-import Swal from "sweetalert2";
-import LoadingButton from "@mui/lab/LoadingButton";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import MaterialTable from "material-table";
-import { tableIcons } from "../../config/tableIcons";
-import { useLocation } from "react-router-dom";
-import { postManyStudents } from "../../api/studentAPI";
-import { UserContext } from "../../context/providers/userProvider";
+} from '@mui/material';
+import _ from 'lodash';
+import Swal from 'sweetalert2';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import MaterialTable from 'material-table';
+import { tableIcons } from '../../config/tableIcons';
+import { useLocation } from 'react-router-dom';
+import { postManyStudents } from '../../api/studentAPI';
+import { UserContext } from '../../context/providers/userProvider';
+import {
+  alertError,
+  alertSuccess,
+} from '../../context/actions/globalAlertActions';
 
 function FileDialog() {
   const {
@@ -50,14 +54,14 @@ function FileDialog() {
   //CLOSE File Dialog
   const handleCloseDialog = () => {
     Swal.fire({
-      title: "Exiting",
-      text: "Do you want to exit?",
+      title: 'Exiting',
+      text: 'Do you want to exit?',
       confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
-        schoolSessionDispatch({ type: "closeFileDialog" });
+        schoolSessionDispatch({ type: 'closeFileDialog' });
       }
     });
   };
@@ -78,8 +82,8 @@ function FileDialog() {
     };
 
     Swal.fire({
-      title: "Importing students",
-      text: "Do you want to import ?",
+      title: 'Importing students',
+      text: 'Do you want to import ?',
       confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
@@ -87,14 +91,14 @@ function FileDialog() {
       if (isConfirmed) {
         mutateAsync(data, {
           onSettled: () => {
-            queryClient.invalidateQueries(["current-students"]);
+            queryClient.invalidateQueries(['current-students']);
             setIsLoading(false);
           },
           onSuccess: (data) => {
-            //console.log(data);
+            schoolSessionDispatch(alertSuccess(data));
           },
           onError: (error) => {
-            //console.log(error);
+            schoolSessionDispatch(alertError(error));
           },
         });
       }
@@ -108,7 +112,7 @@ function FileDialog() {
       <DialogActions sx={{ paddingX: 3 }}>
         <Button onClick={handleCloseDialog}>Cancel</Button>
         <LoadingButton
-          variant="contained"
+          variant='contained'
           loading={isLoading}
           onClick={handlePostStudents}
         >
@@ -120,7 +124,7 @@ function FileDialog() {
           <Typography>No data available</Typography>
         ) : (
           <MaterialTable
-            title="Students"
+            title='Students'
             isLoading={isLoading}
             icons={tableIcons}
             columns={columns}

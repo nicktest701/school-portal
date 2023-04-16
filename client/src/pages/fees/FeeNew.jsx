@@ -11,7 +11,8 @@ import EditFee from './EditFee';
 import { EMPTY_IMAGES } from '../../config/images';
 import ViewLevelFeeInfo from './ViewLevelFeeInfo';
 import fee_icon from '../../assets/images/header/fee_ico.svg';
-import { UserContext } from '../../context/providers/UserProvider';
+import { UserContext } from '../../context/providers/userProvider';
+
 
 const FeeNew = () => {
   const {
@@ -24,7 +25,7 @@ const FeeNew = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const [openAddFee, setOpenAddFee] = useState(false);
-  const [msg, setMsg] = useState({
+  const [_msg, setMsg] = useState({
     severity: '',
     text: '',
   });

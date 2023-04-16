@@ -1,20 +1,13 @@
 import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
-import {
-  FormLabel,
-  useTheme,
-  Input,
-  Typography,
-  Container,
-  Stack,
-} from '@mui/material';
+import { FormLabel, Input, Typography } from '@mui/material';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import { tableIcons } from '../../config/tableIcons';
 import { Add, Delete, Refresh } from '@mui/icons-material';
 import PublishIcon from '@mui/icons-material/Publish';
 import PropTypes from 'prop-types';
 import { Button } from '@mui/material';
-import { InfinitySpin } from 'react-loader-spinner';
+// import { InfinitySpin } from 'react-loader-spinner';
 import AnimatedContainer from '../animations/AnimatedContainer';
 import { readXLSX } from '../../config/readXLSX';
 import { readCSV } from '../../config/readCSV';
@@ -51,7 +44,7 @@ function CustomizedMaterialTable({
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
-  const { palette } = useTheme();
+
 
   const CSV_FILE_TYPE = 'text/csv';
   const XLSX_FILE_TYPE =
@@ -88,7 +81,7 @@ function CustomizedMaterialTable({
 
   return (
     <AnimatedContainer>
-      <Box paddingY={2} marginY={1} width='100%'>
+      <Box paddingY={2} marginY={1}>
         <MaterialTable
           isLoading={isLoading}
           title={
@@ -108,6 +101,7 @@ function CustomizedMaterialTable({
             paging: data === undefined || data.length === 0 ? false : true,
             pageSize: 5,
             pageSizeOptions: [5, 10, 20, 30, 40, 50],
+            paginationType: 'stepped',
             actionsColumnIndex: -1,
             overflowY: 'scroll',
             header: data === undefined || data.length === 0 ? false : true,

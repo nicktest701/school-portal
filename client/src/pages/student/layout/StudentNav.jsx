@@ -1,6 +1,6 @@
 import React from 'react';
-import { AppBar, Container, IconButton, Stack, Toolbar } from '@mui/material';
-import Menu from '@mui/icons-material/Menu';
+import { AppBar, Container, Stack, Toolbar } from '@mui/material';
+
 import Back from '../../../components/Back';
 import NavLinkItem from '../../../components/list/NavLinkItem';
 
@@ -31,12 +31,7 @@ const StudentNav = () => {
             <NavLinkItem to='view' color='secondary' text='View Student' />
             <NavLinkItem to='settings' color='secondary' text='Settings' />
           </Container>
-          {/* <IconButton
-            color='inherit'
-            sx={{ display: { xs: 'block', md: 'none' } }}
-          >
-            <Menu />
-          </IconButton> */}
+      
         </Toolbar>
       </AppBar>
     </>

@@ -25,7 +25,7 @@ const Birthday = () => {
           subheader={
             <Stack direction='row'>
               <img alt='db' src={db} style={{ width: 30, height: 30 }} />
-              <Typography>Today's Birthday</Typography>
+              <Typography>Today&lsquo;s Birthday</Typography>
             </Stack>
           }
         >

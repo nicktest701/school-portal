@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Container, Divider, Tab } from '@mui/material';
 import CustomTitle from '../../components/custom/CustomTitle';
 import settings_icon from '../../assets/images/header/settings_ico.svg';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import SchoolSettingsTab from './SchoolSettingsTab';
 
-const Settings = (props) => {
+const Settings = () => {
   const [tab, setTab] = useState('1');
   return (
     <Container sx={{ paddingY: 2 }}>

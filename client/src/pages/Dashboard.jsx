@@ -15,11 +15,7 @@ import {
 } from '@mui/material';
 import Swal from 'sweetalert2';
 import { Scrollbars } from 'react-custom-scrollbars';
-import {
-  EditRounded,
-  NotificationsRounded,
-  Person3,
-} from '@mui/icons-material';
+import { EditRounded, NotificationsRounded } from '@mui/icons-material';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import { useQuery } from '@tanstack/react-query';
 import { generateNewCurrentLevelDetailsFromLevels } from '../api/levelAPI';
@@ -32,7 +28,6 @@ import '../theme/Calendar.css';
 import { UserContext } from '../context/providers/userProvider';
 import HorizontalSidebar from './layouts/HorizontalSidebar';
 import DashboardCardsContainer from '../components/cards/DashboardCardsContainer';
-import UpdateUserProfile from '../components/dialog/UpdateUserProfile';
 
 const Dashboard = () => {
   const {
@@ -92,7 +87,8 @@ const Dashboard = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: 2,
+          padding: 1,
+          overscrollBehaviorInline: 'contain',
         }}
       >
         <Sidebar onLogOut={handleLogOut} />
@@ -192,7 +188,6 @@ const Dashboard = () => {
       <CustomParticle />
 
       <ViewUserProfile open={openUserProfile} setOpen={setOpenUserProfile} />
-   
     </>
   );
 };

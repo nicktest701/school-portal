@@ -2,7 +2,6 @@ import { LoadingButton } from "@mui/lab";
 import { DialogContent } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
@@ -75,7 +74,6 @@ function UserAdd({ open, setOpen }) {
           setFieldValue,
           handleChange,
           handleSubmit,
-          handleReset,
           isSubmitting,
         }) => {
           const handleLoadFile = (e) => {

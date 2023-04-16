@@ -13,8 +13,6 @@ import "swiper/css/pagination";
 
 import student1 from "../../assets/images/students/student1.jpg";
 import student2 from "../../assets/images/students/student2.jpg";
-import student3 from "../../assets/images/students/student3.jpg";
-import student4 from "../../assets/images/students/student4.jpg";
 import student5 from "../../assets/images/students/student5.jpg";
 import student6 from "../../assets/images/students/student6.jpg";
 import student7 from "../../assets/images/students/student7.jpg";

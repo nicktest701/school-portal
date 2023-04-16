@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { DeleteRounded, Edit, MessageRounded } from '@mui/icons-material';
+import { Edit, MessageRounded } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';

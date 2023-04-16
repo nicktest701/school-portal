@@ -6,7 +6,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Stack,
+
   Typography,
 } from '@mui/material';
 import { PropTypes } from 'prop-types';
@@ -18,7 +18,7 @@ import { getAttendanceHistory } from '../../api/attendanceAPI';
 import moment from 'moment';
 
 function AttendanceHistory({ open, setOpen }) {
-  const { id, type } = useParams();
+  const { id,  } = useParams();
 
   const attendanceHistory = useQuery({
     queryKey: ['attendance-history'],

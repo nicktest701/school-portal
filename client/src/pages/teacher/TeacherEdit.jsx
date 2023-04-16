@@ -2,13 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import Divider from "@mui/material/Divider";
-import FormLabel from "@mui/material/FormLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -24,7 +21,6 @@ import {
   alertSuccess,
 } from "../../context/actions/globalAlertActions";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { Edit } from "@mui/icons-material";
 import { uploadProfileImage } from "../../api/sessionAPI";
 import moment from "moment";
 import CustomDatePicker from "../../components/inputs/CustomDatePicker";

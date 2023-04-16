@@ -18,7 +18,6 @@ import { putStudent } from "../../api/studentAPI";
 import CustomFormControl from "../../components/inputs/CustomFormControl";
 import { studentEditValidationSchema } from "../../config/validationSchema";
 import { StudentContext } from "../../context/providers/StudentProvider";
-import Edit from "@mui/icons-material/Edit";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import {
   alertError,

@@ -7,49 +7,17 @@ import {
   Button,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-
 import React, { useContext, useState } from 'react';
 import Transition from '../animations/Transition';
 import CustomDialogTitle from './CustomDialogTitle';
-import CustomImageChooser from '../inputs/CustomImageChooser';
-import { uploadProfileImage } from '../../api/sessionAPI';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import {
-  alertError,
-  alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import { useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '../../context/providers/userProvider';
 import UpdateUserProfile from './UpdateUserProfile';
 function ViewUserProfile({ open, setOpen }) {
   const [openUpdateUserProfile, setOpenUpdateUserProfile] = useState(false);
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+
   const {
     userState: { user },
   } = useContext(UserContext);
-  const queryClient = useQueryClient();
-  const [profileImage, setProfileImage] = useState(
-    `/api/images/users/${user?.profile}`
-  );
-
-  const uploadProfile = async (e) => {
-    const profile = e.target?.files[0];
-    const info = {
-      _id: user?.id,
-      profile,
-      type: 'users',
-    };
-
-    try {
-      const data = await uploadProfileImage(info);
-      schoolSessionDispatch(alertSuccess(data));
-      setProfileImage(URL.createObjectURL(profile));
-    } catch (error) {
-      schoolSessionDispatch(alertError(error));
-    }
-    queryClient.invalidateQueries(['users']);
-    queryClient.invalidateQueries(['verify-user']);
-  };
 
   const handleOpenUpdateUserProfile = () => {
     setOpenUpdateUserProfile(true);
@@ -66,8 +34,10 @@ function ViewUserProfile({ open, setOpen }) {
       <DialogContent>
         <Stack justifyContent='center' alignItems='center' rowGap={2}>
           <Stack sx={{ position: 'relative' }}>
-            <Avatar src={profileImage} sx={{ height: 75, width: 75 }} />
-            {/* <CustomImageChooser handleImageUpload={uploadProfile} /> */}
+            <Avatar
+              src={`/api/images/users/${user?.profile}`}
+              sx={{ height: 75, width: 75 }}
+            />
           </Stack>
           <Typography
             variant='h6'
@@ -95,6 +65,5 @@ ViewUserProfile.propTypes = {
   open: PropTypes.bool,
   setOpen: PropTypes.func,
 };
-
 
 export default React.memo(ViewUserProfile);

@@ -1,10 +1,10 @@
 import React from "react";
-import Content from "./Content";
 
-const Main = ({ children }) => {
+
+const Main = () => {
   return (
     <main>
-      <Content>{children}</Content>
+      {/* <Content>{children}</Content> */}
     </main>
   );
 };

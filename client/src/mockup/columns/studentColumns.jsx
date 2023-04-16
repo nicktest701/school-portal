@@ -1,4 +1,4 @@
-import { CircleRounded, Label } from '@mui/icons-material';
+import { CircleRounded, } from '@mui/icons-material';
 import {
   Avatar,
   Button,
@@ -188,7 +188,7 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
   {
     field: 'status',
     title: 'Status',
-    render: (rowData) => {
+    render: () => {
       return (
         <RadioGroup
           row

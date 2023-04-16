@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, IconButton } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 
 import DrawerItem from '../../components/DrawerItem';
 import { ExitToAppSharp } from '@mui/icons-material';
@@ -8,15 +8,15 @@ import PropTypes from 'prop-types';
 
 const HorizontalSidebar = ({ onLogOut }) => {
   return (
-    <Container
+    <Box
       sx={{
-        width: 300,
+        width: 200,
         display: { xs: 'flex', sm: 'none' },
         columnGap: 1,
         overflowX: 'scroll',
         overscrollBehaviorInline: 'contain',
         '&::-webkit-scrollbar': {
-          width: '10px',
+          width: 'none',
         },
         paddingY: 1,
       }}
@@ -46,7 +46,7 @@ const HorizontalSidebar = ({ onLogOut }) => {
         <ExitToAppSharp />
       </IconButton>
       {/* </Stack> */}
-    </Container>
+    </Box>
   );
 };
 

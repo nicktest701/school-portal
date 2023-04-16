@@ -19,7 +19,6 @@ import {
   alertSuccess,
 } from "../../context/actions/globalAlertActions";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { Edit } from "@mui/icons-material";
 import { uploadProfileImage } from "../../api/sessionAPI";
 import moment from "moment";
 import CustomDatePicker from "../../components/inputs/CustomDatePicker";

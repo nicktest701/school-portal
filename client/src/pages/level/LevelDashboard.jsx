@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { PersonRounded, StyleOutlined } from '@mui/icons-material';
+import { PersonRounded,} from '@mui/icons-material';
 import ClassIcon from '@mui/icons-material/Class';
 import SubjectIcon from '@mui/icons-material/Subject';
 import  Person3  from '@mui/icons-material/Person3';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Stack, Tab, Typography } from '@mui/material';
-import LevelDashboardCard from '../../components/cards/LevelDashboardCard';
-import Back from '../../components/Back';
+import { Box, Container, Divider, Tab, Typography } from '@mui/material';
 import LevelTab from './LevelTab';
 import useLevel from '../../components/hooks/useLevel';
 import CustomTitle from '../../components/custom/CustomTitle';

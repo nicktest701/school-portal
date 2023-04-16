@@ -11,6 +11,7 @@ import { currencyFormatter } from '../../config/currencyFormatter';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import Transition from '../../components/animations/Transition';
 import { UserContext } from '../../context/providers/userProvider';
+import fee_icon from '../../assets/images/header/fee_ico.svg';
 function FeePaymentHistory({ open, setOpen }) {
   const {
     userState: { session },
@@ -63,7 +64,8 @@ function FeePaymentHistory({ open, setOpen }) {
 
         <CustomizedMaterialTable
           isLoading={fees.isLoading}
-          title={`Fee Payment made on ${date.format('dddd,Do MMMM YYYY')}`}
+          icon={fee_icon}
+          title={`Fee Payment on ${date.format('LL')}`}
           handleRefresh={fees.refetch}
           columns={[
             {

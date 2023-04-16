@@ -1,12 +1,9 @@
-import { Container, IconButton, Stack, Typography } from '@mui/material';
+import { Container,  Stack, Typography } from '@mui/material';
 import React from 'react';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-
 import about from '../assets/images/empty/about_bg.svg';
-import { useNavigate } from 'react-router-dom';
 import Back from '../components/Back';
 const About = () => {
-  const navigate = useNavigate();
+
 
   return (
     <div

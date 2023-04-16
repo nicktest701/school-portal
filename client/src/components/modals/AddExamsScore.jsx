@@ -3,7 +3,6 @@ import {
   Stack,
   Dialog,
   DialogContent,
-  DialogTitle,
   DialogActions,
   Button,
   TextField,
@@ -93,7 +92,7 @@ const AddExamsScore = ({ open, setOpen, levelId }) => {
       onSettled: () => {
         queryClient.invalidateQueries(["student-records"]);
       },
-      onSuccess: (exams) => {
+      onSuccess: () => {
         setMsgs({
           severity: "info",
           text: "Student Scores updated successfully!!!",
@@ -116,7 +115,6 @@ const AddExamsScore = ({ open, setOpen, levelId }) => {
           touched,
           handleChange,
           handleSubmit,
-          isSubmitting,
           setFieldValue,
         }) => {
           return (

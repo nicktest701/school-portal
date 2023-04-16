@@ -4,7 +4,6 @@ import React, { useContext, useState } from 'react';
 
 import { LoadingButton } from '@mui/lab';
 import CustomImageChooser from '../../components/inputs/CustomImageChooser';
-import { uploadProfileImage } from '../../api/sessionAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import {
   alertError,
@@ -102,7 +101,7 @@ function SchoolSettingsTab() {
                 <CustomImageChooser handleImageUpload={uploadProfile} />
               </Box>
 
-              <Stack padding={2} spacing={2}>
+              <Stack  spacing={2}>
                 <TextField
                   label='School Name'
                   placeholder='School Name'

@@ -22,7 +22,8 @@ import student_icon from '../../assets/images/header/student_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
 import CustomTitle from '../../components/custom/CustomTitle';
 import exams_icon from '../../assets/images/header/exams_ico.svg';
-import { UserContext } from '../../context/providers/UserProvider';
+import { UserContext } from '../../context/providers/userProvider';
+
 
 const ExamsLevel = () => {
   const {

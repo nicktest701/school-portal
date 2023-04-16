@@ -29,9 +29,7 @@ const ViewExamsRecord = () => {
     queryKey: ['student-exams-records', examsRecord.id],
     queryFn: () => getExams(examsRecord.id),
     enabled: !!examsRecord.id,
-    onSuccess: (studentRecords) => {
-      //console.log(studentRecords);
-    },
+ 
   });
 
   //close dialog

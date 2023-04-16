@@ -28,12 +28,11 @@ import CustomDatePicker from '../../components/inputs/CustomDatePicker';
 import CustomYearPicker from '../../components/inputs/CustomYearPicker';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 const AddSession = () => {
-  const currentYear = new Date().getFullYear();
-  const queryClient = useQueryClient();
-
+  
   const { schoolSessionState, schoolSessionDispatch } =
-    useContext(SchoolSessionContext);
-
+  useContext(SchoolSessionContext);
+  
+  const queryClient = useQueryClient();
   const [startDate, setStartDate] = useState(moment());
   const [endDate, setEndDate] = useState(moment());
 
@@ -43,12 +42,11 @@ const AddSession = () => {
   //ADD New Session
   const { mutateAsync } = useMutation(postTerm);
 
+  const currentYear = new Date().getFullYear();
   const onSubmit = (values, options) => {
     values.academicYear = `${startYear || currentYear}/${
       endYear || currentYear
     }`;
-
-  
 
     mutateAsync(values, {
       onSettled: () => {

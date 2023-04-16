@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { PolarArea } from 'react-chartjs-2';
 
-const StudentDashboardPieChart = ({ students, females, males }) => {
+const StudentDashboardPieChart = ({ females, males }) => {
   const { palette } = useTheme();
   return (
     <Card>

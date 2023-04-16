@@ -4,12 +4,10 @@ import Avatar from '@mui/material/Avatar';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import Divider from '@mui/material/Divider';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation,  useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import { putUser } from '../../api/userAPI';
@@ -21,7 +19,7 @@ import {
 } from '../../context/actions/globalAlertActions';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import { uploadProfileImage } from '../../api/sessionAPI';
-import moment from 'moment';
+
 
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import CustomImageChooser from '../../components/inputs/CustomImageChooser';

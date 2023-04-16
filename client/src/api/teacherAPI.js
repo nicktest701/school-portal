@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_BASE_NET_LOCAL;
+ 
 
 //Get all Teachers
 export const getAllTeachers = async () => {

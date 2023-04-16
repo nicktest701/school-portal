@@ -1,60 +1,61 @@
-import { Button, Container, Typography } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import React, { useContext } from "react";
-import { getCurrentExams } from "../../api/ExaminationAPI";
-import _ from "lodash";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-
+import { Button, Container, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import React, { useContext } from 'react';
+import { getCurrentExams } from '../../api/ExaminationAPI';
+import _ from 'lodash';
+import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import student_icon from '../../assets/images/header/student_ico.svg';
 function ExamsScoreList({ session }) {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const examsDetails = useQuery({
-    queryKey: ["exams-scores"],
+    queryKey: ['exams-scores'],
     queryFn: () => getCurrentExams(session),
     enabled: !!session?.sessionId,
     onSuccess: (payload) => {
       if (!_.isEmpty(payload)) {
         schoolSessionDispatch({
-          type: "setReportData",
+          type: 'setReportData',
           payload,
         });
       }
     },
   });
   const columns = [
-    { field: "subject", title: "Subject" },
-    { field: "classScore", title: "Class Score" },
-    { field: "examsScore", title: "Exams Score" },
-    { field: "totalScore", title: "Total Score" },
-    { field: "grade", title: "Grade" },
-    { field: "remarks", title: "Remarks" },
+    { field: 'subject', title: 'Subject' },
+    { field: 'classScore', title: 'Class Score' },
+    { field: 'examsScore', title: 'Exams Score' },
+    { field: 'totalScore', title: 'Total Score' },
+    { field: 'grade', title: 'Grade' },
+    { field: 'remarks', title: 'Remarks' },
   ];
 
   //OPEN Report
   const handleOpenReport = () => {
     schoolSessionDispatch({
-      type: "openViewReport",
+      type: 'openViewReport',
     });
   };
 
   return (
     <Container>
       <Button
-        variant="contained"
+        variant='contained'
         disabled={_.isEmpty(examsDetails.data) ? true : false}
         sx={{
-          justifySelf: "flex-end",
+          justifySelf: 'flex-end',
         }}
         onClick={handleOpenReport}
       >
         View Report
       </Button>
-      <Typography textAlign="right" variant="h6">
-        Overall Score - {_.sumBy(examsDetails?.data?.scores, "totalScore") ?? 0}
+      <Typography textAlign='right' variant='h6'>
+        Overall Score - {_.sumBy(examsDetails?.data?.scores, 'totalScore') ?? 0}
       </Typography>
       <CustomizedMaterialTable
-        title={examsDetails?.data?.fullName || ""}
+        icon={student_icon}
+        title={examsDetails?.data?.fullName || ''}
         isLoading={examsDetails.isLoading}
         columns={columns}
         data={examsDetails?.data?.scores}

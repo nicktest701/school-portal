@@ -14,7 +14,7 @@ function useLevelById(id) {
       setRollNumber(level?.students?.length);
     },
     onError: (error) => {
-      //console.log(error);
+      console.log(error);
     },
   });
 
