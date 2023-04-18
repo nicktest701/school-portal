@@ -7,7 +7,7 @@ export const getAllCurrentLevelDetails = async (sessionId, termId) => {
   try {
     const res = await axios({
       method: "GET",
-      url:  `/current-level-details`,
+      url:  `${import.meta.env.VITE_BASE_URL}/current-level-details`,
       params: {
         sessionId,
         termId,
@@ -24,7 +24,7 @@ export const postCurrentLevelDetails = async (newLevel) => {
   try {
     const res = await axios({
       method: "POST",
-      url:  `/current-level-details`,
+      url:  `${import.meta.env.VITE_BASE_URL}/current-level-details`,
       data: newLevel,
     });
 
@@ -38,7 +38,7 @@ export const putCurrentLevelDetails = async (updatedLevel) => {
   try {
     const res = await axios({
       method: "PUT",
-      url:  `/current-level-details`,
+      url:  `${import.meta.env.VITE_BASE_URL}/current-level-details`,
       data: updatedLevel,
     });
 
@@ -53,7 +53,7 @@ export const getTeacherLevel = async (assignedLevelDetails) => {
   try {
     const res = await axios({
       method: "POST",
-      url:  `/levels/assign-teacher`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/assign-teacher`,
       data: assignedLevelDetails,
     });
 
@@ -67,7 +67,7 @@ export const assignTeacherLevel = async (updatedLevel) => {
   try {
     const res = await axios({
       method: "PUT",
-      url:  `/levels/assign-teacher`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/assign-teacher`,
       data: updatedLevel,
     });
 
@@ -81,7 +81,7 @@ export const unassignTeacherLevel = async (updatedLevel) => {
   try {
     const res = await axios({
       method: "PUT",
-      url:  `/levels/unassign-teacher`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/unassign-teacher`,
       data: {
         _id: updatedLevel,
       },
@@ -97,7 +97,7 @@ export const putCurrentSubjectsByCurrentLevelDetails = async (newSubjects) => {
   try {
     const res = await axios({
       method: "PUT",
-      url:  `/current-level-details/subjects`,
+      url:  `${import.meta.env.VITE_BASE_URL}/current-level-details/subjects`,
       data: newSubjects,
     });
 
@@ -111,7 +111,7 @@ export const deleteCurrentLevelDetails = async (id) => {
   try {
     const res = await axios({
       method: "DELETE",
-      url:  `/current-level-details`,
+      url:  `${import.meta.env.VITE_BASE_URL}/current-level-details`,
       params: {
         _id: id,
       },

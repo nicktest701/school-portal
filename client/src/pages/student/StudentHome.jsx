@@ -62,11 +62,11 @@ const StudentHome = () => {
               paddingY: 4,
             }}
           >
-            <StudentDashboardBarChart
-              data={studentDetails?.data?.noOfStudentsForEachTerm}
-            />
             <StudentDashboardLineChart
               data={studentDetails?.data?.noOfStudentsInEachLevel}
+            />
+            <StudentDashboardBarChart
+              data={studentDetails?.data?.noOfStudentsForEachTerm}
             />
             <StudentDashboardPieChart {...studentDetails?.data} />
 

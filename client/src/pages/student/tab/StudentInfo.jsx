@@ -1,39 +1,39 @@
-import React, { useContext, useEffect, useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import Container from "@mui/material/Container";
-import Divider from "@mui/material/Divider";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import FormLabel from "@mui/material/FormLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import Autocomplete from "@mui/material/Autocomplete";
-import Input from "@mui/material/Input";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Box from "@mui/material/Box";
-import PublishIcon from "@mui/icons-material/Publish";
-import LoadingButton from "@mui/lab/LoadingButton";
-import CustomFormControl from "../../../components/inputs/CustomFormControl";
-import { Formik } from "formik";
-import { studentInitialValues } from "../../../config/initialValues";
-import { StudentContext } from "../../../context/providers/StudentProvider";
-import { studentValidationSchema } from "../../../config/validationSchema";
-import useLevel from "../../../components/hooks/useLevel";
-import { SchoolSessionContext } from "../../../context/providers/SchoolSessionProvider";
-import { readCSV } from "../../../config/readCSV";
-import { readXLSX } from "../../../config/readXLSX";
-import PreviousSession from "../PreviousSession";
-import { NoteRounded } from "@mui/icons-material";
-import CustomDatePicker from "../../../components/inputs/CustomDatePicker";
-import moment from "moment";
-import { NATIONALITY } from "../../../mockup/data/nationality";
-import { TOWNS } from "../../../mockup/data/towns";
+import React, { useContext, useEffect, useState } from 'react';
+import Avatar from '@mui/material/Avatar';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import FormLabel from '@mui/material/FormLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import Autocomplete from '@mui/material/Autocomplete';
+import Input from '@mui/material/Input';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Box from '@mui/material/Box';
+import PublishIcon from '@mui/icons-material/Publish';
+import LoadingButton from '@mui/lab/LoadingButton';
+import CustomFormControl from '../../../components/inputs/CustomFormControl';
+import { Formik } from 'formik';
+import { studentInitialValues } from '../../../config/initialValues';
+import { StudentContext } from '../../../context/providers/StudentProvider';
+import { studentValidationSchema } from '../../../config/validationSchema';
+import useLevel from '../../../components/hooks/useLevel';
+import { SchoolSessionContext } from '../../../context/providers/SchoolSessionProvider';
+import { readCSV } from '../../../config/readCSV';
+import { readXLSX } from '../../../config/readXLSX';
+import PreviousSession from '../PreviousSession';
+import { NoteRounded } from '@mui/icons-material';
+import CustomDatePicker from '../../../components/inputs/CustomDatePicker';
+import moment from 'moment';
+import { NATIONALITY } from '../../../mockup/data/nationality';
+import { TOWNS } from '../../../mockup/data/towns';
 
-const CSV_FILE_TYPE = "text/csv";
+const CSV_FILE_TYPE = 'text/csv';
 const XLSX_FILE_TYPE =
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-const XLS_FILE_TYPE = "application/vnd.ms-excel";
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const XLS_FILE_TYPE = 'application/vnd.ms-excel';
 
 const StudentInfo = ({ setTab, setMsg, msg }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -45,7 +45,7 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
   const [initValues, setInitValues] = useState(studentInitialValues);
   const [dob, setDob] = useState(null);
   useEffect(() => {
-    const student = JSON.parse(localStorage.getItem("@student"));
+    const student = JSON.parse(localStorage.getItem('@student'));
     if (student) {
       setInitValues(student);
       return;
@@ -55,18 +55,18 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
   const { levelsOption } = useLevel();
 
   const onSubmit = (values, options) => {
-    values.dateofbirth = moment(dob).format("L");
+    values.dateofbirth = moment(dob).format('L');
     // //console.log(values);
 
     try {
-      studentDispatch({ type: "addNewStudent", payload: values });
-      localStorage.setItem("@student", JSON.stringify(values));
+      studentDispatch({ type: 'addNewStudent', payload: values });
+      localStorage.setItem('@student', JSON.stringify(values));
 
-      setTab("2");
+      setTab('2');
       options.setSubmitting(false);
     } catch (error) {
       setMsg({
-        severity: "error",
+        severity: 'error',
         text: `Could not save student info.Try again!!!.
               In this problem persists,try contacting your administrator!!!`,
       });
@@ -97,8 +97,8 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
         }
         if (students.length !== 0) {
           schoolSessionDispatch({
-            type: "openAddStudentFileDialog",
-            payload: { data: students, type: "file" },
+            type: 'openAddStudentFileDialog',
+            payload: { data: students, type: 'file' },
           });
 
           setIsLoading(false);
@@ -110,38 +110,39 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
   }
   return (
     <>
-      <Container maxWidth="md" sx={{ paddingY: 2, position: "relative" }}>
-        <Typography variant="h4">Student Infomation</Typography>
+      <Container maxWidth='md' sx={{ paddingY: 2, position: 'relative' }}>
+        <Typography variant='h4'>Student Infomation</Typography>
         <Divider />
-        <Typography sx={{ textAlign: "right", paddingY: 2 }}>
+        <Typography sx={{ textAlign: 'right', paddingY: 2 }}>
           Import Student
         </Typography>
-        <Stack direction="row" justifyContent="flex-end" alignItems="center">
+        <Stack direction='row' justifyContent='flex-end' alignItems='center'>
           <ButtonGroup>
             <Button>
               <FormLabel
-                htmlFor="studentFile"
-                title="Import students"
+                htmlFor='studentFile'
+                title='Import students'
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+
                   gap: 1,
-                  color: "primary.main",
+                  color: 'primary.main',
                   fontSize: 13,
-                  cursor: "pointer",
+                  cursor: 'pointer',
                 }}
               >
                 <NoteRounded />
-                <Typography variant="body2">From file</Typography>
+                <Typography variant='body2'>From file</Typography>
 
                 <Input
-                  type="file"
-                  id="studentFile"
-                  name="studentFile"
+                  type='file'
+                  id='studentFile'
+                  name='studentFile'
                   hidden
                   inputProps={{
-                    accept: ".xlsx,.xls,.csv",
+                    accept: '.xlsx,.xls,.csv',
                   }}
                   onChange={(event) => handleLoadFile(event)}
                   onClick={(e) => {
@@ -179,76 +180,79 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
               <Stack padding={2} spacing={1}>
                 <Stack
                   spacing={2}
-                  justifyContent="center"
-                  alignItems="center"
+                  justifyContent='center'
+                  alignItems='center'
                   paddingY={1}
                 >
-                  <Avatar src={profileImg} sx={{ width: 60, height: 60 }} />
+                  <Avatar src={profileImg} sx={{ width: 80, height: 80 }} />
                   <FormLabel
-                    htmlFor="profile"
+                    htmlFor='profile'
                     sx={{
                       padding: 1,
-                      cursor: "pointer",
-                      "&:hover": {
-                        bgcolor: "primary.main",
-                        color: "primary.contrastText",
+                      fontSize: 12,
+                      border: '1px solid black',
+                      borderRadius: 1,
+                      cursor: 'pointer',
+                      '&:hover': {
+                        bgcolor: 'primary.main',
+                        color: 'primary.contrastText',
                       },
                     }}
                   >
                     Upload Image
                   </FormLabel>
                   <input
-                    type="file"
-                    id="profile"
-                    name="profile"
-                    accept=".png,.jpeg,.jpg,.webp"
+                    type='file'
+                    id='profile'
+                    name='profile'
+                    accept='.png,.jpeg,.jpg,.webp'
                     hidden
                     onChange={(e) => {
-                      setFieldValue("profile", e.target.files[0]);
+                      setFieldValue('profile', e.target.files[0]);
                       setProfileImg(URL.createObjectURL(e.target.files[0]));
                     }}
                   />
                 </Stack>
                 <Typography
-                  variant="body2"
-                  color="primary.main"
-                  sx={{ fontWeight: "bold" }}
+                  variant='body2'
+                  color='primary.main'
+                  sx={{ fontWeight: 'bold' }}
                 >
                   Personal information
                 </Typography>
                 <CustomFormControl>
                   <TextField
-                    label="Firstname"
-                    type="text"
+                    label='Firstname'
+                    type='text'
                     fullWidth
-                    size="small"
+                    size='small'
                     value={values.firstname}
-                    onChange={handleChange("firstname")}
+                    onChange={handleChange('firstname')}
                     error={Boolean(touched.firstname && errors.firstname)}
                     helperText={touched.firstname && errors.firstname}
                   />
                   <TextField
-                    label="Surname"
+                    label='Surname'
                     fullWidth
-                    size="small"
+                    size='small'
                     value={values.surname}
-                    onChange={handleChange("surname")}
+                    onChange={handleChange('surname')}
                     error={Boolean(touched.surname && errors.surname)}
                     helperText={touched.surname && errors.surname}
                   />
                   <TextField
-                    label="Othername"
+                    label='Othername'
                     fullWidth
-                    size="small"
+                    size='small'
                     value={values.othername}
-                    onChange={handleChange("othername")}
+                    onChange={handleChange('othername')}
                     error={Boolean(touched.othername && errors.othername)}
                     helperText={touched.othername && errors.othername}
                   />
                 </CustomFormControl>
                 <CustomFormControl>
                   <CustomDatePicker
-                    label="Date of Birth"
+                    label='Date of Birth'
                     date={dob}
                     setDate={setDob}
                     disableFuture={true}
@@ -257,51 +261,51 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
                   />
 
                   <TextField
-                    label="Gender"
+                    label='Gender'
                     select
                     fullWidth
-                    size="small"
+                    size='small'
                     value={values.gender}
-                    onChange={handleChange("gender")}
+                    onChange={handleChange('gender')}
                     error={Boolean(touched.gender && errors.gender)}
                     helperText={touched.gender && errors.gender}
                   >
-                    <MenuItem value="male">male</MenuItem>
-                    <MenuItem value="female">female</MenuItem>
+                    <MenuItem value='male'>male</MenuItem>
+                    <MenuItem value='female'>female</MenuItem>
                   </TextField>
                 </CustomFormControl>
                 <CustomFormControl>
                   <TextField
-                    label="Email"
+                    label='Email'
                     fullWidth
-                    size="small"
+                    size='small'
                     row={3}
                     maxRows={3}
                     value={values.email}
-                    onChange={handleChange("email")}
+                    onChange={handleChange('email')}
                     error={Boolean(touched.email && errors.email)}
                     helperText={touched.email && errors.email}
                   />
                   <TextField
-                    label="Telephone No."
-                    inputMode="tel"
-                    type="tel"
+                    label='Telephone No.'
+                    inputMode='tel'
+                    type='tel'
                     fullWidth
-                    size="small"
+                    size='small'
                     value={values.phonenumber}
-                    onChange={handleChange("phonenumber")}
+                    onChange={handleChange('phonenumber')}
                     error={Boolean(touched.phonenumber && errors.phonenumber)}
                     helperText={touched.phonenumber && errors.phonenumber}
                   />
                 </CustomFormControl>
                 <TextField
-                  label="Address"
+                  label='Address'
                   fullWidth
-                  size="small"
+                  size='small'
                   row={3}
                   maxRows={3}
                   value={values.address}
-                  onChange={handleChange("address")}
+                  onChange={handleChange('address')}
                   error={Boolean(touched.address && errors.address)}
                   helperText={touched.address && errors.address}
                 />
@@ -309,19 +313,19 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    size="small"
+                    size='small'
                     options={TOWNS}
-                    loadingText="Please wait...."
-                    noOptionsText="No Town available"
-                    getOptionLabel={(option) => option || ""}
+                    loadingText='Please wait....'
+                    noOptionsText='No Town available'
+                    getOptionLabel={(option) => option || ''}
                     value={values.residence}
-                    onChange={(e, value) => setFieldValue("residence", value)}
+                    onChange={(e, value) => setFieldValue('residence', value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Residence"
+                        label='Residence'
                         fullWidth
-                        size="small"
+                        size='small'
                         error={Boolean(touched.residence && errors.residence)}
                         helperText={touched.residence && errors.residence}
                       />
@@ -331,19 +335,19 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    size="small"
-                    loadingText="Please wait...."
+                    size='small'
+                    loadingText='Please wait....'
                     options={NATIONALITY}
-                    noOptionsText="No Nationality available"
-                    getOptionLabel={(option) => option || ""}
+                    noOptionsText='No Nationality available'
+                    getOptionLabel={(option) => option || ''}
                     value={values.nationality}
-                    onChange={(e, value) => setFieldValue("nationality", value)}
+                    onChange={(e, value) => setFieldValue('nationality', value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Nationality"
+                        label='Nationality'
                         fullWidth
-                        size="small"
+                        size='small'
                         error={Boolean(
                           touched.nationality && errors.nationality
                         )}
@@ -354,9 +358,9 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
                 </CustomFormControl>
 
                 <Typography
-                  variant="body2"
-                  color="primary.main"
-                  sx={{ fontWeight: "bold" }}
+                  variant='body2'
+                  color='primary.main'
+                  sx={{ fontWeight: 'bold' }}
                 >
                   Academic Information
                 </Typography>
@@ -364,23 +368,23 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
                 <CustomFormControl>
                   <Autocomplete
                     fullWidth
-                    size="small"
+                    size='small'
                     options={levelsOption}
-                    noOptionsText="No Level available"
-                    getOptionLabel={(option) => option.type || ""}
+                    noOptionsText='No Level available'
+                    getOptionLabel={(option) => option.type || ''}
                     isOptionEqualToValue={(option, value) =>
                       value._id === undefined ||
-                      value._id === "" ||
+                      value._id === '' ||
                       value._id === option._id
                     }
                     value={values.level}
-                    onChange={(e, value) => setFieldValue("level", value)}
+                    onChange={(e, value) => setFieldValue('level', value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Current Level"
+                        label='Current Level'
                         fullWidth
-                        size="small"
+                        size='small'
                         error={Boolean(
                           touched?.level?.type && errors?.level?.type
                         )}
@@ -390,16 +394,16 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
                   />
                 </CustomFormControl>
                 <Stack
-                  direction="row"
-                  justifyContent="flex-end"
+                  direction='row'
+                  justifyContent='flex-end'
                   spacing={2}
                   paddingY={4}
                 >
                   <Button onClick={handleReset}>Cancel</Button>
                   <LoadingButton
                     loading={isSubmitting}
-                    variant="contained"
-                    color="primary"
+                    variant='contained'
+                    color='primary'
                     onClick={handleSubmit}
                   >
                     Save & Continue
@@ -411,13 +415,13 @@ const StudentInfo = ({ setTab, setMsg, msg }) => {
         </Formik>
         <Box
           sx={{
-            display: isLoading ? "block" : "none",
-            position: "absolute",
+            display: isLoading ? 'block' : 'none',
+            position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            bgcolor: "rgba(255,255,255,0.7)",
+            bgcolor: 'rgba(255,255,255,0.7)',
           }}
         >
           kjhkjh

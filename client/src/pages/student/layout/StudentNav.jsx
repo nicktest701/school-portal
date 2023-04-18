@@ -28,8 +28,8 @@ const StudentNav = () => {
           >
             <NavLinkItem to='' color='secondary' text='Home' />
             <NavLinkItem to='new' color='secondary' text='New Student' />
-            <NavLinkItem to='view' color='secondary' text='View Student' />
-            <NavLinkItem to='settings' color='secondary' text='Settings' />
+            <NavLinkItem to='view' color='secondary' text='View Students' />
+            {/* <NavLinkItem to='settings' color='secondary' text='Settings' /> */}
           </Container>
       
         </Toolbar>

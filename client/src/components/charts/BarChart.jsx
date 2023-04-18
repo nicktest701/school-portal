@@ -31,7 +31,7 @@ const LineChart = ({ data }) => {
             {
               label: 'No of Students',
               data: dataset,
-              backgroundColor: palette.primary.main,
+              backgroundColor: [' rgb(1, 46, 84)', 'rgb(255, 192, 159)'],
             },
           ],
         }}
@@ -39,7 +39,7 @@ const LineChart = ({ data }) => {
           responsive: true,
           maintainAspectRatio: false,
           layout: {
-            padding: 10,
+            padding: 2,
             autoPadding: true,
           },
           scales: {
@@ -58,7 +58,6 @@ const LineChart = ({ data }) => {
               grid: {
                 display: false,
               },
-          
             },
           },
           plugins: {

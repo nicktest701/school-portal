@@ -7,7 +7,7 @@ export const getAllTerms = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/terms`,
+      url:  `${import.meta.env.VITE_BASE_URL}/terms`,
     });
 
     return res.data;
@@ -21,7 +21,7 @@ export const getTerm = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/terms`,
+      url:  `${import.meta.env.VITE_BASE_URL}/terms`,
       params: {
         id,
       },
@@ -38,7 +38,7 @@ export const postTerm = async (newTerm) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `/terms`,
+      url:  `${import.meta.env.VITE_BASE_URL}/terms`,
       data: newTerm,
     });
 
@@ -53,7 +53,7 @@ export const putTerm = async (updatedSession) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/terms`,
+      url:  `${import.meta.env.VITE_BASE_URL}/terms`,
       data: updatedSession,
     });
 
@@ -67,7 +67,7 @@ export const disableSessionAccount = async ({ _id, active }) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/terms/account`,
+      url:  `${import.meta.env.VITE_BASE_URL}/terms/account`,
       data: {
         id: _id,
         active,
@@ -85,7 +85,7 @@ export const deleteTerm = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url:  `/terms/${id}`,
+      url:  `${import.meta.env.VITE_BASE_URL}/terms/${id}`,
     });
 
     return res.data;

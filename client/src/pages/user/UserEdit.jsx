@@ -41,7 +41,7 @@ const UserEdit = () => {
   useEffect(() => {
     setDob(new Date(user?.dateofbirth));
     setProfileImage(
-       `/images/users/${user?.profile}`
+       `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`
     );
   }, [user]);
 

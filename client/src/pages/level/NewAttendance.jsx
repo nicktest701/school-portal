@@ -1,11 +1,14 @@
 import { LoadingButton } from '@mui/lab';
 import {
   Box,
+  Chip,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
+  Divider,
   FormControlLabel,
+  ListItemText,
   Radio,
   RadioGroup,
 } from '@mui/material';
@@ -19,7 +22,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import useLevelById from '../../components/hooks/useLevelById';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAttendance, postAttendance } from '../../api/attendanceAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import {
@@ -28,9 +31,11 @@ import {
 } from '../../context/actions/globalAlertActions';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import student_icon from '../../assets/images/header/student_ico.svg';
+import { SaveAsRounded } from '@mui/icons-material';
 
 function NewAttendance({ open, setOpen }) {
   const { id, type } = useParams();
+  const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   //Get Students in Current Level id
   const { students } = useLevelById(id, true);
@@ -97,7 +102,9 @@ function NewAttendance({ open, setOpen }) {
     };
 
     postAttendanceAsync(newAttendance, {
-      onSettled: () => {},
+      onSettled: () => {
+        queryClient.invalidateQueries(['attendance-history']);
+      },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
         setOpen(false);
@@ -121,13 +128,20 @@ function NewAttendance({ open, setOpen }) {
       />
       <DialogActions sx={{ padding: 2 }}>
         {isAttendancePresent ? null : (
-          <LoadingButton variant='contained' onClick={handleSaveAttendance}>
+          <LoadingButton
+            variant='contained'
+            startIcon={<SaveAsRounded />}
+            onClick={handleSaveAttendance}
+          >
             Save Attendance
           </LoadingButton>
         )}
       </DialogActions>
       <DialogContent sx={{ padding: 2 }}>
         <Container>
+        <Divider textAlign='center'>
+            <Chip label='Details' color='secondary' />
+          </Divider>
           <Box display='flex' justifyContent='flex-start' width={280}>
             <CustomDatePicker
               label='Date of Attendance'
@@ -136,8 +150,9 @@ function NewAttendance({ open, setOpen }) {
               disableFuture={true}
             />
           </Box>
+       
           <CustomizedMaterialTable
-            search={true}
+            // search={true}
             // isLoading={levelLoading}
             icon={student_icon}
             title={`Attendance for ${type}`}
@@ -189,6 +204,7 @@ function NewAttendance({ open, setOpen }) {
             ]}
             data={attendanceList?.length !== 0 ? attendanceList : allstudents}
             actions={[]}
+            showRowShadow
           />
         </Container>
       </DialogContent>

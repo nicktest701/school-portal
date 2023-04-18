@@ -18,6 +18,8 @@ import { STUDENT_FEES_HISTORY_COLUMNS } from '../../mockup/columns/sessionColumn
 import PropTypes from 'prop-types';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import { UserContext } from '../../context/providers/userProvider';
+import { PrintRounded } from '@mui/icons-material';
+import history_icon from '../../assets/images/header/history_ico.svg';
 
 const StudentFeesHistory = ({ open, setOpen }) => {
   const {
@@ -59,14 +61,15 @@ const StudentFeesHistory = ({ open, setOpen }) => {
 
   return (
     <Dialog maxWidth='md' fullWidth open={open} onClose={handleClose}>
-      <CustomDialogTitle
-        title='Student Fee Payment History'
-        onClose={handleClose}
-      />
-      <DialogActions sx={{ justifyContent: 'center' }}>
+      <CustomDialogTitle title='Student Fee Payment ' onClose={handleClose} />
+      <DialogActions>
         <ReactToPrint
           pageStyle={'width:8.5in";min-height:11in"; margin:auto",padding:8px;'}
-          trigger={() => <Button variant='contained'>Print Report</Button>}
+          trigger={() => (
+            <Button startIcon={<PrintRounded />} variant='contained'>
+              Print Report
+            </Button>
+          )}
           content={() => componentRef.current}
         />
       </DialogActions>
@@ -96,22 +99,22 @@ const StudentFeesHistory = ({ open, setOpen }) => {
           </Typography>
         </Stack> */}
 
-        <Stack justifyContent='center' alignItems='center' spacing={2}>
-          <Typography sx={{ fontWeight: 'bold', textTransform: 'capitalize' }}>
-            {studentFee?.data?.fullName}
-          </Typography>
+        <Stack justifyContent='center' alignItems='center'>
           <Avatar
             srcSet={
               studentFee?.data?.profile === undefined ||
               studentFee?.data?.profile === ''
                 ? null
-                :  `/images/students/${
+                : `${import.meta.env.VITE_BASE_URL}/images/students/${
                     studentFee?.data?.profile
                   }`
             }
-            sx={{ width: 60, height: 60 }}
+            sx={{ width: 70, height: 70 }}
           />
-          <Typography sx={{ fontWeight: 'bold', textTransform: 'capitalize' }}>
+          <Typography variant='h5'>
+            {studentFee?.data?.fullName}
+          </Typography>
+          <Typography variant='caption'>
             {studentFee?.data?.levelType}
             {/* {studentFee?.data?.term} */}
           </Typography>
@@ -119,25 +122,24 @@ const StudentFeesHistory = ({ open, setOpen }) => {
           <Divider />
         </Stack>
 
-        {studentFee.isFetched && studentFee.data ? (
-          <>
-            <CustomizedMaterialTable
-              title='Fees History'
-              isLoading={studentFee.isLoading}
-              exportFileName={studentFee?.data?.fullName}
-              columns={STUDENT_FEES_HISTORY_COLUMNS}
-              data={studentFee?.data?.payment}
-              actions={[]}
-              handleRefresh={studentFee.refetch}
-              options={{
-                paging: false,
-                selection: false,
-              }}
-            />
-          </>
-        ) : (
-          <Typography>No Fees History Found</Typography>
-        )}
+        <>
+          <CustomizedMaterialTable
+            title='Fees History'
+            icon={history_icon}
+            addButtonImg={history_icon}
+            addButtonMessage='No Fees History Found'
+            isLoading={studentFee.isLoading}
+            exportFileName={studentFee?.data?.fullName}
+            columns={STUDENT_FEES_HISTORY_COLUMNS}
+            data={studentFee?.data?.payment}
+            actions={[]}
+            handleRefresh={studentFee.refetch}
+            options={{
+              paging: false,
+              selection: false,
+            }}
+          />
+        </>
       </DialogContent>
     </Dialog>
   );

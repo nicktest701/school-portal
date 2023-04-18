@@ -13,7 +13,6 @@ import ViewLevelFeeInfo from './ViewLevelFeeInfo';
 import fee_icon from '../../assets/images/header/fee_ico.svg';
 import { UserContext } from '../../context/providers/userProvider';
 
-
 const FeeNew = () => {
   const {
     userState: { session },
@@ -42,6 +41,7 @@ const FeeNew = () => {
       text: 'Do you want to remove Fee?',
       confirmButtonColor: palette.primary.main,
       showCancelButton: true,
+      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         mutateAsync(id, {
@@ -95,9 +95,11 @@ const FeeNew = () => {
 
   return (
     <>
-      <Container maxWidth='md' sx={{ paddingY: 2 }}>
-        <Typography variant='h5'>New Fee</Typography>
-        <Typography>Add new fees for a particular level</Typography>
+      <Container maxWidth='lg' sx={{ paddingY: 5 }}>
+        <Typography variant='h4'>New Fee</Typography>
+        <Typography>
+          Add new <b>TERM/SEMESTER</b> fees for a particular level
+        </Typography>
         <Divider />
         <CustomizedMaterialTable
           title='School Fees'

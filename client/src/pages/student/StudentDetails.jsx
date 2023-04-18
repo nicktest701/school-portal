@@ -77,7 +77,7 @@ const StudentDetails = () => {
           srcSet={
             student?.profile === '' || student?.profile === undefined
               ? null
-              :  `/images/students/${
+              :  `${import.meta.env.VITE_BASE_URL}/images/students/${
                   student?.profile
                 }`
           }

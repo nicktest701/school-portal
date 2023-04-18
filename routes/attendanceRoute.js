@@ -92,7 +92,7 @@ router.post(
         .json('Error creating new attendance.Try again later!!!');
     }
 
-    return res.status(201).json('New Attendance created Successfully!!!');
+    return res.status(201).json('Attendance saved Successfully!!!');
   })
 );
 

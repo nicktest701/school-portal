@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BubbleChartRounded } from '@mui/icons-material';
-import { Box, Card, CardContent, CardHeader,} from '@mui/material';
+import { PieChartRounded } from '@mui/icons-material';
+import { Box, Card, CardContent, CardHeader } from '@mui/material';
 import { Pie } from 'react-chartjs-2';
 import _ from 'lodash';
 const StudentDashboardLineChart = ({ data }) => {
-
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
 
@@ -18,7 +17,8 @@ const StudentDashboardLineChart = ({ data }) => {
   return (
     <Card>
       <CardHeader
-        avatar={<BubbleChartRounded />}
+          avatar={<PieChartRounded />
+        }
         title='Students In Each Level'
       />
       <CardContent>
@@ -37,7 +37,7 @@ const StudentDashboardLineChart = ({ data }) => {
                 {
                   label: 'Level',
                   data: dataset,
-                  // backgroundColor: 'rgb(213,143,125)',
+                  backgroundColor: ['rgb(255, 192, 159)', ' rgb(1, 46, 84)'],
                 },
               ],
             }}
@@ -45,8 +45,9 @@ const StudentDashboardLineChart = ({ data }) => {
               responsive: true,
               maintainAspectRatio: false,
 
+
               layout: {
-                padding: 10,
+                padding: 2,
               },
               scales: {
                 x: {

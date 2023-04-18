@@ -29,7 +29,7 @@ export const TEACHERS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              :  `/images/teachers/${
+              :  `${import.meta.env.VITE_BASE_URL}/images/teachers/${
                   rowData.profile
                 }`
           }

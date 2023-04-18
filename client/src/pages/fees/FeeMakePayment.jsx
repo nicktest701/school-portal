@@ -1,4 +1,8 @@
-import { Check, MonetizationOnRounded } from '@mui/icons-material';
+import {
+  Check,
+  HistoryRounded,
+  MonetizationOnRounded,
+} from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
   Alert,
@@ -14,6 +18,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
 import React, {
   useContext,
@@ -22,6 +27,7 @@ import React, {
   useState,
   useTransition,
 } from 'react';
+import Swal from 'sweetalert2';
 import { useFormik } from 'formik';
 import _ from 'lodash';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -39,7 +45,7 @@ import { Link } from 'react-router-dom';
 import FeePaymentHistory from './FeePaymentHistory';
 import { UserContext } from '../../context/providers/userProvider';
 const FeeMakePayment = () => {
-  //
+  const { palette } = useTheme();
 
   //Get Session id
   const {
@@ -207,7 +213,9 @@ const FeeMakePayment = () => {
   }, [currentAmount, totalOutStanding, totalAmountPaid, totalFees]);
 
   //Add fees to database
-  const { mutateAsync } = useMutation(postCurrentFee);
+  const { mutateAsync } = useMutation({
+    mutationFn: postCurrentFee,
+  });
 
   function onSubmit(values, options) {
     setMsg({ severity: 'info', text: '' });
@@ -219,18 +227,33 @@ const FeeMakePayment = () => {
       fee: currentLevel?.feesId,
       payment: [feeCalculation],
     };
+    Swal.fire({
+      title: 'Making Payment',
+      text: 'Do you proceed with the payment?',
+      confirmButtonColor: palette.primary.main,
+      showCancelButton: true,
+      backdrop: false,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        mutateAsync(payment, {
+          onSettled: () => {
+            queryClient.invalidateQueries(['student-fees']);
+            queryClient.invalidateQueries(['current-fees-summary']);
+            options.setSubmitting(false);
+          },
+          onSuccess: () => {
+            setMsg({ severity: 'info', text: 'Payment made successfully!!!' });
 
-    mutateAsync(payment, {
-      onSettled: () => {
-        queryClient.invalidateQueries(['student-fees']);
-        queryClient.invalidateQueries(['current-fees-summary']);
-        options.setSubmitting(false);
-      },
-      onSuccess: (fees) => {
-        setMsg({ severity: 'info', text: 'Payment made successfully!!!' });
-         console.log(fees);
-        options.resetForm();
-      },
+            options.resetForm();
+          },
+          onError: () => {
+            setMsg({
+              severity: 'error',
+              text: 'Couldnt make payment.Try again',
+            });
+          },
+        });
+      }
     });
   }
 
@@ -258,7 +281,7 @@ const FeeMakePayment = () => {
 
   return (
     <Container sx={{ paddingY: 2 }} maxWidth='md'>
-      <Typography variant='h5'>Fees Payment</Typography>
+      <Typography variant='h4'>Fees Payment</Typography>
       <Typography>Access,manage and control payment of school fees</Typography>
       <Divider />
       <Stack paddingY={4} spacing={2}>
@@ -293,7 +316,11 @@ const FeeMakePayment = () => {
               <TextField {...params} label='Select Level' size='small' />
             )}
           />
-          <Button variant='contained' onClick={handleOpenPaymentHistory}>
+          <Button
+            startIcon={<HistoryRounded />}
+            variant='contained'
+            onClick={handleOpenPaymentHistory}
+          >
             Payment History
           </Button>
         </Stack>
@@ -345,7 +372,7 @@ const FeeMakePayment = () => {
                   studentInfo?.profile === undefined ||
                   studentInfo?.profile === ''
                     ? null
-                    :  `/images/students/${
+                    : `${import.meta.env.VITE_BASE_URL}/images/students/${
                         studentInfo?.profile
                       }`
                 }

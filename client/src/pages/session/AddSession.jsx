@@ -28,10 +28,9 @@ import CustomDatePicker from '../../components/inputs/CustomDatePicker';
 import CustomYearPicker from '../../components/inputs/CustomYearPicker';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 const AddSession = () => {
-  
   const { schoolSessionState, schoolSessionDispatch } =
-  useContext(SchoolSessionContext);
-  
+    useContext(SchoolSessionContext);
+
   const queryClient = useQueryClient();
   const [startDate, setStartDate] = useState(moment());
   const [endDate, setEndDate] = useState(moment());
@@ -40,7 +39,9 @@ const AddSession = () => {
   const [endYear, setEndYear] = useState('');
 
   //ADD New Session
-  const { mutateAsync } = useMutation(postTerm);
+  const { mutateAsync } = useMutation({
+    mutationFn: postTerm,
+  });
 
   const currentYear = new Date().getFullYear();
   const onSubmit = (values, options) => {
@@ -110,14 +111,14 @@ const AddSession = () => {
                     />
                   </Stack>
                   <CustomDatePicker
-                    label='Start of Academic Term'
+                    label='Start of Academic Term/Semester'
                     date={startDate}
                     setDate={setStartDate}
                     touched={touched.from}
                     error={errors.from}
                   />
                   <CustomDatePicker
-                    label='End of Academic Term'
+                    label='End of Academic Term/Semester'
                     date={endDate}
                     setDate={setEndDate}
                     touched={touched.to}

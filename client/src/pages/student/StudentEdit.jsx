@@ -49,7 +49,7 @@ const StudentEdit = () => {
   useEffect(() => {
     setDob(new Date(student?.dateofbirth));
     setProfileImage(
-       `/images/students/${student?.profile}`
+       `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
     );
   }, [student]);
 

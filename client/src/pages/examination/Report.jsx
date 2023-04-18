@@ -40,7 +40,7 @@ const Report = ({ student }) => {
             <Avatar
               alt='school logo'
               loading='lazy'
-              srcSet={ `/images/users/${school_info?.badge}`}
+              srcSet={ `${import.meta.env.VITE_BASE_URL}/images/users/${school_info?.badge}`}
               sx={{
                 width: 80,
                 height: 80,
@@ -83,7 +83,7 @@ const Report = ({ student }) => {
               student?.profile === undefined ||
               student?.profile === null
                 ? null
-                :  `/images/students/${student?.profile}`
+                :  `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
             }
             sx={{ width: 70, height: 70, alignSelf: 'center' }}
           />

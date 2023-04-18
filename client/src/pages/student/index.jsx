@@ -7,6 +7,7 @@ import { StudentContext } from "../../context/providers/StudentProvider";
 import StudentFooter from "./layout/StudentFooter";
 import StudentNav from "./layout/StudentNav";
 import { UserContext } from "../../context/providers/userProvider";
+import Footer from "../layouts/Footer";
 
 function Student() {
  
@@ -32,7 +33,7 @@ function Student() {
       <section style={{ minHeight: "80vh" }}>
         <Outlet />
       </section>
-      <StudentFooter />
+      <Footer />
     </>
   );
 }

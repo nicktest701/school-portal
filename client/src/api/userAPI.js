@@ -7,7 +7,7 @@ export const getAllUsers = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/users`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users`,
     });
 
     return res.data;
@@ -20,7 +20,7 @@ export const getUserAuth = async (userInfo) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `/users/auth`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/auth`,
       data: userInfo,
     });
 
@@ -36,7 +36,7 @@ export const verifyUser = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/users/verify`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/verify`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -53,7 +53,7 @@ export const getUser = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/users/${id}`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/${id}`,
     });
 
     return res.data;
@@ -81,7 +81,7 @@ export const postUser = async (user) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `/users`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -103,7 +103,7 @@ export const updateUserProfileImage = async ({ _id, profile }) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/users/profile`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -121,7 +121,7 @@ export const putUser = async (updatedUser) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/users`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users`,
       data: updatedUser,
     });
 
@@ -135,7 +135,7 @@ export const getSchoolInfo = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/users/school`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/school`,
     });
 
     return res.data;
@@ -147,7 +147,7 @@ export const putSchoolInfo = async (schoolInfo) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/users/school`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/school`,
       data: schoolInfo,
     });
 
@@ -165,7 +165,7 @@ export const updateSchoolLogo = async (badge) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/users/school/profile`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/school/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -183,7 +183,7 @@ export const deleteUser = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url:  `/users/${id}`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/${id}`,
     });
 
     return res.data;
@@ -196,7 +196,7 @@ export const enableOrDisableAccount = async (info) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/users/account`,
+      url:  `${import.meta.env.VITE_BASE_URL}/users/account`,
       data: info,
     });
 

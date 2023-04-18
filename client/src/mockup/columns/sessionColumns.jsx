@@ -472,7 +472,7 @@ export const USERS_COLUMNS = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              :  `/images/users/${rowData.profile}`
+              :  `${import.meta.env.VITE_BASE_URL}/images/users/${rowData.profile}`
           }
         />
         <ListItemText

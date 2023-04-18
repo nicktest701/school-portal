@@ -24,7 +24,7 @@ const GlobalAlert = () => {
         vertical: "top",
       }}
       open={alertData?.message ? true : false}
-      autoHideDuration={7000}
+      autoHideDuration={5000}
       onClose={handleClose}
       TransitionComponent={Transition}
     >

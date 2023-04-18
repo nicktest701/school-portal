@@ -1,18 +1,12 @@
-import { PieChartRounded } from '@mui/icons-material';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-
-  useTheme,
-} from '@mui/material';
+import { PivotTableChartRounded } from '@mui/icons-material';
+import { Card, CardContent, CardHeader, useTheme } from '@mui/material';
 import { PolarArea } from 'react-chartjs-2';
 
 const StudentDashboardPieChart = ({ females, males }) => {
   const { palette } = useTheme();
   return (
     <Card>
-      <CardHeader avatar={<PieChartRounded />} title='Males & Females' />
+      <CardHeader avatar={<PivotTableChartRounded />} title='Males & Females' />
       <CardContent>
         <PolarArea
           datasetIdKey='id'
@@ -31,7 +25,7 @@ const StudentDashboardPieChart = ({ females, males }) => {
             maintainAspectRatio: false,
 
             layout: {
-              padding: 10,
+              padding: 2,
             },
             scales: {
               x: {
@@ -64,4 +58,3 @@ const StudentDashboardPieChart = ({ females, males }) => {
 };
 
 export default StudentDashboardPieChart;
-

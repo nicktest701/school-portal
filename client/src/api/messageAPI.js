@@ -5,7 +5,7 @@ export const getAllMessages = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/messages`,
+      url:  `${import.meta.env.VITE_BASE_URL}/messages`,
     });
 
     return res.data;
@@ -18,7 +18,7 @@ export const getMessage = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/messages`,
+      url:  `${import.meta.env.VITE_BASE_URL}/messages`,
       params: {
         id,
       },
@@ -34,7 +34,7 @@ export const postMessage = async (newMessage) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `/messages/${newMessage.rate}`,
+      url:  `${import.meta.env.VITE_BASE_URL}/messages/${newMessage.rate}`,
       data: newMessage,
     });
 
@@ -48,7 +48,7 @@ export const resendMessage = async (messageInfo) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `/messages/resend`,
+      url:  `${import.meta.env.VITE_BASE_URL}/messages/resend`,
       data: messageInfo,
     });
 
@@ -62,7 +62,7 @@ export const putMessage = async (updatedMessage) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/messages`,
+      url:  `${import.meta.env.VITE_BASE_URL}/messages`,
       data: updatedMessage,
     });
 
@@ -76,7 +76,7 @@ export const deleteMessage = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url:  `/messages/${id}`,
+      url:  `${import.meta.env.VITE_BASE_URL}/messages/${id}`,
     });
 
     return res.data;

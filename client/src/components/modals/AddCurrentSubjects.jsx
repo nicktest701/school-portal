@@ -1,25 +1,25 @@
-import { LoadingButton } from "@mui/lab";
+import { LoadingButton } from '@mui/lab';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-
   Stack,
   Autocomplete,
   TextField,
   List,
   Typography,
   Divider,
-} from "@mui/material";
-import React, { useContext, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import _ from "lodash";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { SUBJECT_OPTIONS } from "../../mockup/columns/sessionColumns";
-import SubjectItem from "../list/SubjectItem";
-import { addSubjectsToLevel, getSubjectsForLevel } from "../../api/levelAPI";
-import CustomDialogTitle from "../dialog/CustomDialogTitle";
+} from '@mui/material';
+import React, { useContext, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import _ from 'lodash';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import { SUBJECT_OPTIONS } from '../../mockup/columns/sessionColumns';
+import SubjectItem from '../list/SubjectItem';
+import { addSubjectsToLevel, getSubjectsForLevel } from '../../api/levelAPI';
+import CustomDialogTitle from '../dialog/CustomDialogTitle';
+import { GolfCourseRounded, SaveAltRounded } from '@mui/icons-material';
 
 const AddCurrentSubjects = ({ open, setOpen }) => {
   const queryClient = useQueryClient();
@@ -28,12 +28,12 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState('');
   const [loading, setLoading] = useState(false);
   const [subjectList, setSubjectList] = useState([]);
 
   useQuery(
-    ["subjects", currentLevel._id],
+    ['subjects', currentLevel._id],
     () => getSubjectsForLevel(currentLevel._id),
     {
       enabled: !!currentLevel._id,
@@ -46,7 +46,7 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
 
   //Add Subjects to subject list
   const handleAddSubject = () => {
-    if (subject === "") {
+    if (subject === '') {
       return;
     }
     setSubjectList((prev) => {
@@ -56,7 +56,7 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
       return newSubjects;
     });
 
-    setSubject("");
+    setSubject('');
   };
 
   //Remove subject from class
@@ -82,23 +82,23 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
 
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(["subjects"]);
+        queryClient.invalidateQueries(['subjects']);
         setLoading(false);
       },
       onSuccess: (data) => {
         schoolSessionDispatch({
-          type: "showAlert",
+          type: 'showAlert',
           payload: {
-            severity: "info",
+            severity: 'info',
             message: data,
           },
         });
       },
       onError: (error) => {
         schoolSessionDispatch({
-          type: "showAlert",
+          type: 'showAlert',
           payload: {
-            severity: "error",
+            severity: 'error',
             message: error,
           },
         });
@@ -107,37 +107,37 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={() => setOpen(false)} maxWidth='sm' fullWidth>
       <CustomDialogTitle
-        title="Current Subjects"
+        title={`Current Courses for ${currentLevel.type}`}
         onClose={() => setOpen(false)}
       />
 
       <DialogContent>
         <Stack spacing={2} paddingY={2}>
-          <Typography variant="h6">{currentLevel.type}</Typography>
-          <Divider />
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant='caption'>Add new courses </Typography>
+
+          <Stack direction='row' spacing={2} alignItems='center'>
             <Autocomplete
               // multiple={true}
               freeSolo
               fullWidth
               options={SUBJECT_OPTIONS}
-              getOptionLabel={(option) => option || ""}
+              getOptionLabel={(option) => option || ''}
               defaultValue={SUBJECT_OPTIONS[0]}
               value={subject}
               onChange={(e, value) => setSubject(value)}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Select Subject"
-                  size="small"
+                  label='Select Course'
+                  size='small'
                   onChange={(e) => setSubject(e.target.value)}
                   focused
                 />
               )}
             />
-            <Button variant="contained" size="small" onClick={handleAddSubject}>
+            <Button variant='contained' size='small' onClick={handleAddSubject}>
               Add
             </Button>
           </Stack>
@@ -155,12 +155,13 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
         </Stack>
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
-        <LoadingButton
+        <LoadingButton 
+        startIcon={<SaveAltRounded/>}
           loading={loading}
-          variant="contained"
+          variant='contained'
           onClick={handleSaveSubjects}
         >
-          Save Changes
+          Save Courses
         </LoadingButton>
       </DialogActions>
     </Dialog>

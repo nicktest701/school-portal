@@ -4,6 +4,9 @@ import _ from 'lodash';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { getSchoolInfo, verifyUser } from '../api/userAPI';
 import { useQuery } from '@tanstack/react-query';
+import GlobalAlert from '../components/alerts/GlobalAlert';
+import QuickMessage from '../components/modals/QuickMessage';
+import AddSession from './session/AddSession';
 
 const Shell = () => {
   const navigate = useNavigate();
@@ -20,7 +23,6 @@ const Shell = () => {
     queryKey: ['school'],
     queryFn: () => getSchoolInfo(),
     onSuccess: (data) => {
-
       userDispatch({
         type: 'setSchoolInfo',
         payload: !_.isEmpty(data) ? data : default_school_info,
@@ -68,7 +70,14 @@ const Shell = () => {
     return () => getData;
   }, [location.pathname]);
 
-  return <Outlet />;
+  return (
+    <>
+      <GlobalAlert />
+      <Outlet />
+      <QuickMessage />
+      <AddSession />
+    </>
+  );
 };
 
 export default Shell;

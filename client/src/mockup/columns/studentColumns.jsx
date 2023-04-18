@@ -39,7 +39,7 @@ export const STUDENTS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              :  `/images/students/${
+              :  `${import.meta.env.VITE_BASE_URL}/images/students/${
                   rowData.profile
                 }`
           }
@@ -172,7 +172,7 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
         src={
           rowData.profile === undefined || rowData.profile === ''
             ? null
-            :  `/images/students/${
+            :  `${import.meta.env.VITE_BASE_URL}/images/students/${
                 rowData.profile
               }`
         }
@@ -226,7 +226,7 @@ export const STUDENTS_EXAMS_COLUMN = [
         src={
           rowData.profile === undefined || rowData.profile === ''
             ? null
-            :  `/images/students/${
+            :  `${import.meta.env.VITE_BASE_URL}/images/students/${
                 rowData.profile
               }`
         }

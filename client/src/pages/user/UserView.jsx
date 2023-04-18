@@ -45,7 +45,7 @@ const UserView = () => {
   const user = userViewData?.data;
 
   useEffect(() => {
-    setProfileImage( `/images/users/${user?.profile}`);
+    setProfileImage( `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`);
   }, [user]);
 
   //DISABLE User Account

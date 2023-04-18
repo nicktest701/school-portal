@@ -34,7 +34,7 @@ const FeeNav = () => {
             <NavLinkItem to="new" color="secondary" text="New Fees" />
             <NavLinkItem to="payment" color="secondary" text="Make Payment" />
             <NavLinkItem to="history" color="secondary" text="Fees History" />
-            <NavLinkItem to="settings" color="secondary" text="Settings" />
+            {/* <NavLinkItem to="settings" color="secondary" text="Settings" /> */}
           </Container>
           {/* <IconButton
             color="inherit"

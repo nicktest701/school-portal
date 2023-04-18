@@ -35,7 +35,7 @@ function ViewUserProfile({ open, setOpen }) {
         <Stack justifyContent='center' alignItems='center' rowGap={2}>
           <Stack sx={{ position: 'relative' }}>
             <Avatar
-              src={ `/images/users/${user?.profile}`}
+              src={ `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`}
               sx={{ height: 75, width: 75 }}
             />
           </Stack>

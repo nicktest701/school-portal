@@ -36,7 +36,7 @@ const UpdateUserProfile = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   useEffect(() => {
-    setProfileImage( `/images/users/${user?.profile}`);
+    setProfileImage( `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`);
   }, [user]);
 
   //CLOSE Edit User

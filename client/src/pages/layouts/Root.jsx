@@ -1,23 +1,17 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import GlobalAlert from '../../components/alerts/GlobalAlert';
-import QuickMessage from '../../components/modals/QuickMessage';
 import Loader from '../../config/Loader';
-import ExamsHome from '../examination/ExamsHome';
-import ExamsLevel from '../examination/ExamsLevel';
-import FeeNew from '../fees/FeeNew';
-import AddSession from '../session/AddSession';
-import SMSHome from '../sms/SMSHome';
-import SMSNew from '../sms/SMSNew';
 import Shell from '../Shell';
 import User from '../user';
 import Login from '../Login';
 
-
+const FeeNew = lazy(() => import('../fees/FeeNew'));
+const ExamsHome = lazy(() => import('../examination/ExamsHome'));
+const ExamsLevel = lazy(() => import('../examination/ExamsLevel'));
+const SMSHome = lazy(() => import('../sms/SMSHome'));
+const SMSNew = lazy(() => import('../sms/SMSNew'));
 const Dashboard = lazy(() => import('../Dashboard'));
 const Session = lazy(() => import('../session'));
-
-// const Shell = lazy(() => import('../Shell'));
 const Fees = lazy(() => import('../fees'));
 const Examination = lazy(() => import('../examination'));
 const Student = lazy(() => import('../student'));
@@ -39,7 +33,7 @@ const SchoolSession = lazy(() => import('../SchoolSession'));
 const StudentAcademicsReport = lazy(() =>
   import('../student/StudentAcademicsReport')
 );
-// const StudentFeesReport = lazy(() => import('../student/StudentFeesReport'));
+
 const FeeHome = lazy(() => import('../fees/FeeHome'));
 const FeeMakePayment = lazy(() => import('../fees/FeeMakePayment'));
 const FeeHistory = lazy(() => import('../fees/FeeHistory'));
@@ -52,7 +46,6 @@ const StudentDetails = lazy(() => import('../student/StudentDetails'));
 const Root = () => {
   return (
     <>
-      <GlobalAlert />
       <Routes>
         <Route path='/' element={<Shell />}>
           <Route
@@ -374,8 +367,6 @@ const Root = () => {
           path='*'
         />
       </Routes>
-      <QuickMessage />
-      <AddSession />
     </>
   );
 };

@@ -12,6 +12,7 @@ import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import Transition from '../../components/animations/Transition';
 import { UserContext } from '../../context/providers/userProvider';
 import fee_icon from '../../assets/images/header/fee_ico.svg';
+
 function FeePaymentHistory({ open, setOpen }) {
   const {
     userState: { session },
@@ -66,6 +67,8 @@ function FeePaymentHistory({ open, setOpen }) {
           isLoading={fees.isLoading}
           icon={fee_icon}
           title={`Fee Payment on ${date.format('LL')}`}
+          addButtonImg={fee_icon}
+          addButtonMessage='Payment not available'
           handleRefresh={fees.refetch}
           columns={[
             {

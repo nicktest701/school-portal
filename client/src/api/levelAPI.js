@@ -7,7 +7,7 @@ export const getAllLevels = async (session, term) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/levels/session`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/session`,
       params: {
         session,
         term,
@@ -25,7 +25,7 @@ export const getLevel = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/levels`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels`,
       params: {
         id,
       },
@@ -42,7 +42,7 @@ export const postLevel = async (newLevel) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `/levels`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels`,
       data: newLevel,
     });
 
@@ -57,7 +57,7 @@ export const generateNewCurrentLevelDetailsFromLevels = async (data) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `/levels/generate`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/generate`,
       data,
     });
 
@@ -72,7 +72,7 @@ export const putLevel = async (updatedLevel) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/levels`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels`,
       data: updatedLevel,
     });
 
@@ -87,7 +87,7 @@ export const deleteLevel = async ({ id, sessionId, termId }) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url:  `/levels`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels`,
       params: {
         id,
         sessionId,
@@ -108,7 +108,7 @@ export const getSubjectsForLevel = async (levelId) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/levels/subject`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/subject`,
       params: {
         levelId,
       },
@@ -125,7 +125,7 @@ export const addSubjectsToLevel = async (data) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `/levels/subject`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/subject`,
       data,
     });
 
@@ -140,7 +140,7 @@ export const getTodaysBirth = async (session, term) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/levels/recent/birthday`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/recent/birthday`,
       params: { session, term },
     });
 
@@ -156,7 +156,7 @@ export const getDashboardInfo = async (info) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `/levels/dashboard-info`,
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/dashboard-info`,
       params: info,
     });
 

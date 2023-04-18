@@ -165,7 +165,7 @@ const Dashboard = () => {
 
             <Stack alignItems='center' paddingBottom={2}>
               <Avatar
-                src={ `/images/users/${user?.profile}`}
+                src={ `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`}
                 sx={{ width: 80, height: 80 }}
               />
               <Typography variant='subtitle2' color='primary'>

@@ -6,7 +6,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-
   Typography,
 } from '@mui/material';
 import { PropTypes } from 'prop-types';
@@ -18,15 +17,12 @@ import { getAttendanceHistory } from '../../api/attendanceAPI';
 import moment from 'moment';
 
 function AttendanceHistory({ open, setOpen }) {
-  const { id,  } = useParams();
+  const { id } = useParams();
 
   const attendanceHistory = useQuery({
     queryKey: ['attendance-history'],
     queryFn: () => getAttendanceHistory(id),
     enabled: !!id,
-    onSuccess: (attendance) => {
-      console.log(attendance);
-    },
   });
 
   return (
@@ -48,7 +44,7 @@ function AttendanceHistory({ open, setOpen }) {
           primaryTypographyProps={{
             fontSize: 20,
             fontWeight: 'bold',
-            textAlign:'right'
+            textAlign: 'right',
           }}
         />
         <List sx={{ maxHeight: 600 }}>

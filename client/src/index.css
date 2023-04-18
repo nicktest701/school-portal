@@ -1,13 +1,16 @@
+:root {
+  --primary: #012e54;
+  --secondary: #ffc09f;
+  /* --secondary: rgb(255, 192, 159); */
+  /* --primary: rgb(1, 46, 84); */
+}
+
 *,
 *::before,
 *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  --primary: #012e54;
-  --secondary: #ffc09f;
-  /* --secondary: rgb(255, 192, 159); */
-  /* --primary: rgb(1, 46, 84); */
 }
 /* Document
    ========================================================================== */
@@ -34,9 +37,9 @@ body {
   margin: 0;
   width: 100vw;
   min-height: 100vh;
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
+  font-family: 'Quando', 'Poppins', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: 13px !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -51,7 +54,7 @@ main {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: 'Quando', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
@@ -382,6 +385,22 @@ template {
 
 .swal2-container {
   z-index: 110000 !important;
+  font-family: inherit;
+  background-color: var(--primary) !important;
+}
+.swal2-title {
+  font-size: 1.2rem !important;
+}
+.swal2-html-container {
+  font-size: 0.95rem !important;
+}
+.swal2-confirm,
+.swal2-cancel {
+  font-size: 0.85rem !important;
+}
+
+.swal2-confirm {
+  background-color: var(--secondary) !important;
 }
 
 /* .dropdown {

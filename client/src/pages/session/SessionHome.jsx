@@ -30,10 +30,15 @@ const SessionHome = () => {
 
   const [openEditSession, setOpenEditSession] = useState(false);
 
-  const sessions = useQuery(['terms'], () => getAllTerms());
+  const sessions = useQuery({
+    queryKey: ['terms'],
+    queryFn: () => getAllTerms(),
+  });
 
   ///Delete session by id
-  const { mutateAsync: deleteMutate } = useMutation(deleteTerm);
+  const { mutateAsync: deleteMutate } = useMutation({
+    mutationFn: deleteTerm,
+  });
 
   const handleDeleteSession = (id) => {
     Swal.fire({
@@ -61,7 +66,6 @@ const SessionHome = () => {
 
   //Edit session
   const handlEditSession = (rowData) => {
-    // //console.log(rowData);
     schoolSessionDispatch({
       type: 'setSessionEditData',
       payload: rowData,
@@ -74,7 +78,9 @@ const SessionHome = () => {
   };
 
   ///Disable or Enable User Account by id
-  const { mutateAsync: enableMutate } = useMutation(disableSessionAccount);
+  const { mutateAsync: enableMutate } = useMutation({
+    mutationFn: disableSessionAccount,
+  });
   const handleActivateSession = ({ _id, active }) => {
     Swal.fire({
       title: active

@@ -7,7 +7,7 @@ export const getAllTeachers = async () => {
   try {
     const res = await axios({
       method: "GET",
-      url:  `/teachers`,
+      url:  `${import.meta.env.VITE_BASE_URL}/teachers`,
     });
 
     return res.data;
@@ -20,7 +20,7 @@ export const getTeacher = async (id) => {
   try {
     const res = await axios({
       method: "GET",
-      url:  `/teachers/${id}`,
+      url:  `${import.meta.env.VITE_BASE_URL}/teachers/${id}`,
     });
 
     return res.data;
@@ -47,7 +47,7 @@ export const postTeacher = async (teacher) => {
   try {
     const res = await axios({
       method: "POST",
-      url:  `/teachers`,
+      url:  `${import.meta.env.VITE_BASE_URL}/teachers`,
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -69,7 +69,7 @@ export const updateTeacherProfileImage = async ({ _id, profile }) => {
   try {
     const res = await axios({
       method: "PUT",
-      url:  `/teachers/profile`,
+      url:  `${import.meta.env.VITE_BASE_URL}/teachers/profile`,
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -87,7 +87,7 @@ export const putTeacher = async (updatedTeacher) => {
   try {
     const res = await axios({
       method: "PUT",
-      url:  `/teachers`,
+      url:  `${import.meta.env.VITE_BASE_URL}/teachers`,
       data: updatedTeacher,
     });
 
@@ -101,7 +101,7 @@ export const deleteTeacher = async (id) => {
   try {
     const res = await axios({
       method: "DELETE",
-      url:  `/teachers/${id}`,
+      url:  `${import.meta.env.VITE_BASE_URL}/teachers/${id}`,
     });
 
     return res.data;
