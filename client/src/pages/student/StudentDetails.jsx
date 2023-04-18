@@ -77,7 +77,7 @@ const StudentDetails = () => {
           srcSet={
             student?.profile === '' || student?.profile === undefined
               ? null
-              :  `${import.meta.env.VITE_BASE_URL}/images/students/${
+              : `${import.meta.env.VITE_BASE_URL}/images/students/${
                   student?.profile
                 }`
           }
@@ -100,7 +100,11 @@ const StudentDetails = () => {
       <Divider flexItem />
       <Stack sx={{ height: '100%', flexGrow: 1 }}>
         <TabContext value={tab}>
-          <TabList onChange={(e, value) => setTab(value)}>
+          <TabList
+            onChange={(e, value) => setTab(value)}
+            variant='scrollable'
+            scrollButtons='auto'
+          >
             <Tab
               value='1'
               label='Profile'

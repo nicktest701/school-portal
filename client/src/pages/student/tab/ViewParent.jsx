@@ -88,7 +88,7 @@ const ViewParent = ({ open, setOpen }) => {
         <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
           <Box>
             <Divider flexItem>
-              <Chip label='Personal Information' color='primary' />
+              <Chip label='Details' color='primary' />
             </Divider>
 
             <ProfileItem

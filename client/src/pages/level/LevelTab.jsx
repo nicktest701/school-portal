@@ -115,7 +115,7 @@ const LevelTab = () => {
     },
     {
       field: null,
-      title: 'Action',
+      title: '',
       render: (rowData) => (
         <Delete
           className='ico'

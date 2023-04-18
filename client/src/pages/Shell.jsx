@@ -6,7 +6,7 @@ import { getSchoolInfo, verifyUser } from '../api/userAPI';
 import { useQuery } from '@tanstack/react-query';
 import GlobalAlert from '../components/alerts/GlobalAlert';
 import QuickMessage from '../components/modals/QuickMessage';
-import AddSession from './session/AddSession';
+
 
 const Shell = () => {
   const navigate = useNavigate();
@@ -75,7 +75,7 @@ const Shell = () => {
       <GlobalAlert />
       <Outlet />
       <QuickMessage />
-      <AddSession />
+  
     </>
   );
 };

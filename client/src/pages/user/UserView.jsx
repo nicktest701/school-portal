@@ -4,7 +4,7 @@ import {
   DisabledByDefault,
   Edit,
   MessageRounded,
- 
+  PasswordRounded,
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -31,10 +31,12 @@ import {
   alertSuccess,
 } from '../../context/actions/globalAlertActions';
 import moment from 'moment';
+import UserUpdatePassword from './UserUpdatePassword';
 
 const UserView = () => {
   const queryClient = useQueryClient();
   const [profileImage, setProfileImage] = useState(null);
+  const [openUpdatePassword, setOpenUpdatePassword] = useState(null);
   const { palette } = useTheme();
 
   const {
@@ -45,21 +47,26 @@ const UserView = () => {
   const user = userViewData?.data;
 
   useEffect(() => {
-    setProfileImage( `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`);
+    setProfileImage(
+      `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`
+    );
   }, [user]);
 
   //DISABLE User Account
 
-  const { mutateAsync } = useMutation(enableOrDisableAccount);
+  const { mutateAsync } = useMutation({
+    mutationFn: enableOrDisableAccount,
+  });
 
   const disableUserAccount = () => {
     Swal.fire({
       title: user?.active
-        ? 'DO you want to disable this account'
-        : 'Do you want to enable this account',
+        ? 'Do you want to disable this account?'
+        : 'Do you want to enable this account?',
       text: user?.active ? 'Disabling Account' : 'Enabling Account',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
+      backdrop: false,
+      allowOutsideClick: false,
     }).then((data) => {
       if (data.isConfirmed) {
         const info = {
@@ -130,6 +137,9 @@ const UserView = () => {
     });
   };
 
+  //UPDATE User Password
+  const handleOpenUpdatePassword = () => setOpenUpdatePassword(true);
+
   //OPEN Quick Message
   //CLOSE
   const openQuickMessage = () => {
@@ -151,7 +161,7 @@ const UserView = () => {
         open={userViewData.open}
         maxWidth='sm'
         fullWidth
-        onClose={handleClose}
+        // onClose={handleClose}
       >
         <DialogTitle>User Information</DialogTitle>
         <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -174,26 +184,16 @@ const UserView = () => {
                 Send Message
               </Button>
               <Stack direction='row' spacing={2} flexWrap='wrap'>
+                <Button
+                  // color='error'
+                  size='small'
+                  endIcon={<PasswordRounded />}
+                  onClick={handleOpenUpdatePassword}
+                >
+                  Update Password
+                </Button>
                 <Button size='small' endIcon={<Edit />} onClick={editUserInfo}>
                   Edit
-                </Button>
-                <Button
-                  size='small'
-                  color={user?.active ? 'error' : 'primary'}
-                  endIcon={
-                    user?.active ? <DisabledByDefault /> : <CheckCircle />
-                  }
-                  onClick={disableUserAccount}
-                >
-                  {user?.active ? 'Disable Account' : 'Enable Account'}
-                </Button>
-                <Button
-                  color='error'
-                  size='small'
-                  endIcon={<DeleteRounded />}
-                  onClick={handleDelete}
-                >
-                  Delete
                 </Button>
               </Stack>
             </Box>
@@ -226,12 +226,40 @@ const UserView = () => {
               label='Account'
               text={user?.active ? 'Active' : 'Disabled'}
             />
+
+            <Stack
+              direction='row'
+              spacing={2}
+              flexWrap='wrap'
+              justifyContent='flex-end'
+            >
+              <Button
+                size='small'
+                color={user?.active ? 'error' : 'primary'}
+                endIcon={user?.active ? <DisabledByDefault /> : <CheckCircle />}
+                onClick={disableUserAccount}
+              >
+                {user?.active ? 'Disable Account' : 'Enable Account'}
+              </Button>
+              <Button
+                color='error'
+                size='small'
+                endIcon={<DeleteRounded />}
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+            </Stack>
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
+      <UserUpdatePassword
+        open={openUpdatePassword}
+        setOpen={setOpenUpdatePassword}
+      />
     </>
   );
 };

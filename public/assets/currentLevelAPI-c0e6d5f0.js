@@ -1,0 +1,1 @@
+import{ax as e}from"./index-885b3349.js";const o=async t=>{try{return(await e({method:"GET",url:"http://localhost:8000/levels/previous",params:t})).data}catch{}},l=async(t,s)=>{try{return(await e({method:"POST",url:"http://localhost:8000/levels/students/all",data:{sessionId:t.sessionId,termId:t.termId,type:s}})).data}catch{}};export{o as a,l as g};

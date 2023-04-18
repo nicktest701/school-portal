@@ -2,7 +2,11 @@ import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Chart, registerables } from 'chart.js';
 import StudentProvider from './context/providers/StudentProvider';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueryErrorResetBoundary,
+} from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import ThemeProvider from './theme';
 import Root from './pages/layouts/Root';
@@ -24,10 +28,11 @@ function App() {
       },
     },
   });
+  const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <ErrorBoundary FallbackComponent={Error}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary FallbackComponent={Error} onReset={reset}>
         <ThemeProvider>
           <UserProvider>
             <SchoolSessionProvider>
@@ -41,8 +46,8 @@ function App() {
             </SchoolSessionProvider>
           </UserProvider>
         </ThemeProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </QueryClientProvider>
   );
 }
 

@@ -38,9 +38,6 @@ const FeeHome = () => {
     queryKey: ['recent-fees'],
     queryFn: () => getAllRecentlyPaidFees({ session: sessionId, term: termId }),
     enabled: !!sessionId && !!termId,
-    onSuccess: (fees) => {
-      console.log(fees);
-    },
   });
 
   return (

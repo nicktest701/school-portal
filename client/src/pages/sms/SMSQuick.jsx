@@ -63,7 +63,7 @@ const SMSQuick = () => {
         handleSubmit,
       }) => {
         return (
-          <Container>
+          <Container maxWidth='md'>
             <FormControl>
               <FormLabel id='message-type'>Select type</FormLabel>
               <RadioGroup
@@ -92,6 +92,7 @@ const SMSQuick = () => {
               justifyContent='center'
               alignItems='center'
               paddingY={2}
+
             >
               {(radioValue === 'sms' || radioValue === 'both') && (
                 <TextField

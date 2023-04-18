@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------
 
 export function remToPx(value) {
-  return Math.round(parseFloat(value) * 13);
+  return Math.round(parseFloat(value) * 12);
 }
 
 export function pxToRem(value) {
-  return `${value / 13}rem`;
+  return `${value / 14}rem`;
 }
 
 export function responsiveFontSizes({ sm, md, lg }) {
@@ -24,7 +24,7 @@ export function responsiveFontSizes({ sm, md, lg }) {
 
 // ----------------------------------------------------------------------
 
-const FONT_PRIMARY = 'Quando,Public Sans, sans-serif'; // Google Font
+const FONT_PRIMARY = 'Public Sans,Quando, sans-serif'; // Google Font
 // const FONT_SECONDARY = 'CircularStd, sans-serif'; // Local Font
 
 const typography = {

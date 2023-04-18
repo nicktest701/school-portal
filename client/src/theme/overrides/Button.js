@@ -9,8 +9,8 @@ export default function Button(theme) {
         disableElevation: true,
         sx: {
           borderRadius: "6px",
-          paddingY: "12px",
-          // fontFamily:'Lato'
+          paddingY: "13px",
+   
         },
       },
       styleOverrides: {

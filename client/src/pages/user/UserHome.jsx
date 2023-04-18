@@ -45,7 +45,7 @@ function UserHome() {
         </Typography>
 
         <TabContext value={tab}>
-          <TabList onChange={(e, value) => setTab(value)}>
+          <TabList onChange={(e, value) => setTab(value)} textColor='#fff'>
             <Tab
               value='1'
               label='Users'

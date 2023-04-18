@@ -1,4 +1,4 @@
-import React, { useContext,  useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { SendRounded } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -63,7 +63,7 @@ const SMSBulk = () => {
         handleSubmit,
       }) => {
         return (
-          <Container>
+          <Container maxWidth='md'>
             <FormControl>
               <FormLabel id='message-type'>Select type</FormLabel>
               <RadioGroup
@@ -136,6 +136,7 @@ const SMSBulk = () => {
               variant='contained'
               onClick={handleSubmit}
               endIcon={<SendRounded />}
+              sx={{ alignSelf: 'flex-end' }}
             >
               Send Message
             </LoadingButton>

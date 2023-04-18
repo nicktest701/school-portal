@@ -1,5 +1,5 @@
 * {
-  --primary: #012E54;
+  --primary: #012e54;
   --secondary: #ffc09f;
 }
 
@@ -11,7 +11,7 @@
   border-radius: 8px;
   border: none;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-  font-family: "Public Sans", Helvetica, sans-serif;
+  font-family: 'Public Sans', 'Quando', Helvetica, sans-serif;
 }
 .react-calendar--doubleView {
   width: 700px;

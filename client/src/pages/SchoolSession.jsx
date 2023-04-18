@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllTerms } from '../api/termAPI';
 import { SchoolSessionContext } from '../context/providers/SchoolSessionProvider';
 import { UserContext } from '../context/providers/userProvider';
+import AddSession from './session/AddSession';
 
 const SchoolSession = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -36,7 +37,9 @@ const SchoolSession = () => {
     }
   }, []);
 
-  useQuery(['terms'], getAllTerms, {
+  useQuery({
+    queryKey: ['terms'],
+    queryFn: () => getAllTerms(),
     onSuccess: (sessions) => {
       if (user?.role === 'administrator') {
         setOptions(sessions);
@@ -131,7 +134,7 @@ const SchoolSession = () => {
         {user?.role === 'administrator' && (
           <Button
             color='primary'
-            startIcon={<Add/>}
+            startIcon={<Add />}
             sx={{
               position: 'absolute',
               right: 5,
@@ -143,6 +146,7 @@ const SchoolSession = () => {
           </Button>
         )}
       </Container>
+      <AddSession />
     </>
   );
 };

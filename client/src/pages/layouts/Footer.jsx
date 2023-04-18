@@ -1,17 +1,17 @@
 import { Typography } from '@mui/material';
 import React from 'react';
 
-const Footer = () => {
+const Footer = ({ bgcolor, color }) => {
   return (
     <footer
       style={{
-        backgroundColor: '#333',
+        backgroundColor: bgcolor || '#333',
         display: 'grid',
         placeItems: 'center',
         height: '80px',
       }}
     >
-      <Typography variant='body2' color='#fff'>
+      <Typography variant='body2' color={color || '#fff'}>
         Copyright &copy; {new Date().getFullYear()} | FrebbyTech Consults
       </Typography>
       {/* <Typography variant='caption' color='#fff'>

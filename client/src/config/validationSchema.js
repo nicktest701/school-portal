@@ -89,7 +89,18 @@ export const userValidationSchema = object().shape({
   address: string().required('Required*'),
   nationality: string().required('Required*'),
   residence: string().required('Required*'),
-  password: string().required('Required*'),
+  password: string()
+    .required('Required*')
+    .min(8, 'Password should be between 8-15 characters long'),
+  confirmPassword: string()
+    .required('Required*')
+    .min(8, 'Password should be between 8-15 characters long')
+    .oneOf([ref('password'), null], 'Passwords do not match'),
+});
+export const userResetPasswordValidationSchema = object().shape({
+  password: string()
+    .required('Required*')
+    .min(8, 'Password should be between 8-15 characters long'),
   confirmPassword: string()
     .required('Required*')
     .min(8, 'Password should be between 8-15 characters long')
@@ -104,7 +115,7 @@ export const updateProfileValidationSchema = object().shape({
     .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
   password: string().min(8, 'Password should be between 8-15 characters long'),
   confirmPassword: string().oneOf(
-    [ref('password'), null,],
+    [ref('password'), null],
     'Passwords do not match'
   ),
 });

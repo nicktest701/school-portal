@@ -237,7 +237,7 @@ router.put(
   })
 );
 //@POST Reset User Password
-router.post(
+router.put(
   '/reset-password',
   asyncHandler(async (req, res) => {
     const { id, password } = req.body;

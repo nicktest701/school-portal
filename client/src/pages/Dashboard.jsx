@@ -28,6 +28,7 @@ import '../theme/Calendar.css';
 import { UserContext } from '../context/providers/userProvider';
 import HorizontalSidebar from './layouts/HorizontalSidebar';
 import DashboardCardsContainer from '../components/cards/DashboardCardsContainer';
+import Footer from './layouts/Footer';
 
 const Dashboard = () => {
   const {
@@ -81,110 +82,123 @@ const Dashboard = () => {
   };
   return (
     <>
-      <Box
-        sx={{
-          height: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: 1,
-          overscrollBehaviorInline: 'contain',
-        }}
-      >
-        <Sidebar onLogOut={handleLogOut} />
-        <Scrollbars autoHide autoHideTimeout={1000} autoHideDuration={200}>
-          <Container
-            sx={{
-              height: '100vh',
-              overscrollBehaviorInline: 'contain',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Stack>
-                <HorizontalSidebar onLogOut={handleLogOut} />
-                <Typography variant='h4' textTransform='capitalize'>
-                  Welcome, {user?.fullname?.split(' ')[0]}!
-                </Typography>
-                <Typography variant='body2'>
-                  {new Date().toDateString()}
-                </Typography>
-              </Stack>
-
-              <Stack direction='row'>
-                <IconButton>
-                  <NotificationsRounded />
-                </IconButton>
-                <IconButton>
-                  <MoreVertRoundedIcon />
-                </IconButton>
-              </Stack>
-            </Box>
-            <Typography
-              variant='h6'
-              sx={{ textAlign: 'right', color: 'primary.main' }}
-            >
-              {session?.academicYear}-{session?.term}
-            </Typography>
-
-            <Typography variant='h6' sx={{ paddingY: 1 }}>
-              Dashboard
-            </Typography>
-            <Divider />
-            <DashboardCardsContainer />
-            <Typography variant='h6' sx={{ paddingY: 1 }}>
-              Recent News
-            </Typography>
-            <Divider />
-            <DashboardSwiper />
-          </Container>
-        </Scrollbars>
-        <Container
+      <Box sx={{ display: 'grid', gridAutoRows: '1fr auto', height: '100vh' }}>
+        <Box
           sx={{
-            width: 300,
-            display: { xs: 'none', md: 'inline-block' },
-            backgroundColor: '#F7F7F7',
-            height: '100vh',
-            padding: 2,
-            paddingY: 4,
-            transition: 'all 0.4s ease-in-out',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            overscrollBehaviorInline: 'contain',
+            padding: 1,
           }}
         >
-          <Box>
-            <Stack direction='row' justifyContent='space-between'>
-              <Typography variant='subtitle2'>Profile</Typography>
-              <IconButton onClick={handleOpenUserProfile}>
-                <EditRounded />
-              </IconButton>
-            </Stack>
+          <Sidebar onLogOut={handleLogOut} />
 
-            <Stack alignItems='center' paddingBottom={2}>
-              <Avatar
-                src={ `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`}
-                sx={{ width: 80, height: 80 }}
-              />
-              <Typography variant='subtitle2' color='primary'>
-                {_.startCase(user?.fullname)}
+          <Scrollbars
+            autoHide
+            autoHideTimeout={1000}
+            autoHideDuration={200}
+            // style={{
+            //   height: '100%',
+            // }}
+          >
+            <Container
+              sx={{
+                overscrollBehaviorInline: 'contain',
+                paddingY: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Stack>
+                  <HorizontalSidebar onLogOut={handleLogOut} />
+                  <Typography variant='h4' textTransform='capitalize'>
+                    Welcome, {user?.fullname?.split(' ')[0]}!
+                  </Typography>
+                  <Typography variant='body2'>
+                    {new Date().toDateString()}
+                  </Typography>
+                </Stack>
+
+                <Stack direction='row'>
+                  <IconButton>
+                    <NotificationsRounded />
+                  </IconButton>
+                  <IconButton>
+                    <MoreVertRoundedIcon />
+                  </IconButton>
+                </Stack>
+              </Box>
+              <Typography
+                variant='h6'
+                sx={{ textAlign: 'right', color: 'primary.main' }}
+              >
+                {session?.academicYear}-{session?.term}
               </Typography>
-              <Typography variant='body2'>@{user?.username}</Typography>
-            </Stack>
-          </Box>
-          <Stack rowGap={2}>
-            {/* <Typography variant='subtitle2'>Calendar</Typography> */}
-            <Box>
-              <Calendar onChange={onChange} value={value} />
-            </Box>
 
-            {/* birthday */}
-            <Birthday />
-          </Stack>
-        </Container>
+              <Typography variant='h6' sx={{ paddingY: 1 }}>
+                Dashboard
+              </Typography>
+              <Divider />
+              <DashboardCardsContainer />
+              <Typography variant='h6' sx={{ paddingY: 1 }}>
+                Recent News
+              </Typography>
+              <Divider />
+              <DashboardSwiper />
+            </Container>
+          </Scrollbars>
+
+          <Container
+            sx={{
+              width: 320,
+              height: '100%',
+              display: { xs: 'none', md: 'inline-block' },
+              backgroundColor: '#F7F7F7',
+              padding: 2,
+              transition: 'all 0.4s ease-in-out',
+            }}
+          >
+            <Box>
+              <Stack direction='row' justifyContent='space-between'>
+                <Typography variant='subtitle2'>Profile</Typography>
+                <IconButton onClick={handleOpenUserProfile}>
+                  <EditRounded />
+                </IconButton>
+              </Stack>
+
+              <Stack alignItems='center' paddingBottom={2}>
+                <Avatar
+                  src={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                    user?.profile
+                  }`}
+                  sx={{ width: 80, height: 80 }}
+                />
+                <Typography variant='subtitle2' color='primary'>
+                  {_.startCase(user?.fullname)}
+                </Typography>
+                <Typography variant='body2'>@{user?.username}</Typography>
+              </Stack>
+            </Box>
+            <Stack rowGap={2}>
+              {/* <Typography variant='subtitle2'>Calendar</Typography> */}
+              <Box>
+                <Calendar onChange={onChange} value={value} />
+              </Box>
+
+              {/* birthday */}
+              <Birthday />
+            </Stack>
+          </Container>
+        </Box>
+        <Footer bgcolor='transparent' color='#333' />
       </Box>
+
       <CustomParticle />
 
       <ViewUserProfile open={openUserProfile} setOpen={setOpenUserProfile} />

@@ -229,11 +229,11 @@ const FeeMakePayment = () => {
     };
     Swal.fire({
       title: 'Making Payment',
-      text: 'Do you proceed with the payment?',
+      text: 'Do you want to proceed with the payment?',
       confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
-    }).then(({ isConfirmed }) => {
+    }).then(({ isConfirmed, isDenied, isDismissed }) => {
       if (isConfirmed) {
         mutateAsync(payment, {
           onSettled: () => {
@@ -253,6 +253,9 @@ const FeeMakePayment = () => {
             });
           },
         });
+      }
+      if (isDenied || isDismissed) {
+        options.setSubmitting(false);
       }
     });
   }

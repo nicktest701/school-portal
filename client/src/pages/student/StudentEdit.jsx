@@ -114,7 +114,7 @@ const StudentEdit = () => {
         onClose={handleClose}
       />
 
-      <Divider />
+   
       <Formik
         initialValues={student}
         onSubmit={onSubmit}

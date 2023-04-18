@@ -24,14 +24,19 @@ const SMSNew = () => {
       >
         <MailRounded color='inherit' sx={{ width: 100, height: 100 }} />
 
-        <Typography variant='h5'>SMS,Mails & Notifications</Typography>
+        <Typography variant='h4'>SMS,Mails & Notifications</Typography>
         <Typography>
-          Send single and bulk SMS to students and parents
+          Send single and bulk SMS amd emails to students,teachers, parents,etc
         </Typography>
         <Divider flexItem />
       </Container>
       <TabContext value={tab}>
-        <TabList onChange={(e, value) => setTab(value)}>
+        <TabList
+          onChange={(e, value) => setTab(value)}
+          centered
+          // variant='scrollable'
+          scrollButtons='auto'
+        >
           <Tab
             label='Quick Message'
             value='1'

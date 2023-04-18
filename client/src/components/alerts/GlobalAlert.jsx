@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
-import Alert from "@mui/material/Alert";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { Snackbar } from "@mui/material";
-import { CheckCircleRounded, ErrorRounded } from "@mui/icons-material";
-import Transition from "../animations/Transition";
+import React, { useContext } from 'react';
+import Alert from '@mui/material/Alert';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import { Snackbar } from '@mui/material';
+import { CheckCircleRounded, ErrorRounded } from '@mui/icons-material';
+import Transition from '../animations/Transition';
 const GlobalAlert = () => {
   const {
     schoolSessionState: { alertData },
@@ -12,16 +12,16 @@ const GlobalAlert = () => {
 
   const handleClose = () => {
     schoolSessionDispatch({
-      type: "closeAlert",
+      type: 'closeAlert',
     });
   };
-  const borderColor = alertData?.severity === "error" ? "#B72136" : "#1890FF";
+  const borderColor = alertData?.severity === 'error' ? '#B72136' : '#1890FF';
 
   return (
     <Snackbar
       anchorOrigin={{
-        horizontal: "center",
-        vertical: "top",
+        horizontal: 'center',
+        vertical: 'top',
       }}
       open={alertData?.message ? true : false}
       autoHideDuration={5000}
@@ -30,7 +30,7 @@ const GlobalAlert = () => {
     >
       <Alert
         icon={
-          alertData?.severity === "info" ? (
+          alertData?.severity === 'info' ? (
             <CheckCircleRounded />
           ) : (
             <ErrorRounded />
@@ -39,11 +39,11 @@ const GlobalAlert = () => {
         severity={alertData?.severity}
         onClose={handleClose}
         sx={{
-          width: "100%",
+          width: '100%',
           borderLeft: `2px solid ${borderColor}`,
         }}
       >
-        {alertData?.message}
+        {typeof alertData?.message === 'string' ? alertData?.message : ''}
       </Alert>
     </Snackbar>
   );

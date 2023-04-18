@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import StudentFeesHistory from '../../pages/fees/StudentFeesHistory';
 import { ListItemButton, ListItemText } from '@mui/material';
+import { v4 as uuid } from 'uuid';
 
 const StudentFeeReportListItem = ({ item, studentId }) => {
   const { studentDispatch } = useContext(StudentContext);
@@ -40,18 +41,20 @@ const StudentFeeReportListItem = ({ item, studentId }) => {
         }
       >
         {item[1]?.map(({ term, levelId, levelType, id }) => {
+          const uniqueId = uuid();
+     
           return (
             <>
               <ListItemButton
-                key={id}
+                key={uniqueId}
                 onClick={() => handleViewFeesDetailsByTerm(id, levelId)}
               >
                 <ListItemText
                   primary={levelType}
                   secondary={term}
-                  primaryTypographyProps={{
-                    fontSize: 14,
-                  }}
+                  // primaryTypographyProps={{
+                  //   fontSize: 14,
+                  // }}
                   secondaryTypographyProps={{
                     fontSize: 13,
                     color: 'primary.main',

@@ -12,7 +12,7 @@ const NavLinkItem = ({ to, text, color }) => {
     };
   };
   return (
-    <NavLink to={to} style={myLinkStyles}>
+    <NavLink to={to} style={myLinkStyles} end>
       <Button variant='text' color={color}>
         {text}
       </Button>

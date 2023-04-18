@@ -18,6 +18,7 @@ import { loginUserValidationSchema } from '../config/validationSchema';
 import { getSchoolInfo, getUserAuth } from '../api/userAPI';
 import { UserContext } from '../context/providers/userProvider';
 import { useLocation, useNavigate } from 'react-router-dom';
+import StudentFeeSkeleton from '../components/skeleton/StudentFeeSkeleton';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Login = () => {
   };
   const [msg, setMsg] = useState('');
 
-  useQuery({
+  const schoolInformation = useQuery({
     queryKey: ['school'],
     queryFn: () => getSchoolInfo(),
     onSuccess: (data) => {
@@ -94,37 +95,43 @@ const Login = () => {
             color: 'primary.contrastText',
           }}
         >
-          <Stack
-            rowGap={3}
-            justifyContent='çenter'
-            alignItems='center'
-            sx={{
-              filter: 'blur',
-              background: 'linear-gradient(rgba(0,0,0,0.1),rgba(0,0,0,0.1))',
-              padding: 4,
-            }}
-          >
-            {school_info?.badge ? (
-              <Avatar
-                alt='school logo'
-                loading='lazy'
-                srcSet={ `${import.meta.env.VITE_BASE_URL}/images/users/${school_info?.badge}`}
-                sx={{
-                  width: 150,
-                  height: 150,
-                }}
-              />
-            ) : (
-              <SchoolRounded sx={{ width: 100, height: 100 }} />
-            )}
+          {schoolInformation.isLoading ? (
+            <StudentFeeSkeleton />
+          ) : (
+            <Stack
+              rowGap={3}
+              justifyContent='çenter'
+              alignItems='center'
+              sx={{
+                filter: 'blur',
+                background: 'linear-gradient(rgba(0,0,0,0.1),rgba(0,0,0,0.1))',
+                padding: 4,
+              }}
+            >
+              {school_info?.badge ? (
+                <Avatar
+                  alt='school logo'
+                  loading='lazy'
+                  srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                    school_info?.badge
+                  }`}
+                  sx={{
+                    width: 150,
+                    height: 150,
+                  }}
+                />
+              ) : (
+                <SchoolRounded sx={{ width: 100, height: 100 }} />
+              )}
 
-            <Typography variant='h3' textAlign='center'>
-              {school_info?.name}
-            </Typography>
-            <Typography variant='body2' fontStyle='italic' textAlign='center'>
-              {`" ${school_info?.motto} "`}
-            </Typography>
-          </Stack>
+              <Typography variant='h3' textAlign='center'>
+                {school_info?.name}
+              </Typography>
+              <Typography variant='body2' fontStyle='italic' textAlign='center'>
+                {`" ${school_info?.motto} "`}
+              </Typography>
+            </Stack>
+          )}
         </Box>
         <Container
           maxWidth='xs'
@@ -142,7 +149,9 @@ const Login = () => {
             <Avatar
               alt='school logo'
               loading='lazy'
-              srcSet={ `${import.meta.env.VITE_BASE_URL}/images/users/${school_info?.badge}`}
+              srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                school_info?.badge
+              }`}
               sx={{
                 width: 150,
                 height: 150,
