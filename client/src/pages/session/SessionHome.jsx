@@ -18,6 +18,7 @@ import {
   alertSuccess,
 } from '../../context/actions/globalAlertActions';
 import session_icon from '../../assets/images/header/session_ico.svg';
+import AddSession from './AddSession';
 
 const SessionHome = () => {
   const { palette } = useTheme();
@@ -133,7 +134,7 @@ const SessionHome = () => {
         onAddButtonClicked={handleOpenSession}
         handleRefresh={sessions.refetch}
       />
-
+      <AddSession />
       <EditSession open={openEditSession} setOpen={setOpenEditSession} />
     </>
   );

@@ -1,5 +1,5 @@
-import React from 'react';
-import { ListItemText, Stack, Typography } from '@mui/material';
+
+import { ListItemText, Stack } from '@mui/material';
 import PropTypes from 'prop-types';
 function CustomTableTitle({ icon, title, subtitle }) {
   return (

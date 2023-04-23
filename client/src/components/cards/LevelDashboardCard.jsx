@@ -1,6 +1,8 @@
 import React from 'react';
 import { HomeMini } from '@mui/icons-material';
-import { Button, Stack, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 const LevelDashboardCard = ({ title, value }) => {
   return (

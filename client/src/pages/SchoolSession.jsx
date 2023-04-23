@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllTerms } from '../api/termAPI';
 import { SchoolSessionContext } from '../context/providers/SchoolSessionProvider';
 import { UserContext } from '../context/providers/userProvider';
-import AddSession from './session/AddSession';
+import AddSchoolSession from './session/AddSchoolSession';
 
 const SchoolSession = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -24,6 +24,7 @@ const SchoolSession = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [options, setOptions] = useState([]);
+  const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState('');
   const [session, setSession] = useState({
     termId: '',
@@ -69,9 +70,7 @@ const SchoolSession = () => {
     });
   };
 
-  const handleOpenDialog = () => {
-    schoolSessionDispatch({ type: 'displayAddSession', payload: true });
-  };
+  const handleOpenAddSession = () => setOpenAddSession(true);
 
   return (
     <>
@@ -140,13 +139,14 @@ const SchoolSession = () => {
               right: 5,
               top: 5,
             }}
-            onClick={handleOpenDialog}
+            onClick={handleOpenAddSession}
           >
             New School Session
           </Button>
         )}
+
+        <AddSchoolSession open={openAddSession} setOpen={setOpenAddSession} />
       </Container>
-      <AddSession />
     </>
   );
 };

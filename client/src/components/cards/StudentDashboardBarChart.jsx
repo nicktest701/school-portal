@@ -1,8 +1,8 @@
-import { BarChartRounded } from '@mui/icons-material';
-
+import  BarChartRounded  from '@mui/icons-material/BarChartRounded';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
 import PropTypes from 'prop-types';
-import { Card, CardContent, CardHeader } from '@mui/material';
-import React from 'react';
 import BarChart from '../charts/BarChart';
 
 const StudentDashboardBarChart = ({ data }) => {
@@ -10,7 +10,7 @@ const StudentDashboardBarChart = ({ data }) => {
     <Card>
       <CardHeader
         avatar={<BarChartRounded />}
-        title={`Total Students for ${data && data[0]?.academicYear}`}
+        title={`Students for ${data && data[0]?.academicYear}`}
       />
       <CardContent>
         <BarChart data={data} />

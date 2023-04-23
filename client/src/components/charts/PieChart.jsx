@@ -1,6 +1,6 @@
-import React from "react";
-import { Doughnut } from "react-chartjs-2";
-import { useTheme, Box } from "@mui/material";
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material';
+import { Doughnut } from 'react-chartjs-2';
 
 const PieChart = () => {
   const { palette } = useTheme();
@@ -9,13 +9,13 @@ const PieChart = () => {
     <Box
       sx={{
         minWidth: 150,
-          height: 150,
+        height: 150,
       }}
     >
       <Doughnut
-        datasetIdKey="id"
+        datasetIdKey='id'
         data={{
-          labels: ["Sent", "Received"],
+          labels: ['Sent', 'Received'],
 
           datasets: [
             {
@@ -34,12 +34,12 @@ const PieChart = () => {
           scales: {
             x: {
               ticks: {
-                 display: false,
+                display: false,
               },
             },
             y: {
               ticks: {
-                 display: false,
+                display: false,
               },
             },
           },

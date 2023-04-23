@@ -1,25 +1,17 @@
-import React, { useState } from 'react';
-import { Typography, Stack, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
 import { NavLink } from 'react-router-dom';
 
 const DrawerItem = ({ title, icon, to }) => {
   const { palette } = useTheme();
-  const [showContext, setShowContext] = useState(false);
 
-  const handleFocus = () => {
-    setShowContext(true);
-  };
-
-  const handleBlur = () => {
-    setShowContext(false);
-  };
   return (
     <NavLink
       to={to}
       style={{
         textDecoration: 'none',
         color: `${palette.primary.main}`,
-        // border: "1px solid red",
         paddingInline: '8px',
       }}
     >
@@ -29,19 +21,17 @@ const DrawerItem = ({ title, icon, to }) => {
         justifyContent={{ xs: 'center', md: 'flex-start' }}
         alignItems='center'
         sx={{
-          position: 'relative',
           padding: { xs: 1, sm: 2 },
           cursor: 'pointer',
           boxShadow: { xs: '0 2px 5px  rgba(1, 46, 84,0.2) ', sm: 'none' },
           borderRadius: { xs: '50px', sm: '0' },
+          width: { xs: 'inherit', md: 200 },
 
           '&:hover': {
             backgroundColor: palette.grey[300],
             borderRadius: '4px',
           },
         }}
-        onMouseEnter={handleFocus}
-        onMouseLeave={handleBlur}
       >
         {icon}
         <Typography

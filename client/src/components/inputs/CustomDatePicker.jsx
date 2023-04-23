@@ -1,7 +1,6 @@
-import { TextField } from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import React from "react";
+import { TextField } from '@mui/material';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 function CustomDatePicker({
   label,
@@ -19,8 +18,8 @@ function CustomDatePicker({
         // InputProps={{
         //   readOnly: readOnly || false,
         // }}
-    
-        inputFormat=" Do MMMM YYYY"
+
+        inputFormat=' Do MMMM YYYY'
         disableMaskedInput
         disableFuture={disableFuture}
         renderInput={(params) => (
@@ -29,7 +28,7 @@ function CustomDatePicker({
             label={label}
             error={Boolean(touched && error)}
             helperText={touched && error}
-            size="small"
+            size='small'
             fullWidth
           />
         )}

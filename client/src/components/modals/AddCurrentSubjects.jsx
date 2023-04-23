@@ -9,7 +9,7 @@ import {
   TextField,
   List,
   Typography,
-  Divider,
+
 } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -19,7 +19,7 @@ import { SUBJECT_OPTIONS } from '../../mockup/columns/sessionColumns';
 import SubjectItem from '../list/SubjectItem';
 import { addSubjectsToLevel, getSubjectsForLevel } from '../../api/levelAPI';
 import CustomDialogTitle from '../dialog/CustomDialogTitle';
-import { GolfCourseRounded, SaveAltRounded } from '@mui/icons-material';
+import {  SaveAltRounded } from '@mui/icons-material';
 
 const AddCurrentSubjects = ({ open, setOpen }) => {
   const queryClient = useQueryClient();

@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import Alert from '@mui/material/Alert';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { Snackbar } from '@mui/material';
-import { CheckCircleRounded, ErrorRounded } from '@mui/icons-material';
+import Snackbar from '@mui/material/Snackbar';
+import ErrorRounded from '@mui/icons-material/ErrorRounded';
+import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import Transition from '../animations/Transition';
 const GlobalAlert = () => {
   const {

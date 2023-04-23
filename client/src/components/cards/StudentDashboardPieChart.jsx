@@ -1,5 +1,8 @@
-import { PivotTableChartRounded } from '@mui/icons-material';
-import { Card, CardContent, CardHeader, useTheme } from '@mui/material';
+import PivotTableChartRounded from '@mui/icons-material/PivotTableChartRounded';
+import { useTheme } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
 import { PolarArea } from 'react-chartjs-2';
 
 const StudentDashboardPieChart = ({ females, males }) => {

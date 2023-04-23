@@ -1,14 +1,11 @@
-import React from 'react';
 import { Line } from 'react-chartjs-2';
-import {
-  useTheme,
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Typography,
-} from '@mui/material';
-import { BarChartRounded } from '@mui/icons-material';
+import { useTheme } from '@mui/material';
+import Box from '@mui/material/Box,';
+import Card from '@mui/material/Card,';
+import CardContent from '@mui/material/CardContent,';
+import CardHeader from '@mui/material/CardHeader,';
+import Typography from '@mui/material/Typography,';
+import BarChartRounded from '@mui/icons-material/BarChartRounded';
 
 const LineChart = () => {
   const { palette } = useTheme();

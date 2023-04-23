@@ -1,1 +1,0 @@
-const s="/assets/session-c2b411ac.svg",e="/assets/assessment-c758171e.svg",t="/assets/exams-9d374570.svg",a="/assets/level-1b1178e9.svg",c="/assets/sms-327f558e.svg",n="/assets/student-bffed010.svg",o="/assets/teacher-6939cf04.svg",v={session:s,assessment:e,exams:t,level:a,sms:c,student:n,teacher:o};export{v as E};

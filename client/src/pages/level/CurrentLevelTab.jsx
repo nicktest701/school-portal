@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Stack, Typography } from '@mui/material';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { STUDENTS_COLUMN } from '../../mockup/columns/studentColumns';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { EMPTY_IMAGES } from '../../config/images';
@@ -15,7 +15,7 @@ import NewAttendance from './NewAttendance';
 import AttendanceHistory from './AttendanceHistory';
 import { History } from '@mui/icons-material';
 const CurrentLevelTab = () => {
-  const navigate = useNavigate();
+
   const { id, type } = useParams();
   const [openAttendance, setOpenAttendance] = useState(false);
   const [openAttendanceHistory, setOpenAttendanceHistory] = useState(false);

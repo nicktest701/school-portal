@@ -4,7 +4,6 @@ import Back from '../Back';
 import PropTypes from 'prop-types';
 function CustomTitle({ title, subtitle, img, color, backColor }) {
 
-
   CustomTitle.propTypes = {
     title: PropTypes.string,
     subtitle: PropTypes.string,

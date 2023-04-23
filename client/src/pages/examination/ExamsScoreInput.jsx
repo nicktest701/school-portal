@@ -134,7 +134,7 @@ const ExamsScoreInput = () => {
         touched,
         handleChange,
         handleSubmit,
-        isSubmitting,
+        // isSubmitting,
         setFieldValue,
       }) => {
         return (

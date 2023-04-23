@@ -1,6 +1,8 @@
-import { ArrowForwardIosRounded, BarChartRounded } from "@mui/icons-material";
-import { Button, Stack, Typography } from "@mui/material";
-import React from "react";
+import  BarChartRounded  from "@mui/icons-material/BarChartRounded";
+import  ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded";
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import LineChart from "../charts/LineChart";
 
 const StudentDashboardCard = () => {

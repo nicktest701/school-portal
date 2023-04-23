@@ -1,5 +1,7 @@
 import React from 'react';
-import { Avatar, Stack, Typography } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 function ExamsHomeCard({ title, value, icon, color }) {
   return (

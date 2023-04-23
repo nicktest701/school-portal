@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { useTheme, Box } from '@mui/material';
+import  Box from '@mui/material/Box';
 import _ from 'lodash';
 const LineChart = ({ data }) => {
-  const { palette } = useTheme();
+  
 
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);

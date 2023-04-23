@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Container, Stack, Toolbar } from '@mui/material';
+import { AppBar, Container,  Toolbar } from '@mui/material';
 
 import Back from '../../../components/Back';
 import NavLinkItem from '../../../components/list/NavLinkItem';

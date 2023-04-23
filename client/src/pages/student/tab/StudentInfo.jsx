@@ -35,7 +35,7 @@ const XLSX_FILE_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 const XLS_FILE_TYPE = 'application/vnd.ms-excel';
 
-const StudentInfo = ({ setTab, setMsg, msg }) => {
+const StudentInfo = ({ setTab, setMsg,  }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
 

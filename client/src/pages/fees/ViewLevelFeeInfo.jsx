@@ -22,7 +22,7 @@ function ViewLevelFeeInfo() {
     queryKey: ["level-fee", levelFeeInfo.data],
     queryFn: () => getAllCurrentFeesByLevel(levelFeeInfo?.data),
     enabled: !!levelFeeInfo?.data?.term && !!levelFeeInfo?.data?.level,
-    onSuccess: (info) => {},
+
   });
 
   const handleClose = () => {

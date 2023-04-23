@@ -1,6 +1,8 @@
-import React from "react";
-import { Box, useTheme } from "@mui/material";
-import PieChart from "../charts/PieChart";
+
+import { useTheme } from '@mui/material';
+import Box from '@mui/material/Box';
+
+import PieChart from '../charts/PieChart';
 
 const SMSCards = () => {
   const { palette } = useTheme();

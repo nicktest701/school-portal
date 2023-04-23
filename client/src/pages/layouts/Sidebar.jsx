@@ -24,7 +24,7 @@ import DrawerItem from '../../components/DrawerItem';
 import { ExitToAppSharp, SchoolRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { UserContext } from '../../context/providers/userProvider';
-import Scrollbars from 'react-custom-scrollbars';
+
 
 const Sidebar = ({ onLogOut }) => {
   const school_info = JSON.parse(localStorage.getItem('@school_info'));

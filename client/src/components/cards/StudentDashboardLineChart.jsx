@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { PieChartRounded } from '@mui/icons-material';
-import { Box, Card, CardContent, CardHeader } from '@mui/material';
+import PieChartRounded from '@mui/icons-material/PieChartRounded';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
 import { Pie } from 'react-chartjs-2';
 import _ from 'lodash';
 const StudentDashboardLineChart = ({ data }) => {
@@ -16,11 +19,7 @@ const StudentDashboardLineChart = ({ data }) => {
 
   return (
     <Card>
-      <CardHeader
-          avatar={<PieChartRounded />
-        }
-        title='Students In Each Level'
-      />
+      <CardHeader avatar={<PieChartRounded />} title='Students In Each Level' />
       <CardContent>
         <Box
           sx={{
@@ -44,7 +43,6 @@ const StudentDashboardLineChart = ({ data }) => {
             options={{
               responsive: true,
               maintainAspectRatio: false,
-
 
               layout: {
                 padding: 2,

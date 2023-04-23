@@ -1,6 +1,6 @@
 import { Button, Container, Typography } from '@mui/material';
 
-const Error = ({ resetErrorBoundary }) => {
+const Error = ({ error, resetErrorBoundary }) => {
   return (
     <Container
       sx={{
@@ -16,7 +16,7 @@ const Error = ({ resetErrorBoundary }) => {
       <Typography variant='h4'>
         Something went wrong.Try again later!
       </Typography>
-      {/* <Typography variant='caption'>{error?.message}</Typography> */}
+      <Typography variant='caption'>{error?.message}</Typography>
       <Typography variant='caption'>
         Try checking your internet connection.
       </Typography>
