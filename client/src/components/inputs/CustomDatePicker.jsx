@@ -13,25 +13,18 @@ function CustomDatePicker({
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <DatePicker
+      size='small'
+        label={label}
         value={date}
         onChange={(date) => setDate(date)}
-        // InputProps={{
-        //   readOnly: readOnly || false,
-        // }}
-
-        inputFormat=' Do MMMM YYYY'
+        format=' Do MMMM YYYY'
         disableMaskedInput
         disableFuture={disableFuture}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={label}
-            error={Boolean(touched && error)}
-            helperText={touched && error}
-            size='small'
-            fullWidth
-          />
-        )}
+        slotProps={{
+          textField: {
+            helperText: touched && error,
+          },
+        }}
       />
     </LocalizationProvider>
   );

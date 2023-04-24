@@ -18,8 +18,8 @@ router.get(
   asyncHandler(async (req, res) => {
     const { session, term } = req.query;
     const levels = await Level.find({
-      session: ObjectId(session),
-      term: ObjectId(term),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
       active: true,
     });
 
@@ -35,8 +35,8 @@ router.post(
     const { sessionId, termId, type } = req.body;
 
     const AllStudents = await Level.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
     })
       .populate('level')
       .populate({
@@ -90,9 +90,9 @@ router.post(
     const { sessionId, termId, levelId } = req.body;
 
     const students = await Level.findOne({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      level: ObjectId(levelId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      level: new ObjectId(levelId),
     })
       .populate('level')
       .populate({
@@ -130,8 +130,8 @@ router.post(
 
     //FInd if current level exists
     const currentLevels = await Level.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
     });
 
     if (!_.isEmpty(currentLevels)) {
@@ -141,7 +141,7 @@ router.post(
     //find prevoius levels
     //FInd if levels exists
     const levels = await Level.find({
-      session: ObjectId(sessionId),
+      session: new ObjectId(sessionId),
     });
 
     if (_.isEmpty(levels)) {
@@ -150,7 +150,7 @@ router.post(
 
     //GET all existing students
     const previousLevels = await Level.find({
-      session: ObjectId(sessionId),
+      session: new ObjectId(sessionId),
     }).populate({
       path: 'students',
       match: { active: true },
@@ -175,8 +175,8 @@ router.post(
     //GENERATE New Level info
     const students = mergedLevels.map(({ level, subjects, students }) => {
       return {
-        session: ObjectId(sessionId),
-        term: ObjectId(termId),
+        session: new ObjectId(sessionId),
+        term: new ObjectId(termId),
         level,
         subjects,
         students: _.uniqWith(students, _.isEqual),
@@ -282,9 +282,9 @@ router.delete(
     }
     await CurrentLevelDetails.findOneAndUpdate(
       {
-        session: ObjectId(sessionId),
-        term: ObjectId(termId),
-        level: ObjectId(id),
+        session: new ObjectId(sessionId),
+        term: new ObjectId(termId),
+        level: new ObjectId(id),
       },
       {
         $set: {
@@ -295,9 +295,9 @@ router.delete(
 
     await CurrentLevel.findOneAndUpdate(
       {
-        session: ObjectId(sessionId),
-        term: ObjectId(termId),
-        level: ObjectId(id),
+        session: new ObjectId(sessionId),
+        term: new ObjectId(termId),
+        level: new ObjectId(id),
       },
       {
         $set: {
@@ -316,8 +316,8 @@ router.get(
   asyncHandler(async (req, res) => {
     const { sessionId, termId } = req.query;
     const previousLevels = await Level.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
     })
       .select('level')
       .populate({
@@ -339,15 +339,15 @@ router.get(
 //       return res.status(404).json("Error removing level info.Try again later");
 //     }
 //     await CurrentLevelDetails.findOneAndRemove({
-//       session: ObjectId(sessionId),
-//       term: ObjectId(termId),
-//       level: ObjectId(id),
+//       session: new ObjectId(sessionId),
+//       term: new ObjectId(termId),
+//       level: new ObjectId(id),
 //     });
 
 //     await CurrentLevel.findOneAndRemove({
-//       session: ObjectId(sessionId),
-//       term: ObjectId(termId),
-//       level: ObjectId(id),
+//       session: new ObjectId(sessionId),
+//       term: new ObjectId(termId),
+//       level: new ObjectId(id),
 //     });
 
 //     res.status(201).json(" Level has been removed successfully!!!");
@@ -409,9 +409,9 @@ router.post(
     const { sessionId, termId, teacher } = req.body;
 
     const level = await Level.findOne({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      teacher: ObjectId(teacher),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      teacher: new ObjectId(teacher),
     }).populate('level');
 
     const modifiedLevel = {
@@ -431,7 +431,7 @@ router.put(
       req.body._id,
       {
         $set: {
-          teacher: ObjectId(req.body.teacher),
+          teacher: new ObjectId(req.body.teacher),
         },
       },
       {
@@ -479,8 +479,8 @@ router.get(
     const { session, term } = req.query;
     // console.log(session, term);
     const students = await Level.find({
-      session: ObjectId(session),
-      term: ObjectId(term),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
     })
       .populate({
         path: 'students',
@@ -510,7 +510,7 @@ router.get(
       };
     });
 
-    res.status(200).json(bds);
+    res.status(200).json(bds ?? []);
   })
 );
 
@@ -525,8 +525,8 @@ router.get(
 
     //No of levels
     const levels = await Level.find({
-      session: ObjectId(session),
-      term: ObjectId(term),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
     }).populate({
       path: 'students',
       match: { active: true },

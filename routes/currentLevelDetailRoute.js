@@ -5,7 +5,7 @@ const Level = require("../models/levelModel");
 const CurrentLevel = require("../models/currentLevelModel");
 const _ = require("lodash");
 const {
-  Types: { ObjectId },
+  Types: {  ObjectId },
 } = require("mongoose");
 
 //@GET All current levels
@@ -15,8 +15,8 @@ router.get(
     const { sessionId, termId } = req.query;
 
     const currentLevelDetails = await CurrentLevelDetail.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
     })
       .populate("level")
       .populate("teacher");
@@ -83,9 +83,9 @@ router.post(
     const { sessionId, termId, teacher } = req.body;
 
     const currentLevelDetails = await CurrentLevelDetail.findOne({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      teacher: ObjectId(teacher),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      teacher: new ObjectId(teacher),
     }).populate("level");
 
     const modifiedLevelsDetails = {
@@ -105,7 +105,7 @@ router.put(
       req.body._id,
       {
         $set: {
-          teacher: ObjectId(req.body.teacher),
+          teacher: new ObjectId(req.body.teacher),
         },
       },
       {

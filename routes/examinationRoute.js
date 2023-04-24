@@ -6,7 +6,7 @@ const _ = require("lodash");
 const ordinal = require("ordinal-suffix");
 const getPosition = require("../config/rank");
 const {
-  Types: { ObjectId },
+  Types: {  ObjectId },
 } = require("mongoose");
 
 //@GET
@@ -18,9 +18,9 @@ router.get(
 
     //GET all Students scores
     const students = await Examination.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      level: ObjectId(levelId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      level: new ObjectId(levelId),
     })
       .populate("level", "subjects")
       .select("overallScore");
@@ -110,9 +110,9 @@ router.get(
     const { sessionId, termId, levelId } = req.query;
 
     const studentRecords = await Examination.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      level: ObjectId(levelId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      level: new ObjectId(levelId),
     })
       .populate("term")
       .populate("level")
@@ -186,9 +186,9 @@ router.post(
   asyncHandler(async (req, res) => {
     const { sessionId, termId, studentId, levelId } = req.body;
     const studentRecord = await Examination.findOne({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      student: ObjectId(studentId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      student: new ObjectId(studentId),
     })
       .populate("term")
       .populate("level")
@@ -199,7 +199,7 @@ router.post(
     }
 
     const allStudentsOverallScore = await Examination.find({
-      level: ObjectId(levelId),
+      level: new ObjectId(levelId),
     }).select("overallScore");
 
     const { _id, term, level, student, scores, overallScore, comments } =
@@ -254,10 +254,10 @@ router.post(
 
     //find if current term exams details exists
     const exists = await Examination.findOne({
-      session: ObjectId(session),
-      level: ObjectId(level),
-      term: ObjectId(term),
-      student: ObjectId(student),
+      session: new ObjectId(session),
+      level: new ObjectId(level),
+      term: new ObjectId(term),
+      student: new ObjectId(student),
     });
 
     //create new exams Details for the term
@@ -273,7 +273,7 @@ router.post(
     }
 
     const examination = await Examination.find({
-      student: ObjectId(student),
+      student: new ObjectId(student),
     })
       .populate("term")
       .populate("session")
@@ -338,26 +338,26 @@ router.post(
 
     // Find if student exam details exists
     const examsInfo = await Examination.findOne({
-      session: ObjectId(session.sessionId),
-      term: ObjectId(session.termId),
-      student: ObjectId(session.studentId),
-      // level: ObjectId(session.levelId),
+      session: new ObjectId(session.sessionId),
+      term: new ObjectId(session.termId),
+      student: new ObjectId(session.studentId),
+      // level: new ObjectId(session.levelId),
     });
 
     if (_.isEmpty(examsInfo)) {
       const currentLevelDetail = await CurrentLevelDetail.findOne({
-        session: ObjectId(session.sessionId),
-        term: ObjectId(session.termId),
-        level: ObjectId(session.levelId),
+        session: new ObjectId(session.sessionId),
+        term: new ObjectId(session.termId),
+        level: new ObjectId(session.levelId),
         active: true,
       });
 
       await Examination.create({
-        session: ObjectId(session.sessionId),
-        term: ObjectId(session.termId),
-        level: ObjectId(session.levelId),
+        session: new ObjectId(session.sessionId),
+        term: new ObjectId(session.termId),
+        level: new ObjectId(session.levelId),
         currentLevelDetails: currentLevelDetail._id,
-        student: ObjectId(session.studentId),
+        student: new ObjectId(session.studentId),
         scores,
         overallScore: _.sumBy(scores, "totalScore"),
         active: true,

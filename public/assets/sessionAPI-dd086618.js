@@ -1,0 +1,1 @@
+import{a9 as p}from"./index-343ad709.js";const s=async({_id:o,profile:e,type:t})=>{const r=new FormData;r.append("profile",e),r.append("_id",o),r.append("school","456-456");try{return(await p({method:"PUT",url:`/${t}/profile`,data:r,headers:{"Content-Type":"multipart/form-data"}})).data}catch(a){throw new Error(a.response.data||"Error Updating profile")}};export{s as u};

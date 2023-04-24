@@ -44,7 +44,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const sessionId = req.query.sessionId;
     const term = await Term.findOne({
-      session: ObjectId(sessionId),
+      session: new ObjectId(sessionId),
       active: true,
     }).populate('session');
     res.status(200).json(term);
@@ -156,40 +156,40 @@ router.put(
   })
 );
 
-router.delete(
-  '/:id',
-  asyncHandler(async (req, res) => {
-    const id = req.params.id;
-    const deletedTerm = await Term.findByIdAndUpdate(id, {
-      $set: {
-        active: false,
-      },
-    });
-
-    if (_.isEmpty(deletedTerm)) {
-      return res
-        .status(404)
-        .json('Error removing session info.Try again later');
-    }
-
-    res.status(201).json(' Session have been removed successfully!!!');
-  })
-);
-
 // router.delete(
-//   "/:id",
+//   '/:id',
 //   asyncHandler(async (req, res) => {
 //     const id = req.params.id;
-//     const deletedTerm = await Term.findByIdAndRemove(id);
+//     const deletedTerm = await Term.findByIdAndUpdate(id, {
+//       $set: {
+//         active: false,
+//       },
+//     });
 
 //     if (_.isEmpty(deletedTerm)) {
 //       return res
 //         .status(404)
-//         .json("Error removing session info.Try again later");
+//         .json('Error removing session info.Try again later');
 //     }
 
-//     res.status(201).json(" Session have been removed successfully!!!");
+//     res.status(201).json(' Session have been removed successfully!!!');
 //   })
 // );
+
+router.delete(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    const deletedTerm = await Term.findByIdAndRemove(id);
+
+    if (_.isEmpty(deletedTerm)) {
+      return res
+        .status(404)
+        .json("Error removing session info.Try again later");
+    }
+
+    res.status(201).json(" Session have been removed successfully!!!");
+  })
+);
 
 module.exports = router;

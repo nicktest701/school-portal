@@ -5,7 +5,7 @@ const Level = require("../models/levelModel");
 const CurrentFee = require("../models/currentFeeModel");
 const _ = require("lodash");
 const {
-  Types: { ObjectId },
+  Types: {  ObjectId },
 } = require("mongoose");
 const { currencyConverter } = require("../config/currencyConverter");
 
@@ -36,8 +36,8 @@ router.post(
     const { sessionId, termId } = req.body;
 
     const fees = await Fee.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
     }).populate("level");
 
     //Check if null
@@ -69,9 +69,9 @@ router.post(
     const { sessionId, termId, level } = req.body;
 
     const fees = await Fee.findOne({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      level: ObjectId(level),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      level: new ObjectId(level),
     }).populate("level");
 
     //Check if null
@@ -95,8 +95,8 @@ router.post(
     const { session, term } = req.body;
 
     const fees = await Fee.find({
-      session: ObjectId(session),
-      term: ObjectId(term),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
     }).populate("level");
 
     //Check if null
@@ -141,9 +141,9 @@ router.post(
     //Create new Fees
 
     const exists = await Fee.findOne({
-      session: ObjectId(session),
-      term: ObjectId(term),
-      level: ObjectId(level),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
+      level: new ObjectId(level),
     });
 
     if (!_.isEmpty(exists)) {

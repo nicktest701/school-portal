@@ -1,1 +1,0 @@
-import{a as n,a2 as a,B as l}from"./index-84495021.js";const c=({to:o,text:e,color:r})=>n(a,{to:o,style:({isActive:t})=>({textDecoration:"none",borderBottom:t?"solid 2px #ffc09f":null,color:"#333",fontWeight:t?"bold":"400"}),end:!0,children:n(l,{variant:"text",color:r,children:e})});export{c as N};

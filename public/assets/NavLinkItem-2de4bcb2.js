@@ -1,0 +1,1 @@
+import{j as n,$ as a,B as i}from"./index-343ad709.js";const x=({to:o,text:e,color:r})=>{const s=({isActive:t})=>({textDecoration:"none",borderBottom:t?"solid 2px #ffc09f":null,color:"#333",fontWeight:t?"bold":"400"});return n.jsx(a,{to:o,style:s,end:!0,children:n.jsx(i,{variant:"text",color:r,children:e})})};export{x as N};

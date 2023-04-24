@@ -3,7 +3,7 @@ const _ = require('lodash');
 const asyncHandler = require('express-async-handler');
 const Attendance = require('../models/attendanceModel');
 const {
-  Types: { ObjectId },
+  Types: {  ObjectId },
 } = require('mongoose');
 
 //@GET All school Attendance
@@ -27,7 +27,7 @@ router.get(
     const { date } = req.query;
     // //console.log(id, date);
     const attendance = await Attendance.find({
-      level: ObjectId(id),
+      level: new ObjectId(id),
     });
 
     // console.log(attendance);
@@ -60,7 +60,7 @@ router.get(
     const { date } = req.query;
     // //console.log(id, date);
     const attendance = await Attendance.findOne({
-      level: ObjectId(id),
+      level: new ObjectId(id),
       date,
     });
 
@@ -75,7 +75,7 @@ router.post(
 
     //Find if a attendance already exits
     const exists = await Attendance.findOne({
-      level: ObjectId(level),
+      level: new ObjectId(level),
       date: date,
       active: true,
     });

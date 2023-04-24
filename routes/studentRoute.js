@@ -78,7 +78,7 @@ router.get(
     const { sessionId, termId } = req.query;
 
     const allLevels = await Level.find({
-      session: ObjectId(sessionId),
+      session: new ObjectId(sessionId),
     })
       .populate({
         path: 'students',
@@ -121,8 +121,8 @@ router.get(
     });
 
     const students = await Level.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
     }).populate({
       path: 'students',
       match: { active: true },
@@ -182,7 +182,7 @@ router.get(
   AsyncHandler(async (req, res) => {
     const { id } = req.query;
     const parent = await Parent.findOne({
-      student: ObjectId(id),
+      student: new ObjectId(id),
     });
 
     if (_.isEmpty(parent)) {
@@ -264,10 +264,10 @@ router.post(
 
     //create exams details for student
     await Examination.create({
-      session: ObjectId(newStudent.session),
-      term: ObjectId(newStudent.term),
-      level: ObjectId(level?._id),
-      student: ObjectId(student._id),
+      session: new ObjectId(newStudent.session),
+      term: new ObjectId(newStudent.term),
+      level: new ObjectId(level?._id),
+      student: new ObjectId(student._id),
       scores: [],
       overallScore: 0,
       comments: {},
@@ -275,17 +275,17 @@ router.post(
 
     //find current fees for a particular student class
     const fees = await Fee.findOne({
-      session: ObjectId(newStudent.session),
-      term: ObjectId(newStudent.term),
-      level: ObjectId(newStudent.level),
+      session: new ObjectId(newStudent.session),
+      term: new ObjectId(newStudent.term),
+      level: new ObjectId(newStudent.level),
     });
 
     //Generate current student fees
     if (!_.isEmpty(fees)) {
       await CurrentFee.create({
-        session: ObjectId(newStudent.session),
-        term: ObjectId(newStudent.term),
-        level: ObjectId(newStudent.level),
+        session: new ObjectId(newStudent.session),
+        term: new ObjectId(newStudent.term),
+        level: new ObjectId(newStudent.level),
         fee: fees._id,
         student: student._id,
         payment: [],
@@ -347,9 +347,9 @@ router.post(
     //create exams details for students
     studentIds.forEach(async (id) => {
       await Examination.create({
-        session: ObjectId(session.sessionId),
-        term: ObjectId(session.termId),
-        level: ObjectId(session.levelId),
+        session: new ObjectId(session.sessionId),
+        term: new ObjectId(session.termId),
+        level: new ObjectId(session.levelId),
         student: id,
         scores: [],
         overallScore: 0,
@@ -359,18 +359,18 @@ router.post(
 
     //find current fees for a particular student class
     const fees = await Fee.findOne({
-      session: ObjectId(session.sessionId),
-      term: ObjectId(session.termId),
-      level: ObjectId(session.levelId),
+      session: new ObjectId(session.sessionId),
+      term: new ObjectId(session.termId),
+      level: new ObjectId(session.levelId),
     });
 
     //Generate current student fees
     if (!_.isEmpty(fees)) {
       studentIds.forEach(async (id) => {
         await CurrentFee.create({
-          session: ObjectId(session.sessionId),
-          term: ObjectId(session.termId),
-          level: ObjectId(session.levelId),
+          session: new ObjectId(session.sessionId),
+          term: new ObjectId(session.termId),
+          level: new ObjectId(session.levelId),
           fee: fees._id,
           student: id,
           payment: [],

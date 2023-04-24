@@ -35,8 +35,8 @@ const AddSchoolSession = ({ open, setOpen }) => {
   const [startDate, setStartDate] = useState(moment());
   const [endDate, setEndDate] = useState(moment());
 
-  const [startYear, setStartYear] = useState(moment());
-  const [endYear, setEndYear] = useState(moment());
+  const [startYear, setStartYear] = useState("");
+  const [endYear, setEndYear] = useState("");
 
   //ADD New Session
   const { mutateAsync } = useMutation({

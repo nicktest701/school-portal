@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const CurrentLevel = require("../models/currentLevelModel");
 const _ = require("lodash");
 const {
-  Types: { ObjectId },
+  Types: {  ObjectId },
 } = require("mongoose");
 
 //@GET all current level by current school session
@@ -15,8 +15,8 @@ router.get(
     const termId = req.query.termId;
 
     const currentLevels = await CurrentLevel.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
       active: true,
     }).populate("level");
 
@@ -55,8 +55,8 @@ router.get(
   asyncHandler(async (req, res) => {
     const { sessionId, termId } = req.query;
     const currentLevel = await CurrentLevel.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
     })
       .select("levelType")
       .populate({
@@ -75,8 +75,8 @@ router.post(
     const { sessionId, termId } = req.body;
 
     const students = await CurrentLevel.find({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
     })
       .populate("level")
       .populate({
@@ -114,9 +114,9 @@ router.post(
     const { sessionId, termId, levelId } = req.body;
 
     const students = await CurrentLevel.findOne({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      level: ObjectId(levelId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      level: new ObjectId(levelId),
     }).select("students");
 
     if (!students) {
@@ -137,9 +137,9 @@ router.post(
     const { sessionId, termId, levelId } = req.body;
 
     const students = await CurrentLevel.findOne({
-      session: ObjectId(sessionId),
-      term: ObjectId(termId),
-      level: ObjectId(levelId),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      level: new ObjectId(levelId),
     })
       .populate("level")
       .populate({

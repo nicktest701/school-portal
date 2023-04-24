@@ -5,14 +5,12 @@ import moment from 'moment';
 ///
 import '../../theme/react-datetime.css';
 
-console.log(1)
+const YearPicker = Datetime.default ? Datetime.default : Datetime;
 const CustomYearPicker = ({ label, year, setYear }) => {
-  console.log(2)
   return (
-    <Datetime
+    <YearPicker
       dateFormat='YYYY'
       timeFormat={false}
-      initialViewDate='years'
       value={year}
       initialValue={moment().format('YYYY')}
       onChange={(date) => setYear(date.format('YYYY'))}

@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const mongoose = require("mongoose");
 const createError = require("http-errors");
 const {
-  Types: { ObjectId },
+  Types: {  ObjectId },
 } = require("mongoose");
 const _ = require("lodash");
 const multer = require("multer");
@@ -151,7 +151,7 @@ router.delete(
 //   AsyncHandler(async (req, res) => {
 //     const id = req.params.id;
 
-//     if (!mongoose.isValidObjectId(id)) {
+//     if (!mongoose.isValidnew ObjectId(id)) {
 //       return res.status(403).json("Invalid information provided.");
 //     }
 

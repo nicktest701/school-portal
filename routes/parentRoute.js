@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 const Parent = require('../models/parentModel');
 
 const {
-  Types: { ObjectId },
+  Types: {  ObjectId },
 } = require('mongoose');
 
 //@GET All  Parents
@@ -27,7 +27,7 @@ router.get(
   asyncHandler(async (req, res) => {
     const id = req.query.id;
     const parent = await Parent.findOne({
-      student: ObjectId(id),
+      student: new ObjectId(id),
     });
 
     if (_.isEmpty(parent)) {

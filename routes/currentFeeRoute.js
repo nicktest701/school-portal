@@ -4,7 +4,7 @@ const CurrentFee = require('../models/currentFeeModel');
 const _ = require('lodash');
 const moment = require('moment');
 const {
-  Types: { ObjectId },
+  Types: {  ObjectId },
 } = require('mongoose');
 const { currencyConverter } = require('../config/currencyConverter');
 
@@ -24,8 +24,8 @@ router.post(
     const { session, term, from, to } = req.body;
 
     const currentFees = await CurrentFee.find({
-      session: ObjectId(session),
-      term: ObjectId(term),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
     }).select('payment');
 
     //GET all payments
@@ -77,8 +77,8 @@ router.post(
     const { level, term } = req.body;
     //console.log(level, term);
     const currentFee = await CurrentFee.find({
-      term: ObjectId(term),
-      level: ObjectId(level),
+      term: new ObjectId(term),
+      level: new ObjectId(level),
     }).select('payment');
 
     if (_.isEmpty(currentFee)) {
@@ -102,8 +102,8 @@ router.get(
     //console.log(date);
 
     const currentFees = await CurrentFee.find({
-      session: ObjectId(session),
-      term: ObjectId(term),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
     })
       .populate('student')
       .populate('level')
@@ -142,8 +142,8 @@ router.get(
   asyncHandler(async (req, res) => {
     const { session, term } = req.query;
     const recentFeePayment = await CurrentFee.find({
-      session: ObjectId(session),
-      term: ObjectId(term),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
     })
       .populate('level')
       .populate('student')
@@ -193,10 +193,10 @@ router.post(
         .populate('fee');
     } else {
       studentFeeHistory = await CurrentFee.findOne({
-        session: ObjectId(sessionId),
-        term: ObjectId(termId),
-        level: ObjectId(levelId),
-        student: ObjectId(studentId),
+        session: new ObjectId(sessionId),
+        term: new ObjectId(termId),
+        level: new ObjectId(levelId),
+        student: new ObjectId(studentId),
       })
         .populate('student')
         .populate('term')
@@ -230,7 +230,7 @@ router.get(
 
     //Find All Student fee info
     const studentFeeHistory = await CurrentFee.find({
-      student: ObjectId(student),
+      student: new ObjectId(student),
     })
       .populate('student')
       .populate('session')
@@ -285,7 +285,7 @@ router.post(
 
     //Find All Student fee info
     allStudentFee = await CurrentFee.find({
-      student: ObjectId(student),
+      student: new ObjectId(student),
     })
       .populate('fee')
       .select('payment')
@@ -334,10 +334,10 @@ router.post(
 
     //Find Student Current fee info
     const currentStudentFee = await CurrentFee.findOne({
-      session: ObjectId(session),
-      term: ObjectId(term),
-      level: ObjectId(level),
-      student: ObjectId(student),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
+      level: new ObjectId(level),
+      student: new ObjectId(student),
     })
       .populate('fee')
       .select('payment')
@@ -397,10 +397,10 @@ router.post(
 
     //Find Student Cuurent fee info
     const currentStudentFee = await CurrentFee.findOne({
-      session: ObjectId(session),
-      term: ObjectId(term),
-      level: ObjectId(level),
-      student: ObjectId(student),
+      session: new ObjectId(session),
+      term: new ObjectId(term),
+      level: new ObjectId(level),
+      student: new ObjectId(student),
     });
 
     if (_.isEmpty(currentStudentFee)) {
