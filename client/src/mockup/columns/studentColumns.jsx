@@ -1,4 +1,4 @@
-import { CircleRounded, } from '@mui/icons-material';
+import { CircleRounded } from '@mui/icons-material';
 import {
   Avatar,
   Button,
@@ -20,14 +20,22 @@ export const STUDENTS_COLUMN = [
   {
     field: 'fullName',
     title: 'FullName',
+    searchable: true,
+    customFilterAndSearch: (data, rowData) => {
+      return (
+        rowData.fullName.toLowerCase().lastIndexOf(data.toLowerCase()) > -1
+      );
+    },
     hidden: true,
     export: true,
   },
+
   {
     title: 'Profile',
     field: 'profile',
     export: false,
     width: 400,
+    searchable: true,
     render: (rowData) => (
       <Stack
         direction='row'
@@ -39,7 +47,7 @@ export const STUDENTS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              :  `${import.meta.env.VITE_BASE_URL}/images/students/${
+              : `${import.meta.env.VITE_BASE_URL}/images/students/${
                   rowData.profile
                 }`
           }
@@ -87,7 +95,7 @@ export const STUDENTS_COLUMN = [
     field: 'levelName',
     title: 'Level',
     export: true,
-    hidden:true,
+    hidden: true,
     render: ({ levelName }) => (
       <Typography
         variant='caption'
@@ -172,7 +180,7 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
         src={
           rowData.profile === undefined || rowData.profile === ''
             ? null
-            :  `${import.meta.env.VITE_BASE_URL}/images/students/${
+            : `${import.meta.env.VITE_BASE_URL}/images/students/${
                 rowData.profile
               }`
         }
@@ -216,29 +224,53 @@ export const STUDENTS_EXAMS_COLUMN = [
     field: '_id',
     title: 'ID',
     hidden: true,
+    // render: (rowData) => {
+    //   console.log(rowData);
+    // },
   },
   {
     field: 'profile',
     title: 'Avatar',
     export: false,
     render: (rowData) => (
-      <Avatar
-        src={
-          rowData.profile === undefined || rowData.profile === ''
-            ? null
-            :  `${import.meta.env.VITE_BASE_URL}/images/students/${
-                rowData.profile
-              }`
-        }
-      />
+      <Stack
+        direction='row'
+        columnGap={1}
+        justifyContent='center'
+        alignItems='center'
+      >
+        <Avatar
+          src={
+            rowData.profile === undefined || rowData.profile === ''
+              ? null
+              : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                  rowData.profile
+                }`
+          }
+        />
+        <ListItemText
+          primary={
+            <Typography
+              variant='body2'
+              sx={{
+                whiteSpace: 'nowrap',
+                fontWeight: 'bold',
+              }}
+            >
+              {rowData.fullName}
+            </Typography>
+          }
+          secondary={
+            <Typography variant='caption'>{`${_.startCase(rowData.gender)} ,${
+              new Date().getFullYear() -
+              new Date(rowData.dateofbirth).getUTCFullYear()
+            }yrs`}</Typography>
+          }
+        />
+      </Stack>
     ),
   },
 
-  {
-    field: 'fullName',
-    title: 'FullName',
-    export: true,
-  },
   {
     field: 'levelId',
     hidden: true,
@@ -246,7 +278,7 @@ export const STUDENTS_EXAMS_COLUMN = [
   {
     field: 'levelName',
     title: 'Level',
-    hidden: true,
+    // hidden: true,
     export: true,
   },
 ];

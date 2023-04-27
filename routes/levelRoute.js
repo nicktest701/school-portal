@@ -499,6 +499,7 @@ router.get(
       return moment(new Date(dateofbirth)).format('Do MMMMM') === todaysDate;
     });
 
+    // console.log(birthdays);
     const bds = birthdays.map((student) => {
       return {
         _id: student?._id,

@@ -4,7 +4,7 @@ const CurrentFee = require('../models/currentFeeModel');
 const _ = require('lodash');
 const moment = require('moment');
 const {
-  Types: {  ObjectId },
+  Types: { ObjectId },
 } = require('mongoose');
 const { currencyConverter } = require('../config/currencyConverter');
 
@@ -51,13 +51,15 @@ router.post(
     const totalfeesForMonth = _.sumBy(feesForMonth, 'paid');
 
     ///GET all fees for the term
-    const feesFrom = new Date(from);
-    const feesTo = new Date(to);
+    const feesFrom = moment(from).format('L');
+    const feesTo = moment(to).format('L');
 
     const feesForTerm = _.filter(allPayments, ({ date }) => {
-      const feeDate = new Date(date);
+      const feeDate = moment(date).format('L');
+
       return feeDate >= feesFrom && feeDate <= feesTo;
     });
+    // console.log(feesForTerm);
     const totalfeesForTerm = _.sumBy(feesForTerm, 'paid');
 
     const feeSummary = {

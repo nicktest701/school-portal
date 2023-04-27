@@ -63,6 +63,12 @@ const StudentReducer = (state, action) => {
         },
       };
 
+    case 'getReportDetails':
+      return {
+        ...state,
+        studentReportDetails: action.payload,
+      };
+
     case 'setCurrentStudentFeeInfo':
       return {
         ...state,

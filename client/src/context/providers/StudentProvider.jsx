@@ -1,15 +1,15 @@
-import React, { useReducer } from "react";
-import PropTypes from 'prop-types'
-import StudentReducer from "../reducers/StudentReducer";
+import React, { useReducer } from 'react';
+import PropTypes from 'prop-types';
+import StudentReducer from '../reducers/StudentReducer';
 
 export const StudentContext = React.createContext();
 const StudentProvider = ({ children }) => {
   const studentValues = {
     allStudents: [],
 
-    currentStudentId: "",
-    currentLevelId: "",
-    studentCurrentLevelId: "",
+    currentStudentId: '',
+    currentLevelId: '',
+    studentCurrentLevelId: '',
     currentStudentSubjects: [],
     showCurrentStudentFeeReportView: {
       show: false,
@@ -22,8 +22,8 @@ const StudentProvider = ({ children }) => {
 
     //current student fee info
     currentStudentFeeInfo: {
-      id: "",
-      level: "",
+      id: '',
+      level: '',
     },
     ///new student
     newStudent: {},
@@ -38,7 +38,11 @@ const StudentProvider = ({ children }) => {
       data: {},
     },
 
-    
+    //get All report details
+    studentReportDetails: {
+      subjects: [],
+      results: [],
+    },
   };
   const [studentState, studentDispatch] = useReducer(
     StudentReducer,
@@ -52,8 +56,8 @@ const StudentProvider = ({ children }) => {
   );
 };
 
-StudentProvider.propTypes={
-  children:PropTypes.node
-}
+StudentProvider.propTypes = {
+  children: PropTypes.node,
+};
 
 export default StudentProvider;

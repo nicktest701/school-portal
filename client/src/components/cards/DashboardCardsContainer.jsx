@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getDashboardInfo } from '../../api/levelAPI';
 import { UserContext } from '../../context/providers/userProvider';
 import { useErrorBoundary } from 'react-error-boundary';
+import DashboardSkeleton from '../skeleton/DashboardSkeleton';
 
 function DashboardCardsContainer() {
   const { showBoundary } = useErrorBoundary();
@@ -28,7 +29,7 @@ function DashboardCardsContainer() {
     },
   });
 
-  if (info.isLoading) return <Typography>Loading</Typography>;
+  if (info.isLoading) return <DashboardSkeleton />;
 
   return (
     <Box

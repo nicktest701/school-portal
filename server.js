@@ -63,9 +63,9 @@ app.use('/current-fees', currentFeeRoute);
 app.use('/messages', messageRoute);
 app.use('/attendances', attendanceRoute);
 
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// app.get('/*', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// });
 
 //error handlers
 app.use((req, res, next) => {

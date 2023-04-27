@@ -48,6 +48,12 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         studentFeesHistoryId: payload,
       };
 
+    case 'printFees':
+      return {
+        ...state,
+        feePrintData: payload,
+      };
+
     case 'openAddExamsScore':
       return {
         ...state,

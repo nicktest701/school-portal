@@ -39,6 +39,8 @@ const ExamsReport = () => {
   const student = schoolSessionState.viewReport.data;
   const [openRemarks, setOpenRemarks] = useState(false);
 
+// console.log(student)
+
   //close dialog
   const handleClose = () => {
     schoolSessionDispatch({

@@ -11,9 +11,9 @@ import StudentDashboardLineChart from '../../components/cards/StudentDashboardLi
 import { UserContext } from '../../context/providers/userProvider';
 import student_icon from '../../assets/images/header/student_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
+import ChartSkeleton from '../../components/skeleton/ChartSkeleton';
 
 const StudentHome = () => {
-  // const session = JSON.parse(localStorage.getItem("@school_session"));
   const {
     userState: { session },
   } = useContext(UserContext);
@@ -53,25 +53,28 @@ const StudentHome = () => {
               Track,manage and control student information
             </Typography>
           </Stack>
+          {studentDetails.isLoading && <ChartSkeleton />}
 
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
-              gap: 3,
-              paddingY: 4,
-            }}
-          >
-            <StudentDashboardLineChart
-              data={studentDetails?.data?.noOfStudentsInEachLevel}
-            />
-            <StudentDashboardBarChart
-              data={studentDetails?.data?.noOfStudentsForEachTerm}
-            />
-            <StudentDashboardPieChart {...studentDetails?.data} />
+          {studentDetails.data && (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
+                gap: 3,
+                paddingY: 4,
+              }}
+            >
+              <StudentDashboardLineChart
+                data={studentDetails?.data?.noOfStudentsInEachLevel}
+              />
+              <StudentDashboardBarChart
+                data={studentDetails?.data?.noOfStudentsForEachTerm}
+              />
+              <StudentDashboardPieChart {...studentDetails?.data} />
 
-            {/* <StudentDashboardCard /> */}
-          </Box>
+              {/* <StudentDashboardCard /> */}
+            </Box>
+          )}
 
           <CustomizedMaterialTable
             title='Recently Added Students'

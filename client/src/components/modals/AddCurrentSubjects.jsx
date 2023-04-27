@@ -1,17 +1,15 @@
-import { LoadingButton } from '@mui/lab';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Stack,
-  Autocomplete,
-  TextField,
-  List,
-  Typography,
-
-} from '@mui/material';
 import React, { useContext, useState } from 'react';
+import LoadingButton from '@mui/lab/LoadingButton';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Stack from '@mui/material/Stack';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import SaveAltRounded from '@mui/icons-material/SaveAltRounded';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import _ from 'lodash';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
@@ -19,7 +17,6 @@ import { SUBJECT_OPTIONS } from '../../mockup/columns/sessionColumns';
 import SubjectItem from '../list/SubjectItem';
 import { addSubjectsToLevel, getSubjectsForLevel } from '../../api/levelAPI';
 import CustomDialogTitle from '../dialog/CustomDialogTitle';
-import {  SaveAltRounded } from '@mui/icons-material';
 
 const AddCurrentSubjects = ({ open, setOpen }) => {
   const queryClient = useQueryClient();
@@ -155,8 +152,8 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
         </Stack>
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
-        <LoadingButton 
-        startIcon={<SaveAltRounded/>}
+        <LoadingButton
+          startIcon={<SaveAltRounded />}
           loading={loading}
           variant='contained'
           onClick={handleSaveSubjects}

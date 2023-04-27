@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getTodaysBirth } from '../../api/levelAPI';
 import { UserContext } from '../../context/providers/userProvider';
 import db from '../../assets/images/header/bd1.svg';
+import BirthdaySkeleton from '../skeleton/BirthdaySkeleton';
 const Birthday = () => {
   const {
     userState: {
@@ -17,6 +18,8 @@ const Birthday = () => {
     queryFn: () => getTodaysBirth(sessionId, termId),
     enabled: !!sessionId && !!termId,
   });
+
+  if (students.isLoading) return <BirthdaySkeleton />;
 
   return (
     <Card>

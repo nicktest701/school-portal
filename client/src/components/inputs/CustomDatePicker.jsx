@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
@@ -13,7 +12,7 @@ function CustomDatePicker({
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <DatePicker
-      size='small'
+        size='small'
         label={label}
         value={date}
         onChange={(date) => setDate(date)}
@@ -25,6 +24,7 @@ function CustomDatePicker({
             helperText: touched && error,
           },
         }}
+        sx={{ width: '100%' }}
       />
     </LocalizationProvider>
   );

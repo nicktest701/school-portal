@@ -8,14 +8,11 @@ import {
 } from '@mui/material';
 
 function BirthdayItem({ profile, fullname, dob }) {
-
   return (
     <ListItemButton>
       <ListItemAvatar>
         <Avatar
-          src={`${
-            import.meta.env.VITE_BASE_NET_LOCAL
-          }/images/students/${profile}`}
+          src={`${import.meta.env.VITE_BASE_URL}/images/students/${profile}`}
         />
       </ListItemAvatar>
       <ListItemText

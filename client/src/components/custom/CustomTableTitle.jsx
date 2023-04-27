@@ -11,6 +11,7 @@ function CustomTableTitle({ icon, title, subtitle }) {
     >
       <img
         alt='ico'
+        loading='lazy'
         src={icon}
         style={{ width: '45px', heigth: '45px' }}
         className='hide-on-print'

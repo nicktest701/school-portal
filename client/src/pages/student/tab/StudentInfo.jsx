@@ -35,7 +35,7 @@ const XLSX_FILE_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 const XLS_FILE_TYPE = 'application/vnd.ms-excel';
 
-const StudentInfo = ({ setTab, setMsg,  }) => {
+const StudentInfo = ({ setTab, setMsg }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
 
@@ -113,11 +113,9 @@ const StudentInfo = ({ setTab, setMsg,  }) => {
       <Container maxWidth='md' sx={{ paddingY: 2, position: 'relative' }}>
         <Typography variant='h4'>Student Infomation</Typography>
         <Divider />
-        <Typography sx={{ textAlign: 'right', paddingY: 2 }}>
-          Import Student
-        </Typography>
-        <Stack direction='row' justifyContent='flex-end' alignItems='center'>
-          <ButtonGroup>
+        <Typography sx={{ paddingY: 2 }}>Import Student</Typography>
+        <Stack direction='row' alignItems='center'>
+          <ButtonGroup size='small'>
             <Button>
               <FormLabel
                 htmlFor='studentFile'
@@ -129,12 +127,12 @@ const StudentInfo = ({ setTab, setMsg,  }) => {
 
                   gap: 1,
                   color: 'primary.main',
-                  fontSize: 13,
+                  fontSize: 11,
                   cursor: 'pointer',
                 }}
               >
                 <NoteRounded />
-                <Typography variant='body2'>From file</Typography>
+                <Typography variant='caption'>From file</Typography>
 
                 <Input
                   type='file'

@@ -31,7 +31,6 @@ import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 
 const StudentEdit = () => {
   const queryClient = useQueryClient();
-
   const [dob, setDob] = useState(null);
 
   const [profileImage, setProfileImage] = useState(null);
@@ -44,7 +43,7 @@ const StudentEdit = () => {
   const student = editStudentData?.data;
 
   useEffect(() => {
-    setDob(new Date(student?.dateofbirth));
+    setDob(moment(student?.dateofbirth));
     setProfileImage(
       `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
     );

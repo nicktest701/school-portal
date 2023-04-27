@@ -84,17 +84,30 @@ function CustomizedMaterialTable({
           isLoading={isLoading}
           title={
             <CustomTableTitle title={title} subtitle={subtitle} icon={icon} />
+
           }
           icons={tableIcons}
           columns={modifiedColumns}
+          // columns={[
+          //   {
+          //     customFilterAndSearch: (data, rowData) => {
+          //       return data.toLowerCase().lastIndexOf(rowData.fullName) > -1;
+          //     },
+            
+          //   },
+          // ]}
           data={data === undefined ? [] : data}
           options={{
-            selection: true,
+            // selection: true,
+            draggable:true,
             search: search || false,
+            searchFieldVariant: 'outlined',
+            searchFieldStyle: { width: '50vw' },
             exportButton: true,
             exportAllData: true,
             exportFileName: exportFileName || title || '',
             showTextRowsSelected: false,
+            showSelectAllCheckbox: false,
             columnsButton: false,
             paging: data === undefined || data.length === 0 ? false : true,
             pageSize: 5,
@@ -104,11 +117,14 @@ function CustomizedMaterialTable({
             overflowY: 'scroll',
             header: data === undefined || data.length === 0 ? false : true,
             headerStyle: {
-              // backgroundColor: 'whitesmoke',
+               color: 'rgb(1, 46, 84)',
+              // backgroundColor: '#eee',
               fontWeight: 'bold',
+              // textTransform:'uppercase'
+              // fontSize: 17,
             },
             rowStyle: {
-              boxShadow: showRowShadow ? '0 2px 3px rgba(0,0,0,0.2)' : 'none',
+              boxShadow: showRowShadow ? '0 1px 2px rgba(0,0,0,0.15)' : 'none',
               paddingBlock: 2,
             },
             ...options,

@@ -41,16 +41,19 @@ import {
 import { currencyFormatter } from '../../config/currencyFormatter';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import StudentFeesHistory from './StudentFeesHistory';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FeePaymentHistory from './FeePaymentHistory';
 import { UserContext } from '../../context/providers/userProvider';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 const FeeMakePayment = () => {
   const { palette } = useTheme();
+  const navigate = useNavigate();
 
   //Get Session id
   const {
     userState: { user, session },
   } = useContext(UserContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const { studentDispatch } = useContext(StudentContext);
   const queryClient = useQueryClient();
@@ -241,9 +244,20 @@ const FeeMakePayment = () => {
             queryClient.invalidateQueries(['current-fees-summary']);
             options.setSubmitting(false);
           },
-          onSuccess: () => {
+          onSuccess: async () => {
             setMsg({ severity: 'info', text: 'Payment made successfully!!!' });
 
+            // console.log(payment);
+
+            await schoolSessionDispatch({
+              type: 'printFees',
+              payload: {
+                fullName: studentInfo.fullName,
+                levelType: studentInfo.levelType,
+                payment: payment.payment[0],
+              },
+            });
+            navigate('/fee/print');
             options.resetForm();
           },
           onError: () => {
@@ -255,6 +269,7 @@ const FeeMakePayment = () => {
         });
       }
       if (isDenied || isDismissed) {
+        setMsg({ severity: 'info', text: '' });
         options.setSubmitting(false);
       }
     });
@@ -503,6 +518,7 @@ const FeeMakePayment = () => {
           <Stack spacing={2} paddingY={2}>
             <TextField
               type='number'
+              inputMode='number'
               label='Amount'
               placeholder='Enter Amount here'
               value={currentAmount}
@@ -515,6 +531,7 @@ const FeeMakePayment = () => {
                 ),
                 endAdornment: <InputAdornment position='end'>p</InputAdornment>,
               }}
+              
             />
           </Stack>
         </Grid>

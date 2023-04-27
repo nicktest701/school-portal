@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 import {
   Stack,
   Button,
@@ -9,19 +9,23 @@ import {
   Grid,
   Typography,
   Container,
-} from "@mui/material";
-import _ from "lodash";
-import { Formik } from "formik";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { LoadingButton } from "@mui/lab";
-import { generateGrade } from "../../config/generateGrade";
-import { getSubjectsForLevel } from "../../api/levelAPI";
-import { updateExams } from "../../api/ExaminationAPI";
-import { examsScoreValidationSchema } from "../../config/validationSchema";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import ExamsScoreItem from "../../components/list/ExamsScoreItem";
+} from '@mui/material';
+import _ from 'lodash';
+import { Formik } from 'formik';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { LoadingButton } from '@mui/lab';
+import { generateGrade } from '../../config/generateGrade';
+import { getSubjectsForLevel } from '../../api/levelAPI';
+import { updateExams } from '../../api/ExaminationAPI';
+import { examsScoreValidationSchema } from '../../config/validationSchema';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import ExamsScoreItem from '../../components/list/ExamsScoreItem';
+import {
+  alertError,
+  alertSuccess,
+} from '../../context/actions/globalAlertActions';
 
-const ExamsScoreInput = () => {
+const ExamsScoreInput = ({ setTab }) => {
   const { schoolSessionState, schoolSessionDispatch } =
     useContext(SchoolSessionContext);
   const openExamsScore = schoolSessionState.examsScore;
@@ -29,14 +33,14 @@ const ExamsScoreInput = () => {
   const queryClient = useQueryClient();
 
   const [msgs, setMsgs] = useState({
-    severity: "",
-    text: "",
+    severity: '',
+    text: '',
   });
   const [subjectOptions, setSubjectOptions] = useState([]);
   const [scoreList, setScoreList] = useState([]);
 
   useQuery(
-    ["subjects"],
+    ['subjects'],
     () => getSubjectsForLevel(openExamsScore?.data?.levelId),
     {
       enabled: !!openExamsScore?.data?.levelId,
@@ -47,17 +51,17 @@ const ExamsScoreInput = () => {
   );
 
   const initialValues = {
-    subject: "",
+    subject: '',
     classScore: 0,
     examsScore: 0,
   };
 
   const title = {
-    subject: "Subject",
-    classScore: "Class",
-    examsScore: "Exams",
-    totalScore: "Total",
-    grade: "Grade",
+    subject: 'Subject',
+    classScore: 'Class',
+    examsScore: 'Exams',
+    totalScore: 'Total',
+    grade: 'Grade',
   };
 
   const onSubmit = (values, options) => {
@@ -67,7 +71,7 @@ const ExamsScoreInput = () => {
       ...summary,
     };
     const filteredScoreList = _.merge(
-      _.keyBy([...scoreList, score], "subject")
+      _.keyBy([...scoreList, score], 'subject')
     );
     setScoreList(_.values(filteredScoreList));
     options.resetForm();
@@ -94,21 +98,25 @@ const ExamsScoreInput = () => {
 
     mutateAsync(data, {
       onSettled: () => {
-        queryClient.invalidateQueries(["student-records"]);
-        queryClient.invalidateQueries(["exams-scores"]);
-        queryClient.invalidateQueries(["exams-details"]);
+        queryClient.invalidateQueries(['student-records']);
+        queryClient.invalidateQueries(['exams-scores']);
+        queryClient.invalidateQueries(['exams-details']);
+        queryClient.invalidateQueries(['exams-reports']);
       },
       onSuccess: (data) => {
-        setMsgs({
-          severity: "info",
-          text: data,
-        });
+        // setMsgs({
+        //   severity: 'info',
+        //   text: data,
+        // });
+        schoolSessionDispatch(alertSuccess(data));
+        setTab('1');
       },
       onError: (error) => {
-        setMsgs({
-          severity: "error",
-          text: error,
-        });
+        // setMsgs({
+        //   severity: 'error',
+        //   text: error,
+        // });
+        schoolSessionDispatch(alertError(error));
       },
     });
   };
@@ -116,7 +124,7 @@ const ExamsScoreInput = () => {
   //CLOSE FORM
   const handleClose = () =>
     schoolSessionDispatch({
-      type: "openAddExamsScore",
+      type: 'openAddExamsScore',
       payload: {
         open: false,
         data: {},
@@ -147,7 +155,7 @@ const ExamsScoreInput = () => {
                 severity={msgs.severity}
                 onClose={() =>
                   setMsgs({
-                    text: "",
+                    text: '',
                   })
                 }
               >
@@ -161,41 +169,41 @@ const ExamsScoreInput = () => {
                     <Autocomplete
                       freeSolo
                       options={subjectOptions}
-                      getOptionLabel={(option) => option || ""}
+                      getOptionLabel={(option) => option || ''}
                       value={values.subject}
-                      onChange={(e, value) => setFieldValue("subject", value)}
+                      onChange={(e, value) => setFieldValue('subject', value)}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Subject"
-                          size="small"
+                          label='Subject'
+                          size='small'
                           error={Boolean(errors.subject)}
                           helperText={touched.subject && errors.subject}
                         />
                       )}
                     />
                     <TextField
-                      type="number"
-                      label="Class Score"
-                      size="small"
+                      type='number'
+                      label='Class Score'
+                      size='small'
                       value={values.classScore}
-                      onChange={handleChange("classScore")}
+                      onChange={handleChange('classScore')}
                       error={Boolean(errors.classScore)}
                       helperText={touched.classScore && errors.classScore}
                     />
                     <TextField
-                      type="number"
-                      label="Exams Score"
-                      size="small"
+                      type='number'
+                      label='Exams Score'
+                      size='small'
                       value={values.examsScore}
-                      onChange={handleChange("examsScore")}
+                      onChange={handleChange('examsScore')}
                       error={Boolean(errors.examsScore)}
                       helperText={touched.examsScore && errors.examsScore}
                     />
                   </Stack>
                   <Button
-                    variant="contained"
-                    size="small"
+                    variant='contained'
+                    size='small'
                     onClick={handleSubmit}
                   >
                     Add
@@ -203,9 +211,9 @@ const ExamsScoreInput = () => {
                 </Grid>
                 <Grid item xs={12} md={6} padding={2}>
                   <Stack>
-                    <Typography variant="caption">Preview</Typography>
+                    <Typography variant='caption'>Preview</Typography>
                     <ExamsScoreItem item={title} title={true} />
-                    <List sx={{ maxHeight: 300, overflowY: "scroll" }}>
+                    <List sx={{ maxHeight: 300, overflowY: 'scroll' }}>
                       {scoreList.map((item) => (
                         <ExamsScoreItem
                           key={item.subject}
@@ -218,10 +226,10 @@ const ExamsScoreInput = () => {
                 </Grid>
               </Grid>
 
-              <Stack spacing={2} direction="row" justifyContent="flex-end">
+              <Stack spacing={2} direction='row' justifyContent='flex-end'>
                 <Button onClick={handleClose}>Cancel</Button>
                 <LoadingButton
-                  variant="contained"
+                  variant='contained'
                   disabled={scoreList.length === 0 ? true : false}
                   onClick={handleSaveResults}
                 >

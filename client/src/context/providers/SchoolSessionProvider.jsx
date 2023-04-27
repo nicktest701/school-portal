@@ -91,6 +91,9 @@ const SchoolSessionProvider = ({ children }) => {
       open: false,
       data: {},
     },
+
+    ///fee details to be print
+    feePrintData: {},
   };
   const [schoolSessionState, schoolSessionDispatch] = useReducer(
     SchoolSessionReducer,

@@ -4,6 +4,8 @@ import Loader from '../../config/Loader';
 import Shell from '../Shell';
 import User from '../user';
 import Login from '../Login';
+import FeePrint from '../fees/FeePrint';
+
 
 const FeeNew = lazy(() => import('../fees/FeeNew'));
 const ExamsHome = lazy(() => import('../examination/ExamsHome'));
@@ -234,6 +236,14 @@ const Root = () => {
                 </Suspense>
               }
               path='settings'
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <FeePrint />
+                </Suspense>
+              }
+              path='print'
             />
           </Route>
           {/* <Route element={<Suspense><Assessment /></Suspense>} path="/assessment" /> */}

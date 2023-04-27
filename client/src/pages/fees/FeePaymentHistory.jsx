@@ -19,7 +19,7 @@ function FeePaymentHistory({ open, setOpen }) {
   } = useContext(UserContext);
 
   //
-  const [date, setDate] = useState(moment(new Date()));
+  const [date, setDate] = useState(moment());
   const [totalAmount, setTotalAmount] = useState(0);
 
   //

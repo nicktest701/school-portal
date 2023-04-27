@@ -1,18 +1,19 @@
-const router = require("express").Router();
-const asyncHandler = require("express-async-handler");
-const Examination = require("../models/examinationModel");
-const CurrentLevelDetail = require("../models/currentLevelDetailModel");
-const _ = require("lodash");
-const ordinal = require("ordinal-suffix");
-const getPosition = require("../config/rank");
+const router = require('express').Router();
+const asyncHandler = require('express-async-handler');
+const Examination = require('../models/examinationModel');
+const CurrentLevelDetail = require('../models/currentLevelDetailModel');
+const Level = require('../models/levelModel');
+const _ = require('lodash');
+const ordinal = require('ordinal-suffix');
+const getPosition = require('../config/rank');
 const {
-  Types: {  ObjectId },
-} = require("mongoose");
+  Types: { ObjectId },
+} = require('mongoose');
 
 //@GET
 
 router.get(
-  "/details",
+  '/details',
   asyncHandler(async (req, res) => {
     const { sessionId, termId, levelId } = req.query;
 
@@ -22,8 +23,8 @@ router.get(
       term: new ObjectId(termId),
       level: new ObjectId(levelId),
     })
-      .populate("level", "subjects")
-      .select("overallScore");
+      .populate('level', 'subjects')
+      .select('overallScore');
 
     if (_.isEmpty(students)) {
       return res.status(200).json({
@@ -38,10 +39,10 @@ router.get(
 
     const examsDetails = {
       noOfStudents: students.length ?? 0,
-      highestMarks: _.maxBy(students, "overallScore").overallScore ?? 0,
-      lowestMarks: _.minBy(students, "overallScore").overallScore ?? 0,
+      highestMarks: _.maxBy(students, 'overallScore').overallScore ?? 0,
+      lowestMarks: _.minBy(students, 'overallScore').overallScore ?? 0,
       averageMarks: Math.round(
-        _.sumBy(students, "overallScore") / students.length ?? 0
+        _.sumBy(students, 'overallScore') / students.length ?? 0
       ),
     };
 
@@ -69,13 +70,13 @@ router.get(
 
 //@GET
 router.get(
-  "/student",
+  '/student',
   asyncHandler(async (req, res) => {
     const { examsId } = req.query;
     const studentRecord = await Examination.findById(examsId)
-      .populate("term")
-      .populate("level")
-      .populate("student");
+      .populate('term')
+      .populate('level')
+      .populate('student');
 
     const { _id, term, level, student, scores, overallScore, comments } =
       studentRecord;
@@ -105,18 +106,21 @@ router.get(
 //@GET Current exams Details
 
 router.get(
-  "/reports",
+  '/reports',
   asyncHandler(async (req, res) => {
     const { sessionId, termId, levelId } = req.query;
+
+    const level = await Level.findById(levelId).select('subjects');
+    const subjects = _.sortBy(level.subjects);
 
     const studentRecords = await Examination.find({
       session: new ObjectId(sessionId),
       term: new ObjectId(termId),
       level: new ObjectId(levelId),
     })
-      .populate("term")
-      .populate("level")
-      .populate("student");
+      .populate('term')
+      .populate('level')
+      .populate('student');
 
     if (_.isEmpty(studentRecords)) {
       return res.status(200).json([]);
@@ -135,7 +139,7 @@ router.get(
 
       //GET Student Grade
       const allGrades = _.map(scores, ({ grade }) => {
-        return Number(grade.split("")[1]);
+        return Number(grade.split('')[1]);
       });
 
       const grade = _.sum(allGrades.sort((a, b) => a - b).slice(0, 6));
@@ -147,7 +151,7 @@ router.get(
         positions.find((exams) => {
           //console.log(exams._id);
           return exams._id.toString() === _id.toString();
-        }).position || "";
+        }).position || '';
 
       const modifiedStudentRecord = {
         _id,
@@ -157,13 +161,11 @@ router.get(
         reOpeningDate: term.reOpeningDate,
         rollNumber: level.students?.length,
         totalLevelAttendance: level.attendance,
-        fullName: _.startCase(
-          `${student?.surname} ${student?.firstname} ${student?.othername}`
-        ),
+        fullName: student?.fullName,
         level: `${level?.level?.name}${level?.level?.type}`,
         levelId: level?._id,
         profile: student?.profile,
-        scores,
+        scores: _.sortBy(scores, 'subject'),
         overallScore,
         position: ordinal(position),
         grade,
@@ -175,14 +177,15 @@ router.get(
 
     const results = await Promise.all(generatedResults);
 
-
-
-    res.status(200).json(results);
+    res.status(200).json({
+      subjects,
+      results,
+    });
   })
 );
 
 router.post(
-  "/student/current",
+  '/student/current',
   asyncHandler(async (req, res) => {
     const { sessionId, termId, studentId, levelId } = req.body;
     const studentRecord = await Examination.findOne({
@@ -190,9 +193,9 @@ router.post(
       term: new ObjectId(termId),
       student: new ObjectId(studentId),
     })
-      .populate("term")
-      .populate("level")
-      .populate("student");
+      .populate('term')
+      .populate('level')
+      .populate('student');
 
     if (_.isEmpty(studentRecord)) {
       return res.status(200).json({});
@@ -200,14 +203,14 @@ router.post(
 
     const allStudentsOverallScore = await Examination.find({
       level: new ObjectId(levelId),
-    }).select("overallScore");
+    }).select('overallScore');
 
     const { _id, term, level, student, scores, overallScore, comments } =
       studentRecord;
 
     //GET Student Grade
     const allGrades = _.map(scores, ({ grade }) => {
-      return Number(grade.split("")[1]);
+      return Number(grade.split('')[1]);
     });
 
     const grade = _.sum(allGrades.sort((a, b) => a - b).slice(0, 6));
@@ -219,7 +222,7 @@ router.post(
       positions.find((exams) => {
         //console.log(exams._id);
         return exams._id.toString() === _id.toString();
-      }).position || "";
+      }).position || '';
 
     const modifiedStudentRecord = {
       _id,
@@ -248,7 +251,7 @@ router.post(
 );
 
 router.post(
-  "/student/all",
+  '/student/all',
   asyncHandler(async (req, res) => {
     const { session, term, level, student } = req.body;
 
@@ -275,9 +278,9 @@ router.post(
     const examination = await Examination.find({
       student: new ObjectId(student),
     })
-      .populate("term")
-      .populate("session")
-      .populate("level");
+      .populate('term')
+      .populate('session')
+      .populate('level');
 
     const modifiedTerms = examination.map(({ _id, session, term, level }) => {
       return {
@@ -291,8 +294,8 @@ router.post(
 
     //Group selected terms in ascending order
     const groupedTerms = _.groupBy(
-      _.sortBy(modifiedTerms, "term"),
-      "academicYear"
+      _.sortBy(modifiedTerms, 'term'),
+      'academicYear'
     );
 
     res.status(200).json(Object.entries(groupedTerms));
@@ -302,7 +305,7 @@ router.post(
 //@POST
 
 router.post(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {
     const newExamsScore = req.body;
 
@@ -311,7 +314,7 @@ router.post(
 
     // Merge scores with  with same subjects
     const newScores = _.merge(
-      _.keyBy([...examsInfo.scores, ...newExamsScore.scores], "subject")
+      _.keyBy([...examsInfo.scores, ...newExamsScore.scores], 'subject')
     );
 
     const updatedScores = await Examination.findByIdAndUpdate(
@@ -319,7 +322,7 @@ router.post(
       {
         $set: {
           scores: _.values(newScores),
-          overallScore: _.sumBy(newScores, "totalScore"),
+          overallScore: _.sumBy(newScores, 'totalScore'),
         },
       },
       {
@@ -332,7 +335,7 @@ router.post(
 );
 
 router.post(
-  "/update",
+  '/update',
   asyncHandler(async (req, res) => {
     const { session, scores } = req.body;
 
@@ -359,18 +362,18 @@ router.post(
         currentLevelDetails: currentLevelDetail._id,
         student: new ObjectId(session.studentId),
         scores,
-        overallScore: _.sumBy(scores, "totalScore"),
+        overallScore: _.sumBy(scores, 'totalScore'),
         active: true,
       });
 
       return res
         .status(201)
-        .json("Exams Scores has been updated successfully!!!");
+        .json('Exams Scores has been updated successfully!!!');
     }
 
     // Merge scores with  with same subjects
     const newScores = _.merge(
-      _.keyBy([...examsInfo?.scores, ...scores], "subject")
+      _.keyBy([...examsInfo?.scores, ...scores], 'subject')
     );
 
     const latestScores = _.values(newScores);
@@ -380,7 +383,7 @@ router.post(
       {
         $set: {
           scores: latestScores,
-          overallScore: _.sumBy(latestScores, "totalScore"),
+          overallScore: _.sumBy(latestScores, 'totalScore'),
         },
       },
       {
@@ -389,21 +392,21 @@ router.post(
       }
     );
 
-    res.status(201).json("Exams Scores has been updated successfully!!!");
+    res.status(201).json('Exams Scores has been updated successfully!!!');
   })
 );
 
 //@PUT
 
 router.put(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {})
 );
 
 //@POST
 
 router.put(
-  "/comments",
+  '/comments',
   asyncHandler(async (req, res) => {
     const newExamsScore = req.body;
 
@@ -418,17 +421,17 @@ router.put(
       }
     );
     if (_.isEmpty(updatedScores)) {
-      return res.status(400).json("Error saving remarks.Try again later!!!");
+      return res.status(400).json('Error saving remarks.Try again later!!!');
     }
 
-    res.status(201).json("Remarks have been saved successfully!!!");
+    res.status(201).json('Remarks have been saved successfully!!!');
   })
 );
 
 //@DELETE
 
 router.delete(
-  "/",
+  '/',
   asyncHandler(async (req, res) => {})
 );
 
