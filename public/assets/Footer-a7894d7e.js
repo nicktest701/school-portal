@@ -1,1 +1,0 @@
-import{j as r,g as t}from"./index-343ad709.js";const a=({bgcolor:e,color:o})=>r.jsx("footer",{style:{backgroundColor:e||"#333",display:"grid",placeItems:"center",height:"80px"},children:r.jsxs(t,{variant:"body2",color:o||"#fff",children:["Copyright © ",new Date().getFullYear()," | FrebbyTech Consults"]})});export{a as F};
