@@ -1,1 +1,0 @@
-import{j as s,g as e}from"./index-e175ad1a.js";const o=({children:t})=>s.jsx(e,{spacing:2,direction:{xs:"column",sm:"row"},paddingY:1,justifyContent:{xs:"center",md:"space-between"},alignItems:"center",children:t});export{o as C};

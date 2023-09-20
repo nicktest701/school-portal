@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import  CloseSharp  from '@mui/icons-material/CloseSharp';
 import {
   DialogTitle,
-  Divider,
   IconButton,
   Stack,
   Typography,
@@ -18,7 +17,7 @@ function CustomDialogTitle({ title, onClose }) {
           <CloseSharp />
         </IconButton>
       </Stack>
-      <Divider />
+      {/* <Divider /> */}
     </DialogTitle>
   );
 }

@@ -1,15 +1,21 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+// import screenfull from 'screenfull';
 import Loader from '../../config/Loader';
 import Shell from '../Shell';
 import User from '../user';
 import Login from '../Login';
 import FeePrint from '../fees/FeePrint';
-
+import LevelFeeInformation from '../fees/LevelFeeInformation';
+// import ViewExamsReports from '../examination/ViewExamsReports';
 
 const FeeNew = lazy(() => import('../fees/FeeNew'));
+const LevelExamScoreInput = lazy(() =>
+  import('../examination/LevelExamScoreInput')
+);
 const ExamsHome = lazy(() => import('../examination/ExamsHome'));
 const ExamsLevel = lazy(() => import('../examination/ExamsLevel'));
+const ViewExamsReports = lazy(() => import('../examination/ViewExamsReports'));
 const SMSHome = lazy(() => import('../sms/SMSHome'));
 const SMSNew = lazy(() => import('../sms/SMSNew'));
 const Dashboard = lazy(() => import('../Dashboard'));
@@ -46,6 +52,12 @@ const CurrentLevel = lazy(() => import('../level/CurrentLevel'));
 const StudentDetails = lazy(() => import('../student/StudentDetails'));
 
 const Root = () => {
+  // useEffect(() => {
+  //   if (screenfull.isEnabled) {
+  //     screenfull.request();
+  //   }
+  // }, []);
+
   return (
     <>
       <Routes>
@@ -159,14 +171,6 @@ const Root = () => {
               }
               path='exam/:examsId'
             />
-            {/* <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <StudentFeesReport />
-                </Suspense>
-              }
-              path='fee/:studentId'
-            /> */}
           </Route>
 
           {/* Teacher */}
@@ -224,6 +228,14 @@ const Root = () => {
             <Route
               element={
                 <Suspense fallback={<Loader />}>
+                  <LevelFeeInformation />
+                </Suspense>
+              }
+              path='level'
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
                   <FeeHistory />
                 </Suspense>
               }
@@ -265,8 +277,24 @@ const Root = () => {
               }
             />
 
-            <Route path='level/:levelId' element={<ExamsLevel />} />
+            <Route path='level/:levelId/:level' element={<ExamsLevel />} />
+            <Route
+              path='reports/:levelId'
+              element={
+                <Suspense fallback={<Loader />}>
+                  <ViewExamsReports />
+                </Suspense>
+              }
+            />
           </Route>
+          <Route
+            element={
+              <Suspense fallback={<Loader />}>
+                <LevelExamScoreInput />
+              </Suspense>
+            }
+            path='/result'
+          />
           <Route
             element={
               <Suspense fallback={<Loader />}>
@@ -275,25 +303,6 @@ const Root = () => {
             }
             path='/report'
           />
-
-          {/* printing */}
-          {/* <Route
-          element={
-            <Suspense fallback={<Loader />}>
-              <PrintPage />
-            </Suspense>
-          }
-          path='/print'
-        >
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <FeesReportPrintPage />
-              </Suspense>
-            }
-            path='fees'
-          />
-        </Route> */}
 
           <Route
             element={
@@ -377,6 +386,7 @@ const Root = () => {
           path='*'
         />
       </Routes>
+      
     </>
   );
 };

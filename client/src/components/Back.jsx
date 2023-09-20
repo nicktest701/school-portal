@@ -8,13 +8,12 @@ const Back = ({ color, bg }) => {
   const navigate = useNavigate();
   return (
     <Container
-      width='inherit'
       sx={{
         backgroundColor: 'transparent',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingY: 1,
+        paddingY: 2,
       }}
     >
       <IconButton

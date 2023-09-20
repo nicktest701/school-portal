@@ -17,7 +17,6 @@ const DrawerItem = ({ title, icon, to }) => {
     >
       <Stack
         direction='row'
-        columnGap={3}
         justifyContent={{ xs: 'center', md: 'flex-start' }}
         alignItems='center'
         sx={{
@@ -32,6 +31,7 @@ const DrawerItem = ({ title, icon, to }) => {
             borderRadius: '4px',
           },
         }}
+        spacing={1}
       >
         {icon}
         <Typography

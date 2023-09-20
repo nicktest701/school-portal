@@ -1,25 +1,25 @@
-
 import { ListItemText, Stack } from '@mui/material';
 import PropTypes from 'prop-types';
 function CustomTableTitle({ icon, title, subtitle }) {
   return (
     <Stack
-      direction='row'
-      columnGap={2}
+      direction={{ xs: 'column', sm: 'row' }}
+      columnGap={1}
       justifyContent='center'
       alignItems='center'
+      p={2}
     >
       <img
         alt='ico'
         loading='lazy'
         src={icon}
-        style={{ width: '45px', heigth: '45px' }}
+        style={{ width: '40px', heigth: '40px' }}
         className='hide-on-print'
       />
       <ListItemText
         primary={title}
         primaryTypographyProps={{
-          fontSize: 20,
+          fontSize: { xs: 12, sm: 18 },
           fontWeight: 'bold',
         }}
         secondary={subtitle}

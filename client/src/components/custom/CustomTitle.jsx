@@ -3,7 +3,6 @@ import React from 'react';
 import Back from '../Back';
 import PropTypes from 'prop-types';
 function CustomTitle({ title, subtitle, img, color, backColor }) {
-
   CustomTitle.propTypes = {
     title: PropTypes.string,
     subtitle: PropTypes.string,
@@ -19,9 +18,9 @@ function CustomTitle({ title, subtitle, img, color, backColor }) {
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column-reverse', sm: 'row' },
-          justifyContent: 'flex-end',
+          justifyContent: { xs: 'center', md: 'flex-end' },
           alignItems: 'center',
-          paddingY: 4,
+          paddingY: 1,
         }}
       >
         <Stack
@@ -31,16 +30,25 @@ function CustomTitle({ title, subtitle, img, color, backColor }) {
           gap={2}
         >
           <Stack color={color}>
-            <Typography variant='h5' textAlign='right'>
+            <Typography
+              variant='h6'
+              textAlign={{ xs: 'center', md: 'right' }}
+              paragraph
+            >
               {title}
             </Typography>
-            <Typography textAlign='right'>{subtitle}</Typography>
+            <Typography
+              textAlign={{ xs: 'center', md: 'right' }}
+              variant='body2'
+            >
+              {subtitle}
+            </Typography>
           </Stack>
           <img
             src={img}
             style={{
-              width: '60px',
-              height: '60px',
+              width: '50px',
+              height: '50px',
             }}
           />
         </Stack>

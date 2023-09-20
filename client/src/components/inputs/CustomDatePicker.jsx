@@ -16,12 +16,30 @@ function CustomDatePicker({
         label={label}
         value={date}
         onChange={(date) => setDate(date)}
-        format=' Do MMMM YYYY'
+        format='Do MMMM YYYY'
         disableMaskedInput
         disableFuture={disableFuture}
         slotProps={{
           textField: {
-            helperText: touched && error,
+            InputLabelProps: {
+              // sx: {
+              //   color: touched && error ? '#B72136' : '',
+              // },
+            },
+            InputProps: {
+              sx: {
+                // border: touched && error ? '1px solid #B72136' : 'none',
+                borderRadius: 0,
+              },
+            },
+            // helperText: touched && error,
+
+            size: 'small',
+            FormHelperTextProps: {
+              // sx: {
+              //   color: touched && error ? 'error.main' : '',
+              // },
+            },
           },
         }}
         sx={{ width: '100%' }}

@@ -24,23 +24,44 @@ export const levelInitialValues = {
 
 //student
 export const studentInitialValues = {
-  profile: null,
   firstname: '',
   surname: '',
   othername: '',
   dateofbirth: '',
-  gender: '',
+  gender: 'male',
   email: '',
   phonenumber: '',
   address: '',
   residence: '',
   nationality: '',
+  session: session,
+};
+
+// medical
+export const medicalInitialValues = {
+  heartDisease: 'No',
+  asthma: 'No',
+  siezures: 'No',
+  visualImpairment: 'No',
+  hearingImpairment: 'No',
+  physicalDisability: 'No',
+  emergencyContact: {
+    fullname: '',
+    phonenumber: '',
+    address: '',
+  },
+};
+export const academicInitialValues = {
   level: {
     _id: '',
     type: '',
   },
-  session: session,
+  previousSchool: {
+    name: '',
+    location: '',
+  },
 };
+
 //student
 export const teacherInitialValues = {
   profile: null,
@@ -55,6 +76,8 @@ export const teacherInitialValues = {
   residence: '',
   nationality: '',
 };
+
+
 //student
 export const userInitialValues = {
   profile: null,
@@ -74,14 +97,28 @@ export const userInitialValues = {
 
 //parent
 export const parentInitialValues = {
-  firstname: '',
-  surname: '',
-  gender: '',
-  email: '',
-  phonenumber: '',
-  address: '',
-  residence: '',
-  nationality: '',
+  parent1: {
+    firstname: '',
+    surname: '',
+    gender: '',
+    relationship: '',
+    email: '',
+    phonenumber: '',
+    address: '',
+    residence: '',
+    nationality: '',
+  },
+  parent2: {
+    firstname: '',
+    surname: '',
+    gender: '',
+    relationship: '',
+    email: '',
+    phonenumber: '',
+    address: '',
+    residence: '',
+    nationality: '',
+  },
 };
 
 //sms

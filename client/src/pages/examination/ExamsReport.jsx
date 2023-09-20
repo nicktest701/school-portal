@@ -24,8 +24,6 @@ import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import _ from 'lodash';
 import { SchoolRounded } from '@mui/icons-material';
 
-
-
 const ExamsReport = () => {
   const school_info = JSON.parse(localStorage.getItem('@school_info'));
 
@@ -39,7 +37,7 @@ const ExamsReport = () => {
   const student = schoolSessionState.viewReport.data;
   const [openRemarks, setOpenRemarks] = useState(false);
 
-// console.log(student)
+  // console.log(student)
 
   //close dialog
   const handleClose = () => {
@@ -68,9 +66,19 @@ const ExamsReport = () => {
             documentTitle={student?.fullName}
           />
         </DialogActions>
-        <DialogContent ref={componentRef}>
-          <Divider />
-          <Stack spacing={1}>
+        <DialogContent>
+          <Stack
+            ref={componentRef}
+            spacing={1}
+            sx={{
+              maxWidth: '8.5in',
+              minHeight: '11in',
+              margin: 'auto',
+              padding: '16px',
+              border: '1px solid lightgray',
+            }}
+            // style={style}
+          >
             {/* school details */}
             <Stack
               direction='row'
@@ -82,14 +90,16 @@ const ExamsReport = () => {
                 <Avatar
                   alt='school logo'
                   loading='lazy'
-                  srcSet={ `${import.meta.env.VITE_BASE_URL}/images/users/${school_info?.badge}`}
+                  srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                    school_info?.badge
+                  }`}
                   sx={{
-                    width: 80,
-                    height: 80,
+                    width: 70,
+                    height: 70,
                   }}
                 />
               ) : (
-                <SchoolRounded sx={{ width: 70, height: 70 }} />
+                <SchoolRounded sx={{ width: 50, height: 50 }} />
               )}
               <Stack justifyContent='center' alignItems='center'>
                 <Typography variant='h5'>
@@ -129,11 +139,11 @@ const ExamsReport = () => {
                   student?.profile === undefined ||
                   student?.profile === null
                     ? null
-                    :  `${import.meta.env.VITE_BASE_URL}/images/students/${
+                    : `${import.meta.env.VITE_BASE_URL}/images/students/${
                         student?.profile
                       }`
                 }
-                sx={{ width: 70, height: 70, alignSelf: 'center' }}
+                sx={{ width: 60, height: 60, alignSelf: 'center' }}
               />
             </Stack>
 
@@ -245,13 +255,21 @@ const ExamsReport = () => {
             </Stack>
 
             {/* conduct */}
-            <Box>
+            <Box sx={{ flex: 1 }}>
               <Stack rowGap={1}>
-                <Stack direction='row' justifyContent='flex-end' columnGap={1}>
-                  <ReportItem title='Attendance' text='11' />
+                <Stack
+                  direction='row'
+                  justifyContent='flex-end'
+                  columnGap={6}
+                  spacing={6}
+                  pt={1}
+                  pr={8}
+                >
+                  <ReportItem title='Attendance  ' text='    ' />
                   <ReportItem
-                    title='Out Of'
-                    text={student?.totalLevelAttendance}
+                    title='Out Of           '
+                    text='       '
+                    // text={student?.totalLevelAttendance}
                   />
                 </Stack>
                 <Stack>

@@ -1,25 +1,21 @@
-import {
-  Check,
-  HistoryRounded,
-  MonetizationOnRounded,
-} from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import {
-  Alert,
-  Autocomplete,
-  Avatar,
-  Button,
-  Chip,
-  Container,
-  Divider,
-  Grid,
-  InputAdornment,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import Check from '@mui/icons-material/Check';
+import HistoryRounded from '@mui/icons-material/HistoryRounded';
+import MonetizationOnRounded from '@mui/icons-material/MonetizationOnRounded';
+import LoadingButton from '@mui/lab/LoadingButton';
+import Autocomplete from '@mui/material/Autocomplete';
+import Alert from '@mui/material/Alert';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import InputAdornment from '@mui/material/InputAdornment';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material';
 import React, {
   useContext,
   useEffect,
@@ -45,6 +41,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import FeePaymentHistory from './FeePaymentHistory';
 import { UserContext } from '../../context/providers/userProvider';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+
+
+
+
 const FeeMakePayment = () => {
   const { palette } = useTheme();
   const navigate = useNavigate();
@@ -531,7 +531,6 @@ const FeeMakePayment = () => {
                 ),
                 endAdornment: <InputAdornment position='end'>p</InputAdornment>,
               }}
-              
             />
           </Stack>
         </Grid>

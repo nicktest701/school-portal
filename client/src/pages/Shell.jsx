@@ -6,7 +6,8 @@ import { getSchoolInfo, verifyUser } from '../api/userAPI';
 import { useQuery } from '@tanstack/react-query';
 import GlobalAlert from '../components/alerts/GlobalAlert';
 import QuickMessage from '../components/modals/QuickMessage';
-
+import Footer from './layouts/Footer';
+import Scrollbars from 'react-custom-scrollbars';
 
 const Shell = () => {
   const navigate = useNavigate();
@@ -68,15 +69,24 @@ const Shell = () => {
     getData();
 
     return () => getData;
-  }, [location.pathname]);
+  }, []);
 
   return (
-    <>
+    <div
+      style={{
+        display: 'grid',
+        gridAutoRows: '1fr auto',
+         height: '100dvh',
+        backgroundColor: 'white',
+      }}
+    >
       <GlobalAlert />
-      <Outlet />
-      <QuickMessage />
-  
-    </>
+      <Scrollbars style={{ width: '100%', height: '100vh' }} autoHide>
+        <Outlet />
+        <QuickMessage />
+      </Scrollbars>
+      <Footer bgcolor='transparent' color='#333' />
+    </div>
   );
 };
 

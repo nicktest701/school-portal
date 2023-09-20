@@ -4,14 +4,15 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Divider, Tab } from '@mui/material';
 import session_icon from '../../assets/images/header/session_ico.svg';
 import SessionHome from './SessionHome';
-import CustomParticle from '../../components/animations/CustomParticle';
 import CustomTitle from '../../components/custom/CustomTitle';
+import Scrollbars from 'react-custom-scrollbars';
 
 const Session = () => {
   const [tab, setTab] = useState('1');
 
   return (
-    <Box
+    <Scrollbars style={{ width: '100%', height: '100vh' }} autoHide>
+   <Box
       sx={{
         position: 'relative',
         height: '400px',
@@ -53,8 +54,10 @@ const Session = () => {
           </TabPanel>
         </TabContext>
       </Box>
-      <CustomParticle />
+ 
     </Box>
+    </Scrollbars>
+ 
   );
 };
 

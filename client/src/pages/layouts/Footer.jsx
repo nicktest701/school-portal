@@ -5,13 +5,15 @@ const Footer = ({ bgcolor, color }) => {
   return (
     <footer
       style={{
-        backgroundColor: bgcolor || '#333',
+        heigt:100,
+        backgroundColor: '#333',
         display: 'grid',
         placeItems: 'center',
-        height: '80px',
+        paddingBlock: '16px',
+        color: '#fff',
       }}
     >
-      <Typography variant='body2' color={color || '#fff'}>
+      <Typography variant='body2' color='#fff'>
         Copyright &copy; {new Date().getFullYear()} | FrebbyTech Consults
       </Typography>
       {/* <Typography variant='caption' color='#fff'>

@@ -26,11 +26,15 @@ const app = express();
 // server port
 const port = process.env.PORT || 8000;
 
+app.set('view engine', 'ejs');
+
 // middlewares
 app.use(cookieParser());
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(
+  express.urlencoded({ limit: '50mb', extended: false, parameterLimit: 50000 })
+);
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(logger('dev'));
@@ -46,6 +50,7 @@ app.use(
 
 //static path
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/views', express.static(path.join(__dirname, 'views')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //routes
@@ -63,9 +68,11 @@ app.use('/current-fees', currentFeeRoute);
 app.use('/messages', messageRoute);
 app.use('/attendances', attendanceRoute);
 
+// if (process.env.NODE_ENV === 'production') {
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+// }
 
 //error handlers
 app.use((req, res, next) => {

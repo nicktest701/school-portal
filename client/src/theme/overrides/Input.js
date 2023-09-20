@@ -5,6 +5,14 @@ import { alpha } from '@mui/material/styles';
 export default function Input(theme) {
   return {
     MuiInputBase: {
+      defaultProps: {
+        disableElevation: true,
+        sx: {
+          borderRadius: "2px",
+          // paddingY: "13px",
+   
+        },
+      },
       styleOverrides: {
         root: {
           '&.Mui-disabled': {

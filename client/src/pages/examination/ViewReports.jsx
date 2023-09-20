@@ -48,7 +48,7 @@ const ViewReports = ({ open, setOpen }) => {
       studentDispatch({ type: 'getReportDetails', payload: data });
     },
     onError: (error) => {
-      showBoundary(error);
+      // showBoundary(error);
     },
   });
 
@@ -72,20 +72,21 @@ const ViewReports = ({ open, setOpen }) => {
             // pageStyle={
             //   'width:8.5in";min-height:11in"; margin:auto",padding:4px;'
             // }
-            trigger={() => <Button variant='contained'>Print Report</Button>}
+            trigger={() => <Button variant='contained'>Print Reports</Button>}
             content={() => componentRef.current}
-            documentTitle={'Report'}
+            documentTitle='Report'
           />
         </DialogActions>
         <DialogContent ref={componentRef}>
           <Divider />
+          {reports.isLoading && <Typography>Loading.....</Typography>}
           {reports.isError && (
             <Typography>Error loading report info.....</Typography>
           )}
-          {reports.isLoading && <Typography>Loading.....</Typography>}
           {reports.data?.results && reports.data?.results?.length === 0 && (
             <Typography>No Report Available.....</Typography>
           )}
+          
           {reports.data?.results &&
             reports.data?.results.map((report) => (
               <Report key={report?._id} student={report} />

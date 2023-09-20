@@ -1,15 +1,13 @@
-import axios from "axios";
- 
+import axios from 'axios';
+
+const URL = import.meta.env.VITE_BASE_URL;
 
 //Get all Students
 export const getAllExams = async (id) => {
   try {
     const res = await axios({
-      method: "GET",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations`,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      method: 'GET',
+      url: `${URL}/examinations`,
       params: {
         sessionId: id,
       },
@@ -26,8 +24,8 @@ export const getAllExams = async (id) => {
 export const getExamsDetails = async (session) => {
   try {
     const res = await axios({
-      method: "GET",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations/details`,
+      method: 'GET',
+      url: `${URL}/examinations/details`,
       params: session,
     });
 
@@ -42,8 +40,24 @@ export const getExamsDetails = async (session) => {
 export const generateReports = async (session) => {
   try {
     const res = await axios({
-      method: "GET",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations/reports`,
+      method: 'GET',
+      url: `${URL}/examinations/reports`,
+      params: session,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
+
+//GENERATE REPORTS
+export const publishReports = async (session) => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `${URL}/examinations/publish`,
       params: session,
     });
 
@@ -58,10 +72,10 @@ export const generateReports = async (session) => {
 export const getStudentAcademics = async (session, student, level) => {
   try {
     const res = await axios({
-      method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations/student/all`,
+      method: 'POST',
+      url: `${URL}/examinations/student/all`,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       data: {
         student,
@@ -82,8 +96,8 @@ export const getStudentAcademics = async (session, student, level) => {
 export const getExams = async (examsId) => {
   try {
     const res = await axios({
-      method: "GET",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations/student`,
+      method: 'GET',
+      url: `${URL}/examinations/student`,
       params: {
         examsId,
       },
@@ -99,8 +113,8 @@ export const getExams = async (examsId) => {
 export const getCurrentExams = async (session) => {
   try {
     const res = await axios({
-      method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations/student/current`,
+      method: 'POST',
+      url: `${URL}/examinations/student/current`,
       data: session,
     });
 
@@ -115,8 +129,8 @@ export const getCurrentExams = async (session) => {
 export const postExamsRemarks = async (comments) => {
   try {
     const res = await axios({
-      method: "PUT",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations/comments`,
+      method: 'PUT',
+      url: `${URL}/examinations/comments`,
       data: comments,
     });
 
@@ -130,8 +144,8 @@ export const postExamsRemarks = async (comments) => {
 export const postExams = async (newExam) => {
   try {
     const res = await axios({
-      method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations`,
+      method: 'POST',
+      url: `${URL}/examinations`,
       data: newExam,
     });
 
@@ -141,12 +155,29 @@ export const postExams = async (newExam) => {
     throw error.response.data;
   }
 };
+
+//Add new Exams
+export const postBulkExams = async (newExam) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `${URL}/examinations/bulk`,
+      data: newExam,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
+
 //Update Exams scores
 export const updateExams = async (updatedScores) => {
   try {
     const res = await axios({
-      method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations/update`,
+      method: 'POST',
+      url: `${URL}/examinations/update`,
       data: updatedScores,
     });
 
@@ -160,8 +191,8 @@ export const updateExams = async (updatedScores) => {
 export const putExams = async (updatedExam) => {
   try {
     const res = await axios({
-      method: "PUT",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations`,
+      method: 'PUT',
+      url: `${URL}/examinations`,
       data: updatedExam,
     });
 
@@ -175,8 +206,8 @@ export const putExams = async (updatedExam) => {
 export const deleteExams = async (id) => {
   try {
     const res = await axios({
-      method: "DELETE",
-      url:  `${import.meta.env.VITE_BASE_URL}/examinations`,
+      method: 'DELETE',
+      url: `${URL}/examinations`,
       params: {
         _id: id,
       },

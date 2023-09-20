@@ -1,16 +1,48 @@
 const router = require('express').Router();
+const fs = require('fs');
+const path = require('path');
 const asyncHandler = require('express-async-handler');
+const School = require('../models/schoolModel');
 const Examination = require('../models/examinationModel');
 const CurrentLevelDetail = require('../models/currentLevelDetailModel');
 const Level = require('../models/levelModel');
 const _ = require('lodash');
 const ordinal = require('ordinal-suffix');
+const moment = require('moment');
 const getPosition = require('../config/rank');
 const {
   Types: { ObjectId },
 } = require('mongoose');
+const { sendReportMail } = require('../config/mail/mail2');
+const ImageToBase64 = require('../config/ImageToBase64');
+const generateTotalGrade = require('../config/generateTotalGrade');
+const generateReportTemplate = require('../config/generateReportTemplate');
+const generateReport = require('../config/generateReport');
 
 //@GET
+
+const SUBJECT_OPTIONS = [
+  'English Language',
+  'Mathematics',
+  'Integrated Science',
+  'Natural Science',
+  'Our World,Our People',
+  'Social Studies',
+  'History',
+  'Religious & Moral Education',
+  'Computing',
+  'Creative Arts & Design',
+  'Career Technology',
+  'Physical & Health Education',
+  'Physical Education',
+  'Ghanaian Language',
+  'French',
+  'Arabic',
+  'Reading',
+  'Writing',
+  'Music & Dance',
+  'Orals & Rhymes',
+];
 
 router.get(
   '/details',
@@ -94,7 +126,11 @@ router.get(
       level: level.level?.name,
       levelId: level._id,
       profile: student.profile,
-      scores,
+      scores: scores.sort(
+        (a, b) =>
+          SUBJECT_OPTIONS.indexOf(a.subject) -
+          SUBJECT_OPTIONS.indexOf(b.subject)
+      ),
       overallScore,
       comments,
     };
@@ -133,16 +169,12 @@ router.get(
       };
     });
 
-    const generatedResults = studentRecords.map((report) => {
+    const generatedResults = studentRecords.map(async (report) => {
       const { _id, term, level, scores, overallScore, comments, student } =
         report;
 
       //GET Student Grade
-      const allGrades = _.map(scores, ({ grade }) => {
-        return Number(grade.split('')[1]);
-      });
-
-      const grade = _.sum(allGrades.sort((a, b) => a - b).slice(0, 6));
+      const grade = generateTotalGrade(scores);
 
       //GET student position
       const positions = getPosition(allStudentsOverallScore);
@@ -165,7 +197,12 @@ router.get(
         level: `${level?.level?.name}${level?.level?.type}`,
         levelId: level?._id,
         profile: student?.profile,
-        scores: _.sortBy(scores, 'subject'),
+        scores: scores.sort(
+          (a, b) =>
+            SUBJECT_OPTIONS.indexOf(a.subject) -
+            SUBJECT_OPTIONS.indexOf(b.subject)
+        ),
+
         overallScore,
         position: ordinal(position),
         grade,
@@ -181,6 +218,134 @@ router.get(
       subjects,
       results,
     });
+  })
+);
+
+router.get(
+  '/publish',
+  asyncHandler(async (req, res) => {
+    const { sessionId, termId, levelId } = req.query;
+
+    const studentRecords = await Examination.find({
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      level: new ObjectId(levelId),
+    })
+      .populate('term')
+      .populate('level')
+      .populate('student');
+
+    if (_.isEmpty(studentRecords)) {
+      return res.status(200).json([]);
+    }
+    const school = await School.findOne();
+
+    //CONVERT IMAGE TO BASE64
+    let SCHOOL_PHOTO = '';
+
+    if (!_.isEmpty(school)) {
+      const url = path.join(process.cwd(), '/images/users/', school?.badge);
+
+      if (fs.existsSync(url)) {
+        SCHOOL_PHOTO = await ImageToBase64(url, 'image/png');
+      }
+      // console.log(SCHOOL_PHOTO);
+    }
+
+    school.badge = SCHOOL_PHOTO;
+
+    const allStudentsOverallScore = studentRecords.map((student) => {
+      return {
+        _id: student?._id,
+        overallScore: student.overallScore,
+      };
+    });
+
+    const generatedResults = studentRecords.map(async (report) => {
+      const { _id, term, level, scores, overallScore, comments, student } =
+        report;
+
+      //CONVERT IMAGE TO BASE64
+      let STUDENT_PHOTO = '';
+
+      if (student.profile) {
+        const url = path.join(
+          process.cwd(),
+          '/images/students/',
+          student?.profile
+        );
+
+        if (fs.existsSync(url)) {
+          STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+        }
+        // console.log(STUDENT_PHOTO);
+      }
+
+      //GET Student Grade
+      const grade = generateTotalGrade(scores);
+
+      //GET student position
+      const positions = getPosition(allStudentsOverallScore);
+
+      const position =
+        positions.find((exams) => {
+          //console.log(exams._id);
+          return exams._id.toString() === _id.toString();
+        }).position || '';
+
+      const modifiedStudentRecord = {
+        _id,
+        academicYear: term.academicYear,
+        term: term.term,
+        vacationDate: moment(new Date(term.vacationDate)).format(
+          'Do MMMM,YYYY'
+        ),
+        reOpeningDate: moment(new Date(term.reOpeningDate)).format(
+          'Do MMMM,YYYY'
+        ),
+        rollNumber: level.students?.length,
+        totalLevelAttendance: level.attendance,
+        fullName: student?.fullName,
+        level: `${level?.level?.name}${level?.level?.type}`,
+        levelId: level?._id,
+        profile: STUDENT_PHOTO,
+        scores: scores.sort(
+          (a, b) =>
+            SUBJECT_OPTIONS.indexOf(a.subject) -
+            SUBJECT_OPTIONS.indexOf(b.subject)
+        ),
+
+        overallScore,
+        position: ordinal(position),
+        grade,
+        comments,
+      };
+
+      return modifiedStudentRecord;
+    });
+
+    const reports = await Promise.all(generatedResults);
+
+    try {
+      const template = await generateReportTemplate({ reports, school });
+
+      //Print  report template in pdf
+      const results = await generateReport(template);
+      if (results) {
+        // const mailedReports = studentRecords.forEach(async ({ student }) => {
+        //   const result = await sendReportMail(student?._id, student?.email);
+        //   return result;
+        // });
+        // await Promise.all(mailedReports);
+
+        return res
+          .status(200)
+          .json('Reports have being generated.Waiting to be published.');
+      }
+    } catch (error) {
+      return res.status(404).json(error.message);
+    }
+    res.send('ok');
   })
 );
 
@@ -209,11 +374,7 @@ router.post(
       studentRecord;
 
     //GET Student Grade
-    const allGrades = _.map(scores, ({ grade }) => {
-      return Number(grade.split('')[1]);
-    });
-
-    const grade = _.sum(allGrades.sort((a, b) => a - b).slice(0, 6));
+    const grade = generateTotalGrade(scores);
 
     //GET student position
     const positions = getPosition(allStudentsOverallScore);
@@ -238,7 +399,11 @@ router.post(
       level: `${level?.level?.name}${level?.level?.type}`,
       levelId: level?._id,
       profile: student?.profile,
-      scores,
+      scores: scores.sort(
+        (a, b) =>
+          SUBJECT_OPTIONS.indexOf(a.subject) -
+          SUBJECT_OPTIONS.indexOf(b.subject)
+      ),
       overallScore,
       position: ordinal(position),
       grade,
@@ -254,6 +419,8 @@ router.post(
   '/student/all',
   asyncHandler(async (req, res) => {
     const { session, term, level, student } = req.body;
+
+    // console.log(req.body);
 
     //find if current term exams details exists
     const exists = await Examination.findOne({
@@ -282,11 +449,13 @@ router.post(
       .populate('session')
       .populate('level');
 
+
+
     const modifiedTerms = examination.map(({ _id, session, term, level }) => {
       return {
         _id,
-        academicYear: session.academicYear,
-        term: term.term,
+        academicYear: session?.academicYear,
+        term: term?.term,
         levelName: `${level.level?.name}${level.level?.type}`,
         subjects: level.subjects,
       };
@@ -313,15 +482,17 @@ router.post(
     const examsInfo = await Examination.findById(newExamsScore.examsId);
 
     // Merge scores with  with same subjects
-    const newScores = _.merge(
-      _.keyBy([...examsInfo.scores, ...newExamsScore.scores], 'subject')
+    const newScores = _.values(
+      _.merge(
+        _.keyBy([...examsInfo.scores, ...newExamsScore.scores], 'subject')
+      )
     );
 
     const updatedScores = await Examination.findByIdAndUpdate(
       examsInfo._id,
       {
         $set: {
-          scores: _.values(newScores),
+          scores: newScores,
           overallScore: _.sumBy(newScores, 'totalScore'),
         },
       },
@@ -331,6 +502,71 @@ router.post(
       }
     );
     res.json(updatedScores);
+  })
+);
+
+router.post(
+  '/bulk',
+  asyncHandler(async (req, res) => {
+    const examsDetails = req.body;
+
+    const modifiedResults = examsDetails.map(
+      async ({
+        id,
+        subject,
+        classScore,
+        examsScore,
+        totalScore,
+        grade,
+        remarks,
+        session,
+        term,
+        level,
+      }) => {
+        const exam = await Examination.findOne({
+          session: new ObjectId(session),
+          term: new ObjectId(term),
+          level: new ObjectId(level),
+          student: new ObjectId(id),
+        });
+
+        const scores = [
+          {
+            subject,
+            classScore,
+            examsScore,
+            totalScore,
+            grade,
+            remarks,
+          },
+        ];
+
+        const newScores = _.values(
+          _.merge(_.keyBy([...exam.scores, ...scores], 'subject'))
+        );
+
+        const updatedScores = await Examination.findByIdAndUpdate(
+          exam._id,
+          {
+            $set: {
+              scores: newScores,
+              overallScore: _.sumBy(newScores, 'totalScore'),
+            },
+          },
+          {
+            upsert: true,
+            new: true,
+          }
+        );
+
+        return updatedScores;
+      }
+    );
+
+    await Promise.all(modifiedResults);
+
+    res.status(200).json('Results uploaded!');
+    // res.json(updatedScores);
   })
 );
 

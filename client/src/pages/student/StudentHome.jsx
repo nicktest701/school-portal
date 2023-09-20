@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import Scrollbars from 'react-custom-scrollbars';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
@@ -29,68 +28,66 @@ const StudentHome = () => {
   });
 
   return (
-    <Scrollbars style={{ width: '100%', height: '100vh' }} autoHide>
-      <Box
-        bgcolor='primary.main'
-        width='inherit'
+    <Box
+      bgcolor='primary.main'
+      width='inherit'
+      sx={{
+        position: 'relative',
+        height: 200,
+      }}
+    >
+      <Container
         sx={{
-          position: 'relative',
-          height: 200,
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          marginLeft: 'auto',
+          marginRight: 'auto',
         }}
       >
-        <Container
-          sx={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
-        >
-          <Stack color='primary.contrastText' sx={{ paddingY: 4 }}>
-            <Typography variant='h4'>Student Portal</Typography>
-            <Typography>
-              Track,manage and control student information
-            </Typography>
-          </Stack>
-          {studentDetails.isLoading && <ChartSkeleton />}
+        <Stack color='primary.contrastText' sx={{ paddingY: 4 }}>
+          <Typography variant='h6'>Student Portal</Typography>
+          <Typography variant='caption'>
+            Track,manage and control student information
+          </Typography>
+        </Stack>
+        {studentDetails.isLoading && <ChartSkeleton />}
 
-          {studentDetails.data && (
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
-                gap: 3,
-                paddingY: 4,
-              }}
-            >
-              <StudentDashboardLineChart
-                data={studentDetails?.data?.noOfStudentsInEachLevel}
-              />
-              <StudentDashboardBarChart
-                data={studentDetails?.data?.noOfStudentsForEachTerm}
-              />
-              <StudentDashboardPieChart {...studentDetails?.data} />
+        {studentDetails.data && (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
+              gap: 2,
+              paddingY: 4,
+            }}
+          >
+            <StudentDashboardLineChart
+              data={studentDetails?.data?.noOfStudentsInEachLevel}
+            />
+            <StudentDashboardBarChart
+              data={studentDetails?.data?.noOfStudentsForEachTerm}
+            />
+            <StudentDashboardPieChart {...studentDetails?.data} />
 
-              {/* <StudentDashboardCard /> */}
-            </Box>
-          )}
+            {/* <StudentDashboardCard /> */}
+          </Box>
+        )}
 
-          <CustomizedMaterialTable
-            title='Recently Added Students'
-            icon={student_icon}
-            isLoading={studentDetails.isFetching}
-            columns={STUDENTS_COLUMN}
-            // data={[]}
-            data={studentDetails.data?.recentStudents ?? []}
-            actions={[]}
-            handleRefresh={studentDetails.refetch}
-            addButtonImg={EMPTY_IMAGES.student}
-            addButtonMessage='😑 No Students recently added !!!!'
-          />
-        </Container>
-      </Box>
-    </Scrollbars>
+        <CustomizedMaterialTable
+          title='Recently Added Students'
+          icon={student_icon}
+          isLoading={studentDetails.isFetching}
+          columns={STUDENTS_COLUMN}
+          // data={[]}
+          data={studentDetails.data?.recentStudents ?? []}
+          actions={[]}
+          handleRefresh={studentDetails.refetch}
+          addButtonImg={EMPTY_IMAGES.student}
+          addButtonMessage='😑 No Students recently added !!!!'
+        />
+      </Container>
+    </Box>
   );
 };
 

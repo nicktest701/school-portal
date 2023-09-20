@@ -392,7 +392,7 @@ router.put(
   '/school/profile',
   upload.single('badge'),
   asyncHandler(async (req, res) => {
-    console.log('school');
+  
     const updatedBadge = await School.findOneAndUpdate(
       {
         unique: 'school-info',

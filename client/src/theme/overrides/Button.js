@@ -8,8 +8,8 @@ export default function Button(theme) {
       defaultProps: {
         disableElevation: true,
         sx: {
-          borderRadius: "6px",
-          paddingY: "13px",
+          borderRadius: "2px",
+          paddingY: "10px",
    
         },
       },

@@ -97,7 +97,7 @@ const CurrentLevelTab = () => {
           />
         ) : (
           <CustomizedMaterialTable
-            search={true}
+            search={false}
             isLoading={levelLoading}
             title={type}
             subtitle={`${rollNumber} Students`}

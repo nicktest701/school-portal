@@ -1,20 +1,23 @@
-import  Card from '@mui/material/Card';
-import  CardContent from '@mui/material/CardContent';
-import  Typography  from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
 import CountUp from 'react-countup';
 import PropTypes from 'prop-types';
+import { memo } from 'react';
 
 const DashboardCard = ({ title, value, icon }) => {
   return (
-    <Card sx={{ borderTop: '2px solid #012e54', position: 'relative' }}>
-      {/* <CardHeader
-        // avatar={<BarChartRounded />}
-        subheader={<Typography color='primary'>{title}</Typography>}
-        color='primary'
-      /> */}
+    <Card
+      sx={{
+        // border: '1px solid lightgray',
+        borderTop: '2px solid #012e54',
+        position: 'relative',
+      }}
+      elevation={0}
+    >
       <CardContent>
         <Typography color='primary'>{title}</Typography>
-        <Typography variant='h4' textAlign='center' sx={{paddingY:1}}>
+        <Typography variant='h6' textAlign='center' sx={{ paddingY: 1 }}>
           <CountUp duration={5} end={value} enableScrollSpy />
         </Typography>
         <div
@@ -37,4 +40,4 @@ DashboardCard.propTypes = {
   icon: PropTypes.node,
 };
 
-export default DashboardCard;
+export default memo(DashboardCard);

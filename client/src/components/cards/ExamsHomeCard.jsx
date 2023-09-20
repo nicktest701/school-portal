@@ -9,9 +9,10 @@ function ExamsHomeCard({ title, value, icon, color }) {
       direction='row'
       spacing={2}
       sx={{
+        bgcolor:'white',
         borderRadius: 1,
-        boxShadow: '0 2px 3px rgba(0,0,0,0.2)',
         padding: 2,
+        border: `1px solid lightgray`,
         borderLeft: `2px solid #012E54`,
       }}
     >

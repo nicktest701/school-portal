@@ -7,31 +7,31 @@ const ExamsItem = ({ item }) => {
           style={{
             textAlign: "left",
             paddingLeft: "2px",
-            fontSize: "13px",
+            fontSize: "12px",
             fontWeight: "bolder",
           }}
         >
           {item.subject}
         </td>
-        <td width="18%" style={{ fontSize: "13px" }}>
+        <td width="18%" style={{ fontSize: "12px" }}>
           {item.classScore}
         </td>
-        <td width="18%" style={{ fontSize: "13px" }}>
+        <td width="18%" style={{ fontSize: "12px" }}>
           {item.examsScore}
         </td>
         <td
           width="15%"
-          style={{ color: "#b72338", fontSize: "13px", fontWeight: "bold" }}
+          style={{ color: "#b72338", fontSize: "12px", fontWeight: "bold" }}
         >
           {item.totalScore}
         </td>
-        {/* <td width="10%" style={{ color: "green",fontSize:'13px', fontWeight: "bold" }}>
+        {/* <td width="10%" style={{ color: "green",fontSize:'12px', fontWeight: "bold" }}>
           {item.grade}
         </td> */}
-        <td width="10%" style={{ fontSize: "13px" }}>{item.grade}</td>
+        <td width="10%" style={{ fontSize: "12px" }}>{item.grade}</td>
         <td
           width="14%"
-          style={{ color: "green", fontSize: "13px", fontWeight: "bold" }}
+          style={{ color: "green", fontSize: "12px", fontWeight: "bold" }}
         >
           {item.remarks}
         </td>

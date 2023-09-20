@@ -19,12 +19,12 @@ const SMSNew = () => {
           justifyContent: 'center',
           alignItems: 'center',
           gap: 2,
-          paddingY: 3,
+          paddingY: 1,
         }}
       >
-        <MailRounded color='inherit' sx={{ width: 100, height: 100 }} />
+        <MailRounded color='inherit' sx={{ width: 50, height: 50 }} />
 
-        <Typography variant='h4'>SMS,Mails & Notifications</Typography>
+        <Typography variant='h6'>SMS, Mails & Notifications</Typography>
         <Typography>
           Send single and bulk SMS amd emails to students,teachers, parents,etc
         </Typography>

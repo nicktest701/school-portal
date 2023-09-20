@@ -43,6 +43,7 @@ body {
   font-size: 13px !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fff;
 }
 
 /**
@@ -375,6 +376,16 @@ template {
 [hidden] {
   display: none;
 }
+.mini-drawer-link {
+  padding-inline: 10px;
+  padding-block: 4px;
+  text-decoration: none;
+  color: #012e54;
+}
+.mini-drawer-link:hover {
+  background-color: #012e54;
+  color: #fff;
+}
 
 .content {
   margin: auto;
@@ -433,6 +444,10 @@ tbody tr:hover svg {
   fill: rgb(1, 46, 84) !important;
 }
 
+.print-container {
+  display: none;
+}
+
 @media print {
   .add-remarks-btn,
   .add-remark,
@@ -440,6 +455,28 @@ tbody tr:hover svg {
     display: none;
     background-color: transparent;
     color: transparent;
+  }
+  .print-container {
+    display: block;
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .report {
+    margin: 0;
+    /* padding: 0; */
+    border: 0;
+  }
+  .admission-form {
+    background: linear-gradient(
+        to top right,
+        rgba(255, 255, 255, 0.9),
+        rgba(255, 255, 255, 0.9)
+      ),
+      url(http://localhost:8000/images/users/31e82772-f633-47f6-a7df-f04822864a64.png);
+    background-size: contain;
+    background-position: center  !important;
   }
 }
 
@@ -648,7 +685,8 @@ tbody tr:hover svg {
 .swiper {
   width: inherit;
   min-width: inherit;
-  height: 40dvh;
+  height: 45dvh;
+  border-radius: 10px;
 }
 .swiper-pagination {
   display: flex;
@@ -688,6 +726,7 @@ tbody tr:hover svg {
   justify-content: center;
   padding: 16px;
   text-align: center;
+  border-radius: 10px;
 }
 
 .swiper-slide > img {
@@ -695,4 +734,5 @@ tbody tr:hover svg {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 10px;
 }

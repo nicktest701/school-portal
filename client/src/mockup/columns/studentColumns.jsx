@@ -269,6 +269,12 @@ export const STUDENTS_EXAMS_COLUMN = [
         />
       </Stack>
     ),
+    searchable: true,
+    customFilterAndSearch: (data, rowData) => {
+      return (
+        rowData.fullName.toLowerCase().lastIndexOf(data.toLowerCase()) > -1
+      );
+    },
   },
 
   {
@@ -307,6 +313,9 @@ export const studentExamsReportColumns = [
   {
     name: 'remarks',
     title: 'Remarks',
+    render: () => {
+      return <Button>Hello</Button>;
+    },
   },
 ];
 

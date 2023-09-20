@@ -234,21 +234,23 @@ router.post(
   '/',
   upload.single('profile'),
   AsyncHandler(async (req, res) => {
-    const newStudent = req.body;
+    const { personal, medical, academic, parent } = req.body;
 
     //Add new Student
     const student = await Student.create({
-      profile: req.file?.filename,
-      firstname: newStudent.firstname,
-      surname: newStudent.surname,
-      othername: newStudent.othername,
-      dateofbirth: newStudent.dateofbirth,
-      gender: newStudent.gender,
-      email: newStudent.email,
-      phonenumber: newStudent.phonenumber,
-      address: newStudent.address,
-      residence: newStudent.residence,
-      nationality: newStudent.nationality,
+      profile: personal.profile,
+      firstname: personal.firstname,
+      surname: personal.surname,
+      othername: personal.othername,
+      dateofbirth: personal.dateofbirth,
+      gender: personal.gender,
+      email: personal.email,
+      phonenumber: personal.phonenumber,
+      address: personal.address,
+      residence: personal.residence,
+      nationality: personal.nationality,
+      medical,
+      academic,
     });
 
     if (_.isEmpty(student)) {
@@ -257,15 +259,15 @@ router.post(
 
     //Add Student to current class
     const level = await Level.findByIdAndUpdate(
-      newStudent.level,
+      academic.level?._id,
       { $push: { students: student?._id } },
       { new: true }
     );
 
     //create exams details for student
     await Examination.create({
-      session: new ObjectId(newStudent.session),
-      term: new ObjectId(newStudent.term),
+      session: new ObjectId(personal.session?.sessionId),
+      term: new ObjectId(personal.session?.termId),
       level: new ObjectId(level?._id),
       student: new ObjectId(student._id),
       scores: [],
@@ -275,36 +277,35 @@ router.post(
 
     //find current fees for a particular student class
     const fees = await Fee.findOne({
-      session: new ObjectId(newStudent.session),
-      term: new ObjectId(newStudent.term),
-      level: new ObjectId(newStudent.level),
+      session: new ObjectId(personal.session?.sessionId),
+      term: new ObjectId(personal.session?.termId),
+      level: new ObjectId(personal.level?._id),
     });
 
     //Generate current student fees
     if (!_.isEmpty(fees)) {
       await CurrentFee.create({
-        session: new ObjectId(newStudent.session),
-        term: new ObjectId(newStudent.term),
-        level: new ObjectId(newStudent.level),
+        session: new ObjectId(personal.session?.sessionId),
+        term: new ObjectId(personal.session?.termId),
+        level: new ObjectId(personal.level?._id),
         fee: fees._id,
         student: student._id,
         payment: [],
       });
     }
 
-    //Add Student Parent Info
-    await Parent.create({
-      firstname: newStudent.parentFirstName,
-      surname: newStudent.parentSurName,
-      gender: newStudent.parentGender,
-      email: newStudent.parentEmail,
-      phonenumber: newStudent.parentPhoneNo,
-      address: newStudent.parentAddress,
-      nationality: newStudent.parentNationality,
+    const firstParent = {
+      ...parent.parent1,
       student: student._id,
-    });
+    };
+    const secondParent = {
+      ...parent.parent2,
+      student: student._id,
+    };
 
-    res.status(200).json('New Student has been created successfully!!!');
+    await Parent.insertMany([firstParent, secondParent]);
+
+    res.status(200).json(student?._id);
   })
 );
 
@@ -412,6 +413,27 @@ router.put(
   })
 );
 
+//@POST Update Student profile
+router.put(
+  '/medical',
+  AsyncHandler(async (req, res) => {
+    const { id } = req.body;
+
+    const updatedStudent = await Student.findByIdAndUpdate(id, {
+      $set: {
+        medical: req.body,
+      },
+    });
+
+    if (_.isEmpty(updatedStudent)) {
+      return res
+        .status(400)
+        .json('Error updating profile image.Try again later.');
+    }
+
+    res.status(201).json('Changes Saved!!!');
+  })
+);
 //@POST Update Student profile
 router.put(
   '/profile',

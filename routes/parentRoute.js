@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 const Parent = require('../models/parentModel');
 
 const {
-  Types: {  ObjectId },
+  Types: { ObjectId },
 } = require('mongoose');
 
 //@GET All  Parents
@@ -26,15 +26,15 @@ router.get(
   '/student',
   asyncHandler(async (req, res) => {
     const id = req.query.id;
-    const parent = await Parent.findOne({
+    const parents = await Parent.find({
       student: new ObjectId(id),
     });
 
-    if (_.isEmpty(parent)) {
+    if (_.isEmpty(parents)) {
       return res.status(200).json({});
     }
 
-    res.status(200).json(parent);
+    res.status(200).json(parents);
   })
 );
 //@GET  Parent by id
@@ -73,7 +73,6 @@ router.post(
 router.put(
   '/',
   asyncHandler(async (req, res) => {
-
     const modifiedParent = await Parent.findByIdAndUpdate(
       req.body._id,
       req.body
@@ -105,6 +104,5 @@ router.delete(
     res.status(201).json(' Parent have been removed successfully!!!');
   })
 );
-
 
 module.exports = router;

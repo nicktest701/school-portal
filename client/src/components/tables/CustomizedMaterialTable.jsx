@@ -30,6 +30,7 @@ function CustomizedMaterialTable({
   onRowClick,
   handleRefresh,
   showAddButton,
+  showPaging,
   addButtonImg,
   addButtonText,
   addButtonMessage,
@@ -84,7 +85,6 @@ function CustomizedMaterialTable({
           isLoading={isLoading}
           title={
             <CustomTableTitle title={title} subtitle={subtitle} icon={icon} />
-
           }
           icons={tableIcons}
           columns={modifiedColumns}
@@ -93,31 +93,45 @@ function CustomizedMaterialTable({
           //     customFilterAndSearch: (data, rowData) => {
           //       return data.toLowerCase().lastIndexOf(rowData.fullName) > -1;
           //     },
-            
+
           //   },
           // ]}
           data={data === undefined ? [] : data}
           options={{
             // selection: true,
-            draggable:true,
+            
+            draggable: true,
+          
             search: search || false,
             searchFieldVariant: 'outlined',
-            searchFieldStyle: { width: '50vw' },
+            // searchFieldStyle: { width: '20vw' },
+            searchFieldStyle: {
+              display: { xs: 'none', sm: 'block' },
+              borderRadius: '20px',
+              fontSize: '13px',
+              marginTop: '10px',
+              marginRight: '20px',
+              height: '40px',
+              width: { xs: 100, md: '300px' },
+            },
+
             exportButton: true,
             exportAllData: true,
             exportFileName: exportFileName || title || '',
             showTextRowsSelected: false,
             showSelectAllCheckbox: false,
             columnsButton: false,
-            paging: data === undefined || data.length === 0 ? false : true,
-            pageSize: 5,
-            pageSizeOptions: [5, 10, 20, 30, 40, 50],
+            paging:
+              showPaging ||
+              (data === undefined || data.length === 0 ? false : true),
+            pageSize: 10,
+            pageSizeOptions: [ 10, 20, 30, 40, 50,100],
             paginationType: 'stepped',
             actionsColumnIndex: -1,
             overflowY: 'scroll',
             header: data === undefined || data.length === 0 ? false : true,
             headerStyle: {
-               color: 'rgb(1, 46, 84)',
+              color: 'rgb(1, 46, 84)',
               // backgroundColor: '#eee',
               fontWeight: 'bold',
               // textTransform:'uppercase'
@@ -131,11 +145,12 @@ function CustomizedMaterialTable({
           }}
           style={{
             padding: '8px',
-            // backgroundColor: 'pink',
             boxShadow: 'none',
+            border: '1px solid lightgray',
+            fontSize: 13,
           }}
           actions={[
-            {
+            handleRefresh && {
               icon: () => <Refresh className='hide-on-print' />,
               position: 'toolbar',
               tooltip: 'Refresh',

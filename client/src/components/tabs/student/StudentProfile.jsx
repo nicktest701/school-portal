@@ -3,9 +3,11 @@ import {
   AccountBoxRounded,
   DeleteForeverRounded,
   EditRounded,
-  Person, 
+  MedicalInformationRounded,
+  Person,
   PersonRounded,
   PhoneRounded,
+  Report,
 } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -28,13 +30,24 @@ import {
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import ViewParent from '../../../pages/student/tab/ViewParent';
+import MedicalInformationEdit from '../../../pages/student/MedicalInformationEdit';
+import { useSearchParams } from 'react-router-dom';
+import ViewPreviousReport from '../../../pages/student/tab/ViewPreviousReport';
 const StudentProfile = ({ student }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
   const { palette } = useTheme();
   const queryClient = useQueryClient();
   const [openViewParent, setOpenViewParent] = useState(false);
+  const [openViewPreviousReport, setOpenViewPreviousReport] = useState(false);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleOpenMedicalHistory = () => {
+    setSearchParams({
+      open: true,
+    });
+  };
 
   //EDIT Student Info
   const openStudentEdit = () => {
@@ -77,6 +90,10 @@ const StudentProfile = ({ student }) => {
     });
   };
 
+  const openPreviousReport = () => {
+    setOpenViewPreviousReport(true);
+  };
+
   return (
     <>
       <Container>
@@ -94,7 +111,13 @@ const StudentProfile = ({ student }) => {
             startIcon={<Person />}
             onClick={() => setOpenViewParent(true)}
           >
-            View Parent Info
+            Parent Info
+          </Button>
+          <Button
+            startIcon={<MedicalInformationRounded />}
+            onClick={handleOpenMedicalHistory}
+          >
+            Medical Info
           </Button>
         </Stack>
 
@@ -130,6 +153,18 @@ const StudentProfile = ({ student }) => {
         />
         <Stack paddingY={2}>
           <ProfileItem label='Current Level' text={`${student?.levelName} `} />
+          <ProfileItem
+            label='Previous School'
+            text={`${student?.academic?.previousSchool?.name} `}
+          />
+          <Button
+            startIcon={<Report />}
+            onClick={openPreviousReport}
+            variant='contained'
+            sx={{ alignSelf: 'flex-end' }}
+          >
+            Previous Report
+          </Button>
         </Stack>
         <ChipItem
           divider={true}
@@ -153,6 +188,14 @@ const StudentProfile = ({ student }) => {
       </Container>
       <StudentEdit />
       <ViewParent open={openViewParent} setOpen={setOpenViewParent} />
+      <MedicalInformationEdit
+        medical={{ ...student?.medical, id: student?._id }}
+      />
+      <ViewPreviousReport
+        report={student?.academic?.previousSchool?.report}
+        open={openViewPreviousReport}
+        setOpen={setOpenViewPreviousReport}
+      />
     </>
   );
 };

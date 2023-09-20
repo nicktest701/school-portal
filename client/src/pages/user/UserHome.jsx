@@ -34,16 +34,6 @@ function UserHome() {
           color='text.main'
         />
 
-        <Typography
-          variant='h6'
-          sx={{
-            paddingY: 2,
-            color: 'primary.contrastText',
-          }}
-        >
-          Overview
-        </Typography>
-
         <TabContext value={tab}>
           <TabList onChange={(e, value) => setTab(value)} textColor='#fff'>
             <Tab

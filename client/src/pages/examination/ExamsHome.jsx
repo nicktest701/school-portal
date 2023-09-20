@@ -1,8 +1,7 @@
-import { PersonRounded} from '@mui/icons-material';
+import { PersonRounded } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Stack, Tab} from '@mui/material';
+import { Box, Container, Divider, Stack, Tab } from '@mui/material';
 import React, { useState } from 'react';
-import CustomParticle from '../../components/animations/CustomParticle';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { EXAMS_COLUMNS } from '../../mockup/columns/sessionColumns';
 import { useNavigate } from 'react-router-dom';
@@ -17,20 +16,24 @@ const ExamsHome = () => {
   const [tab, setTab] = useState('1');
   const { levelsOption, levelLoading } = useLevel();
 
-  const handleRowClick = (levelId) => {
-    navigate(`level/${levelId}`);
+  const handleRowClick = (levelId, type) => {
+    console.log(type);
+    navigate(`level/${levelId}/${type}`, {
+      state: {
+        level: type,
+      },
+    });
   };
 
   return (
     <Box
       sx={{
         position: 'relative',
-        height: '400px',
+        height: 350,
         color: 'primary.contrastText',
         background: 'linear-gradient(to top right,#ffc09f,#012e54)',
       }}
     >
-      <CustomParticle />
       <Container
         sx={{
           position: 'absolute',
@@ -47,42 +50,31 @@ const ExamsHome = () => {
           color='text.main'
         />
 
-        <Box paddingY={3}>
-          <TabContext value={tab}>
-            <TabList onChange={(e, value) => setTab(value)}>
-              <Tab
-                value='1'
-                label='Levels'
-                icon={<PersonRounded />}
-                iconPosition='start'
-                color='#fff'
-              />
-            </TabList>
-            <Divider />
-            <TabPanel value='1'>
-              <Container>
-                <Stack
-                  spacing={1}
-                  direction={{ xs: 'column', sm: 'row' }}
-                  justifyContent={{ xs: 'center', sm: 'space-between' }}
-                  alignItems='center'
-                ></Stack>
-
-                <CustomizedMaterialTable
-                  title='Current Levels'
-                  icon={exams_icon}
-                  isLoading={levelLoading}
-                  columns={EXAMS_COLUMNS}
-                  data={levelsOption !== undefined ? levelsOption : []}
-                  actions={[]}
-                  onRowClick={(rowData) => handleRowClick(rowData?._id)}
-                  addButtonImg={EMPTY_IMAGES.student}
-                  addButtonMessage='😑 No Students recently added !!!!'
-                />
-              </Container>
-            </TabPanel>
-          </TabContext>
-        </Box>
+        <TabContext value={tab}>
+          <TabList onChange={(e, value) => setTab(value)}>
+            <Tab
+              value='1'
+              label='Levels'
+              icon={<PersonRounded />}
+              iconPosition='start'
+              color='#fff'
+            />
+          </TabList>
+          <Divider />
+          <TabPanel value='1'>
+            <CustomizedMaterialTable
+              title='Current Levels'
+              icon={exams_icon}
+              isLoading={levelLoading}
+              columns={EXAMS_COLUMNS}
+              data={levelsOption !== undefined ? levelsOption : []}
+              actions={[]}
+              onRowClick={({ _id, type }) => handleRowClick(_id, type)}
+              addButtonImg={EMPTY_IMAGES.student}
+              addButtonMessage='😑 No Students recently added !!!!'
+            />
+          </TabPanel>
+        </TabContext>
       </Container>
     </Box>
   );

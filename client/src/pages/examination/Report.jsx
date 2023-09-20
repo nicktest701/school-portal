@@ -1,6 +1,6 @@
 import { SchoolRounded } from '@mui/icons-material';
-import { useTheme } from '@mui/material';
-import Divider from '@mui/material/Divider';
+import { Divider, useTheme } from '@mui/material';
+// import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -13,41 +13,48 @@ import ExamsItem from '../../components/list/ExamsItem';
 import ReportItemUnderline from '../../components/list/ReportItemUnderline';
 
 import _ from 'lodash';
-const Report = ({ student }) => {
+const Report = ({ student, style }) => {
   const school_info = JSON.parse(localStorage.getItem('@school_info'));
   const { palette } = useTheme();
 
   return (
     <>
-      <Divider />
       <Stack
-        spacing={1}
+        className='report'
         sx={{
-          maxWidth: '8.5in',
-          minHeight: '11in',
+          ...style,
+          width: '210mm',
+          maxWidth: '210mm',
+          height: '297mm',
+          maxHeight: '297mm',
           margin: 'auto',
-          padding: '4px',
+          padding: '16px',
+          border: '1px solid lightgray',
         }}
+        spacing={1}
+        // style={style}
       >
         {/* school details */}
         <Stack
           direction='row'
           justifyContent='center'
-          alignItems='center'
+          alignItems='flex-start'
           columnGap={2}
         >
           {school_info?.badge ? (
             <Avatar
               alt='school logo'
               loading='lazy'
-              srcSet={ `${import.meta.env.VITE_BASE_URL}/images/users/${school_info?.badge}`}
+              srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                school_info?.badge
+              }`}
               sx={{
-                width: 80,
-                height: 80,
+                width: 70,
+                height: 70,
               }}
             />
           ) : (
-            <SchoolRounded sx={{ width: 70, height: 70 }} />
+            <SchoolRounded sx={{ width: 50, height: 50 }} />
           )}
           <Stack justifyContent='center' alignItems='center'>
             <Typography variant='h5'>
@@ -83,9 +90,11 @@ const Report = ({ student }) => {
               student?.profile === undefined ||
               student?.profile === null
                 ? null
-                :  `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
+                : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                    student?.profile
+                  }`
             }
-            sx={{ width: 70, height: 70, alignSelf: 'center' }}
+            sx={{ width: 60, height: 60, alignSelf: 'center' }}
           />
         </Stack>
 
@@ -194,11 +203,22 @@ const Report = ({ student }) => {
         </Stack>
 
         {/* conduct */}
-        <Box>
+        <Box sx={{ flex: 1 }}>
           <Stack rowGap={1}>
-            <Stack direction='row' justifyContent='flex-end' columnGap={1}>
-              <ReportItem title='Attendance' text='11' />
-              <ReportItem title='Out Of' text={student?.totalLevelAttendance} />
+            <Stack
+              direction='row'
+              justifyContent='flex-end'
+              columnGap={6}
+              spacing={6}
+              pt={1}
+              pr={5}
+            >
+              <ReportItem title='Attendance  ' text='    ' />
+              <ReportItem
+                title='Out Of           '
+                text='       '
+                // text={student?.totalLevelAttendance}
+              />
             </Stack>
             <Stack>
               <ReportItemUnderline
@@ -272,16 +292,22 @@ const Report = ({ student }) => {
             </tfoot>
           </table>
         </Stack>
-        <Typography
+        <div
           style={{
-            fontSize: '10px',
-            fontStyle: 'italic',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
-          Powered by FrebbyTech Consults (0543772591)
-        </Typography>
+          <p style={{ fontSize: 10, fontStyle: 'italic' }}>
+            Powered by FrebbyTech Consults (0543772591)
+          </p>
+          <span style={{ fontSize: 10, fontStyle: 'italic' }}>
+            {student?._id}
+          </span>
+        </div>
       </Stack>
-      <Divider />
+      {/* <Divider /> */}
     </>
   );
 };

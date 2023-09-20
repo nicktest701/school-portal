@@ -3,7 +3,6 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import SubjectIcon from '@mui/icons-material/Subject';
 import ClassIcon from '@mui/icons-material/Class';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { Person3 } from '@mui/icons-material';
 import DashboardCard from './DashboardCard';
 import { useQuery } from '@tanstack/react-query';
@@ -21,7 +20,7 @@ function DashboardCardsContainer() {
   } = useContext(UserContext);
 
   const info = useQuery({
-    queryKey: ['dashboard-info'],
+    queryKey: ['dashboard-info', session, term],
     queryFn: () => getDashboardInfo({ session, term }),
     enabled: !!session && !!term,
     onError: (error) => {
@@ -34,11 +33,10 @@ function DashboardCardsContainer() {
   return (
     <Box
       sx={{
-        width: '100%',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
         gap: 2,
-        paddingY: 2,
+        py: 1,
       }}
     >
       <DashboardCard
@@ -47,8 +45,8 @@ function DashboardCardsContainer() {
         icon={
           <GroupsIcon
             sx={{
-              width: 50,
-              height: 50,
+              width: 40,
+              height: 40,
               color: '#ffc09f',
             }}
           />
@@ -61,8 +59,8 @@ function DashboardCardsContainer() {
         icon={
           <Person3
             sx={{
-              width: 50,
-              height: 50,
+              width: 40,
+              height: 40,
               color: '#ffc09f',
             }}
           />
@@ -74,8 +72,8 @@ function DashboardCardsContainer() {
         icon={
           <SubjectIcon
             sx={{
-              width: 50,
-              height: 50,
+              width: 40,
+              height: 40,
               color: '#ffc09f',
             }}
           />
@@ -87,8 +85,8 @@ function DashboardCardsContainer() {
         icon={
           <ClassIcon
             sx={{
-              width: 50,
-              height: 50,
+              width: 40,
+              height: 40,
               color: '#ffc09f',
             }}
           />
@@ -98,4 +96,4 @@ function DashboardCardsContainer() {
   );
 }
 
-export default DashboardCardsContainer;
+export default React.memo(DashboardCardsContainer);

@@ -16,6 +16,7 @@ import { SchoolSessionContext } from '../../../context/providers/SchoolSessionPr
 import CustomDialogTitle from '../../../components/dialog/CustomDialogTitle';
 import { StudentContext } from '../../../context/providers/StudentProvider';
 import ParentEdit from './ParentEdit';
+import { Typography } from '@mui/material';
 
 const ViewParent = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -26,52 +27,28 @@ const ViewParent = ({ open, setOpen }) => {
   //CLOSE view User Info
   const handleClose = () => setOpen(false);
 
-  //DELETE User Info
-
-  // const { mutateAsync } = useMutation(deleteUser);
-
-  //   const handleDelete = () => {
-  //     Swal.fire({
-  //       title: 'Deleting User',
-  //       text: 'Do you want to delete?',
-  //       confirmButtonColor: palette.primary.main,
-  //       showCancelButton: true,
-  //     }).then((data) => {
-  //       if (data.isConfirmed) {
-  //         mutateAsync(parent?._id, {
-  //           onSuccess: (data) => {
-  //             queryClient.invalidateQueries(['users']);
-  //             // schoolSessionDispatch(alertSuccess(data));
-  //             handleClose();
-  //           },
-  //           onError: (error) => {},
-  //         });
-  //       }
-  //     });
-  //   };
-
-  const { data: parent } = useQuery({
+  const { isFetching, data } = useQuery({
     queryKey: ['parent'],
     queryFn: () => getParentByStudentId(studentId),
     enabled: !!studentId,
   });
 
   // OPEN Quick Message
-  const openQuickMessage = () => {
+  const openQuickMessage = (phonenumber, email) => {
     schoolSessionDispatch({
       type: 'sendQuickMessage',
       payload: {
         open: true,
         data: {
-          email: parent?.email,
-          phonenumber: parent?.phonenumber,
+          email,
+          phonenumber,
         },
       },
     });
   };
 
   //EDIT Student Info
-  const openParentEdit = () => {
+  const openParentEdit = (parent) => {
     studentDispatch({
       type: 'editParent',
       payload: {
@@ -85,50 +62,67 @@ const ViewParent = ({ open, setOpen }) => {
     <>
       <Dialog open={open} maxWidth='sm' fullWidth onClose={handleClose}>
         <CustomDialogTitle title='Parent Information' onClose={handleClose} />
-        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box>
-            <Divider flexItem>
-              <Chip label='Details' color='primary' />
-            </Divider>
+        <DialogContent
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}
+        >
+          {isFetching && <Typography>Loading....</Typography>}
 
-            <ProfileItem
-              label='Name'
-              text={`${parent?.firstname} ${parent?.surname}`}
-            />
+          {data?.map((parent, index) => {
+            return (
+              <Box key={parent?._id}>
+                <Divider flexItem>
+                  <Chip
+                    label={`Parent /Guardian ${index + 1}`}
+                    color='primary'
+                  />
+                </Divider>
 
-            <ProfileItem label='Gender' text={parent?.gender} />
-            <ProfileItem label='Email Address' text={parent?.email} />
-            <ProfileItem label='Telephone No.' text={parent?.phonenumber} />
-            <ProfileItem label='Address' text={parent?.address} />
-            <ProfileItem label='Residence' text={parent?.residence} />
-            <ProfileItem label='Nationality' text={parent?.nationality} />
-            <Box
-              display='flex'
-              flexDirection='column'
-              justifyContent='center'
-              alignItems='center'
-              width='100%'
-              paddingY={2}
-              gap={1}
-            >
-              <Stack direction='row' spacing={2} flexWrap='wrap'>
-                <Button
-                  size='small'
-                  startIcon={<MessageRounded />}
-                  onClick={openQuickMessage}
+                <ProfileItem
+                  label='Name'
+                  text={`${parent?.firstname} ${parent?.surname}`}
+                />
+
+                <ProfileItem label='Gender' text={parent?.gender} />
+                <ProfileItem label='Email Address' text={parent?.email} />
+                <ProfileItem label='Telephone No.' text={parent?.phonenumber} />
+                <ProfileItem label='Address' text={parent?.address} />
+                <ProfileItem label='Residence' text={parent?.residence} />
+                <ProfileItem label='Nationality' text={parent?.nationality} />
+                <Box
+                  display='flex'
+                  flexDirection='column'
+                  justifyContent='center'
+                  alignItems='center'
+                  width='100%'
+                  paddingY={2}
+                  gap={1}
                 >
-                  Send Message
-                </Button>
-                <Button
-                  size='small'
-                  endIcon={<Edit />}
-                  onClick={openParentEdit}
-                >
-                  Edit
-                </Button>
-              </Stack>
-            </Box>
-          </Box>
+                  <Stack direction='row' spacing={2} flexWrap='wrap'>
+                    <Button
+                      size='small'
+                      startIcon={<MessageRounded />}
+                      onClick={() =>
+                        openQuickMessage(parent?.phonenumber, parent?.email)
+                      }
+                    >
+                      Send Message
+                    </Button>
+                    <Button
+                      size='small'
+                      endIcon={<Edit />}
+                      onClick={() => openParentEdit(parent)}
+                    >
+                      Edit
+                    </Button>
+                  </Stack>
+                </Box>
+              </Box>
+            );
+          })}
         </DialogContent>
       </Dialog>
       <ParentEdit />

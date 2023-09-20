@@ -12,6 +12,10 @@ import { EMPTY_IMAGES } from '../../config/images';
 import ViewLevelFeeInfo from './ViewLevelFeeInfo';
 import fee_icon from '../../assets/images/header/fee_ico.svg';
 import { UserContext } from '../../context/providers/userProvider';
+import {
+  alertError,
+  alertSuccess,
+} from '../../context/actions/globalAlertActions';
 
 const FeeNew = () => {
   const {
@@ -22,14 +26,11 @@ const FeeNew = () => {
   const queryClient = useQueryClient();
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
   const [openAddFee, setOpenAddFee] = useState(false);
-  const [_msg, setMsg] = useState({
-    severity: '',
-    text: '',
-  });
 
-  const fees = useQuery(['fees'], () => getAllFees(session), {
+  const fees = useQuery({
+    queryKey: ['fees'],
+    queryFn: () => getAllFees(session),
     enabled: !!session?.sessionId,
   });
 
@@ -49,16 +50,12 @@ const FeeNew = () => {
             queryClient.invalidateQueries(['fees']);
           },
           onSuccess: () => {
-            setMsg({
-              severity: 'info',
-              text: 'Fee has been removed successfully!!!',
-            });
+            schoolSessionDispatch(
+              alertSuccess('Fee has been removed successfully!!!')
+            );
           },
           onError: () => {
-            setMsg({
-              severity: 'error',
-              text: 'Error removing Fee!!!',
-            });
+            schoolSessionDispatch(alertError('Error removing Fee!!!'));
           },
         });
       }
@@ -76,7 +73,7 @@ const FeeNew = () => {
     });
   };
 
-  const handleView = ({ levelId, level, fee, noOfStudents }) => {
+  const handleView = ({ levelId, level, fee, noOfStudents, amount }) => {
     // //console.log(levelId);
     schoolSessionDispatch({
       type: 'viewLevelFeeInfo',
@@ -88,6 +85,7 @@ const FeeNew = () => {
           level: levelId,
           levelName: level,
           term: session.termId,
+          amount,
         },
       },
     });

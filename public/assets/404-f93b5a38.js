@@ -1,0 +1,1 @@
+import{j as t,l as e,o,ah as a}from"./index-b46ae071.js";const s=()=>t.jsxs(e,{rowGap:5,sx:{justifyContent:"center",alignItems:"center",width:"100vw",height:"100vh"},children:[t.jsx(o,{variant:"h1",children:"Page Not Found"}),t.jsx(a,{to:"/",children:"Go Home"})]});export{s as default};

@@ -10,13 +10,17 @@ export const getColumns = (subjects) => {
 
   return [
     {
+      title: 'No',
+      render: (rowData) => rowData.tableData.id + 1,
+    },
+    {
       title: 'Student Name',
       field: 'fullName',
       cellStyle: {
         width: 400,
         color: 'blue',
         whiteSpace: 'nowrap',
-        minWidth:250
+        minWidth: 300,
       },
     },
     ...customColumns,
@@ -29,12 +33,21 @@ export const getColumns = (subjects) => {
       },
     },
     {
+      title: 'Grade',
+      field: 'grade',
+      cellStyle: {
+        color: 'blue',
+        fontWeight: 'bold',
+      },
+    },
+    {
       title: 'Position',
       field: 'position',
       cellStyle: {
         color: 'green',
         fontWeight: 'bold',
       },
+      // export: false,
     },
   ];
 };
@@ -47,7 +60,7 @@ export const getResults = (results, subjects) => {
   });
 
   const customData = results.map(
-    ({ fullName, scores, overallScore, position }) => {
+    ({ fullName, scores, overallScore, grade, position }) => {
       //extract total subject score
       const items = scores.map(({ subject, totalScore }) => {
         return {
@@ -83,6 +96,7 @@ export const getResults = (results, subjects) => {
       return {
         fullName,
         overallScore,
+        grade,
         position,
         ...scoreSheet,
       };

@@ -6,6 +6,7 @@ import _ from 'lodash';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import student_icon from '../../assets/images/header/student_ico.svg';
+import { gradeColor } from '../../config/gradeColor';
 function ExamsScoreList({ session }) {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [profile, setProfile] = useState(null);
@@ -41,15 +42,27 @@ function ExamsScoreList({ session }) {
     {
       field: 'grade',
       title: 'Grade',
-      cellStyle: {
-        color: 'blue',
-      },
+      // cellStyle: {
+      //   color: 'blue',
+      // },
     },
     {
       field: 'remarks',
       title: 'Remarks',
       cellStyle: {
         color: 'green',
+      },
+      render: ({ totalScore, remarks }) => {
+        return (
+          <Button
+            sx={{
+              color: gradeColor(totalScore).color,
+              bgcolor: gradeColor(totalScore).bg,
+            }}
+          >
+            {remarks}
+          </Button>
+        );
       },
     },
   ];

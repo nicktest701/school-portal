@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import React from 'react';
 import Add from '@mui/icons-material/Add';
+import { EMPTY_IMAGES } from '../config/images';
 
 const EmptyDataContainer = ({
   onClick,
@@ -22,16 +23,16 @@ const EmptyDataContainer = ({
       >
         <img
           loading='lazy'
-          src={img}
+          src={img || EMPTY_IMAGES.student}
           alt='empty_image'
           style={{
-            width: 300,
-            height: 300,
+            width: 100,
+            height: 100,
             objectFit: 'contain',
           }}
         />
         <Typography variant='body2' color='primary' textAlign='center'>
-          {message}
+          {message || 'No data available !'}
         </Typography>
         {showAddButton && (
           <Button variant='contained' startIcon={<Add />} onClick={onClick}>

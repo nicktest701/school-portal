@@ -1,10 +1,18 @@
 const StudentReducer = (state, action) => {
   switch (action.type) {
     case 'addNewStudent':
-      return {
+      // eslint-disable-next-line no-case-declarations
+      const data = {
         ...state,
-        newStudent: action.payload,
+        newStudent: {
+          ...state.newStudent,
+          ...action.payload,
+        },
       };
+
+      localStorage.setItem('@student', JSON.stringify(data?.newStudent));
+
+      return data;
     case 'getAllStudents':
       return {
         ...state,

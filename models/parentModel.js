@@ -14,6 +14,7 @@ const ParentSchema = new mongoose.Schema(
       lowercase: true,
       required: true,
     },
+    relationship: String,
     gender: String,
     email: {
       type: String,

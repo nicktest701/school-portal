@@ -11,7 +11,16 @@ const {
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const terms = await Term.find().populate('session');
+    const session = req.query?.session;
+
+    let terms = [];
+    if (session) {
+      terms = await Term.find({
+        session: new ObjectId(session),
+      }).populate('session');
+    } else {
+      terms = await Term.find().populate('session');
+    }
     // const terms = await Term.find({ active: true }).populate('session');
 
     if (_.isEmpty(terms)) {
@@ -29,6 +38,7 @@ router.get(
         vacationDate: term.vacationDate,
         reOpeningDate: term.reOpeningDate,
         active: term.active,
+        createdAt:term?.createdAt,
       };
     });
 
@@ -177,7 +187,7 @@ router.put(
 // );
 
 router.delete(
-  "/:id",
+  '/:id',
   asyncHandler(async (req, res) => {
     const id = req.params.id;
     const deletedTerm = await Term.findByIdAndRemove(id);
@@ -185,10 +195,10 @@ router.delete(
     if (_.isEmpty(deletedTerm)) {
       return res
         .status(404)
-        .json("Error removing session info.Try again later");
+        .json('Error removing session info.Try again later');
     }
 
-    res.status(201).json(" Session have been removed successfully!!!");
+    res.status(201).json(' Session have been removed successfully!!!');
   })
 );
 

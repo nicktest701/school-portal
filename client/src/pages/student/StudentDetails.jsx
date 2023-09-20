@@ -7,6 +7,7 @@ import {
   Avatar,
   Container,
   Tab,
+  Box,
 } from '@mui/material';
 import {
   MessageRounded,
@@ -57,13 +58,12 @@ const StudentDetails = () => {
 
   return (
     <Container
-      maxWidth='md'
+      maxWidth='lg'
       sx={{
-        padding: 2,
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         justifyContent: { xs: 'center', md: 'space-between' },
-        alignItems: { xs: 'center', md: 'flex-start' },
+        alignItems: { xs: 'center', md: 'start' },
         gap: 5,
       }}
     >
@@ -71,7 +71,12 @@ const StudentDetails = () => {
         spacing={1}
         justifyContent='center'
         alignItems='center'
-        paddingTop={{ xs: 1, md: 5 }}
+        py={2}
+        sx={{
+          position: { xs: 'relative', md: '-webkit-sticky' },
+          top: 0,
+          minWidth: 300,
+        }}
       >
         <Avatar
           srcSet={
@@ -97,8 +102,8 @@ const StudentDetails = () => {
           Send Message
         </Button>
       </Stack>
-      <Divider flexItem />
-      <Stack sx={{ height: '100%', flexGrow: 1 }}>
+      {/* <Divider flexItem /> */}
+      <Box sx={{ flexGrow: 1, }}>
         <TabContext value={tab}>
           <TabList
             onChange={(e, value) => setTab(value)}
@@ -135,7 +140,7 @@ const StudentDetails = () => {
             <StudentFees />
           </TabPanel>
         </TabContext>
-      </Stack>
+      </Box>
     </Container>
   );
 };

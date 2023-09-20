@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Container,  Toolbar } from '@mui/material';
+import { AppBar, Container, Toolbar } from '@mui/material';
 
 import Back from '../../../components/Back';
 import NavLinkItem from '../../../components/list/NavLinkItem';
@@ -13,16 +13,12 @@ const StudentNav = () => {
           <Container
             // direction='row'
             sx={{
-              width: { xs: 400, sm: '100%' },
+              width: { xs: 300, sm: '100%' },
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              columnGap: 1,
-              overflowX: 'scroll',
-              overscrollBehaviorInline: 'contain',
-              '&::-webkit-scrollbar': {
-                width: '10px',
-              },
+              flexWrap: 'wrap',
+              gap: 2,
               paddingY: 1,
             }}
           >
@@ -31,7 +27,6 @@ const StudentNav = () => {
             <NavLinkItem to='new' color='secondary' text='New Student' />
             {/* <NavLinkItem to='settings' color='secondary' text='Settings' /> */}
           </Container>
-      
         </Toolbar>
       </AppBar>
     </>

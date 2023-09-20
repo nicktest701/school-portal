@@ -1,4 +1,4 @@
-import { object, number, string, array, ref } from 'yup';
+import { object, number, string, array, ref, date } from 'yup';
 
 export const loginUserValidationSchema = object().shape({
   username: string().required('Required*').trim(),
@@ -202,4 +202,65 @@ export const examsScoreValidationSchema = object().shape({
     .required('Subject is Required*')
     .min(0, 'Exams Score should be between 0-50')
     .max(50, 'Exams Score should be between 0-50'),
+});
+
+//Personal Data
+export const studentPersonalDataValidationSchema = object().shape({
+  firstname: string().required('Required*'),
+  surname: string().required('Required*'),
+  gender: string().required('Required*'),
+  email: string().email('Invalid email address!!!'),
+  phonenumber: string().matches(
+    /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/,
+    'Invalid Phone number'
+  ),
+  address: string().required('Required*'),
+  residence: string().required('Required*'),
+  nationality: string().required('Required*'),
+});
+
+export const guardianValidationSchema = object().shape({
+  parent1: object({
+    firstname: string().required('Required*'),
+    surname: string().required('Required*'),
+    gender: string().required('Required*'),
+    relationship: string().required('Required*'),
+    email: string().email('Invalid email address!!!'),
+    phonenumber: string()
+      .required('Required*')
+      .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    address: string().required('Required*'),
+    residence: string().required('Required*'),
+    nationality: string().required('Required*'),
+  }),
+  parent2: object({
+    firstname: string().required('Required*'),
+    surname: string().required('Required*'),
+    gender: string().required('Required*'),
+    relationship: string().required('Required*'),
+    email: string().email('Invalid email address!!!'),
+    phonenumber: string()
+      .required('Required*')
+      .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    address: string().required('Required*'),
+    residence: string().required('Required*'),
+    nationality: string().required('Required*'),
+  }),
+});
+
+export const medicalValidationSchema = object().shape({
+  emergencyContact: object({
+    fullname: string().required('Required*'),
+    phonenumber: string()
+      .required('Required*')
+      .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    address: string().required('Required*'),
+  }),
+});
+
+export const studentCurrentLevelValidationSchema = object().shape({
+  level: object({
+    _id: string().required('Required*'),
+    type: string().required('Required*'),
+  }),
 });

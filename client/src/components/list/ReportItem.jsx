@@ -4,14 +4,14 @@ const ReportItem = ({ title, text }) => {
       <span
         style={{
           fontWeight: "bold",
-          fontSize: "13px",
+          fontSize: "12px",
           paddingRight: "5px",
           textTransform: "capitalize",
         }}
       >
         {title}:
       </span>
-      <span style={{ fontSize: "13px", textTransform: "capitalize" }}>
+      <span style={{ fontSize: "12px", textTransform: "capitalize" }}>
         {text}
       </span>
     </div>

@@ -13,6 +13,7 @@ function BirthdayItem({ profile, fullname, dob }) {
       <ListItemAvatar>
         <Avatar
           src={`${import.meta.env.VITE_BASE_URL}/images/students/${profile}`}
+          sx={{ width: 40, height: 40 }}
         />
       </ListItemAvatar>
       <ListItemText

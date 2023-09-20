@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import _ from 'lodash';
 import { useQuery } from '@tanstack/react-query';
 import { getAllTerms } from '../api/termAPI';
@@ -32,11 +32,11 @@ const SchoolSession = () => {
     term: '',
   });
 
-  useEffect(() => {
-    if (_.isEmpty(user)) {
-      navigate('/login', { replace: true });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (_.isEmpty(user)) {
+  //     navigate('/login', { replace: true });
+  //   }
+  // }, []);
 
   useQuery({
     queryKey: ['terms'],
@@ -55,6 +55,7 @@ const SchoolSession = () => {
   const currentPath = state?.path || '/';
 
   const handleSession = () => {
+    
     setSessionError('');
     if (session.termId === '') {
       setSessionError('Session is Required*');
@@ -71,6 +72,10 @@ const SchoolSession = () => {
   };
 
   const handleOpenAddSession = () => setOpenAddSession(true);
+
+  if (_.isEmpty(user)) {
+    return <Navigate to='/login' />;
+  }
 
   return (
     <>

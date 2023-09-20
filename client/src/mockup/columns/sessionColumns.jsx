@@ -1,4 +1,4 @@
-import { CircleRounded, Delete, RemoveRedEye } from '@mui/icons-material';
+import { CircleRounded, Delete, MenuRounded } from '@mui/icons-material';
 import Edit from '@mui/icons-material/Edit';
 import {
   Avatar,
@@ -191,7 +191,20 @@ export const LEVEL_OPTIONS = [
   'J.H.S 2',
   'J.H.S 3',
 ];
-export const LEVEL_TYPE_OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F'];
+export const LEVEL_TYPE_OPTIONS = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+];
 
 export const SUBJECT_OPTIONS = [
   'English Language',
@@ -222,6 +235,18 @@ export const FEES_OPTIONS = [
   'P.T.A Dues',
   'Accomodation Fee',
   'Boarding Fee',
+];
+
+export const RELATIONSHIP = [
+  'Father',
+  'Mother',
+  'Sister',
+  'Brother',
+  'Aunty',
+  'Uncle',
+  'Grand Father',
+  'Grand Mother',
+  'Cousin',
 ];
 
 export const FEES_COLUMNS = [
@@ -285,17 +310,17 @@ export const SCHOOL_FEES_COLUMNS = (handleView, handleEdit, handleDelete) => [
     render: (rowData) => {
       return (
         <Stack direction='row' spacing={3}>
-          <RemoveRedEye
+          <MenuRounded
             className='ico'
             onClick={() => handleView(rowData)}
-            title='Edit'
-            titleAccess='Edit'
+            title='View Fee Information'
+            titleAccess='View Fee Information'
           />
           <Edit
             className='ico'
             onClick={() => handleEdit(rowData)}
             title='Edit'
-            titleAccess='Edit'
+            titleAccess='Edit Fee '
           />
           <Delete
             className='ico'
@@ -426,12 +451,16 @@ export const MESSAGE_COLUMNS = [
     field: 'status',
     title: 'Status',
     export: true,
-    render: (rowData) => (
-      <Chip
-        label={rowData?.active ? 'Delivered' : 'Not Delivered'}
-        color={rowData?.active ? 'success' : 'error'}
+    render: ({ active }) => (
+      <Button
+        color={active ? 'success' : 'error'}
+        sx={{
+          bgcolor: active ? 'success.lighter' : 'error.lighter',
+        }}
         size='small'
-      />
+      >
+        {active ? 'Delivered' : 'Not Delivered'}
+      </Button>
     ),
   },
 ];
@@ -472,7 +501,9 @@ export const USERS_COLUMNS = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              :  `${import.meta.env.VITE_BASE_URL}/images/users/${rowData.profile}`
+              : `${import.meta.env.VITE_BASE_URL}/images/users/${
+                  rowData.profile
+                }`
           }
         />
         <ListItemText

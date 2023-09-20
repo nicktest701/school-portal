@@ -19,6 +19,9 @@ const ViewScoreSheet = ({ open, setOpen }) => {
     //Get dynamic table colums from subjects
     if (studentReportDetails?.subjects) {
       const columns = getColumns(studentReportDetails.subjects);
+
+ 
+
       setColumns(columns);
     }
 
@@ -44,6 +47,9 @@ const ViewScoreSheet = ({ open, setOpen }) => {
           columns={columns}
           data={data}
           actions={[]}
+          options={{
+            pageSize: 10,
+          }}
         />
       </DialogContent>
     </Dialog>

@@ -1,52 +1,51 @@
 import React from 'react';
-
-import { Box, IconButton } from '@mui/material';
-
-import DrawerItem from '../../components/DrawerItem';
-import { ExitToAppSharp } from '@mui/icons-material';
+import { IconButton, Stack } from '@mui/material';
+import { Close } from '@mui/icons-material';
 import PropTypes from 'prop-types';
+import MiniDrawerItem from '../../components/MiniDrawerItem';
 
-const HorizontalSidebar = ({ onLogOut }) => {
+const HorizontalSidebar = ({ open, setOpen, onLogOut }) => {
+  const handleClose = () => setOpen(false);
   return (
-    <Box
+    <Stack
       sx={{
-        width: 200,
+        minHeight: '100vh',
+        width: '100%',
+        position: 'absolute',
+        zIndex: 999,
+        top: 0,
+        right: 0,
+        left: 0,
+        bottom: 0,
         display: { xs: 'flex', sm: 'none' },
-        columnGap: 1,
-        overflowX: 'scroll',
-        overscrollBehaviorInline: 'contain',
-        '&::-webkit-scrollbar': {
-          width: 'none',
-        },
-        paddingY: 1,
+        visibility: open ? 'visible' : 'hidden',
+        opacity: open ? 1 : 0,
+        transition: 'all 250ms ease-in-out',
       }}
+      bgcolor='#fff'
+      spacing={1}
     >
-      {/* <Divider /> */}
-      {/* <Stack padding={1} direction='row'> */}
-      <DrawerItem title='Dashboard' to='/' />
-      <DrawerItem title='Session' to='/session' />
-      <DrawerItem title='Levels & Subjects' to='/level' />
-      <DrawerItem title='Student' to='/student' />
-      <DrawerItem title='Teacher' to='/teacher' />
-      <DrawerItem title='School Fees' to='/fee' />
-      <DrawerItem title='Examination' to='/examination' />
-      {/* <DrawerItem
-          title="Assessment"
-          icon={<EventNoteRoundedIcon />}
-          to="/assessment"
-        /> */}
-      <DrawerItem title='SMS Portal' to='/sms' />
-      <DrawerItem title='Users' to='/users' />
-      <DrawerItem title='Settings' to='/settings' />
-      <DrawerItem title='About' to='/about' />
-      <IconButton
-        sx={{ display: { xs: 'inline-flex', md: 'none' } }}
-        onClick={onLogOut}
-      >
-        <ExitToAppSharp />
+      <IconButton sx={{ alignSelf: 'flex-end' }} onClick={handleClose}>
+        <Close />
       </IconButton>
-      {/* </Stack> */}
-    </Box>
+      <a className='mini-drawer-link' onClick={handleClose}>
+        Dashboard
+      </a>
+      <MiniDrawerItem title='Session' to='/session' />
+      <MiniDrawerItem title='Levels & Subjects' to='/level' />
+      <MiniDrawerItem title='Student' to='/student' />
+      <MiniDrawerItem title='Teacher' to='/teacher' />
+      <MiniDrawerItem title='School Fees' to='/fee' />
+      <MiniDrawerItem title='Examination' to='/examination' />
+      <MiniDrawerItem title='SMS Portal' to='/sms' />
+      <MiniDrawerItem title='Users' to='/users' />
+      <MiniDrawerItem title='Settings' to='/settings' />
+      <MiniDrawerItem title='About' to='/about' />
+      <a className='mini-drawer-link' onClick={onLogOut}>
+        Log Out
+      </a>
+      <small style={{ alignSelf: 'center' }}>Frebby Tech Consults</small>
+    </Stack>
   );
 };
 

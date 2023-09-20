@@ -11,6 +11,7 @@ import { UserContext } from '../../context/providers/userProvider';
 import { EMPTY_IMAGES } from '../../config/images';
 import teacher_icon from '../../assets/images/header/teacher_ico.svg';
 import moment from 'moment';
+import Scrollbars from 'react-custom-scrollbars';
 const FeeHome = () => {
   const {
     userState: {
@@ -41,45 +42,46 @@ const FeeHome = () => {
   });
 
   return (
-    <Box
-      bgcolor='primary.main'
-      sx={{
-        position: 'relative',
-        height: 300,
-      }}
-    >
-      <Container
+    <Scrollbars style={{ width: '100%', height: '100vh' }} autoHide>
+      <Box
+        bgcolor='primary.main'
         sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          marginLeft: 'auto',
-          marginRight: 'auto',
+          position: 'relative',
+          height: 300,
         }}
       >
-        <Stack color='primary.contrastText' sx={{ paddingY: 4 }}>
-          <Typography variant='h5'>Fees Payment</Typography>
-          <Typography>
-            Access,manage and control payment of school fees
-          </Typography>
-        </Stack>
-        <Box
+        <Container
           sx={{
-            display: { xs: 'none', md: 'flex' },
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 2,
-            paddingY: 2,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            marginLeft: 'auto',
+            marginRight: 'auto',
           }}
         >
-          <FeesDashboardCard text='Today' value={todayFee} />
-          <FeesDashboardCard text='Month' value={monthFee} />
-          <FeesDashboardCard text='Term' value={termFee} />
-        </Box>
+          <Stack color='primary.contrastText' sx={{ paddingY: 4 }}>
+            <Typography variant='h6'>Fees Payment</Typography>
+            <Typography variant='caption'>
+              Access,manage and control payment of school fees
+            </Typography>
+          </Stack>
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 2,
+              paddingY: 2,
+            }}
+          >
+            <FeesDashboardCard text='Today' value={todayFee} />
+            <FeesDashboardCard text='Month' value={monthFee} />
+            <FeesDashboardCard text='Term' value={termFee} />
+          </Box>
 
-        {/* <Box
+          {/* <Box
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -92,48 +94,49 @@ const FeeHome = () => {
           <StudentDashboardCard />
           <StudentDashboardCard />
         </Box> */}
-        <CustomizedMaterialTable
-          isLoading={recentFees.isLoading}
-          title='Recent Fee Payment'
-          icon={teacher_icon}
-          columns={[
-            {
-              title: 'Date of Payment',
-              field: 'date',
-              type: 'date',
-              render: ({ date }) => (
-                <ListItemText
-                  primary={moment(date).format('ddd, Do MMMM YYYY')}
-                  secondary={moment(date).format('hh:mm a')}
-                />
-              ),
-            },
-            {
-              title: 'Student',
-              field: 'student',
-            },
-            {
-              title: 'Level',
-              field: 'level',
-            },
-            {
-              title: 'Amount Paid',
-              field: 'paid',
-            },
-            {
-              title: 'Outstanding',
-              field: 'outstanding',
-            },
-          ]}
-          data={recentFees.data}
-          actions={[]}
-          showAddButton={false}
-          addButtonImg={EMPTY_IMAGES.level}
-          addButtonMessage=' No recent fee payment !'
-          handleRefresh={recentFees.refetch}
-        />
-      </Container>
-    </Box>
+          <CustomizedMaterialTable
+            isLoading={recentFees.isLoading}
+            title='Recent Fee Payment'
+            icon={teacher_icon}
+            columns={[
+              {
+                title: 'Date of Payment',
+                field: 'date',
+                type: 'date',
+                render: ({ date }) => (
+                  <ListItemText
+                    primary={moment(date).format('ddd, Do MMMM YYYY')}
+                    secondary={moment(date).format('hh:mm a')}
+                  />
+                ),
+              },
+              {
+                title: 'Student',
+                field: 'student',
+              },
+              {
+                title: 'Level',
+                field: 'level',
+              },
+              {
+                title: 'Amount Paid',
+                field: 'paid',
+              },
+              {
+                title: 'Outstanding',
+                field: 'outstanding',
+              },
+            ]}
+            data={recentFees.data}
+            actions={[]}
+            showAddButton={false}
+            addButtonImg={EMPTY_IMAGES.level}
+            addButtonMessage=' No recent fee payment !'
+            handleRefresh={recentFees.refetch}
+          />
+        </Container>
+      </Box>
+    </Scrollbars>
   );
 };
 

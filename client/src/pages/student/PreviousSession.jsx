@@ -14,6 +14,7 @@ import { getAllPreviousLevels } from '../../api/currentLevelAPI';
 import { getAllTerms } from '../../api/termAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import { UserContext } from '../../context/providers/userProvider';
+import moment from 'moment';
 
 function PreviousSession({ open, setOpen }) {
   const {
@@ -21,9 +22,6 @@ function PreviousSession({ open, setOpen }) {
   } = useContext(UserContext);
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
-  const [options, setOptions] = useState([]);
-  const [levelsOptions, setLevelsOptions] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState({
     _id: '',
     levelType: '',
@@ -36,43 +34,45 @@ function PreviousSession({ open, setOpen }) {
     label: '',
   });
 
-  useQuery(['terms'], getAllTerms, {
-    onSuccess: (sessions) => {
-      const filteredSchoolSession = [];
-      sessions.forEach(({ termId, sessionId, to, academicYear, term }) => {
-        // filter out current school session
-        if (to < session.to) {
-          filteredSchoolSession.push({
+  const termOptions = useQuery({
+    queryKey: ['terms'],
+    queryFn: () => getAllTerms(),
+    enabled: !!session?.sessionId,
+    select: (sessions) => {
+      const filteredSchoolSession = sessions.filter(({ to }) => {
+        return moment(new Date(session.to)) > moment(new Date(to));
+      });
+
+      return filteredSchoolSession.map(
+        ({ termId, sessionId, academicYear, term }) => {
+          return {
             termId,
             sessionId,
             label: `${academicYear},${term}`,
-          });
+          };
         }
-      });
-      setOptions(filteredSchoolSession);
+      );
     },
   });
 
-  useQuery({
+  const levelOptions = useQuery({
     queryKey: ['previous-levels', selectedSession?.termId],
     queryFn: () => getAllPreviousLevels(selectedSession),
     enabled: !!selectedSession?.termId,
-    onSuccess: (levels) => {
-      // //console.log(levels);
-      const modifiedLevels = levels.map(({ _id, level, students }) => {
+    select: (levels) => {
+      return levels.map(({ _id, level, students }) => {
         return {
           _id,
           levelType: `${level.name}${level.type}`,
           students,
         };
       });
-      setLevelsOptions(modifiedLevels);
     },
   });
 
   //LOAD students
   const handleLoadStudents = () => {
-    if (selectedLevel.students.length !== 0) {
+    if (selectedLevel?.students?.length !== 0) {
       schoolSessionDispatch({
         type: 'openAddStudentFileDialog',
         payload: { data: selectedLevel?.students, type: 'previous' },
@@ -87,15 +87,23 @@ function PreviousSession({ open, setOpen }) {
         <Stack spacing={2} paddingY={2}>
           <Autocomplete
             size='small'
-            options={options}
+            options={termOptions.data ?? []}
             noOptionsText='No session available'
             disableClearable={true}
             fullWidth
             value={selectedSession}
-            onChange={(e, value) => setSelectedSession(value)}
+            onChange={(e, value) => {
+              setSelectedLevel({
+                _id: '',
+                levelType: '',
+                students: [],
+              });
+              setSelectedSession(value);
+            }}
             isOptionEqualToValue={(option, value) =>
               option.termId === value.termId ||
               value.termId === '' ||
+              value.termId === null ||
               value.termId === undefined
             }
             getOptionLabel={(option) => option.label || ''}
@@ -105,7 +113,7 @@ function PreviousSession({ open, setOpen }) {
           />
           <Autocomplete
             size='small'
-            options={levelsOptions}
+            options={levelOptions?.data ?? []}
             noOptionsText='No level available'
             disableClearable={true}
             fullWidth
@@ -114,6 +122,7 @@ function PreviousSession({ open, setOpen }) {
             isOptionEqualToValue={(option, value) =>
               option._id === value._id ||
               value._id === '' ||
+              value._id === null ||
               value._id === undefined
             }
             getOptionLabel={(option) => option.levelType || ''}
@@ -128,7 +137,7 @@ function PreviousSession({ open, setOpen }) {
         <Button
           variant='contained'
           onClick={handleLoadStudents}
-          disabled={levelsOptions.length === 0 ? true : false}
+          disabled={!selectedLevel?._id}
         >
           Load Students
         </Button>

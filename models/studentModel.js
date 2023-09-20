@@ -32,6 +32,12 @@ const StudentSchema = new mongoose.Schema(
     address: String,
     residence: String,
     nationality: String,
+    medical: {
+      type: mongoose.SchemaTypes.Mixed,
+    },
+    academic: {
+      type: mongoose.SchemaTypes.Mixed,
+    },
     active: {
       type: Boolean,
       default: true,

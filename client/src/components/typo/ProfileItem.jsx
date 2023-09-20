@@ -5,13 +5,13 @@ const ProfileItem = ({ label, text }) => {
   return (
     <Stack direction='row' columnGap={5} paddingY={1}>
       <Typography
-        variant='body2'
-        sx={{ width: '40%', whiteSpace: 'nowrap', fontWeight: 'bold' }}
+        fontSize={12}
+        sx={{ width: '30%', whiteSpace: 'nowrap', fontWeight: 'bold' }}
       >
         {label}
       </Typography>
       <Typography
-        variant='body2'
+        fontSize={12}
         color='primary'
         sx={{ width: '50%', textTransform: 'capitalize' }}
       >

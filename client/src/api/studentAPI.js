@@ -8,7 +8,7 @@ export const getAllStudentsDetails = async (session) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/details`,
+      url: `${import.meta.env.VITE_BASE_URL}/students/details`,
       params: session,
     });
 
@@ -24,7 +24,7 @@ export const getAllStudents = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/students`,
+      url: `${import.meta.env.VITE_BASE_URL}/students`,
     });
 
     return res.data;
@@ -39,7 +39,7 @@ export const getAllStudentsByCurrentLevel = async (currentLevelId) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/current`,
+      url: `${import.meta.env.VITE_BASE_URL}/students/current`,
       params: {
         currentLevelId,
       },
@@ -58,7 +58,7 @@ export const getAllStudentsForSearch = async (session) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/search/all`,
+      url: `${import.meta.env.VITE_BASE_URL}/students/search/all`,
       data: session,
     });
 
@@ -73,7 +73,7 @@ export const getStudentsByID = async (studentId, levelId, levelName) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/current`,
+      url: `${import.meta.env.VITE_BASE_URL}/students/current`,
       data: {
         studentId,
         levelId,
@@ -92,7 +92,7 @@ export const getStudent = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/${id}`,
+      url: `${import.meta.env.VITE_BASE_URL}/students/${id}`,
     });
 
     return res.data;
@@ -106,7 +106,7 @@ export const getParentByStudentId = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/parent`,
+      url: `${import.meta.env.VITE_BASE_URL}/students/parent`,
       params: {
         id,
       },
@@ -150,7 +150,7 @@ export const postStudent = async ({ student, parent }) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `${import.meta.env.VITE_BASE_URL}/students`,
+      url: `${import.meta.env.VITE_BASE_URL}/students`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -164,11 +164,11 @@ export const postStudent = async ({ student, parent }) => {
   }
 };
 
-export const postManyStudents = async (data) => {
+export const postNewStudent = async (data) => {
   try {
     const res = await axios({
       method: 'POST',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/many`,
+      url: `${import.meta.env.VITE_BASE_URL}/students`,
       data,
     });
 
@@ -178,11 +178,41 @@ export const postManyStudents = async (data) => {
     throw error.response.data;
   }
 };
+export const postManyStudents = async (data) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `${import.meta.env.VITE_BASE_URL}/students/many`,
+      data,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
+
 export const putStudent = async (updatedStudent) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url:  `${import.meta.env.VITE_BASE_URL}/students`,
+      url: `${import.meta.env.VITE_BASE_URL}/students`,
+      data: updatedStudent,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
+
+export const updateStudentMedicalHistory = async (updatedStudent) => {
+  try {
+    const res = await axios({
+      method: 'PUT',
+      url: `${import.meta.env.VITE_BASE_URL}/students/medical`,
       data: updatedStudent,
     });
 
@@ -197,7 +227,7 @@ export const deleteStudent = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/${id}`,
+      url: `${import.meta.env.VITE_BASE_URL}/students/${id}`,
     });
 
     return res.data;
@@ -211,7 +241,7 @@ export const disableStudentAccount = async ({ id, active }) => {
   try {
     const res = await axios({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/students/disable`,
+      url: `${import.meta.env.VITE_BASE_URL}/students/disable`,
       params: {
         id,
         active,

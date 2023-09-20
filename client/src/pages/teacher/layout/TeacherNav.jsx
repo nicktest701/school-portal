@@ -35,6 +35,7 @@ const TeacherNav = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              flexWrap:'wrap'
             }}
           >
             <Typography variant="h5">Students</Typography>

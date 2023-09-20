@@ -1,34 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Avatar from '@mui/material/Avatar';
+
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import FormLabel from '@mui/material/FormLabel';
-import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import Autocomplete from '@mui/material/Autocomplete';
 import Input from '@mui/material/Input';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Box from '@mui/material/Box';
 import PublishIcon from '@mui/icons-material/Publish';
-import LoadingButton from '@mui/lab/LoadingButton';
-import CustomFormControl from '../../../components/inputs/CustomFormControl';
-import { Formik } from 'formik';
-import { studentInitialValues } from '../../../config/initialValues';
+
 import { StudentContext } from '../../../context/providers/StudentProvider';
-import { studentValidationSchema } from '../../../config/validationSchema';
-import useLevel from '../../../components/hooks/useLevel';
 import { SchoolSessionContext } from '../../../context/providers/SchoolSessionProvider';
 import { readCSV } from '../../../config/readCSV';
 import { readXLSX } from '../../../config/readXLSX';
 import PreviousSession from '../PreviousSession';
-import { NoteRounded } from '@mui/icons-material';
-import CustomDatePicker from '../../../components/inputs/CustomDatePicker';
-import moment from 'moment';
-import { NATIONALITY } from '../../../mockup/data/nationality';
-import { TOWNS } from '../../../mockup/data/towns';
+import { ArrowBackRounded, NoteRounded } from '@mui/icons-material';
+import PersonalInformation from './PersonalInformation';
+import ParentInfo from './ParentInfo';
+import MedicalInformation from './MedicalInformation';
+import AcademicInformation from './AcademicInformation';
+import PhotoUpload from './PhotoUpload';
+import { Box, IconButton } from '@mui/material';
+import CustomStepper from '../../../components/custom/CustomStepper';
 
 const CSV_FILE_TYPE = 'text/csv';
 const XLSX_FILE_TYPE =
@@ -39,25 +31,27 @@ const StudentInfo = ({ setTab, setMsg }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
 
+  const [mode, setMode] = useState('personal-info');
   const [isLoading, setIsLoading] = useState(false);
   const [openPreviousSession, setOpenPreviousSession] = useState(false);
-  const [profileImg, setProfileImg] = useState(null);
-  const [initValues, setInitValues] = useState(studentInitialValues);
-  const [dob, setDob] = useState(null);
+
+  const confirmMessage =
+    'Are you sure you want to leave this page? Your changes may not be saved.';
+
   useEffect(() => {
-    const student = JSON.parse(localStorage.getItem('@student'));
-    if (student) {
-      setInitValues(student);
-      return;
-    }
+    const beforeUnloadHandler = (e) => {
+      e.preventDefault();
+      e.returnValue = confirmMessage;
+    };
+
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+
+    return () => {
+      window.removeEventListener('beforeunload', beforeUnloadHandler);
+    };
   }, []);
 
-  const { levelsOption } = useLevel();
-
   const onSubmit = (values, options) => {
-    values.dateofbirth = moment(dob).format('L');
-    // //console.log(values);
-
     try {
       studentDispatch({ type: 'addNewStudent', payload: values });
       localStorage.setItem('@student', JSON.stringify(values));
@@ -108,14 +102,52 @@ const StudentInfo = ({ setTab, setMsg }) => {
       //console.log(error.message);
     }
   }
+
+  const getPage = () => {
+    let prevPage = mode;
+    switch (mode) {
+      case 'photo-info':
+        prevPage = 'personal-info';
+        break;
+      case 'parent-info':
+        prevPage = 'photo-info';
+        break;
+      case 'medical-info':
+        prevPage = 'parent-info';
+        break;
+      case 'academic-info':
+        prevPage = 'medical-info';
+        break;
+      default:
+        prevPage = 'photo-info';
+    }
+
+    return prevPage;
+  };
+
   return (
     <>
-      <Container maxWidth='md' sx={{ paddingY: 2, position: 'relative' }}>
-        <Typography variant='h4'>Student Infomation</Typography>
-        <Divider />
-        <Typography sx={{ paddingY: 2 }}>Import Student</Typography>
-        <Stack direction='row' alignItems='center'>
-          <ButtonGroup size='small'>
+      {/* <Prompt when={true} message={confirmMessage} /> */}
+      <Container sx={{ position: 'relative' }}>
+        <Typography variant='h4'>Student Information</Typography>
+
+        {/* Stepper  */}
+        <CustomStepper />
+        <Box>
+          {mode !== 'personal-info' && (
+            <IconButton onClick={() => setMode(getPage())}>
+              <ArrowBackRounded />
+            </IconButton>
+          )}
+
+          <ButtonGroup
+            size='small'
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              pt: 2,
+            }}
+          >
             <Button>
               <FormLabel
                 htmlFor='studentFile'
@@ -157,273 +189,25 @@ const StudentInfo = ({ setTab, setMsg }) => {
               From Previous Sessions
             </Button>
           </ButtonGroup>
-        </Stack>
-        <Formik
-          initialValues={initValues}
-          onSubmit={onSubmit}
-          enableReinitialize={true}
-          validationSchema={studentValidationSchema}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            setFieldValue,
-            handleChange,
-            handleSubmit,
-            handleReset,
-            isSubmitting,
-          }) => {
-            return (
-              <Stack padding={2} spacing={1}>
-                <Stack
-                  spacing={2}
-                  justifyContent='center'
-                  alignItems='center'
-                  paddingY={1}
-                >
-                  <Avatar src={profileImg} sx={{ width: 80, height: 80 }} />
-                  <FormLabel
-                    htmlFor='profile'
-                    sx={{
-                      padding: 1,
-                      fontSize: 12,
-                      border: '1px solid black',
-                      borderRadius: 1,
-                      cursor: 'pointer',
-                      '&:hover': {
-                        bgcolor: 'primary.main',
-                        color: 'primary.contrastText',
-                      },
-                    }}
-                  >
-                    Upload Image
-                  </FormLabel>
-                  <input
-                    type='file'
-                    id='profile'
-                    name='profile'
-                    accept='.png,.jpeg,.jpg,.webp'
-                    hidden
-                    onChange={(e) => {
-                      setFieldValue('profile', e.target.files[0]);
-                      setProfileImg(URL.createObjectURL(e.target.files[0]));
-                    }}
-                  />
-                </Stack>
-                <Typography
-                  variant='body2'
-                  color='primary.main'
-                  sx={{ fontWeight: 'bold' }}
-                >
-                  Personal information
-                </Typography>
-                <CustomFormControl>
-                  <TextField
-                    label='Firstname'
-                    type='text'
-                    fullWidth
-                    size='small'
-                    value={values.firstname}
-                    onChange={handleChange('firstname')}
-                    error={Boolean(touched.firstname && errors.firstname)}
-                    helperText={touched.firstname && errors.firstname}
-                  />
-                  <TextField
-                    label='Surname'
-                    fullWidth
-                    size='small'
-                    value={values.surname}
-                    onChange={handleChange('surname')}
-                    error={Boolean(touched.surname && errors.surname)}
-                    helperText={touched.surname && errors.surname}
-                  />
-                  <TextField
-                    label='Othername'
-                    fullWidth
-                    size='small'
-                    value={values.othername}
-                    onChange={handleChange('othername')}
-                    error={Boolean(touched.othername && errors.othername)}
-                    helperText={touched.othername && errors.othername}
-                  />
-                </CustomFormControl>
-                <CustomFormControl>
-                  <CustomDatePicker
-                    label='Date of Birth'
-                    date={dob}
-                    setDate={setDob}
-                    disableFuture={true}
-                    touched={Boolean(touched.dateofbirth && errors.dateofbirth)}
-                    error={touched.dateofbirth && errors.dateofbirth}
-                  />
-
-                  <TextField
-                    label='Gender'
-                    select
-                    fullWidth
-                    size='small'
-                    value={values.gender}
-                    onChange={handleChange('gender')}
-                    error={Boolean(touched.gender && errors.gender)}
-                    helperText={touched.gender && errors.gender}
-                  >
-                    <MenuItem value='male'>male</MenuItem>
-                    <MenuItem value='female'>female</MenuItem>
-                  </TextField>
-                </CustomFormControl>
-                <CustomFormControl>
-                  <TextField
-                    label='Email'
-                    fullWidth
-                    size='small'
-                    row={3}
-                    maxRows={3}
-                    value={values.email}
-                    onChange={handleChange('email')}
-                    error={Boolean(touched.email && errors.email)}
-                    helperText={touched.email && errors.email}
-                  />
-                  <TextField
-                    label='Telephone No.'
-                    inputMode='tel'
-                    type='tel'
-                    fullWidth
-                    size='small'
-                    value={values.phonenumber}
-                    onChange={handleChange('phonenumber')}
-                    error={Boolean(touched.phonenumber && errors.phonenumber)}
-                    helperText={touched.phonenumber && errors.phonenumber}
-                  />
-                </CustomFormControl>
-                <TextField
-                  label='Address'
-                  fullWidth
-                  size='small'
-                  row={3}
-                  maxRows={3}
-                  value={values.address}
-                  onChange={handleChange('address')}
-                  error={Boolean(touched.address && errors.address)}
-                  helperText={touched.address && errors.address}
-                />
-                <CustomFormControl>
-                  <Autocomplete
-                    freeSolo
-                    fullWidth
-                    size='small'
-                    options={TOWNS}
-                    loadingText='Please wait....'
-                    noOptionsText='No Town available'
-                    getOptionLabel={(option) => option || ''}
-                    value={values.residence}
-                    onChange={(e, value) => setFieldValue('residence', value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label='Residence'
-                        fullWidth
-                        size='small'
-                        error={Boolean(touched.residence && errors.residence)}
-                        helperText={touched.residence && errors.residence}
-                      />
-                    )}
-                  />
-
-                  <Autocomplete
-                    freeSolo
-                    fullWidth
-                    size='small'
-                    loadingText='Please wait....'
-                    options={NATIONALITY}
-                    noOptionsText='No Nationality available'
-                    getOptionLabel={(option) => option || ''}
-                    value={values.nationality}
-                    onChange={(e, value) => setFieldValue('nationality', value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label='Nationality'
-                        fullWidth
-                        size='small'
-                        error={Boolean(
-                          touched.nationality && errors.nationality
-                        )}
-                        helperText={touched.nationality && errors.nationality}
-                      />
-                    )}
-                  />
-                </CustomFormControl>
-
-                <Typography
-                  variant='body2'
-                  color='primary.main'
-                  sx={{ fontWeight: 'bold' }}
-                >
-                  Academic Information
-                </Typography>
-
-                <CustomFormControl>
-                  <Autocomplete
-                    fullWidth
-                    size='small'
-                    options={levelsOption}
-                    noOptionsText='No Level available'
-                    getOptionLabel={(option) => option.type || ''}
-                    isOptionEqualToValue={(option, value) =>
-                      value._id === undefined ||
-                      value._id === '' ||
-                      value._id === option._id
-                    }
-                    value={values.level}
-                    onChange={(e, value) => setFieldValue('level', value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label='Current Level'
-                        fullWidth
-                        size='small'
-                        error={Boolean(
-                          touched?.level?.type && errors?.level?.type
-                        )}
-                        helperText={touched?.level?.type && errors?.level?.type}
-                      />
-                    )}
-                  />
-                </CustomFormControl>
-                <Stack
-                  direction='row'
-                  justifyContent='flex-end'
-                  spacing={2}
-                  paddingY={4}
-                >
-                  <Button onClick={handleReset}>Cancel</Button>
-                  <LoadingButton
-                    loading={isSubmitting}
-                    variant='contained'
-                    color='primary'
-                    onClick={handleSubmit}
-                  >
-                    Save & Continue
-                  </LoadingButton>
-                </Stack>
-              </Stack>
-            );
-          }}
-        </Formik>
-        <Box
-          sx={{
-            display: isLoading ? 'block' : 'none',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            bgcolor: 'rgba(255,255,255,0.7)',
-          }}
-        >
-          kjhkjh
         </Box>
+
+        <Container sx={{ py: 2, border: '1px solid lightgray' }}>
+          {mode === 'personal-info' && (
+            <PersonalInformation mode={mode} setMode={setMode} />
+          )}
+          {mode === 'photo-info' && (
+            <PhotoUpload mode={mode} setMode={setMode} />
+          )}
+          {mode === 'parent-info' && (
+            <ParentInfo mode={mode} setMode={setMode} />
+          )}
+
+          {mode === 'medical-info' && (
+            <MedicalInformation mode={mode} setMode={setMode} />
+          )}
+
+          {mode === 'academic-info' && <AcademicInformation setMode={setMode} />}
+        </Container>
       </Container>
       <PreviousSession
         open={openPreviousSession}
