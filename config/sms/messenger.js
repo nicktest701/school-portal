@@ -23,7 +23,8 @@ const sendSMS = async (body, telephoneNumber) => {
     //console.log(res.data);
     return res.data;
   } catch (error) {
-    throw new Error("Error sending message.Try again later");
+    console.log("An error has occured.")
+    // throw new Error("Error sending message.Try again later");
   }
 };
 
