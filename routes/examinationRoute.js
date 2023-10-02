@@ -475,13 +475,13 @@ router.post(
         //   }
         // }
 
-        const url = path.join(
-          process.cwd(),
-          '/images/students/',
-          'noimage.png'
-        );
+        // const url = path.join(
+        //   process.cwd(),
+        //   '/images/students/',
+        //   'noimage.png'
+        // );
 
-        STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+        // STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
 
         //GET Student Grade
         const grade = generateTotalGrade(scores);
