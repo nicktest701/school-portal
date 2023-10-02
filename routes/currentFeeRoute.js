@@ -29,43 +29,54 @@ router.post(
     }).select('payment');
 
     //GET all payments
-    const allPayments = currentFees.flatMap((fee) => fee.payment);
+    const allPayments = currentFees.flatMap(({ payment }) => payment);
 
     ///GET all fees for today
-    const feesForToday = _.filter(allPayments, (fee) => {
-      return (
-        moment(new Date(fee.date)).format('L') ===
-        moment(new Date()).format('L')
-      );
-    });
-
+    const feesForToday = _.filter(allPayments, ({ date }) =>
+      moment(date).isSame(moment(), 'day')
+    );
     const totalfeesForToday = _.sumBy(feesForToday, 'paid');
 
     ///GET all fees for the month
-    const feesForMonth = _.filter(allPayments, (fee) => {
+    const feesForMonth = _.filter(allPayments, ({ date }) => {
       return (
-        moment(new Date(fee.date)).format('MMMM/YYYY') ===
-        moment(new Date()).format('MMMM/YYYY')
+        moment(date).isSame(moment(), 'month') &&
+        moment(date).isSame(moment(), 'year')
       );
     });
     const totalfeesForMonth = _.sumBy(feesForMonth, 'paid');
 
+    // ///GET all fees for the term
+    // const feesFrom = moment(from).format('L');
+    // const feesTo = moment(to).format('L');
+
+    // const feesForTerm = _.filter(allPayments, ({ date }) => {
+    //   const feeDate = moment(date).format('L');
+
+    //   return feeDate >= feesFrom && feeDate <= feesTo;
+    // });
+
     ///GET all fees for the term
-    const feesFrom = moment(from).format('L');
-    const feesTo = moment(to).format('L');
+    const feesFrom = moment(from);
+    const feesTo = moment(to);
 
     const feesForTerm = _.filter(allPayments, ({ date }) => {
-      const feeDate = moment(date).format('L');
-
-      return feeDate >= feesFrom && feeDate <= feesTo;
+      return moment(date).isBetween(feesFrom, feesTo, null, '[]');
     });
-    // console.log(feesForTerm);
+
     const totalfeesForTerm = _.sumBy(feesForTerm, 'paid');
 
+    ///GET all fees for the month
+    const feesForYear = _.filter(allPayments, ({ date }) => {
+      return moment(date).isSame(moment(), 'year');
+    });
+    const totalfeesForYear = _.sumBy(feesForYear, 'paid');
+
     const feeSummary = {
-      today: totalfeesForToday,
-      month: totalfeesForMonth,
-      term: totalfeesForTerm,
+      today: totalfeesForToday || 0,
+      month: totalfeesForMonth || 0,
+      term: totalfeesForTerm || 0,
+      year: totalfeesForYear || 0,
     };
 
     res.status(200).json(feeSummary);

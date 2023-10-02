@@ -71,7 +71,7 @@ router.get(
   })
 );
 
-//@GET All students
+//@GET All students details
 router.get(
   '/details',
   AsyncHandler(async (req, res) => {

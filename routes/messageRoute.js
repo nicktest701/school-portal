@@ -5,8 +5,8 @@ const Student = require('../models/studentModel');
 const Teacher = require('../models/teacherModel');
 const Parent = require('../models/parentModel');
 const Message = require('../models/messageModel');
-// const sendMail = require('../config/mail/Mailer');
-// const sendSMS = require('../config/sms/messenger');
+const sendMail = require('../config/mail/Mailer');
+const sendSMS = require('../config/sms/messenger');
 
 //POST message
 
@@ -49,26 +49,32 @@ router.post(
         .json('Couldnt send message.Please try again later...');
     }
 
-    //ONLY SMS
-    // if (message.type === "sms") {
-    //   await sendSMS(message?.body, message?.recipient?.phonenumber);
+    try {
+      // ONLY SMS
+      // if (process.env.NODE_ENV === 'production') {
+      if (message.type === 'sms') {
+        await sendSMS(message?.body, message?.recipient?.phonenumber);
+      }
+      //ONLY EMAIL
+      if (message.type === 'email') {
+        await sendMail(message?.body, message?.recipient?.email);
+      }
+      //BOTH EMAIL AND SMS
+      if (message.type === 'both') {
+        await sendMail(message?.body, message?.recipient?.email);
+        await sendSMS(message?.body, message?.recipient?.phonenumber);
+      }
+      // }
 
-    //   return res.status(200).json("Message delivered successfully!!!");
-    // }
-    // //ONLY EMAIL
-    // if (message.type === "email") {
-    //   await sendMail(message?.body, message?.recipient?.email);
-
-    //   return res.status(200).json("Message delivered successfully!!!");
-    // }
-    // //BOTH EMAIL AND SMS
-    // if (message.type === "both") {
-    //   await sendSMS(message?.body, message?.recipient?.phonenumber);
-    //   await sendMail(message?.body, message?.recipient?.email);
-    //   return res.status(200).json("Message delivered successfully!!!");
-    // }
-
-    return res.status(200).json('Message delivered successfully!!!');
+      await Message.findByIdAndUpdate(message?._id, {
+        $set: {
+          active: true,
+        },
+      });
+      return res.status(200).json('Message delivered successfully!!!');
+    } catch (error) {
+      return res.status(404).json('Couldnt send message.Try again later!!!');
+    }
   })
 );
 
@@ -76,20 +82,22 @@ router.post(
   '/resend',
   asyncHandler(async (req, res) => {
     const { id, type, body } = req.body;
+    console.log(req.body);
+
+    const recipient = req?.body?.recipient;
 
     try {
-      // switch (type) {
-      //   case 'sms':
-      //     await sendSMS(body, recipient?.phonenumber);
-      //     break;
-      //   case 'email':
-      //     await sendMail(body, recipient?.email);
-      //     break;
-
-      //   case 'both':
-      //     await sendSMS(body, recipient?.phonenumber);
-      //     await sendMail(body, recipient?.email);
-      // }
+      if (type === 'sms') {
+        await sendSMS(body, recipient?.phonenumber);
+      }
+      if (type === 'email') {
+        console.log(recipient?.email);
+        await sendMail(body, recipient?.email);
+      }
+      if (type === 'both') {
+        await sendSMS(body, recipient?.phonenumber);
+        await sendMail(body, recipient?.email);
+      }
 
       await Message.findByIdAndUpdate(id, {
         $set: {
@@ -99,6 +107,7 @@ router.post(
 
       return res.status(200).json('Message delivered successfully!!!');
     } catch (error) {
+      console.log(error);
       return res.status(404).json('Couldnt send message.Try again later!!!');
     }
   })
@@ -114,19 +123,21 @@ router.post(
     let phoneNumbers = [];
     let groups = [];
 
-    ///Students
-    if (newMessage.group === 'students') {
-      groups = await Student.find({}).select('email phonenumber');
-    }
+    switch (newMessage.group) {
+      case 'students':
+        groups = await Student.find({}).select('email phonenumber');
+        break;
 
-    ///Teachers
-    if (newMessage.group === 'teachers') {
-      groups = await Teacher.find({}).select('email phonenumber');
-    }
+      case 'teachers':
+        groups = await Teacher.find({}).select('email phonenumber');
+        break;
 
-    ///Teachers
-    if (newMessage.group === 'parents') {
-      groups = await Parent.find({}).select('email phonenumber');
+      case 'parents':
+        groups = await Parent.find({}).select('email phonenumber');
+        break;
+
+      default:
+        groups = await Student.find({}).select('email phonenumber');
     }
 
     ///Check message type
@@ -137,13 +148,18 @@ router.post(
       emailAddresses = groups.map(({ email }) => email);
     }
     if (newMessage.type === 'both') {
-      phoneNumbers = groups.map(({ phonenumber }) => phonenumber);
-      emailAddresses = groups.map(({ email }) => email);
+      groups.map(({ phonenumber, email }) => {
+        phoneNumbers.push(phonenumber);
+        emailAddresses.push(email);
+      });
     }
 
     //Remove empty emails and phone numbers and select only uniq values
     const emails = _.uniqWith(_.compact(emailAddresses), _.isEqual);
     const numbers = _.uniqWith(_.compact(phoneNumbers), _.isEqual);
+
+    // emails
+    // numbers
 
     const message = await Message.create({
       type: newMessage?.type,
@@ -164,7 +180,32 @@ router.post(
         .json("Couldn't deliver message.Please try again later...");
     }
 
-    res.status(200).json('Message delivered successfully!!!');
+    try {
+      // ONLY SMS
+      // if (process.env.NODE_ENV === 'production') {
+      if (message.type === 'sms') {
+        await sendSMS(message?.body, numbers);
+      }
+      //ONLY EMAIL
+      if (message.type === 'email') {
+        await sendMail(message?.body, emails);
+      }
+      //BOTH EMAIL AND SMS
+      if (message.type === 'both') {
+        await sendSMS(message?.body, numbers);
+        await sendMail(message?.body, emails);
+      }
+      // }
+
+      await Message.findByIdAndUpdate(message?._id, {
+        $set: {
+          active: true,
+        },
+      });
+      res.status(200).json('Message delivered successfully!!!');
+    } catch (error) {
+      return res.status(404).json('Couldnt send message.Try again later!!!');
+    }
   })
 );
 //DELETE message

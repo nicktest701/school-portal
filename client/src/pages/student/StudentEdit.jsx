@@ -44,9 +44,11 @@ const StudentEdit = () => {
 
   useEffect(() => {
     setDob(moment(student?.dateofbirth));
-    setProfileImage(
-      `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
-    );
+    // setProfileImage(
+    //   `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
+    // );
+
+    setProfileImage(student?.profile);
   }, [student]);
 
   //CLOSE Edit Student
@@ -65,7 +67,8 @@ const StudentEdit = () => {
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format('L');
     // //console.log(values);
-    delete values.profile;
+    // delete values.profile;
+    values.profile = profileImage;
 
     mutateAsync(values, {
       onSettled: () => {
@@ -93,9 +96,19 @@ const StudentEdit = () => {
     };
 
     try {
-      const data = await uploadProfileImage(info);
-      schoolSessionDispatch(alertSuccess(data));
-      setProfileImage(URL.createObjectURL(profile));
+      // const data = await uploadProfileImage(info);
+      // schoolSessionDispatch(alertSuccess(data));
+      // setProfileImage(URL.createObjectURL(profile));
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const ImageURL = event.target.result;
+        setProfileImage(ImageURL);
+        schoolSessionDispatch(alertSuccess('Photo Updated'));
+      };
+
+      reader.readAsDataURL(profile);
+      
     } catch (error) {
       schoolSessionDispatch(alertError(error));
     }

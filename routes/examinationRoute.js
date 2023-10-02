@@ -7,6 +7,7 @@ const Examination = require('../models/examinationModel');
 const CurrentLevelDetail = require('../models/currentLevelDetailModel');
 const Level = require('../models/levelModel');
 const _ = require('lodash');
+const pLimit = require('p-limit');
 const ordinal = require('ordinal-suffix');
 const moment = require('moment');
 const getPosition = require('../config/rank');
@@ -261,91 +262,330 @@ router.get(
       };
     });
 
-    const generatedResults = studentRecords.map(async (report) => {
-      const { _id, term, level, scores, overallScore, comments, student } =
-        report;
+    try {
+      //GENERATE STUDENT RESULTS
 
-      //CONVERT IMAGE TO BASE64
-      let STUDENT_PHOTO = '';
+      const generatedResults = studentRecords.map(async (report) => {
+        const { _id, term, level, scores, overallScore, comments, student } =
+          report;
 
-      if (student.profile) {
+        //CONVERT IMAGE TO BASE64
+        let STUDENT_PHOTO = '';
+
+        // if (student?.profile) {
+        //   const url = path.join(
+        //     process.cwd(),
+        //     '/images/students/',
+        //     student?.profile
+        //   );
+
+        //   if (fs.existsSync(url)) {
+        //     STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+        //   } else {
+        //     const url = path.join(
+        //       process.cwd(),
+        //       '/images/students/',
+        //       'noimage.png'
+        //     );
+        //     STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+        //   }
+        // }
+
+        // const url = path.join(
+        //   process.cwd(),
+        //   '/images/students/',
+        //   'noimage.png'
+        // );
+
+        // STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+
+        //GET Student Grade
+        const grade = generateTotalGrade(scores);
+
+        //GET student position
+        const positions = getPosition(allStudentsOverallScore);
+
+        const position =
+          positions.find((exams) => {
+            //console.log(exams._id);
+            return exams._id.toString() === _id.toString();
+          }).position || '';
+
+        const modifiedStudentRecord = {
+          _id,
+          academicYear: term.academicYear,
+          term: term.term,
+          vacationDate: moment(new Date(term.vacationDate)).format(
+            'Do MMMM,YYYY'
+          ),
+          reOpeningDate: moment(new Date(term.reOpeningDate)).format(
+            'Do MMMM,YYYY'
+          ),
+          report_id: `${student?.fullName}_${level?.level?.name}${level?.level?.type}_${term.term}`,
+          rollNumber: level.students?.length,
+          totalLevelAttendance: level.attendance,
+          fullName: student?.fullName,
+          email: student?.email,
+          level: `${level?.level?.name}${level?.level?.type}`,
+          levelId: level?._id,
+          // profile: STUDENT_PHOTO,
+          profile: student?.profile,
+          scores: scores.sort(
+            (a, b) =>
+              SUBJECT_OPTIONS.indexOf(a.subject) -
+              SUBJECT_OPTIONS.indexOf(b.subject)
+          ),
+
+          overallScore,
+          position: ordinal(position),
+          grade,
+          comments,
+        };
+
+        return modifiedStudentRecord;
+      });
+
+      //WAIT FOR ALL RESULTS TO FINISH
+      const results = await Promise.all(generatedResults);
+
+      const limit = pLimit(5);
+
+      const tra = results;
+      //GENERATE ALL REPORT TEMPLATES
+      const allTemplates = tra.map(async (result) => {
+        try {
+          const template = await generateReportTemplate({
+            report: result,
+            school,
+          });
+
+          if (template) {
+            return {
+              id: result?.report_id,
+              template,
+            };
+          }
+        } catch (error) {
+          return res.status(404).json(error.message);
+        }
+      });
+
+      //WAIT FOR ALL TEMPLATES TO FINISH LOADING
+      const generatedTemplates = await Promise.all(allTemplates);
+
+      //GENERATE REPORTS
+      const generatedReports = generatedTemplates.map((template) => {
+        return limit(() => generateReport(template));
+      });
+
+      const allReports = await Promise.all(generatedReports);
+
+      if (allReports) {
+        const mailedReports = tra.map(
+          async ({ _id, fullName, email, report_id }) => {
+            const mailResults = limit(() =>
+              sendReportMail({
+                id: report_id,
+                email,
+                fullName,
+              })
+            );
+            // console.log(mailResults?.messageId);
+            return mailResults?.messageId;
+          }
+        );
+
+        await Promise.all(mailedReports);
+      }
+
+      return res.send('ok');
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json('An unknown error has occured.');
+    }
+  })
+);
+
+router.post(
+  '/publish/student',
+  asyncHandler(async (req, res) => {
+    const { student } = req.body;
+
+    const studentRecords = await Examination.find({
+      _id: new ObjectId(student),
+    })
+      .populate('term')
+      .populate('level')
+      .populate('student');
+    // console.log(studentRecords);
+
+    if (_.isEmpty(studentRecords)) {
+      return res.status(200).json([]);
+    }
+
+    const school = await School.findOne();
+
+    //CONVERT IMAGE TO BASE64
+    let SCHOOL_PHOTO = '';
+
+    if (!_.isEmpty(school)) {
+      const url = path.join(process.cwd(), '/images/users/', school?.badge);
+
+      if (fs.existsSync(url)) {
+        SCHOOL_PHOTO = await ImageToBase64(url, 'image/png');
+      }
+      // console.log(SCHOOL_PHOTO);
+    }
+
+    school.badge = SCHOOL_PHOTO;
+
+    const allStudentsOverallScore = studentRecords.map((student) => {
+      return {
+        _id: student?._id,
+        overallScore: student.overallScore,
+      };
+    });
+
+    try {
+      //GENERATE STUDENT RESULTS
+
+      const generatedResults = studentRecords.map(async (report) => {
+        const { _id, term, level, scores, overallScore, comments, student } =
+          report;
+
+        //CONVERT IMAGE TO BASE64
+        let STUDENT_PHOTO = '';
+
+        // if (student?.profile) {
+        //   const url = path.join(
+        //     process.cwd(),
+        //     '/images/students/',
+        //     student?.profile
+        //   );
+
+        //   if (fs.existsSync(url)) {
+        //     STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+        //   } else {
+        //     const url = path.join(
+        //       process.cwd(),
+        //       '/images/students/',
+        //       'noimage.png'
+        //     );
+        //     STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+        //   }
+        // }
+
         const url = path.join(
           process.cwd(),
           '/images/students/',
-          student?.profile
+          'noimage.png'
         );
 
-        if (fs.existsSync(url)) {
-          STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+        STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
+
+        //GET Student Grade
+        const grade = generateTotalGrade(scores);
+
+        //GET student position
+        const positions = getPosition(allStudentsOverallScore);
+
+        const position =
+          positions.find((exams) => {
+            //console.log(exams._id);
+            return exams._id.toString() === _id.toString();
+          }).position || '';
+
+        const modifiedStudentRecord = {
+          _id,
+          academicYear: term.academicYear,
+          term: term.term,
+          vacationDate: moment(new Date(term.vacationDate)).format(
+            'Do MMMM,YYYY'
+          ),
+          reOpeningDate: moment(new Date(term.reOpeningDate)).format(
+            'Do MMMM,YYYY'
+          ),
+          report_id: `${student?.fullName}_${level?.level?.name}${level?.level?.type}_${term.term}`,
+          rollNumber: level.students?.length,
+          totalLevelAttendance: level.attendance,
+          fullName: student?.fullName,
+          email: student?.email,
+          level: `${level?.level?.name}${level?.level?.type}`,
+          levelId: level?._id,
+          profile: student?.profile,
+          // profile: STUDENT_PHOTO,
+          scores: scores.sort(
+            (a, b) =>
+              SUBJECT_OPTIONS.indexOf(a.subject) -
+              SUBJECT_OPTIONS.indexOf(b.subject)
+          ),
+
+          overallScore,
+          position: ordinal(position),
+          grade,
+          comments,
+        };
+
+        return modifiedStudentRecord;
+      });
+
+      //WAIT FOR ALL RESULTS TO FINISH
+      const results = await Promise.all(generatedResults);
+
+      const limit = pLimit(5);
+
+      const tra = results;
+      //GENERATE ALL REPORT TEMPLATES
+      const allTemplates = tra.map(async (result) => {
+        try {
+          const template = await generateReportTemplate({
+            report: result,
+            school,
+          });
+
+          if (template) {
+            return {
+              id: result?.report_id,
+              template,
+            };
+          }
+        } catch (error) {
+          return res.status(404).json(error.message);
         }
-        // console.log(STUDENT_PHOTO);
+      });
+
+      //WAIT FOR ALL TEMPLATES TO FINISH LOADING
+      const generatedTemplates = await Promise.all(allTemplates);
+
+      //GENERATE REPORTS
+      const generatedReports = generatedTemplates.map((template) => {
+        return limit(() => generateReport(template));
+      });
+
+      const allReports = await Promise.all(generatedReports);
+
+      if (allReports) {
+        const mailedReports = tra.map(
+          async ({ _id, fullName, email, report_id }) => {
+            const mailResults = limit(() =>
+              sendReportMail({
+                id: report_id,
+                email,
+                fullName,
+              })
+            );
+
+            return mailResults?.messageId;
+          }
+        );
+
+        await Promise.all(mailedReports);
       }
 
-      //GET Student Grade
-      const grade = generateTotalGrade(scores);
-
-      //GET student position
-      const positions = getPosition(allStudentsOverallScore);
-
-      const position =
-        positions.find((exams) => {
-          //console.log(exams._id);
-          return exams._id.toString() === _id.toString();
-        }).position || '';
-
-      const modifiedStudentRecord = {
-        _id,
-        academicYear: term.academicYear,
-        term: term.term,
-        vacationDate: moment(new Date(term.vacationDate)).format(
-          'Do MMMM,YYYY'
-        ),
-        reOpeningDate: moment(new Date(term.reOpeningDate)).format(
-          'Do MMMM,YYYY'
-        ),
-        rollNumber: level.students?.length,
-        totalLevelAttendance: level.attendance,
-        fullName: student?.fullName,
-        level: `${level?.level?.name}${level?.level?.type}`,
-        levelId: level?._id,
-        profile: STUDENT_PHOTO,
-        scores: scores.sort(
-          (a, b) =>
-            SUBJECT_OPTIONS.indexOf(a.subject) -
-            SUBJECT_OPTIONS.indexOf(b.subject)
-        ),
-
-        overallScore,
-        position: ordinal(position),
-        grade,
-        comments,
-      };
-
-      return modifiedStudentRecord;
-    });
-
-    const reports = await Promise.all(generatedResults);
-
-    try {
-      const template = await generateReportTemplate({ reports, school });
-
-      //Print  report template in pdf
-      const results = await generateReport(template);
-      if (results) {
-        // const mailedReports = studentRecords.forEach(async ({ student }) => {
-        //   const result = await sendReportMail(student?._id, student?.email);
-        //   return result;
-        // });
-        // await Promise.all(mailedReports);
-
-        return res
-          .status(200)
-          .json('Reports have being generated.Waiting to be published.');
-      }
+      return res.send('ok');
     } catch (error) {
-      return res.status(404).json(error.message);
+      return res.status(400).json('An unknown error has occured.');
     }
-    res.send('ok');
   })
 );
 
@@ -448,8 +688,6 @@ router.post(
       .populate('term')
       .populate('session')
       .populate('level');
-
-
 
     const modifiedTerms = examination.map(({ _id, session, term, level }) => {
       return {

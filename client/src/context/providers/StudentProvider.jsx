@@ -43,8 +43,8 @@ const StudentProvider = ({ children }) => {
         residence: '',
         nationality: '',
         session: {
-          sessionId: session.sessionId,
-          termId: session.termId,
+          sessionId: session?.sessionId,
+          termId: session?.termId,
         },
         isCompleted: false,
       },

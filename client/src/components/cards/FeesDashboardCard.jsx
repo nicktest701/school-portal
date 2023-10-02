@@ -17,7 +17,7 @@ const FeesDashboardCard = ({ text, value }) => {
     >
       <Stack direction='row' justifyContent='space-between' alignItems='center'>
         <Typography>{text}</Typography>
-        <BarChartRounded />
+        <BarChartRounded color='secondary' />
       </Stack>
       <Typography variant='h5'>{currencyFormatter(value ?? 0)}</Typography>
     </Stack>

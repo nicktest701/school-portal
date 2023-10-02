@@ -16,7 +16,8 @@ const GlobalAlert = () => {
       type: 'closeAlert',
     });
   };
-  const borderColor = alertData?.severity === 'error' ? '#B72136' : '#1890FF';
+  // const borderColor = alertData?.severity === 'error' ? '#B72136' : '#1890FF';
+  const color = alertData?.severity === 'error' ? '#B72136' : '#012e54';
 
   return (
     <Snackbar
@@ -32,19 +33,20 @@ const GlobalAlert = () => {
       <Alert
         icon={
           alertData?.severity === 'info' ? (
-            <CheckCircleRounded />
+            <CheckCircleRounded color='primary' />
           ) : (
-            <ErrorRounded />
+            <ErrorRounded color='error' />
           )
         }
         severity={alertData?.severity}
-        onClose={handleClose}
+        // onClose={handleClose}
         sx={{
-          width: '100%',
-          borderLeft: `2px solid ${borderColor}`,
+          // width: "100%",
+          color: alertData?.severity === 'info' ? 'primary.main' : 'error.main',
+          borderBottom: `2px solid ${color}`,
         }}
       >
-        {typeof alertData?.message === 'string' ? alertData?.message : ''}
+        {alertData?.message}
       </Alert>
     </Snackbar>
   );

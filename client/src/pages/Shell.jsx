@@ -8,6 +8,8 @@ import GlobalAlert from '../components/alerts/GlobalAlert';
 import QuickMessage from '../components/modals/QuickMessage';
 import Footer from './layouts/Footer';
 import Scrollbars from 'react-custom-scrollbars';
+import { Alert } from '@mui/material';
+import { SchoolSessionContext } from '../context/providers/SchoolSessionProvider';
 
 const Shell = () => {
   const navigate = useNavigate();
@@ -16,6 +18,10 @@ const Shell = () => {
     userState: { default_school_info },
     userDispatch,
   } = useContext(UserContext);
+  const {
+    schoolSessionState: { generalAlert },
+    schoolSessionDispatch,
+  } = useContext(SchoolSessionContext);
 
   const schoolSession = JSON.parse(localStorage.getItem('@school_session'));
   const path = location.pathname || '/';
@@ -71,16 +77,35 @@ const Shell = () => {
     return () => getData;
   }, []);
 
+  const closeGeneralAlert = () => {
+    schoolSessionDispatch({
+      type: 'openGeneralAlert',
+      payload: {
+        message: '',
+        severity: '',
+      },
+    });
+  };
+
   return (
     <div
       style={{
         display: 'grid',
         gridAutoRows: '1fr auto',
-         height: '100dvh',
+        height: '100dvh',
         backgroundColor: 'white',
       }}
     >
       <GlobalAlert />
+      {generalAlert?.message && (
+        <Alert
+          severity={generalAlert?.severity}
+          onClose={closeGeneralAlert}
+          sx={{ zIndex: 999999, position: 'fixed', bottom: 0, left: 0, right: 0 }}
+        >
+          {generalAlert?.message}
+        </Alert>
+      )}
       <Scrollbars style={{ width: '100%', height: '100vh' }} autoHide>
         <Outlet />
         <QuickMessage />

@@ -29,6 +29,7 @@ const PhotoUpload = ({ setMode }) => {
     multiple: false,
     onDrop: (acceptedFiles) => {
       if (!_.isEmpty(acceptedFiles)) {
+        
         const reader = new FileReader();
         reader.onload = function (event) {
           const ImageURL = event.target.result;

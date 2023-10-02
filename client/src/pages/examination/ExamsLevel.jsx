@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useContext, useState } from 'react';
-import { Box, Container, Link } from '@mui/material';
+import { Box, Button, Container, Link } from '@mui/material';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
@@ -77,7 +77,8 @@ const ExamsLevel = () => {
       title: 'Exams Details',
       render: (rowData) => {
         return (
-          <Link
+          <Button
+          variant='outlined'
             onClick={() => {
               schoolSessionDispatch({
                 type: 'openAddExamsScore',
@@ -94,11 +95,26 @@ const ExamsLevel = () => {
             }}
           >
             View Details
-          </Link>
+          </Button>
         );
       },
     },
   ];
+
+  const openExamsScore = (rowData) => {
+    schoolSessionDispatch({
+      type: 'openAddExamsScore',
+      payload: {
+        open: true,
+        data: {
+          levelId,
+          studentId: rowData._id,
+          sessionId: session.sessionId,
+          termId: session.termId,
+        },
+      },
+    });
+  };
 
   const iconStyle = { width: 28, height: 28 };
 
@@ -118,9 +134,11 @@ const ExamsLevel = () => {
 
   return (
     <Container
-      sx={{
-        // bgcolor: 'white',
-      }}
+      sx={
+        {
+          // bgcolor: 'white',
+        }
+      }
     >
       <CustomTitle
         title='Examination Portal'
@@ -209,6 +227,7 @@ const ExamsLevel = () => {
         handleRefresh={refetch}
         addButtonImg={EMPTY_IMAGES.student}
         addButtonMessage='😑 No Students results available !!!!'
+        // onRowClick={(rowData) => openExamsScore(rowData)}
       />
       <ExamsScore />
       <Suspense fallback={<Loader />}>

@@ -45,9 +45,9 @@ function DashboardCardsContainer() {
         icon={
           <GroupsIcon
             sx={{
-              width: 40,
-              height: 40,
-              color: '#ffc09f',
+              width: 30,
+              height: 30,
+              color: 'error.light',
             }}
           />
         }
@@ -59,9 +59,9 @@ function DashboardCardsContainer() {
         icon={
           <Person3
             sx={{
-              width: 40,
-              height: 40,
-              color: '#ffc09f',
+              width: 30,
+              height: 30,
+              color: 'info.light',
             }}
           />
         }
@@ -72,9 +72,9 @@ function DashboardCardsContainer() {
         icon={
           <SubjectIcon
             sx={{
-              width: 40,
-              height: 40,
-              color: '#ffc09f',
+              width: 30,
+              height: 30,
+              color: 'success.light',
             }}
           />
         }
@@ -85,9 +85,9 @@ function DashboardCardsContainer() {
         icon={
           <ClassIcon
             sx={{
-              width: 40,
-              height: 40,
-              color: '#ffc09f',
+              width: 30,
+              height: 30,
+              color: 'primary.light',
             }}
           />
         }

@@ -19,6 +19,10 @@ const SchoolSessionProvider = ({ children }) => {
       },
     },
 
+    generalAlert: {
+      message: '',
+      severity: '',
+    },
     //message
     messageData: {
       open: false,

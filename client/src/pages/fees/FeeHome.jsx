@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Box, Container, ListItemText, Stack, Typography } from '@mui/material';
 import FeesDashboardCard from '../../components/cards/FeesDashboardCard';
@@ -19,20 +19,11 @@ const FeeHome = () => {
     },
   } = useContext(UserContext);
 
-  const [todayFee, setTodayFee] = useState(0);
-  const [monthFee, setMonthFee] = useState(0);
-  const [termFee, setTermFee] = useState(0);
-
-  useQuery({
+  const feeSummary = useQuery({
     queryKey: ['current-fees-summary'],
     queryFn: () =>
       getAllCurrentFeesSummary({ session: sessionId, term: termId, from, to }),
     enabled: !!sessionId && !!termId,
-    onSuccess: (feeSummary) => {
-      setTodayFee(feeSummary?.today);
-      setMonthFee(feeSummary?.month);
-      setTermFee(feeSummary?.term);
-    },
   });
 
   const recentFees = useQuery({
@@ -76,9 +67,10 @@ const FeeHome = () => {
               paddingY: 2,
             }}
           >
-            <FeesDashboardCard text='Today' value={todayFee} />
-            <FeesDashboardCard text='Month' value={monthFee} />
-            <FeesDashboardCard text='Term' value={termFee} />
+            <FeesDashboardCard text='Today' value={feeSummary?.data?.today} />
+            <FeesDashboardCard text='Month' value={feeSummary?.data?.month} />
+            <FeesDashboardCard text='Term' value={feeSummary?.data?.term} />
+            <FeesDashboardCard text='Year' value={feeSummary?.data?.year} />
           </Box>
 
           {/* <Box

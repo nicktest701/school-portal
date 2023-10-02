@@ -82,9 +82,10 @@ const StudentDetails = () => {
           srcSet={
             student?.profile === '' || student?.profile === undefined
               ? null
-              : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                  student?.profile
-                }`
+              : student?.profile
+            // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+            //     student?.profile
+            //   }`
           }
           sx={{
             width: 120,
@@ -103,7 +104,7 @@ const StudentDetails = () => {
         </Button>
       </Stack>
       {/* <Divider flexItem /> */}
-      <Box sx={{ flexGrow: 1, }}>
+      <Box sx={{ flexGrow: 1 }}>
         <TabContext value={tab}>
           <TabList
             onChange={(e, value) => setTab(value)}

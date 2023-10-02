@@ -68,6 +68,22 @@ export const publishReports = async (session) => {
   }
 };
 
+//GENERATE REPORTS
+export const publishStudentReport = async (session) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `${URL}/examinations/publish/student`,
+      data: session,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
+
 //Get all Students
 export const getStudentAcademics = async (session, student, level) => {
   try {

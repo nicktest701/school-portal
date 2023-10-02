@@ -298,7 +298,7 @@ const FeeMakePayment = () => {
   const handleOpenPaymentHistory = () => setOpenFeesHistory(true);
 
   return (
-    <Container sx={{ paddingY: 2 }} maxWidth='md'>
+    <Container sx={{ paddingY: 2 }} maxWidth='lg'>
       <Typography variant='h4'>Fees Payment</Typography>
       <Typography>Access,manage and control payment of school fees</Typography>
       <Divider />
@@ -390,9 +390,10 @@ const FeeMakePayment = () => {
                   studentInfo?.profile === undefined ||
                   studentInfo?.profile === ''
                     ? null
-                    : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                        studentInfo?.profile
-                      }`
+                    :studentInfo?.profile
+                    // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                    //     studentInfo?.profile
+                    //   }`
                 }
                 sx={{ width: 80, height: 80 }}
               />

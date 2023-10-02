@@ -75,9 +75,9 @@ const Sidebar = ({ onLogOut }) => {
           <Typography fontWeight='bold' textAlign='center' variant='caption'>
             {school_info?.name}
           </Typography>
-          <Typography variant='body2' textAlign='center'>
+          {/* <Typography variant='body2' textAlign='center'>
             &ldquo; {school_info?.motto} &rdquo;
-          </Typography>
+          </Typography> */}
         </Stack>
       </Stack>
       {/* <Divider /> */}

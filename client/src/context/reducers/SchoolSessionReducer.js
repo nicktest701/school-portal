@@ -185,6 +185,11 @@ const SchoolSessionReducer = (state, { type, payload }) => {
           data: payload.data,
         },
       };
+    case 'openGeneralAlert':
+      return {
+        ...state,
+        generalAlert: payload
+      };
 
     default:
       return state;

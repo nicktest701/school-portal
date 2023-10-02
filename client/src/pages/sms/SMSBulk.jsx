@@ -28,7 +28,7 @@ const SMSBulk = () => {
   const [radioValue, setRadioValue] = useState('sms');
   const [group, setGroup] = useState('students');
 
-  const { mutateAsync } = useMutation(postMessage);
+  const { mutateAsync, isLoading } = useMutation(postMessage);
   const onSubmit = (values, options) => {
     values.rate = 'bulk';
     values.group = group;
@@ -132,7 +132,7 @@ const SMSBulk = () => {
               />
             </Stack>
             <LoadingButton
-              loading={isSubmitting}
+              loading={isSubmitting || isLoading}
               variant='contained'
               onClick={handleSubmit}
               endIcon={<SendRounded />}

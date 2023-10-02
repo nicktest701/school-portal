@@ -105,9 +105,10 @@ const StudentFeesHistory = ({ open, setOpen }) => {
               studentFee?.data?.profile === undefined ||
               studentFee?.data?.profile === ''
                 ? null
-                : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                    studentFee?.data?.profile
-                  }`
+                :  studentFee?.data?.profile
+                // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                //     studentFee?.data?.profile
+                //   }`
             }
             sx={{ width: 70, height: 70 }}
           />

@@ -47,9 +47,10 @@ export const STUDENTS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                  rowData.profile
-                }`
+              // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+              //     rowData.profile
+              //   }`
+                :rowData?.profile
           }
         />
         <ListItemText
@@ -81,6 +82,7 @@ export const STUDENTS_COLUMN = [
     export: false,
     render: ({ active }) => (
       <Button
+        sx={{ bgcolor: active ? 'success.lighter' : 'error.lighter' }}
         startIcon={
           <CircleRounded
             sx={{ color: active ? 'green' : 'red', width: 10, height: 10 }}
@@ -180,9 +182,10 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
         src={
           rowData.profile === undefined || rowData.profile === ''
             ? null
-            : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                rowData.profile
-              }`
+            :rowData?.profile
+            // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+            //     rowData.profile
+            //   }`
         }
       />
     ),
@@ -243,9 +246,10 @@ export const STUDENTS_EXAMS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                  rowData.profile
-                }`
+              :rowData?.profile
+              // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+              //     rowData.profile
+              //   }`
           }
         />
         <ListItemText

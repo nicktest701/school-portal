@@ -23,6 +23,7 @@ import {
 import { deleteMessage, resendMessage } from '../../../api/messageAPI';
 import { DeleteForeverRounded, RefreshRounded } from '@mui/icons-material';
 import Transition from '../../../components/animations/Transition';
+import { LoadingButton } from '@mui/lab';
 
 function SMSView() {
   const queryClient = useQueryClient();
@@ -34,7 +35,7 @@ function SMSView() {
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
-  const { mutateAsync } = useMutation(resendMessage);
+  const { mutateAsync, isLoading } = useMutation(resendMessage);
   const onSend = () => {
     const message = {
       id: data?._id,
@@ -57,7 +58,8 @@ function SMSView() {
     });
   };
 
-  const { mutateAsync: deleteMutateAsync } = useMutation(deleteMessage);
+  const { mutateAsync: deleteMutateAsync, isLoading: dLoading } =
+    useMutation(deleteMessage);
   const handleDelete = () => {
     Swal.fire({
       title: 'Removing Message',
@@ -110,22 +112,37 @@ function SMSView() {
           alignItems='flex-end'
           spacing={1}
         >
-          {!data.active && (
-            <Tooltip title='Resend'>
-              <IconButton color='success' onClick={onSend}>
-                <RefreshRounded />
-              </IconButton>
-            </Tooltip>
-          )}
           <Tooltip title='Delete'>
-            <IconButton color='error' onClick={handleDelete}>
+            {/* <IconButton color='error' onClick={handleDelete}>
               <DeleteForeverRounded />
-            </IconButton>
+            </IconButton> */}
+            <LoadingButton
+              color='error'
+              loading={dLoading}
+              onClick={handleDelete}
+            >
+              Remove
+            </LoadingButton>
           </Tooltip>
+          {/* {!data.active && ( */}
+          <Tooltip title='Resend'>
+            {/* <IconButton color='success' onClick={onSend}>
+              <RefreshRounded />
+            </IconButton> */}
+            <LoadingButton
+              loading={isLoading}
+              variant='contained'
+              onClick={onSend}
+            >
+              Resend
+            </LoadingButton>
+          </Tooltip>
+          {/* // )} */}
         </Stack>
         <Chip
           label={data?.active ? 'Delivered' : 'Not Delivered'}
           color={data?.active ? 'success' : 'error'}
+          sx={{ color: '#fff' }}
           size='small'
         />
         <Stack>

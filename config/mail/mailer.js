@@ -1,40 +1,35 @@
-const nodemailer = require("nodemailer");
-const { google } = require("googleapis");
-
-const client = new google.auth.OAuth2({
-  clientId: process.env.MAIL_CLIENT_ID,
-  clientSecret: process.env.MAIL_CLIENT_SECRET,
-  redirectUri: process.env.MAIL_REDIRECT_URL,
-});
-
-client.setCredentials({
-  refresh_token: process.env.MAIL_REFRESH_TOKEN,
-});
+const nodemailer = require('nodemailer');
 
 const sendMail = async (body, emailList) => {
   try {
-    const ACCESS_TOKEN = await client.getAccessToken();
-
     const transportMail = nodemailer.createTransport({
-      service: "gmail",
+      service: process.env.MAIL_CLIENT_SERVICE,
       auth: {
-        type: "OAUTH2",
-        user: "aamustedresults@gmail.com",
-        clientId: process.env.MAIL_CLIENT_ID,
-        clientSecret: process.env.MAIL_CLIENT_SECRET,
-        refreshToken: process.env.MAIL_REFRESH_TOKEN,
-        accessToken: ACCESS_TOKEN,
+        user: process.env.MAIL_CLIENT_USER,
+        pass: process.env.MAIL_CLIENT_PASS,
       },
+      // port: 465,
+      // secure: true,
+      from: process.env.MAIL_CLIENT_USER,
       tls: {
         rejectUnauthorized: false,
       },
     });
 
+    // verify connection configuration
+    transportMail.verify(function (error, success) {
+      if (error) {
+        console.log('Err is', error);
+      } else {
+        console.log('Server is ready to take our messages');
+      }
+    });
+
     const mailOptions = {
-      from: "aamustedresults@gmail.com",
+      from: process.env.MAIL_CLIENT_USER,
       to: emailList,
       subject: body?.title,
-      text: "AAMUSTED",
+      text: 'FREBBYS SCHOOL',
       html: `<!DOCTYPE html>
       <html lang="en">
       <head>
@@ -57,14 +52,12 @@ const sendMail = async (body, emailList) => {
       </html>
       
       `,
-      // attachments: [{ filename: "me.pdf", path: "./me.pdf" }],
     };
 
-    const result = await transportMail.sendMail(mailOptions);
-    //console.log(result);
+    await transportMail.sendMail(mailOptions);
   } catch (error) {
-    //console.log(error);
-    throw new Error("Error sending message.Try again later");
+    console.log(error);
+    // throw new Error("Error sending message.Try again later");
   }
 };
 

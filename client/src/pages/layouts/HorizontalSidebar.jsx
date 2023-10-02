@@ -37,7 +37,7 @@ const HorizontalSidebar = ({ open, setOpen, onLogOut }) => {
       <MiniDrawerItem title='Teacher' to='/teacher' />
       <MiniDrawerItem title='School Fees' to='/fee' />
       <MiniDrawerItem title='Examination' to='/examination' />
-      <MiniDrawerItem title='SMS Portal' to='/sms' />
+      <MiniDrawerItem title='Messages' to='/sms' />
       <MiniDrawerItem title='Users' to='/users' />
       <MiniDrawerItem title='Settings' to='/settings' />
       <MiniDrawerItem title='About' to='/about' />

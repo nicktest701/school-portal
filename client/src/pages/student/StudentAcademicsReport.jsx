@@ -72,7 +72,8 @@ const StudentAcademicsReport = () => {
               student?.profile === undefined ||
               student?.profile === null
                 ? null
-                :  `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
+                :student?.profile
+                // :  `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
             }
             sx={{ width: 80, height: 80 }}
           />

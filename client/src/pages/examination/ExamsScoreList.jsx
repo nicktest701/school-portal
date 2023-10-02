@@ -22,9 +22,10 @@ function ExamsScoreList({ session }) {
           payload,
         });
 
-        setProfile(
-          `${import.meta.env.VITE_BASE_URL}/images/students/${payload.profile}`
-        );
+        // setProfile(
+        //   `${import.meta.env.VITE_BASE_URL}/images/students/${payload.profile}`
+        // );
+        setProfile(payload?.profile)
       }
     },
   });

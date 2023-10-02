@@ -3,11 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Report Card</title>
     <link rel="stylesheet" href="fonts/fonts.css">
+    <base href="http://localhost:8000/images/students/">
 </head>
 
 <style>
@@ -129,7 +128,7 @@
 
     <% reports.forEach(report=> { %>
         <!-- Report 1  -->
-        <div class="report">
+        <div class="report" id="report">
 
 
             <!-- school details  -->
@@ -165,6 +164,9 @@
                     <img style="align-self: center;border-radius: 50%;" width="60" height="60" alt="photo"
                         src=<%=report.profile %>
                     >
+
+                    <img src="0dab0d6c-066f-4ad9-9e85-3df7de8aa7d9.png" alt="demo-profile"
+                        style="align-self: center;border-radius: 50%;" width="60" height="60">
                 </div>
 
                 <!-- {/* name section */} -->
@@ -467,6 +469,7 @@
                         <%= report._id %>
                     </span>
                 </div>
+
         </div>
 
         <% }) %>

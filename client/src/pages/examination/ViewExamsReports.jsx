@@ -1,25 +1,33 @@
 /* eslint-disable react/display-name */
 import React, { memo, useCallback, useContext, useRef, useState } from 'react';
-import { Typography, Button, Container, Stack } from '@mui/material';
+import { Typography, Button, Container, Stack, useTheme } from '@mui/material';
+import Swal from 'sweetalert2';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ReactToPrint from 'react-to-print';
 import { FixedSizeList } from 'react-window';
 import PropTypes from 'prop-types';
 import { Link, useParams } from 'react-router-dom';
 import Report from './Report';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { generateReports, publishReports } from '../../api/ExaminationAPI';
 import { UserContext } from '../../context/providers/userProvider';
 import ViewScoreSheet from './ViewScoreSheet';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import { ArrowBack, Note } from '@mui/icons-material';
 import Loader from '../../config/Loader';
+import {
+  alertError,
+  alertSuccess,
+} from '../../context/actions/globalAlertActions';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 
 const ViewExamsReports = () => {
+  const { palette } = useTheme();
   const {
     userState: { session },
   } = useContext(UserContext);
   const { studentDispatch } = useContext(StudentContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const [openScoreSheet, setOpenScoreSheet] = useState(false);
   const { levelId } = useParams();
@@ -45,25 +53,58 @@ const ViewExamsReports = () => {
     },
   });
 
-  const publishedReports = useQuery({
-    queryKey: ['publish-reports', levelId, session.sessionId, session.termId],
-    queryFn: () =>
-      publishReports({
-        sessionId: session.sessionId,
-        termId: session.termId,
-        levelId,
-      }),
-    enabled: false,
-
-    onSuccess: (data) => {
-      console.log(data);
-      alert(data);
-      console.log(data);
-    },
-    onError: (error) => {
-      // showBoundary(error);
-    },
+  const { mutateAsync, isLoading } = useMutation({
+    mutationFn: publishReports,
   });
+  const handlePublishReports = () => {
+    Swal.fire({
+      title: 'Publishing Reports',
+      text: `You are about to publish the report of ${
+        reports?.data?.results?.length || 'all '
+      } students.Do you wish to continue?`,
+      confirmButtonColor: palette.primary.main,
+      showCancelButton: true,
+      backdrop: false,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        schoolSessionDispatch({
+          type: 'openGeneralAlert',
+          payload: {
+            message:
+              'Publishing reports.This might take a while please wait....',
+            severity: 'info',
+          },
+        });
+        const reportInfo = {
+          sessionId: session.sessionId,
+          termId: session.termId,
+          levelId,
+        };
+
+        mutateAsync(reportInfo, {
+          onSuccess: () => {
+            schoolSessionDispatch({
+              type: 'openGeneralAlert',
+              payload: {
+                message: 'Results have been published Successfully!!!',
+                severity: 'success',
+              },
+            });
+          },
+          onError: () => {
+            schoolSessionDispatch({
+              type: 'openGeneralAlert',
+              payload: {
+                message:
+                  'An error has occured.Couldnt Generate Reports.Try again later',
+                severity: 'error',
+              },
+            });
+          },
+        });
+      }
+    });
+  };
 
   const generatedReports = memo(({ data, index, isScrolling, style }) => {
     return <Report key={index} student={data[index]} style={style} />;
@@ -109,12 +150,12 @@ const ViewExamsReports = () => {
               documentTitle='Report'
             />
             <LoadingButton
-              loading={publishedReports.isFetching}
+              loading={isLoading}
               loadingPosition='start'
               startIcon={<Note />}
-              onClick={publishedReports.refetch}
+              onClick={handlePublishReports}
             >
-              {publishedReports.isFetching ? 'Please Wait' : 'Publish Reports'}
+              {isLoading ? 'Please Wait' : 'Publish Reports'}
             </LoadingButton>
           </Stack>
         </Container>

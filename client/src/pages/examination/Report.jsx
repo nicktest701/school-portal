@@ -90,9 +90,10 @@ const Report = ({ student, style }) => {
               student?.profile === undefined ||
               student?.profile === null
                 ? null
-                : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                    student?.profile
-                  }`
+                :student?.profile
+                // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                //     student?.profile
+                //   }`
             }
             sx={{ width: 60, height: 60, alignSelf: 'center' }}
           />

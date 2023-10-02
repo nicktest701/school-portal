@@ -52,6 +52,7 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/views', express.static(path.join(__dirname, 'views')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/reports', express.static(path.join(__dirname, 'reports')));
 
 //routes
 // app.use("/user", userRoute);

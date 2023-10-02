@@ -12,6 +12,7 @@ import {
   Box,
   Link,
 } from '@mui/material';
+import Swal from 'sweetalert2';
 import ReactToPrint from 'react-to-print';
 import ExamsItem from '../../components/list/ExamsItem';
 import Transition from '../../components/animations/Transition';
@@ -23,10 +24,16 @@ import moment from 'moment';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import _ from 'lodash';
 import { SchoolRounded } from '@mui/icons-material';
+import { useMutation } from '@tanstack/react-query';
+import { UserContext } from '../../context/providers/userProvider';
+import { publishStudentReport } from '../../api/ExaminationAPI';
+import { LoadingButton } from '@mui/lab';
 
 const ExamsReport = () => {
   const school_info = JSON.parse(localStorage.getItem('@school_info'));
-
+  const {
+    userState: { session },
+  } = useContext(UserContext);
   const { schoolSessionState, schoolSessionDispatch } =
     useContext(SchoolSessionContext);
 
@@ -37,12 +44,66 @@ const ExamsReport = () => {
   const student = schoolSessionState.viewReport.data;
   const [openRemarks, setOpenRemarks] = useState(false);
 
-  // console.log(student)
+  console.log(student);
 
   //close dialog
   const handleClose = () => {
     schoolSessionDispatch({
       type: 'closeViewReport',
+    });
+  };
+
+  const { mutateAsync, isLoading } = useMutation({
+    mutationFn: publishStudentReport,
+  });
+  const handlePublishReports = () => {
+    Swal.fire({
+      title: 'Publishing Reports',
+      text: `You are about to publish the report of ${
+        student?.fullName || 'student'
+      }.Do you wish to continue?`,
+      confirmButtonColor: palette.primary.main,
+      showCancelButton: true,
+      backdrop: false,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        schoolSessionDispatch({
+          type: 'openGeneralAlert',
+          payload: {
+            message:
+              'Publishing reports.This might take a while please wait....',
+            severity: 'info',
+          },
+        });
+        const reportInfo = {
+          sessionId: session.sessionId,
+          termId: session.termId,
+          student: student?._id,
+          level: student?.levelId,
+        };
+
+        mutateAsync(reportInfo, {
+          onSuccess: () => {
+            schoolSessionDispatch({
+              type: 'openGeneralAlert',
+              payload: {
+                message: 'Results have been published Successfully!!!',
+                severity: 'success',
+              },
+            });
+          },
+          onError: () => {
+            schoolSessionDispatch({
+              type: 'openGeneralAlert',
+              payload: {
+                message:
+                  'An error has occured.Couldnt Generate Reports.Try again later',
+                severity: 'error',
+              },
+            });
+          },
+        });
+      }
     });
   };
 
@@ -57,6 +118,10 @@ const ExamsReport = () => {
       >
         <CustomDialogTitle title='Report Card' onClose={handleClose} />
         <DialogActions>
+          <LoadingButton loading={isLoading} onClick={handlePublishReports}>
+            {isLoading ? 'Please Wait....' : 'Publish Report'}
+          </LoadingButton>
+
           <ReactToPrint
             // pageStyle={
             //   'width:8.5in";min-height:11in"; margin:auto",padding:4px;'
@@ -139,9 +204,10 @@ const ExamsReport = () => {
                   student?.profile === undefined ||
                   student?.profile === null
                     ? null
-                    : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                        student?.profile
-                      }`
+                    :student?.profile
+                    // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                    //     student?.profile
+                    //   }`
                 }
                 sx={{ width: 60, height: 60, alignSelf: 'center' }}
               />

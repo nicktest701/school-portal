@@ -137,14 +137,14 @@ const Dashboard = () => {
               </Typography>
             </Stack>
 
-            <Stack direction='row'>
+            {/* <Stack direction='row'>
               <IconButton>
                 <NotificationsRounded />
               </IconButton>
               <IconButton>
                 <MoreVertRoundedIcon />
               </IconButton>
-            </Stack>
+            </Stack> */}
           </Box>
           <Typography
             variant='h6'

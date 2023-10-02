@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 const user = JSON.parse(localStorage.getItem('@user'));
 axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
@@ -8,7 +9,7 @@ export const getAllStudentsDetails = async (session) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/students/details`,
+      url: `${BASE_URL}/students/details`,
       params: session,
     });
 
@@ -24,7 +25,7 @@ export const getAllStudents = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/students`,
+      url: `${BASE_URL}/students`,
     });
 
     return res.data;
@@ -39,7 +40,7 @@ export const getAllStudentsByCurrentLevel = async (currentLevelId) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/students/current`,
+      url: `${BASE_URL}/students/current`,
       params: {
         currentLevelId,
       },
@@ -58,7 +59,7 @@ export const getAllStudentsForSearch = async (session) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/students/search/all`,
+      url: `${BASE_URL}/students/search/all`,
       data: session,
     });
 
@@ -73,7 +74,7 @@ export const getStudentsByID = async (studentId, levelId, levelName) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/students/current`,
+      url: `${BASE_URL}/students/current`,
       data: {
         studentId,
         levelId,
@@ -92,7 +93,7 @@ export const getStudent = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/students/${id}`,
+      url: `${BASE_URL}/students/${id}`,
     });
 
     return res.data;
@@ -106,7 +107,7 @@ export const getParentByStudentId = async (id) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/students/parent`,
+      url: `${BASE_URL}/students/parent`,
       params: {
         id,
       },
@@ -150,7 +151,7 @@ export const postStudent = async ({ student, parent }) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/students`,
+      url: `${BASE_URL}/students`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -168,7 +169,7 @@ export const postNewStudent = async (data) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/students`,
+      url: `${BASE_URL}/students`,
       data,
     });
 
@@ -182,7 +183,7 @@ export const postManyStudents = async (data) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/students/many`,
+      url: `${BASE_URL}/students/many`,
       data,
     });
 
@@ -197,7 +198,7 @@ export const putStudent = async (updatedStudent) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/students`,
+      url: `${BASE_URL}/students`,
       data: updatedStudent,
     });
 
@@ -212,7 +213,7 @@ export const updateStudentMedicalHistory = async (updatedStudent) => {
   try {
     const res = await axios({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/students/medical`,
+      url: `${BASE_URL}/students/medical`,
       data: updatedStudent,
     });
 
@@ -227,7 +228,7 @@ export const deleteStudent = async (id) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/students/${id}`,
+      url: `${BASE_URL}/students/${id}`,
     });
 
     return res.data;
@@ -241,7 +242,7 @@ export const disableStudentAccount = async ({ id, active }) => {
   try {
     const res = await axios({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/students/disable`,
+      url: `${BASE_URL}/students/disable`,
       params: {
         id,
         active,

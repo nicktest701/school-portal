@@ -27,7 +27,7 @@ const XLSX_FILE_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 const XLS_FILE_TYPE = 'application/vnd.ms-excel';
 
-const StudentInfo = ({ setTab, setMsg }) => {
+const StudentInfo = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
 
@@ -50,23 +50,6 @@ const StudentInfo = ({ setTab, setMsg }) => {
       window.removeEventListener('beforeunload', beforeUnloadHandler);
     };
   }, []);
-
-  const onSubmit = (values, options) => {
-    try {
-      studentDispatch({ type: 'addNewStudent', payload: values });
-      localStorage.setItem('@student', JSON.stringify(values));
-
-      setTab('2');
-      options.setSubmitting(false);
-    } catch (error) {
-      setMsg({
-        severity: 'error',
-        text: `Could not save student info.Try again!!!.
-              In this problem persists,try contacting your administrator!!!`,
-      });
-    }
-    // options.setSubmitting(false);
-  };
 
   //LOAD Students from file excel,csv
   function handleLoadFile(e) {
@@ -206,7 +189,9 @@ const StudentInfo = ({ setTab, setMsg }) => {
             <MedicalInformation mode={mode} setMode={setMode} />
           )}
 
-          {mode === 'academic-info' && <AcademicInformation setMode={setMode} />}
+          {mode === 'academic-info' && (
+            <AcademicInformation setMode={setMode} />
+          )}
         </Container>
       </Container>
       <PreviousSession
@@ -221,22 +206,4 @@ StudentInfo.propTypes = {};
 
 export default StudentInfo;
 
-/* <TextField
-                    label="Residence"
-                    type="text"
-                    fullWidth
-                    size="small"
-                    value={values.residence}
-                    onChange={handleChange("residence")}
-                    error={Boolean(touched.residence && errors.residence)}
-                    helperText={touched.residence && errors.residence}
-                  />
-                  {/* <TextField
-                    label="Nationality"
-                    fullWidth
-                    size="small"
-                    value={values.nationality}
-                    onChange={handleChange("nationality")}
-                    error={Boolean(touched.nationality && errors.nationality)}
-                    helperText={touched.nationality && errors.nationality}
-                  /> */
+

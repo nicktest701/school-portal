@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "server": "console-ninja nodemon server.js",
+    "server": "console-ninja nodemon server.js ",
     "client": "npm run dev --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\" ",
     "lint": "eslint --max-warnings=0"
@@ -38,6 +38,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.1",
     "ordinal-suffix": "^0.0.1",
+    "p-limit": "^3.1.0",
     "puppeteer": "^21.1.0",
     "rate-limit-mongo": "^2.3.2",
     "uuid": "^9.0.0"

@@ -22,11 +22,11 @@ const FeeNav = () => {
             <NavLinkItem to='' color='secondary' text='Home' />
             <NavLinkItem to='new' color='secondary' text='New Fees' />
             <NavLinkItem to='payment' color='secondary' text='Make Payment' />
-            <NavLinkItem
+            {/* <NavLinkItem
               to='level'
               color='secondary'
               text='Level Information '
-            />
+            /> */}
             <NavLinkItem to='history' color='secondary' text='Quick Search ' />
           </Container>
         </Toolbar>

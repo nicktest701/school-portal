@@ -155,7 +155,7 @@ const StudentProfile = ({ student }) => {
           <ProfileItem label='Current Level' text={`${student?.levelName} `} />
           <ProfileItem
             label='Previous School'
-            text={`${student?.academic?.previousSchool?.name} `}
+            text={`${student?.academic?.previousSchool?.name || "Not Available"} `}
           />
           <Button
             startIcon={<Report />}

@@ -71,58 +71,68 @@ const ViewParent = ({ open, setOpen }) => {
         >
           {isFetching && <Typography>Loading....</Typography>}
 
-          {data?.map((parent, index) => {
-            return (
-              <Box key={parent?._id}>
-                <Divider flexItem>
-                  <Chip
-                    label={`Parent /Guardian ${index + 1}`}
-                    color='primary'
+          {data?.length > 0 ? (
+            data?.map((parent, index) => {
+              return (
+                <Box key={parent?._id}>
+                  <Divider flexItem>
+                    <Chip
+                      label={`Parent /Guardian ${index + 1}`}
+                      color='primary'
+                    />
+                  </Divider>
+
+                  <ProfileItem
+                    label='Name'
+                    text={`${parent?.firstname} ${parent?.surname}`}
                   />
-                </Divider>
 
-                <ProfileItem
-                  label='Name'
-                  text={`${parent?.firstname} ${parent?.surname}`}
-                />
-
-                <ProfileItem label='Gender' text={parent?.gender} />
-                <ProfileItem label='Email Address' text={parent?.email} />
-                <ProfileItem label='Telephone No.' text={parent?.phonenumber} />
-                <ProfileItem label='Address' text={parent?.address} />
-                <ProfileItem label='Residence' text={parent?.residence} />
-                <ProfileItem label='Nationality' text={parent?.nationality} />
-                <Box
-                  display='flex'
-                  flexDirection='column'
-                  justifyContent='center'
-                  alignItems='center'
-                  width='100%'
-                  paddingY={2}
-                  gap={1}
-                >
-                  <Stack direction='row' spacing={2} flexWrap='wrap'>
-                    <Button
-                      size='small'
-                      startIcon={<MessageRounded />}
-                      onClick={() =>
-                        openQuickMessage(parent?.phonenumber, parent?.email)
-                      }
-                    >
-                      Send Message
-                    </Button>
-                    <Button
-                      size='small'
-                      endIcon={<Edit />}
-                      onClick={() => openParentEdit(parent)}
-                    >
-                      Edit
-                    </Button>
-                  </Stack>
+                  <ProfileItem label='Gender' text={parent?.gender} />
+                  <ProfileItem label='Email Address' text={parent?.email} />
+                  <ProfileItem
+                    label='Telephone No.'
+                    text={parent?.phonenumber}
+                  />
+                  <ProfileItem label='Address' text={parent?.address} />
+                  <ProfileItem label='Residence' text={parent?.residence} />
+                  <ProfileItem label='Nationality' text={parent?.nationality} />
+                  <Box
+                    display='flex'
+                    flexDirection='column'
+                    justifyContent='center'
+                    alignItems='center'
+                    width='100%'
+                    paddingY={2}
+                    gap={1}
+                  >
+                    <Stack direction='row' spacing={2} flexWrap='wrap'>
+                      <Button
+                        size='small'
+                        startIcon={<MessageRounded />}
+                        onClick={() =>
+                          openQuickMessage(parent?.phonenumber, parent?.email)
+                        }
+                      >
+                        Send Message
+                      </Button>
+                      <Button
+                        size='small'
+                        endIcon={<Edit />}
+                        onClick={() => openParentEdit(parent)}
+                      >
+                        Edit
+                      </Button>
+                    </Stack>
+                  </Box>
                 </Box>
-              </Box>
-            );
-          })}
+              );
+            })
+          ) : (
+            <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+              <Typography>No Parent info available</Typography>
+              <Button>Add New</Button>
+            </Box>
+          )}
         </DialogContent>
       </Dialog>
       <ParentEdit />
