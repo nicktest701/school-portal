@@ -36,6 +36,23 @@ router.get(
 );
 
 //@PGET all users
+// router.get(
+//   '/quick-add',
+//   asyncHandler(async (req, res) => {
+//     const hashedPassword = await bcrypt.hash('Akwasi21@guy', 10);
+//     const users = await User.create({
+//       fullname: 'Nana',
+//       role: 'Administrator',
+//       email: 'kwasiowusuansah00@gmail.com',
+//       username: 'Admin',
+//       password: hashedPassword,
+//     });
+
+//     res.json(users);
+//   })
+// );
+
+//@PGET all users
 router.get(
   '/verify',
   verifyJWT,
@@ -392,7 +409,6 @@ router.put(
   '/school/profile',
   upload.single('badge'),
   asyncHandler(async (req, res) => {
-  
     const updatedBadge = await School.findOneAndUpdate(
       {
         unique: 'school-info',
