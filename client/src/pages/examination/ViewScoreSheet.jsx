@@ -4,7 +4,6 @@ import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import score_icon from '../../assets/images/header/score_ico.svg';
-import _ from 'lodash';
 import { getColumns, getResults } from '../../config/generateScoreSheet';
 
 const ViewScoreSheet = ({ open, setOpen }) => {

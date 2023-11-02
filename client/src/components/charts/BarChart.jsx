@@ -20,8 +20,8 @@ const LineChart = ({ data }) => {
     //   <CardContent>
     <Box
       sx={{
-        minWidth: 150,
-        height: 150,
+        minWidth: 100,
+        height: 100,
       }}
     >
       <Bar

@@ -8,7 +8,6 @@ import Input from '@mui/material/Input';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import PublishIcon from '@mui/icons-material/Publish';
 
-import { StudentContext } from '../../../context/providers/StudentProvider';
 import { SchoolSessionContext } from '../../../context/providers/SchoolSessionProvider';
 import { readCSV } from '../../../config/readCSV';
 import { readXLSX } from '../../../config/readXLSX';
@@ -29,10 +28,9 @@ const XLS_FILE_TYPE = 'application/vnd.ms-excel';
 
 const StudentInfo = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const { studentDispatch } = useContext(StudentContext);
 
   const [mode, setMode] = useState('personal-info');
-  const [isLoading, setIsLoading] = useState(false);
+
   const [openPreviousSession, setOpenPreviousSession] = useState(false);
 
   const confirmMessage =
@@ -53,7 +51,6 @@ const StudentInfo = () => {
 
   //LOAD Students from file excel,csv
   function handleLoadFile(e) {
-    setIsLoading(true);
     const files = e.target.files[0];
 
     try {
@@ -77,8 +74,6 @@ const StudentInfo = () => {
             type: 'openAddStudentFileDialog',
             payload: { data: students, type: 'file' },
           });
-
-          setIsLoading(false);
         }
       };
     } catch (error) {
@@ -205,5 +200,3 @@ const StudentInfo = () => {
 StudentInfo.propTypes = {};
 
 export default StudentInfo;
-
-

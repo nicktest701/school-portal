@@ -4,6 +4,7 @@ import {
   Container,
   Dialog,
   DialogContent,
+  DialogTitle,
   FormHelperText,
   FormLabel,
   Input,
@@ -42,7 +43,7 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   const XLS_FILE_TYPE = 'application/vnd.ms-excel';
 
-  const { schoolSessionState, schoolSessionDispatch } =
+  const { schoolSessionDispatch } =
     useContext(SchoolSessionContext);
   const {
     userState: { session },
@@ -227,56 +228,30 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
   };
 
   return (
-    <Dialog TransitionComponent={Transition} open={open} fullScreen fullWidth>
-      <CustomDialogTitle title='Exams Scores for' onClose={handleCloseDialog} />
-
-      <Stack spacing={2} py={3} width='100%'>
-        <FormLabel
-          htmlFor='resultFile'
-          title='Import results'
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            border: '1px solid lightgray',
-            width: 300,
-            padding: 1,
-            gap: 1,
-            color: 'primary.main',
-            alignSelf: 'center',
-            fontSize: 11,
-            cursor: 'pointer',
-          }}
-        >
-          <NoteRounded />
-          <Typography variant='caption'>
-            {isLoading ? 'Please Wait...' : 'Select File'}
-          </Typography>
-
-          <Input
-            type='file'
-            id='resultFile'
-            name='resultFile'
-            hidden
-            inputProps={{
-              accept: '.xlsx,.xls,.csv',
-            }}
-            onChange={(event) => handleLoadFile(event)}
-            onClick={(e) => {
-              e.target.value = null;
-              e.currentTarget.value = null;
-            }}
-          />
-        </FormLabel>
-
-        <Stack
-          width='100%'
-          direction={{ xs: 'column', md: 'row' }}
-          justifyContent='space-between'
-          alignItems='center'
-          spacing={2}
-          px={14}
-        >
+    <Dialog
+      maxWidth='lg'
+      TransitionComponent={Transition}
+      open={open}
+      // fullScreen
+      fullWidth
+    >
+      <CustomDialogTitle
+        title='Exams Scores'
+        subtitle='Import Student exams results from excel or csv files.'
+        onClose={handleCloseDialog}
+      />
+      <DialogTitle>
+        <Stack spacing={2} px={4}>
+          {data?.length > 0 && (
+            <AnimatedContainer>
+              <Stack direction='row' spacing={3} justifyContent='flex-end'>
+                <Button onClick={discardChanges}>Cancel</Button>
+                <LoadingButton variant='contained' onClick={handlePostResults}>
+                  Save Results
+                </LoadingButton>
+              </Stack>
+            </AnimatedContainer>
+          )}
           <Autocomplete
             options={subjects.data?.subjects}
             loading={subjects.isLoading}
@@ -290,10 +265,10 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label='Subject'
+                label='Select Subject'
                 size='small'
                 sx={{
-                  maxWidth: 320,
+                  maxWidth: 300,
                 }}
                 error={fieldError !== ''}
                 helperText={fieldError}
@@ -306,19 +281,45 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
               />
             )}
           />
-          {data?.length > 0 && (
-            <AnimatedContainer>
-              <Stack direction='row' spacing={3}>
-                <Button onClick={discardChanges}>Cancel</Button>
-                <LoadingButton variant='contained' onClick={handlePostResults}>
-                  Save Results
-                </LoadingButton>
-              </Stack>
-            </AnimatedContainer>
-          )}
-        </Stack>
-      </Stack>
 
+          <FormLabel
+            htmlFor='resultFile'
+            title='Import results'
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              border: '1px solid lightgray',
+              width: 300,
+              padding: 1,
+              gap: 1,
+              color: 'primary.main',
+              fontSize: 11,
+              cursor: 'pointer',
+            }}
+          >
+            <NoteRounded />
+            <Typography variant='caption'>
+              {isLoading ? 'Please Wait...' : 'Select Subject File'}
+            </Typography>
+
+            <Input
+              type='file'
+              id='resultFile'
+              name='resultFile'
+              hidden
+              inputProps={{
+                accept: '.xlsx,.xls,.csv',
+              }}
+              onChange={(event) => handleLoadFile(event)}
+              onClick={(e) => {
+                e.target.value = null;
+                e.currentTarget.value = null;
+              }}
+            />
+          </FormLabel>
+        </Stack>
+      </DialogTitle>
       <DialogContent>
         <Container>
           {mainError && (

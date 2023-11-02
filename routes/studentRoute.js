@@ -76,6 +76,7 @@ router.get(
   '/details',
   AsyncHandler(async (req, res) => {
     const { sessionId, termId } = req.query;
+    // console.log("Helo")
 
     const allLevels = await Level.find({
       session: new ObjectId(sessionId),

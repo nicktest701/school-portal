@@ -6,6 +6,7 @@ axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
 //Get all Students details
 export const getAllStudentsDetails = async (session) => {
+  // console.log(session);
   try {
     const res = await axios({
       method: 'GET',

@@ -1,14 +1,13 @@
 import React from 'react';
 import { AppBar, Container, Toolbar } from '@mui/material';
 
-import Back from '../../../components/Back';
 import NavLinkItem from '../../../components/list/NavLinkItem';
 
 const StudentNav = () => {
   return (
     <>
-      <AppBar position='sticky'>
-        <Back />
+      <AppBar position='sticky' sx={{ bgcolor: 'white' }} elevation={0}>
+        
         <Toolbar>
           <Container
             // direction='row'
@@ -20,11 +19,12 @@ const StudentNav = () => {
               flexWrap: 'wrap',
               gap: 2,
               paddingY: 1,
+              bgcolor: 'white',
             }}
           >
-            <NavLinkItem to='' color='secondary' text='Home' />
-            <NavLinkItem to='view' color='secondary' text='View Students' />
-            <NavLinkItem to='new' color='secondary' text='New Student' />
+            <NavLinkItem to='' color='#012e54' text='Home' />
+            <NavLinkItem to='view' color='#012e54' text='View Students' />
+            <NavLinkItem to='new' color='#012e54' text='New Student' />
             {/* <NavLinkItem to='settings' color='secondary' text='Settings' /> */}
           </Container>
         </Toolbar>

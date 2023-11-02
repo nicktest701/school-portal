@@ -1,15 +1,23 @@
 import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
 import StudentReducer from '../reducers/StudentReducer';
+import { useQuery } from '@tanstack/react-query';
+import { getAllStudents } from '../../api/studentAPI';
 
 export const StudentContext = React.createContext();
 
 const StudentProvider = ({ children }) => {
   const session = JSON.parse(localStorage.getItem('@school_session'));
+  // console.log(session);
+
+  const students = useQuery({
+    queryKey: ['main-students', session?.sessionId],
+    queryFn: () => getAllStudents(),
+    enabled: !!session?.sessionId,
+  });
 
   const studentValues = {
     allStudents: [],
-
     currentStudentId: '',
     currentLevelId: '',
     studentCurrentLevelId: '',
@@ -128,7 +136,9 @@ const StudentProvider = ({ children }) => {
   );
 
   return (
-    <StudentContext.Provider value={{ studentState, studentDispatch }}>
+    <StudentContext.Provider
+      value={{ studentState, studentDispatch, mainStudents: students?.data }}
+    >
       {children}
     </StudentContext.Provider>
   );

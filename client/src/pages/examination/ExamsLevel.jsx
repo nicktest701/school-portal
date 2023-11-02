@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useContext, useState } from 'react';
-import { Box, Button, Container, Link } from '@mui/material';
+import { Box, Button, Container } from '@mui/material';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
@@ -7,14 +7,14 @@ import DoNotDisturbOnTotalSilenceOutlinedIcon from '@mui/icons-material/DoNotDis
 import BookmarksOutlinedIcon from '@mui/icons-material/BookmarksOutlined';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { useQuery } from '@tanstack/react-query';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import { STUDENTS_EXAMS_COLUMN } from '../../mockup/columns/studentColumns';
 import ExamsHomeCard from '../../components/cards/ExamsHomeCard';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import ExamsScore from './ExamsScore';
 import { getExamsDetails } from '../../api/ExaminationAPI';
 import useLevelById from '../../components/hooks/useLevelById';
-import { BookSharp, Note, NoteOutlined, List } from '@mui/icons-material';
+import { BookSharp, NoteOutlined, List } from '@mui/icons-material';
 
 import student_icon from '../../assets/images/header/student_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
@@ -34,7 +34,7 @@ const ExamsLevel = () => {
   } = useContext(UserContext);
 
   const { levelId, level } = useParams();
-  const { state } = useLocation();
+  
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [ViewReport, setViewReport] = useState(false);
@@ -78,7 +78,7 @@ const ExamsLevel = () => {
       render: (rowData) => {
         return (
           <Button
-          variant='outlined'
+            variant='outlined'
             onClick={() => {
               schoolSessionDispatch({
                 type: 'openAddExamsScore',
@@ -101,20 +101,20 @@ const ExamsLevel = () => {
     },
   ];
 
-  const openExamsScore = (rowData) => {
-    schoolSessionDispatch({
-      type: 'openAddExamsScore',
-      payload: {
-        open: true,
-        data: {
-          levelId,
-          studentId: rowData._id,
-          sessionId: session.sessionId,
-          termId: session.termId,
-        },
-      },
-    });
-  };
+  // const openExamsScore = (rowData) => {
+  //   schoolSessionDispatch({
+  //     type: 'openAddExamsScore',
+  //     payload: {
+  //       open: true,
+  //       data: {
+  //         levelId,
+  //         studentId: rowData._id,
+  //         sessionId: session.sessionId,
+  //         termId: session.termId,
+  //       },
+  //     },
+  //   });
+  // };
 
   const iconStyle = { width: 28, height: 28 };
 
@@ -133,13 +133,7 @@ const ExamsLevel = () => {
   };
 
   return (
-    <Container
-      sx={
-        {
-          // bgcolor: 'white',
-        }
-      }
-    >
+    <Container>
       <CustomTitle
         title='Examination Portal'
         subtitle='Track,manage and control academic and class activities'

@@ -6,7 +6,7 @@ const NavLinkItem = ({ to, text, color }) => {
     return {
       textDecoration: 'none',
       borderBottom: isActive ? 'solid 2px #ffc09f' : null,
-      color: '#ffc09f',
+      color: color || '#012e54',
       fontWeight: isActive ? 'bold' : '400',
       whiteSpace: 'nowrap',
     };

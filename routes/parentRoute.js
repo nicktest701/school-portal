@@ -57,7 +57,10 @@ router.get(
 router.post(
   '/',
   asyncHandler(async (req, res) => {
-    const newParent = await Parent.create(req.body);
+    const newParent = await Parent.insertMany([
+      req.body.parent1,
+      req.body.parent2,
+    ]);
 
     if (_.isEmpty(newParent)) {
       return res
@@ -65,7 +68,7 @@ router.post(
         .json('Error creating new parent.Try again later!!!');
     }
 
-    res.status(201).json('New Parent created Successfully!!!');
+    res.status(201).json('New Parents created Successfully!!!');
   })
 );
 

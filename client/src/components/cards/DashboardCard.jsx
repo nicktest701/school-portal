@@ -12,23 +12,24 @@ const DashboardCard = ({ title, value, icon }) => {
         // border: '1px solid lightgray',
         borderTop: '2px solid #012e54',
         position: 'relative',
+        borderRadius:0
       }}
       elevation={0}
     >
       <CardContent>
-        <Typography color='primary'>{title}</Typography>
-        <Typography variant='h6' textAlign='center' sx={{ paddingY: 1 }}>
+        <Typography variant='h5' textAlign='center' sx={{ paddingY: 1 }}>
           <CountUp duration={5} end={value} enableScrollSpy />
         </Typography>
         <div
           style={{
             position: 'absolute',
             right: 10,
-            bottom: 0,
+            bottom: 5,
           }}
         >
           {icon}
         </div>
+        <Typography color='primary'>{title}</Typography>
       </CardContent>
     </Card>
   );

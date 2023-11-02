@@ -1,4 +1,4 @@
-// @mui
+
 import { alpha } from '@mui/material';
 
 //

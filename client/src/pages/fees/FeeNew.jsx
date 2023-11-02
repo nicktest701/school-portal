@@ -93,7 +93,7 @@ const FeeNew = () => {
 
   return (
     <>
-      <Container maxWidth='lg' sx={{ paddingY: 5 }}>
+      <Container >
         <Typography variant='h4'>New Fee</Typography>
         <Typography>
           Add new <b>TERM/SEMESTER</b> fees for a particular level
@@ -104,7 +104,7 @@ const FeeNew = () => {
           icon={fee_icon}
           columns={SCHOOL_FEES_COLUMNS(handleView, handleEdit, handleDeleteFee)}
           data={fees.data ? fees.data : []}
-          isLoading={fees.isFetching}
+          isLoading={fees.isLoading}
           actions={[]}
           search={true}
           // onRowClick={handleGetLevelFeeInfo}

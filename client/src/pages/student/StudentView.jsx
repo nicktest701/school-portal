@@ -21,13 +21,14 @@ import { EMPTY_IMAGES } from '../../config/images';
 const StudentView = () => {
   const { studentState } = useContext(StudentContext);
   const navigate = useNavigate();
+  // console.log(mainStudents[0])
 
   const [currentLevel, setCurrentLevel] = useState({ _id: '', type: '' });
 
   //GET all current academic levels
   const { levelsOption } = useLevel();
 
-  const { students, levelLoading } = useLevelById(currentLevel?._id);
+  const { students } = useLevelById(currentLevel?._id);
 
   const handleRowClick = (rowData) => {
     const id = rowData.levelId;
@@ -64,22 +65,19 @@ const StudentView = () => {
         />
 
         <CustomizedMaterialTable
-          isLoading={levelLoading}
+          // isLoading={levelLoading}
           title={currentLevel?.type || 'Students'}
           icon={student_icon}
           search={true}
           columns={STUDENTS_COLUMN}
           actions={[]}
           data={students.length === 0 ? studentState.allStudents : students}
-
           onRowClick={handleRowClick}
           addButtonImg={EMPTY_IMAGES.student}
           addButtonMessage='😑 No Students recently added !!!!'
           showRowShadow={true}
         />
       </Stack>
-
-
     </Container>
   );
 };

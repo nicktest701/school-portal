@@ -23,6 +23,7 @@ import StudentAcademics from '../../components/tabs/student/StudentAcademics';
 import { useQuery } from '@tanstack/react-query';
 import { getStudentsByID } from '../../api/studentAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import Back from '../../components/Back';
 
 const StudentDetails = () => {
   ///Params
@@ -57,92 +58,97 @@ const StudentDetails = () => {
   };
 
   return (
-    <Container
-      maxWidth='lg'
-      sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        justifyContent: { xs: 'center', md: 'space-between' },
-        alignItems: { xs: 'center', md: 'start' },
-        gap: 5,
-      }}
-    >
-      <Stack
-        spacing={1}
-        justifyContent='center'
-        alignItems='center'
-        py={2}
+    <>
+      <Back to='/student/view' color='primary.main' />
+
+      <Container
+        maxWidth='lg'
         sx={{
-          position: { xs: 'relative', md: '-webkit-sticky' },
-          top: 0,
-          minWidth: 300,
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          justifyContent: { xs: 'center', md: 'space-between' },
+          alignItems: { xs: 'center', md: 'start' },
+          gap: 5,
+          pt: 5,
         }}
       >
-        <Avatar
-          srcSet={
-            student?.profile === '' || student?.profile === undefined
-              ? null
-              : student?.profile
-            // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-            //     student?.profile
-            //   }`
-          }
+        <Stack
+          spacing={1}
+          justifyContent='center'
+          alignItems='center'
+          py={2}
           sx={{
-            width: 120,
-            height: 120,
+            position: { xs: 'relative', md: '-webkit-sticky' },
+            top: 0,
+            minWidth: 300,
           }}
-        />
-
-        <Typography variant='h6'>{student?.fullName}</Typography>
-        <Typography variant='body2'>{`${student?.levelName}`}</Typography>
-        <Button
-          variant='contained'
-          startIcon={<MessageRounded />}
-          onClick={openQuickMessage}
         >
-          Send Message
-        </Button>
-      </Stack>
-      {/* <Divider flexItem /> */}
-      <Box sx={{ flexGrow: 1 }}>
-        <TabContext value={tab}>
-          <TabList
-            onChange={(e, value) => setTab(value)}
-            variant='scrollable'
-            scrollButtons='auto'
+          <Avatar
+            srcSet={
+              student?.profile === '' || student?.profile === undefined
+                ? null
+                : student?.profile
+              // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+              //     student?.profile
+              //   }`
+            }
+            sx={{
+              width: 100,
+              height: 100,
+            }}
+          />
+
+          <Typography variant='h6'>{student?.fullName}</Typography>
+          <Typography variant='body2'>{`${student?.levelName}`}</Typography>
+          <Button
+            variant='contained'
+            startIcon={<MessageRounded />}
+            onClick={openQuickMessage}
           >
-            <Tab
-              value='1'
-              label='Profile'
-              icon={<PersonRounded />}
-              iconPosition='start'
-            />
-            <Tab
-              value='2'
-              label='Academic Records'
-              icon={<ReportRounded />}
-              iconPosition='start'
-            />
-            <Tab
-              value='3'
-              label='Fees History'
-              icon={<NoteRounded />}
-              iconPosition='start'
-            />
-          </TabList>
-          <Divider />
-          <TabPanel value='1'>
-            <StudentProfile student={student} />
-          </TabPanel>
-          <TabPanel value='2'>
-            <StudentAcademics />
-          </TabPanel>
-          <TabPanel value='3'>
-            <StudentFees />
-          </TabPanel>
-        </TabContext>
-      </Box>
-    </Container>
+            Send Message
+          </Button>
+        </Stack>
+        {/* <Divider flexItem /> */}
+        <Box sx={{ flexGrow: 1 }}>
+          <TabContext value={tab}>
+            <TabList
+              onChange={(e, value) => setTab(value)}
+              variant='scrollable'
+              scrollButtons='auto'
+            >
+              <Tab
+                value='1'
+                label='Profile'
+                icon={<PersonRounded />}
+                iconPosition='start'
+              />
+              <Tab
+                value='2'
+                label='Academic Records'
+                icon={<ReportRounded />}
+                iconPosition='start'
+              />
+              <Tab
+                value='3'
+                label='Fees History'
+                icon={<NoteRounded />}
+                iconPosition='start'
+              />
+            </TabList>
+            <Divider />
+            <TabPanel value='1'>
+              <StudentProfile student={student} />
+            </TabPanel>
+            <TabPanel value='2'>
+              <StudentAcademics />
+            </TabPanel>
+            <TabPanel value='3'>
+              <StudentFees />
+            </TabPanel>
+          </TabContext>
+        </Box>
+      </Container>
+    </>
   );
 };
 

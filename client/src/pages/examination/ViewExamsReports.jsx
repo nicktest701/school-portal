@@ -15,10 +15,7 @@ import ViewScoreSheet from './ViewScoreSheet';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import { ArrowBack, Note } from '@mui/icons-material';
 import Loader from '../../config/Loader';
-import {
-  alertError,
-  alertSuccess,
-} from '../../context/actions/globalAlertActions';
+
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 
 const ViewExamsReports = () => {
@@ -33,9 +30,6 @@ const ViewExamsReports = () => {
   const { levelId } = useParams();
   const componentRef = useRef();
 
-  //close dialog
-  const handleClose = () => {};
-
   const reports = useQuery({
     queryKey: ['exams-reports', levelId, session.sessionId, session.termId],
     queryFn: () =>
@@ -47,9 +41,6 @@ const ViewExamsReports = () => {
     enabled: !!levelId && !!session.sessionId && !!session.termId,
     onSuccess: (data) => {
       studentDispatch({ type: 'getReportDetails', payload: data });
-    },
-    onError: (error) => {
-      // showBoundary(error);
     },
   });
 
@@ -121,31 +112,32 @@ const ViewExamsReports = () => {
 
   return (
     <div>
-      <Container sx={{ pt: 12 }}>
-        <Container
-          sx={{
-            position: 'fixed',
-            top: 0,
-            p: 1,
-            bgcolor: '#fff',
-            zIndex: 999,
-          }}
-        >
+      <Container>
+        <Link to={-1}>
+          <ArrowBack />
+        </Link>
+        <Container sx={{ p: 4 }}>
           <Stack px={2} direction='row' spacing={2} alignItems='center'>
-            <Link to={-1}>
-              <ArrowBack />
-            </Link>
-
             <Typography variant='h5' sx={{ flexGrow: 1 }}>
               Report Cards
             </Typography>
 
-            <Button onClick={handlOpenScoreSheet}>View Score Sheet</Button>
+            <Button
+              onClick={handlOpenScoreSheet}
+              color='warning'
+              variant='outlined'
+            >
+              View Score Sheet
+            </Button>
             <ReactToPrint
               // pageStyle={
               //   'width:8.5in";min-height:11in"; margin:auto",padding:4px;'
               // }
-              trigger={() => <Button>Print Reports</Button>}
+              trigger={() => (
+                <Button color='info' variant='outlined'>
+                  Print Reports
+                </Button>
+              )}
               content={() => componentRef.current}
               documentTitle='Report'
             />
@@ -154,6 +146,8 @@ const ViewExamsReports = () => {
               loadingPosition='start'
               startIcon={<Note />}
               onClick={handlePublishReports}
+              color='success'
+              variant='outlined'
             >
               {isLoading ? 'Please Wait' : 'Publish Reports'}
             </LoadingButton>

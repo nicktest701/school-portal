@@ -3,16 +3,19 @@ import { useTheme } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import { PolarArea } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 
 const StudentDashboardPieChart = ({ females, males }) => {
   const { palette } = useTheme();
   return (
-    <Card>
+    <Card sx={{border:'1px solid lightgray'}}>
       <CardHeader avatar={<PivotTableChartRounded />} title='Males & Females' />
       <CardContent>
-        <PolarArea
+        <Doughnut
           datasetIdKey='id'
+          style={{
+            height:120
+          }}
           data={{
             labels: ['Males', 'Females'],
 
@@ -20,6 +23,7 @@ const StudentDashboardPieChart = ({ females, males }) => {
               {
                 data: [males, females],
                 backgroundColor: [palette.primary.main, palette.secondary.main],
+                // backgroundColor: [palette.info.light, palette.success.light],
               },
             ],
           }}
@@ -51,6 +55,7 @@ const StudentDashboardPieChart = ({ females, males }) => {
             plugins: {
               legend: {
                 // display: false,
+                position:'bottom'
               },
             },
           }}

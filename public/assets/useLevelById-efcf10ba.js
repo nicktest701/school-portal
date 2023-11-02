@@ -1,0 +1,1 @@
+import{r as n,f as d,bB as f}from"./index-9d9404b9.js";function b(s){const[r,u]=n.useState([]),[a,c]=n.useState(0),e=d(["level",s],()=>f(s),{enabled:!!s,onSuccess:t=>{var o;u(t==null?void 0:t.students),c((o=t==null?void 0:t.students)==null?void 0:o.length)},onError:t=>{console.log(t)}});return{levelLoading:e.isLoading,students:r,rollNumber:a,refetch:e.refetch}}export{b as u};

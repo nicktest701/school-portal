@@ -79,10 +79,9 @@ export const SCHOOL_SESSION_COLUMN = (
       export: false,
       render: (rowData) =>
         rowData.termId === session?.termId ? (
-          <Chip
-            label='Current Session'
-            sx={{ color: 'white', bgcolor: 'primary.main' }}
-          />
+          <Button  sx={{ color: 'info.darker', bgcolor: 'info.lighter' }}>
+            Current Session
+          </Button>
         ) : null,
     },
     {
@@ -90,15 +89,16 @@ export const SCHOOL_SESSION_COLUMN = (
       field: null,
       render: (rowData) => {
         return (
-          <Stack direction='row' spacing={3}>
+          <Stack direction='row' spacing={2}>
             <Edit
-              className='ico'
+              className='ico edit'
               onClick={() => handleEdit(rowData)}
               title='Edit'
               titleAccess='Edit'
+              
             />
             <Delete
-              className='ico'
+              className='ico delete'
               onClick={() => handleDelete(rowData?.termId)}
               title='Delete'
               titleAccess='Delete'

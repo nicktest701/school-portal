@@ -15,7 +15,7 @@ const About = () => {
       }}
     >
       <Container maxWidth='md' sx={{ padding: 2 }}>
-        <Back color='#333' />
+        {/* <Back color='#333' /> */}
         <Stack rowGap={2} paddingY={3}>
           <Typography textAlign='right' variant='h2'>
             About Us

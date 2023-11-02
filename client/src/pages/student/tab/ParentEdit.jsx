@@ -22,8 +22,8 @@ import {
 import { NATIONALITY } from '../../../mockup/data/nationality';
 import { TOWNS } from '../../../mockup/data/towns';
 import CustomDialogTitle from '../../../components/dialog/CustomDialogTitle';
-import Transition from '../../../components/animations/Transition';
 import { putParent } from '../../../api/parentAPI';
+import { RELATIONSHIP } from '../../../mockup/columns/sessionColumns';
 
 const ParentEdit = () => {
   const queryClient = useQueryClient();
@@ -31,9 +31,10 @@ const ParentEdit = () => {
   const { studentState, studentDispatch } = useContext(StudentContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
-
   // EDIT parent information
-  const { mutateAsync } = useMutation(putParent);
+  const { mutateAsync } = useMutation({
+    mutationFn: putParent,
+  });
 
   const onSubmit = (values, options) => {
     // //console.log(values);
@@ -45,7 +46,7 @@ const ParentEdit = () => {
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
-        handleClose()
+        handleClose();
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));
@@ -71,7 +72,6 @@ const ParentEdit = () => {
         fullWidth
         open={studentState?.editParentData.open}
         onClose={handleClose}
-        TransitionComponent={Transition}
       >
         <CustomDialogTitle
           title='Edit Parent/Guardian Information'
@@ -117,6 +117,33 @@ const ParentEdit = () => {
                     />
                   </CustomFormControl>
                   <CustomFormControl>
+                    <Autocomplete
+                      freeSolo
+                      fullWidth
+                      size='small'
+                      options={RELATIONSHIP}
+                      loadingText='Please wait....'
+                      noOptionsText='No Relationship available'
+                      getOptionLabel={(option) => option || ''}
+                      value={values?.relationship}
+                      onInputChange={(e, value) =>
+                        setFieldValue('relationship', value)
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label='Relationship'
+                          fullWidth
+                          size='small'
+                          error={Boolean(
+                            touched?.relationship && errors?.relationship
+                          )}
+                          helperText={
+                            touched?.relationship && errors?.relationship
+                          }
+                        />
+                      )}
+                    />
                     <TextField
                       label='Gender'
                       select

@@ -24,7 +24,7 @@ const attendanceRoute = require('./routes/attendanceRoute');
 const app = express();
 
 // server port
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8002;
 
 app.set('view engine', 'ejs');
 
@@ -39,6 +39,7 @@ app.use(
 if (process.env.NODE_ENV !== 'production') {
   app.use(logger('dev'));
 }
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -69,11 +70,11 @@ app.use('/current-fees', currentFeeRoute);
 app.use('/messages', messageRoute);
 app.use('/attendances', attendanceRoute);
 
-// if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
 app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-// }
+ }
 
 //error handlers
 app.use((req, res, next) => {

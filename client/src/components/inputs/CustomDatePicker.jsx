@@ -6,13 +6,13 @@ function CustomDatePicker({
   date,
   setDate,
   error,
-  touched,
+  helperText,
   disableFuture,
+  handleChange,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <DatePicker
-        size='small'
         label={label}
         value={date}
         onChange={(date) => setDate(date)}
@@ -21,25 +21,10 @@ function CustomDatePicker({
         disableFuture={disableFuture}
         slotProps={{
           textField: {
-            InputLabelProps: {
-              // sx: {
-              //   color: touched && error ? '#B72136' : '',
-              // },
-            },
-            InputProps: {
-              sx: {
-                // border: touched && error ? '1px solid #B72136' : 'none',
-                borderRadius: 0,
-              },
-            },
-            // helperText: touched && error,
-
+            fullWidth: true,
             size: 'small',
-            FormHelperTextProps: {
-              // sx: {
-              //   color: touched && error ? 'error.main' : '',
-              // },
-            },
+            error: error,
+            helperText: helperText,
           },
         }}
         sx={{ width: '100%' }}

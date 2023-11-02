@@ -1,10 +1,14 @@
 import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
 import SchoolSessionReducer from '../reducers/SchoolSessionReducer';
+// import { useQuery } from '@tanstack/react-query';
+// import { getAllStudents } from '../../api/studentAPI';
 
 export const SchoolSessionContext = React.createContext();
 const SchoolSessionProvider = ({ children }) => {
+
   const schoolSessionValues = {
+    
     displayAddSession: false,
     currentSession: {},
     currentLevel: [],
@@ -106,7 +110,11 @@ const SchoolSessionProvider = ({ children }) => {
 
   return (
     <SchoolSessionContext.Provider
-      value={{ schoolSessionState, schoolSessionDispatch }}
+      value={{
+        schoolSessionState,
+        schoolSessionDispatch,
+        
+      }}
     >
       {children}
     </SchoolSessionContext.Provider>

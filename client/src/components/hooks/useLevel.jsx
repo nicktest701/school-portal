@@ -61,7 +61,7 @@ function useLevel() {
   );
 
   return {
-    levelLoading: levels.isLoading || levels.isFetching,
+    levelLoading: levels.isLoading ,
     levelRefetch: levels.refetch,
     levelsOption,
     levelSummary,

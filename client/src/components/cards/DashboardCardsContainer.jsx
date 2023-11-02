@@ -10,6 +10,7 @@ import { getDashboardInfo } from '../../api/levelAPI';
 import { UserContext } from '../../context/providers/userProvider';
 import { useErrorBoundary } from 'react-error-boundary';
 import DashboardSkeleton from '../skeleton/DashboardSkeleton';
+import { IconButton } from '@mui/material';
 
 function DashboardCardsContainer() {
   const { showBoundary } = useErrorBoundary();
@@ -34,7 +35,7 @@ function DashboardCardsContainer() {
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
+        gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
         gap: 2,
         py: 1,
       }}
@@ -43,13 +44,15 @@ function DashboardCardsContainer() {
         title='Students'
         value={info?.data?.students}
         icon={
-          <GroupsIcon
-            sx={{
-              width: 30,
-              height: 30,
-              color: 'error.light',
-            }}
-          />
+          <IconButton sx={{ bgcolor: 'error.lighter' }}>
+            <GroupsIcon
+              sx={{
+                width: 20,
+                height: 20,
+                color: 'error.darker',
+              }}
+            />
+          </IconButton>
         }
       />
 
@@ -57,39 +60,45 @@ function DashboardCardsContainer() {
         title='Tutors'
         value={info?.data?.teachers}
         icon={
-          <Person3
-            sx={{
-              width: 30,
-              height: 30,
-              color: 'info.light',
-            }}
-          />
+          <IconButton sx={{ bgcolor: 'info.lighter' }}>
+            <Person3
+              sx={{
+                width: 20,
+                height: 20,
+                color: 'info.darker',
+              }}
+            />
+          </IconButton>
         }
       />
       <DashboardCard
         title='Levels'
         value={info?.data?.levels}
         icon={
-          <SubjectIcon
-            sx={{
-              width: 30,
-              height: 30,
-              color: 'success.light',
-            }}
-          />
+          <IconButton sx={{ bgcolor: 'success.lighter' }}>
+            <SubjectIcon
+              sx={{
+                width: 20,
+                height: 20,
+                color: 'success.darker',
+              }}
+            />
+          </IconButton>
         }
       />
       <DashboardCard
         title='Courses'
         value={info?.data?.courses}
         icon={
-          <ClassIcon
-            sx={{
-              width: 30,
-              height: 30,
-              color: 'primary.light',
-            }}
-          />
+          <IconButton sx={{ bgcolor: 'warning.lighter' }}>
+            <ClassIcon
+              sx={{
+                width: 20,
+                height: 20,
+                color: 'warning.darker',
+              }}
+            />
+          </IconButton>
         }
       />
     </Box>

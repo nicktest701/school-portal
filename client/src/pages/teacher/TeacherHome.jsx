@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Add, PersonRounded } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Tab } from '@mui/material';
+import {  Container, Divider, Tab } from '@mui/material';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import TeacherAdd from './TeacherAdd';
 import { TEACHERS_COLUMN } from '../../mockup/columns/teacherColumn';
@@ -11,7 +11,7 @@ import { TeacherContext } from '../../context/providers/TeacherProvider';
 import { EMPTY_IMAGES } from '../../config/images';
 import teacher_icon from '../../assets/images/header/teacher_ico.svg';
 import CustomTitle from '../../components/custom/CustomTitle';
-import Scrollbars from 'react-custom-scrollbars';
+
 
 const TeacherHome = () => {
   const [tab, setTab] = useState('1');
@@ -35,71 +35,59 @@ const TeacherHome = () => {
   };
 
   return (
-    <Scrollbars style={{ width: '100%', height: '100vh' }} autoHide>
-      <Box
-        sx={{
-          position: 'relative',
-          height: 350,
-          color: 'primary.contrastText',
-          bgcolor: 'secondary.main',
-        }}
-      >
-        <Container
-          sx={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
-        >
-          <CustomTitle
-            title='Teachers Portal'
-            subtitle='Manage teaching staff information'
-            img={teacher_icon}
-            color='primary.main'
-          />
+    <Container
+      sx={{
+        position: 'relative',
+        height: 350,
+        color: 'primary.contrastText',
+        // bgcolor: 'secondary.main',
+      }}
+    >
+      <CustomTitle
+        title='Teachers Portal'
+        subtitle='Manage teaching staff information'
+        img={teacher_icon}
+        color='primary.main'
+      />
 
-          <TabContext value={tab}>
-            <TabList onChange={(e, value) => setTab(value)}>
-              <Tab
-                value='1'
-                label='Teachers'
-                icon={<PersonRounded />}
-                iconPosition='start'
-              />
-              <Tab
-                value='2'
-                label={isNotTeacher ? null : 'New'}
-                icon={isNotTeacher ? null : <Add />}
-                iconPosition='start'
-              />
-            </TabList>
-            <Divider />
-            <TabPanel value='1'>
-              <CustomizedMaterialTable
-                title='Teachers'
-                icon={teacher_icon}
-                isLoading={teachers.isFetching}
-                columns={TEACHERS_COLUMN}
-                // data={[]}
-                data={teachers.data ? teachers.data : []}
-                actions={[]}
-                onRowClick={viewTeacherInfo}
-                showAddButton={true}
-                addButtonImg={EMPTY_IMAGES.teacher}
-                addButtonText='New Teacher'
-                addButtonMessage='😑 Add your first teacher by clicking on the button below !'
-                onAddButtonClicked={() => setTab('2')}
-              />
-            </TabPanel>
-            <TabPanel value='2'>
-              <TeacherAdd setTab={setTab} />
-            </TabPanel>
-          </TabContext>
-        </Container>
-      </Box>
-    </Scrollbars>
+      <TabContext value={tab}>
+        <TabList onChange={(e, value) => setTab(value)}>
+          <Tab
+            value='1'
+            label='Teachers'
+            icon={<PersonRounded />}
+            iconPosition='start'
+          />
+          <Tab
+            value='2'
+            label={isNotTeacher ? null : 'New'}
+            icon={isNotTeacher ? null : <Add />}
+            iconPosition='start'
+          />
+        </TabList>
+        <Divider />
+        <TabPanel value='1'>
+          <CustomizedMaterialTable
+            title='Teachers'
+            icon={teacher_icon}
+            isLoading={teachers.isLoading}
+            columns={TEACHERS_COLUMN}
+            // data={[]}
+            data={teachers.data ? teachers.data : []}
+            actions={[]}
+            onRowClick={viewTeacherInfo}
+            showAddButton={true}
+            addButtonImg={EMPTY_IMAGES.teacher}
+            addButtonText='New Teacher'
+            addButtonMessage='😑 Add your first teacher by clicking on the button below !'
+            onAddButtonClicked={() => setTab('2')}
+          />
+        </TabPanel>
+        <TabPanel value='2'>
+          <TeacherAdd setTab={setTab} />
+        </TabPanel>
+      </TabContext>
+    </Container>
   );
 };
 

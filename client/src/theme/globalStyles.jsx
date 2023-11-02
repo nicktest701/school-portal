@@ -17,7 +17,7 @@ export default function GlobalStyles() {
           width: "100%",
           height: "100%",
           WebkitOverflowScrolling: "touch",
-          fontSize: "14px",
+           fontSize: "14px",
         },
         body: {
           margin: 0,

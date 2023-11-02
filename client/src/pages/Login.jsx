@@ -22,7 +22,7 @@ import StudentFeeSkeleton from '../components/skeleton/StudentFeeSkeleton';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { state } = useLocation();
+const { state } = useLocation();
   const {
     userState: { school_info, default_school_info },
     userDispatch,

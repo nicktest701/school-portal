@@ -6,25 +6,27 @@ import { NavLink } from 'react-router-dom';
 const DrawerItem = ({ title, icon, to }) => {
   const { palette } = useTheme();
 
+  const myLinkStyles = ({ isActive }) => {
+    return {
+      textDecoration: 'none',
+      color: `${palette.text.primary}`,
+      backgroundColor: isActive ? palette.grey[300] : null,
+      fontWeight: isActive ? 'bold' : '400',
+      whiteSpace: 'nowrap',
+      borderRadius:4
+    };
+  };
+
   return (
-    <NavLink
-      to={to}
-      style={{
-        textDecoration: 'none',
-        color: `${palette.primary.main}`,
-        paddingInline: '8px',
-      }}
-    >
+    <NavLink to={to} style={myLinkStyles} >
       <Stack
         direction='row'
-        justifyContent={{ xs: 'center', md: 'flex-start' }}
+        justifyContent='flex-start'
         alignItems='center'
         sx={{
-          padding: { xs: 1, sm: 2 },
+          p: { xs: 1, sm: '12px' },
           cursor: 'pointer',
-          boxShadow: { xs: '0 2px 5px  rgba(1, 46, 84,0.2) ', sm: 'none' },
-          borderRadius: { xs: '50px', sm: '0' },
-          width: { xs: 'inherit', md: 200 },
+          width: { xs: 'inherit', md: 150 },
 
           '&:hover': {
             backgroundColor: palette.grey[300],
@@ -39,7 +41,6 @@ const DrawerItem = ({ title, icon, to }) => {
           sx={{
             display: { xs: 'block', sm: 'none', md: 'block' },
             whiteSpace: 'noWrap',
-            color: 'primary.main',
           }}
         >
           {title}

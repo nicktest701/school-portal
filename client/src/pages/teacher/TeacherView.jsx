@@ -165,7 +165,7 @@ const TeacherView = () => {
       <Dialog
         tabIndex={-1}
         open={viewTeacherData.open}
-        maxWidth="sm"
+        maxWidth="md"
         fullWidth
         onClose={handleClose}
       >

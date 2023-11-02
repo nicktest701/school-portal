@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Stack,
   Dialog,
@@ -7,21 +7,20 @@ import {
   TextField,
   Typography,
   Divider,
-
-} from "@mui/material";
-import { Formik } from "formik";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoadingButton } from "@mui/lab";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { putTerm } from "../../api/termAPI";
+} from '@mui/material';
+import { Formik } from 'formik';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { LoadingButton } from '@mui/lab';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import { putTerm } from '../../api/termAPI';
 import {
   alertSuccess,
   alertError,
-} from "../../context/actions/globalAlertActions";
-import Transition from "../../components/animations/Transition";
-import moment from "moment";
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
+} from '../../context/actions/globalAlertActions';
+import Transition from '../../components/animations/Transition';
+import moment from 'moment';
+import CustomDatePicker from '../../components/inputs/CustomDatePicker';
+import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 const EditSession = ({ open, setOpen }) => {
   const {
     schoolSessionState: { sessionEditData },
@@ -53,14 +52,16 @@ const EditSession = ({ open, setOpen }) => {
     session: sessionEditData.sessionId,
   };
 
-  const { mutateAsync } = useMutation(putTerm);
+  const { mutateAsync, isLoading } = useMutation({
+    mutationFn: putTerm,
+  });
 
   const onSubmit = (values, options) => {
     //console.log(values);
     mutateAsync(values, {
       onSettled: () => {
         options.setSubmitting(false);
-        queryClient.invalidateQueries(["terms"]);
+        queryClient.invalidateQueries(['terms']);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -77,35 +78,28 @@ const EditSession = ({ open, setOpen }) => {
       open={open}
       onClose={() => setOpen(false)}
       fullWidth
-      maxWidth="xs"
+      maxWidth='xs'
       TransitionComponent={Transition}
     >
-      <CustomDialogTitle title="Edit Session" onClose={() => setOpen(false)} />
+      <CustomDialogTitle title='Edit Session' onClose={() => setOpen(false)} />
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
-        {({
-          values,
-          touched,
-          errors,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-        }) => {
+        {({ values, touched, errors, handleChange, handleSubmit }) => {
           return (
             <>
               <DialogContent>
                 <Stack spacing={2} paddingY={2}>
                   <TextField
-                    label="Academic Year"
+                    label='Academic Year'
                     InputProps={{ readOnly: true }}
                     value={values.academicYear}
-                    size="small"
+                    size='small'
                   />
                   <CustomDatePicker
-                    label="Start of Academic Term"
+                    label='Start of Academic Term'
                     date={from}
                     setDate={setFrom}
                     touched={touched.from}
@@ -113,7 +107,7 @@ const EditSession = ({ open, setOpen }) => {
                     readOnly={true}
                   />
                   <CustomDatePicker
-                    label="End of Academic Term"
+                    label='End of Academic Term'
                     date={to}
                     setDate={setTo}
                     touched={touched.to}
@@ -122,10 +116,10 @@ const EditSession = ({ open, setOpen }) => {
                   />
 
                   <TextField
-                    label="Term/Semester"
-                    size="small"
+                    label='Term/Semester'
+                    size='small'
                     value={values.term}
-                    onChange={handleChange("term")}
+                    onChange={handleChange('term')}
                     InputProps={{
                       readOnly: true,
                     }}
@@ -133,7 +127,7 @@ const EditSession = ({ open, setOpen }) => {
 
                   <Typography fontSize={13}>Vacation</Typography>
                   <CustomDatePicker
-                    label="Vacation Date"
+                    label='Vacation Date'
                     date={vacationDate}
                     setDate={setVacationDate}
 
@@ -142,7 +136,7 @@ const EditSession = ({ open, setOpen }) => {
                   />
 
                   <CustomDatePicker
-                    label="Next Term Begins"
+                    label='Next Term Begins'
                     date={reOpeningDate}
                     setDate={setReOpeningDate}
                     // touched={touched.to}
@@ -153,11 +147,11 @@ const EditSession = ({ open, setOpen }) => {
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
                 <LoadingButton
-                  loading={isSubmitting}
-                  variant="contained"
+                  loading={isLoading}
+                  variant='contained'
                   onClick={handleSubmit}
                 >
-                  Save Changes
+                  {isLoading ? 'Please Wait..' : 'Save Changes'}
                 </LoadingButton>
               </DialogActions>
             </>

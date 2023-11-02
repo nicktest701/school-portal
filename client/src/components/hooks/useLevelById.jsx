@@ -19,7 +19,7 @@ function useLevelById(id) {
   });
 
   return {
-    levelLoading: levels.isFetching,
+    levelLoading: levels.isLoading,
     students,
     rollNumber,
     refetch: levels.refetch,

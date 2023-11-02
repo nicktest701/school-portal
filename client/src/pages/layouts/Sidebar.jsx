@@ -35,50 +35,42 @@ const Sidebar = ({ onLogOut }) => {
   return (
     <Box
       sx={{
-        width: { xs: 0, sm: 80, md: 250 },
-        display: { xs: 'none', sm: 'flex' },
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRight: '2px solid #F3F5F9',
-        pt: 1,
+        width: { xs: 0, sm: 80, md: 200 },
+        minHeight:'100dvh',
+        display: { xs: 'none', sm: 'block' },
+        mt: 2,
         transition: 'all 0.4s ease-in-out',
         gap: 1,
-        height: '100%',
         position: 'sticky',
         top: 0,
+        borderRight:'1px solid lightgray'
       }}
     >
-      <Stack alignItems={{ xs: 'center', sm: 'left' }}>
-        <IconButton color='primary'>
-          {school_info?.badge ? (
-            <Avatar
-              alt='school logo'
-              loading='lazy'
-              srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                school_info?.badge
-              }`}
-              sx={{
-                width: 60,
-                height: 60,
-              }}
-            />
-          ) : (
-            <SchoolRounded sx={{ width: 60, height: 60 }} />
-          )}
-        </IconButton>
-        <Stack
-          alignItems='center'
-          justifyContent='center'
+      <Stack alignItems={{ xs: 'left', sm: 'center' }} pb={4} spacing={2}>
+        {school_info?.badge ? (
+          <Avatar
+            alt='school logo'
+            loading='lazy'
+            srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
+              school_info?.badge
+            }`}
+            sx={{
+              width: 40,
+              height: 40,
+            }}
+          />
+        ) : (
+          <SchoolRounded sx={{ width: 40, height: 40 }} />
+        )}
+
+        <Typography
+          fontWeight='bold'
+          textAlign='center'
+          variant='caption'
           display={{ xs: 'none', md: 'block' }}
         >
-          <Typography fontWeight='bold' textAlign='center' variant='caption'>
-            {school_info?.name}
-          </Typography>
-          {/* <Typography variant='body2' textAlign='center'>
-            &ldquo; {school_info?.motto} &rdquo;
-          </Typography> */}
-        </Stack>
+          {school_info?.name}
+        </Typography>
       </Stack>
       {/* <Divider /> */}
       <Stack
@@ -134,21 +126,18 @@ const Sidebar = ({ onLogOut }) => {
           </>
         )}
         <DrawerItem title='About' icon={<InfoRoundedIcon />} to='/about' />
-      </Stack>
 
-      <Stack>
         <Button
-          variant='outlined'
+          variant='text'
           color='primary'
-          fullWidth
-          // startIcon={<CancelRoundedIcon />}
-          sx={{ display: { xs: 'none', md: 'block' } }}
+          startIcon={<ExitToAppSharp />}
+          sx={{ display: { xs: 'none', md: 'flex' }, pl: 2 }}
           onClick={onLogOut}
         >
           Log out
         </Button>
         <IconButton
-          sx={{ display: { xs: 'inline-flex', md: 'none' } }}
+          sx={{ display: { xs: 'inline-flex', md: 'none' }, pl: '12px' }}
           onClick={onLogOut}
         >
           <ExitToAppSharp />

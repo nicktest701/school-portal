@@ -21,7 +21,6 @@ import {
   alertSuccess,
 } from '../../context/actions/globalAlertActions';
 
-import { uploadProfileImage } from '../../api/sessionAPI';
 import CustomDatePicker from '../../components/inputs/CustomDatePicker';
 import moment from 'moment';
 import { NATIONALITY } from '../../mockup/data/nationality';
@@ -63,7 +62,7 @@ const StudentEdit = () => {
   };
 
   //Put student
-  const { mutateAsync } = useMutation(putStudent);
+  const { mutateAsync, isLoading } = useMutation({ mutationFn: putStudent });
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format('L');
     // //console.log(values);
@@ -89,11 +88,11 @@ const StudentEdit = () => {
 
   const uploadProfile = async (e) => {
     const profile = e.target?.files[0];
-    const info = {
-      _id: student?._id,
-      profile,
-      type: 'students',
-    };
+    // const info = {
+    //   _id: student?._id,
+    //   profile,
+    //   type: 'students',
+    // };
 
     try {
       // const data = await uploadProfileImage(info);
@@ -108,7 +107,6 @@ const StudentEdit = () => {
       };
 
       reader.readAsDataURL(profile);
-      
     } catch (error) {
       schoolSessionDispatch(alertError(error));
     }
@@ -136,7 +134,6 @@ const StudentEdit = () => {
           setFieldValue,
           handleChange,
           handleSubmit,
-          isSubmitting,
         }) => {
           return (
             <>
@@ -193,10 +190,8 @@ const StudentEdit = () => {
                       date={dob}
                       setDate={setDob}
                       disableFuture={true}
-                      touched={Boolean(
-                        touched.dateofbirth && errors.dateofbirth
-                      )}
-                      error={touched.dateofbirth && errors.dateofbirth}
+                      error={Boolean(touched.dateofbirth && errors.dateofbirth)}
+                      helperText={touched.dateofbirth && errors.dateofbirth}
                     />
                     <TextField
                       label='Gender'
@@ -300,7 +295,7 @@ const StudentEdit = () => {
               </DialogContent>
               <DialogActions>
                 <LoadingButton
-                  loading={isSubmitting}
+                  loading={isLoading}
                   variant='contained'
                   color='primary'
                   onClick={handleSubmit}

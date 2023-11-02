@@ -1,11 +1,11 @@
 import { Typography } from '@mui/material';
 import React from 'react';
 
-const Footer = ({ bgcolor, color }) => {
+const Footer = () => {
   return (
     <footer
       style={{
-        heigt:100,
+        heigt: 100,
         backgroundColor: '#333',
         display: 'grid',
         placeItems: 'center',

@@ -39,7 +39,7 @@ const AddSession = () => {
   const [endYear, setEndYear] = useState('');
 
   //ADD New Session
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isLoading } = useMutation({
     mutationFn: postTerm,
   });
 
@@ -145,11 +145,11 @@ const AddSession = () => {
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
                 <LoadingButton
-                  loading={isSubmitting}
+                  loading={isLoading}
                   variant='contained'
                   onClick={handleSubmit}
                 >
-                  Save
+                  {isLoading ? 'Saving' : 'Save'}
                 </LoadingButton>
               </DialogActions>
             </>

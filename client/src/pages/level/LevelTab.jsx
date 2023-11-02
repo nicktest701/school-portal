@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import Delete from '@mui/icons-material/Delete';
-import {  Link, Stack,  useTheme } from '@mui/material';
+import {  Box, Link, Stack,  useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import AddLevel from './AddLevel';
@@ -127,7 +127,7 @@ const LevelTab = () => {
   ];
 
   return (
-    <>
+    <Box pt={2}>
       <CustomizedMaterialTable
         title='Levels'
         icon={level_icon}
@@ -145,7 +145,7 @@ const LevelTab = () => {
       />
       <AddLevel open={openAddCurrentLevel} setOpen={setOpenAddCurrentLevel} />
       <AddCurrentSubjects open={openAddSubjects} setOpen={setOpenAddSubjects} />
-    </>
+    </Box>
   );
 };
 

@@ -45,7 +45,9 @@ export const studentValidationSchema = object().shape({
 export const studentEditValidationSchema = object().shape({
   firstname: string().required('Required*'),
   surname: string().required('Required*'),
-  // dateofbirth: date().required("Required*"),
+  // dateofbirth: date()
+  //   .required('Required*')
+  //   .max(new Date(), 'Date of birth cannot be in the future'),
   gender: string().required('Required*'),
   email: string().email('Invalid email address!!!'),
   phonenumber: string().matches(

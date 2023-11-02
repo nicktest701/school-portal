@@ -12,9 +12,10 @@
   border: none;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   font-family: 'Public Sans', 'Quando', Helvetica, sans-serif;
+  font-size: 12px;
 }
 .react-calendar--doubleView {
-  width: 700px;
+  width: 600px;
 }
 .react-calendar--doubleView .react-calendar__viewContainer {
   display: flex;

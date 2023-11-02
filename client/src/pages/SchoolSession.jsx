@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Add, ArrowForwardRounded, SchoolRounded } from '@mui/icons-material';
 import {
   Container,

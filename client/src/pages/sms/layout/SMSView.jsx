@@ -6,7 +6,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   ListItemText,
   Stack,
   Tooltip,
@@ -21,7 +20,6 @@ import {
   alertSuccess,
 } from '../../../context/actions/globalAlertActions';
 import { deleteMessage, resendMessage } from '../../../api/messageAPI';
-import { DeleteForeverRounded, RefreshRounded } from '@mui/icons-material';
 import Transition from '../../../components/animations/Transition';
 import { LoadingButton } from '@mui/lab';
 

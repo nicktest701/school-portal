@@ -116,7 +116,7 @@ const SessionHome = () => {
       <CustomizedMaterialTable
         title='Sessions'
         icon={session_icon}
-        isLoading={sessions.isFetching}
+        isLoading={sessions.isLoading}
         columns={SCHOOL_SESSION_COLUMN(
           handleActivateSession,
           handlEditSession,

@@ -80,7 +80,7 @@ function CustomizedMaterialTable({
 
   return (
     <AnimatedContainer>
-      <Box paddingY={2} marginY={1}>
+      {/* <Box paddingY={2} > */}
         <MaterialTable
           isLoading={isLoading}
           title={
@@ -99,9 +99,9 @@ function CustomizedMaterialTable({
           data={data === undefined ? [] : data}
           options={{
             // selection: true,
-            
+
             draggable: true,
-          
+
             search: search || false,
             searchFieldVariant: 'outlined',
             // searchFieldStyle: { width: '20vw' },
@@ -118,15 +118,17 @@ function CustomizedMaterialTable({
             exportButton: true,
             exportAllData: true,
             exportFileName: exportFileName || title || '',
-            showTextRowsSelected: false,
-            showSelectAllCheckbox: false,
-            columnsButton: false,
+            // showTextRowsSelected: false,
+            selection: true,
+            showSelectAllCheckbox: true,
+            columnsButton: true,
             paging:
               showPaging ||
               (data === undefined || data.length === 0 ? false : true),
-            pageSize: 10,
-            pageSizeOptions: [ 10, 20, 30, 40, 50,100],
+            pageSize: 5,
+            pageSizeOptions: [5, 10, 20, 30, 40, 50, 100],
             paginationType: 'stepped',
+            paginationPosition:'top',
             actionsColumnIndex: -1,
             overflowY: 'scroll',
             header: data === undefined || data.length === 0 ? false : true,
@@ -139,7 +141,7 @@ function CustomizedMaterialTable({
             },
             rowStyle: {
               boxShadow: showRowShadow ? '0 1px 2px rgba(0,0,0,0.15)' : 'none',
-              paddingBlock: 2,
+              // paddingBlock: 2,
             },
             ...options,
           }}
@@ -255,7 +257,7 @@ function CustomizedMaterialTable({
             },
           }}
         />
-      </Box>
+      {/* </Box> */}
     </AnimatedContainer>
   );
 }

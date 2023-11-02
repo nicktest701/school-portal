@@ -18,17 +18,16 @@ const StudentDashboardLineChart = ({ data }) => {
   }, [data]);
 
   return (
-    <Card>
-      <CardHeader avatar={<PieChartRounded />} title='Students In Each Level' />
+    <Card sx={{ border: '1px solid lightgray' }}>
+      <CardHeader avatar={<PieChartRounded />} title='Levels' />
       <CardContent>
-        <Box
-          sx={{
-            minWidth: 150,
-            height: 150,
-          }}
-        >
+        <Box>
           <Pie
             datasetIdKey='id'
+            style={{
+              minWidth: 100,
+              height: 100,
+            }}
             data={{
               labels,
 

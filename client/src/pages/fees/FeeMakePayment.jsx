@@ -298,7 +298,7 @@ const FeeMakePayment = () => {
   const handleOpenPaymentHistory = () => setOpenFeesHistory(true);
 
   return (
-    <Container sx={{ paddingY: 2 }} maxWidth='lg'>
+    <Container >
       <Typography variant='h4'>Fees Payment</Typography>
       <Typography>Access,manage and control payment of school fees</Typography>
       <Divider />

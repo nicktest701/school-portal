@@ -11,17 +11,16 @@ function Student() {
     userState: { session },
   } = useContext(UserContext);
   const { studentDispatch } = useContext(StudentContext);
+  //  console.log(students)
 
-  useQuery(
-    ['all-students', session],
-    () => getAllStudentsBySession(session, 'all'),
-    {
-      enabled: !!session.sessionId,
-      onSuccess: (students) => {
-        studentDispatch({ type: 'getAllStudents', payload: students });
-      },
-    }
-  );
+  useQuery({
+    queryKey: ['all-students', session],
+    queryFn: () => getAllStudentsBySession(session, 'all'),
+    enabled: !!session.sessionId,
+    onSuccess: (students) => {
+      studentDispatch({ type: 'getAllStudents', payload: students });
+    },
+  });
 
   return (
     <>

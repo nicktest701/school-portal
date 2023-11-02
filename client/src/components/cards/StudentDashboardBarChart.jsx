@@ -7,7 +7,7 @@ import BarChart from '../charts/BarChart';
 
 const StudentDashboardBarChart = ({ data }) => {
   return (
-    <Card>
+    <Card sx={{border:'1px solid lightgray'}}>
       <CardHeader
         avatar={<BarChartRounded />}
         title={`Students for ${data && data[0]?.academicYear}`}

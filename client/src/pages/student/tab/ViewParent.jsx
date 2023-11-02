@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Edit, MessageRounded } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -17,10 +17,12 @@ import CustomDialogTitle from '../../../components/dialog/CustomDialogTitle';
 import { StudentContext } from '../../../context/providers/StudentProvider';
 import ParentEdit from './ParentEdit';
 import { Typography } from '@mui/material';
+import ParentNew from './ParentNew';
 
 const ViewParent = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
+  const [openNewParent, setOpenNewParent] = useState(false);
 
   const { studentId } = useParams();
 
@@ -58,17 +60,13 @@ const ViewParent = ({ open, setOpen }) => {
     });
   };
 
+  //New Parent
+
   return (
     <>
       <Dialog open={open} maxWidth='sm' fullWidth onClose={handleClose}>
         <CustomDialogTitle title='Parent Information' onClose={handleClose} />
-        <DialogContent
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}
-        >
+        <DialogContent>
           {isFetching && <Typography>Loading....</Typography>}
 
           {data?.length > 0 ? (
@@ -87,6 +85,10 @@ const ViewParent = ({ open, setOpen }) => {
                     text={`${parent?.firstname} ${parent?.surname}`}
                   />
 
+                  <ProfileItem
+                    label='Relationship'
+                    text={parent?.relationship}
+                  />
                   <ProfileItem label='Gender' text={parent?.gender} />
                   <ProfileItem label='Email Address' text={parent?.email} />
                   <ProfileItem
@@ -128,14 +130,20 @@ const ViewParent = ({ open, setOpen }) => {
               );
             })
           ) : (
-            <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+            <Box
+              display='flex'
+              flexDirection='column'
+              justifyContent='center'
+              alignItems='center'
+            >
               <Typography>No Parent info available</Typography>
-              <Button>Add New</Button>
+              <Button onClick={() => setOpenNewParent(true)}>Add New</Button>
             </Box>
           )}
         </DialogContent>
       </Dialog>
       <ParentEdit />
+      <ParentNew open={openNewParent} setOpen={setOpenNewParent} />
     </>
   );
 };

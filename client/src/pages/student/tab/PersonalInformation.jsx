@@ -16,7 +16,7 @@ import { NATIONALITY } from '../../../mockup/data/nationality';
 import { TOWNS } from '../../../mockup/data/towns';
 import { ArrowForward } from '@mui/icons-material';
 
-const PersonalInformation = ({ mode, setMode }) => {
+const PersonalInformation = ({  setMode }) => {
   const {
     studentState: {
       newStudent: { personal },
@@ -24,7 +24,6 @@ const PersonalInformation = ({ mode, setMode }) => {
     studentDispatch,
   } = useContext(StudentContext);
   const [dob, setDob] = useState(moment(personal?.dateofbirth));
-  
 
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format('L');
@@ -38,20 +37,7 @@ const PersonalInformation = ({ mode, setMode }) => {
         },
       },
     });
-    // console.log(values)
 
-    // try {
-
-    //   localStorage.setItem('@student', JSON.stringify(values));
-
-    //   options.setSubmitting(false);
-    // } catch (error) {
-    //   //   setMsg({
-    //   //     severity: 'error',
-    //   //     text: `Could not save student info.Try again!!!.
-    //   //           In this problem persists,try contacting your administrator!!!`,
-    //   //   });
-    // }
     options.setSubmitting(false);
     setMode('photo-info');
   };
@@ -72,7 +58,7 @@ const PersonalInformation = ({ mode, setMode }) => {
         setFieldValue,
         handleChange,
         handleSubmit,
-        handleReset,
+      
         isSubmitting,
       }) => {
         return (
@@ -131,8 +117,8 @@ const PersonalInformation = ({ mode, setMode }) => {
                 date={dob}
                 setDate={setDob}
                 disableFuture={true}
-                touched={Boolean(touched.dateofbirth && errors.dateofbirth)}
-                error={touched.dateofbirth && errors.dateofbirth}
+                error={Boolean(touched.dateofbirth && errors.dateofbirth)}
+                helperText={touched.dateofbirth && errors.dateofbirth}
               />
 
               <TextField

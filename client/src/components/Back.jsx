@@ -4,8 +4,9 @@ import { ArrowBackRounded, DashboardRounded } from '@mui/icons-material';
 import { Container, IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Back = ({ color, bg }) => {
+const Back = ({ to, color, bg }) => {
   const navigate = useNavigate();
+  const goBack = () => navigate(to || -1);
   return (
     <Container
       sx={{
@@ -13,11 +14,10 @@ const Back = ({ color, bg }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingY: 2,
       }}
     >
       <IconButton
-        onClick={() => navigate(-1)}
+        onClick={goBack}
         sx={{ bgcolor: bg || 'rgba(1, 46, 84,0.1)' }}
       >
         <ArrowBackRounded sx={{ color: color || '#fff' }} />

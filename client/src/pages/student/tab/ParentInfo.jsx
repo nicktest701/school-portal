@@ -7,7 +7,6 @@ import {
   Autocomplete,
   Avatar,
 } from '@mui/material';
-import _ from 'lodash';
 import { LoadingButton } from '@mui/lab';
 import CustomFormControl from '../../../components/inputs/CustomFormControl';
 import { Formik } from 'formik';
@@ -35,28 +34,6 @@ const ParentInfo = ({ setMode }) => {
         },
       },
     });
-
-    // const info = {
-    //   student: !_.isEmpty(studentState?.newStudent)
-    //     ? studentState?.newStudent
-    //     : student,
-    //   parent: values,
-    // };
-
-    // mutateAsync(info, {
-    //   onSettled: () => {
-    //     queryClient.invalidateQueries(['students-by-current-level']);
-    //     queryClient.invalidateQueries(['all-students']);
-    //     options.setSubmitting(false);
-    //   },
-    //   onSuccess: (data) => {
-    //     localStorage.removeItem('@student');
-    //     schoolSessionDispatch(alertSuccess(data));
-    //   },
-    //   onError: (error) => {
-    //     schoolSessionDispatch(alertError(error));
-    //   },
-    // });
 
     options.setSubmitting(false);
     setMode('medical-info');
