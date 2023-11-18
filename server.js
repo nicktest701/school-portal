@@ -29,7 +29,7 @@ const app = express();
 
 // server port
 const port = process.env.PORT || 8002;
-
+app.disable('x-powered-by')
 app.set('view engine', 'ejs');
 
 // middlewares
@@ -60,11 +60,11 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/reports', express.static(path.join(__dirname, 'reports')));
 
 //routes
-// app.use("/user", userRoute);
+
 app.use('/users', userRoute);
-// if (process.env.NODE_ENV === 'production') {
-  app.use(verifyJWT);
-// }
+
+app.use(verifyJWT);
+
 app.use('/sessions', sessionRoute);
 app.use('/terms', termRoute);
 app.use('/students', studentRoute);
@@ -95,13 +95,17 @@ app.use((err, req, res, next) => {
   // console.log(err);
   res.status(err.status || 500);
 
-  res.send({
-    error: {
-      status: err.status || 500,
-      message: err.message,
-      stack: err.stack,
-    },
-  });
+  if (process.env.NODE_ENV === 'production') {
+    res.send('An unknown error has occurred!.');
+  } else {
+    res.send({
+      error: {
+        status: err.status || 500,
+        message: err.message,
+        stack: err.stack,
+      },
+    });
+  }
 });
 
 db.asPromise()
