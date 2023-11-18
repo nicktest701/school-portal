@@ -1,12 +1,13 @@
 import React, { useReducer, useState } from 'react';
 import Swal from 'sweetalert2';
+import _ from 'lodash';
 import UserReducer from '../reducers/UserReducer';
 import PropTypes from 'prop-types';
 import { useQuery } from '@tanstack/react-query';
 import { getAllLevels } from '../../api/levelAPI';
 import { getSchoolInfo, verifyUser } from '../../api/userAPI';
-import { Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import Loader from '../../config/Loader';
 export const UserContext = React.createContext();
 
 const UserProvider = ({ children }) => {
@@ -29,7 +30,7 @@ const UserProvider = ({ children }) => {
     motto: 'Always at your tech service!',
   });
 
-  useQuery({
+  const schoolInfo = useQuery({
     queryKey: ['school-info'],
     queryFn: () => getSchoolInfo(),
     initialData: {
@@ -48,7 +49,7 @@ const UserProvider = ({ children }) => {
     },
   });
 
-  useQuery({
+  const usersInfo = useQuery({
     queryKey: ['user', session?.sessionId, session?.termId],
     queryFn: () => verifyUser(),
     enabled: !!session?.sessionId && !!session?.termId,
@@ -107,8 +108,8 @@ const UserProvider = ({ children }) => {
     });
   };
 
-  if (user?.isLoading) {
-    return <Typography>Loading......</Typography>;
+  if (schoolInfo?.isLoading || usersInfo?.isLoading) {
+    return <Loader />;
   }
 
   return (

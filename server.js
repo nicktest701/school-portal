@@ -22,6 +22,7 @@ const currentFeeRoute = require('./routes/currentFeeRoute');
 const messageRoute = require('./routes/messageRoute');
 const userRoute = require('./routes/userRoute');
 const attendanceRoute = require('./routes/attendanceRoute');
+const verifyJWT = require('./middlewares/verifyJWT');
 
 // initialize express
 const app = express();
@@ -60,9 +61,12 @@ app.use('/reports', express.static(path.join(__dirname, 'reports')));
 
 //routes
 // app.use("/user", userRoute);
+app.use('/users', userRoute);
+// if (process.env.NODE_ENV === 'production') {
+  app.use(verifyJWT);
+// }
 app.use('/sessions', sessionRoute);
 app.use('/terms', termRoute);
-app.use('/users', userRoute);
 app.use('/students', studentRoute);
 app.use('/parents', parentRoute);
 app.use('/teachers', teacherRoute);
@@ -76,11 +80,11 @@ app.use('/current-fees', currentFeeRoute);
 app.use('/messages', messageRoute);
 app.use('/attendances', attendanceRoute);
 
-// if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
-// }
+}
 
 //error handlers
 // app.use((req, res, next) => {

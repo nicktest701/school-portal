@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Outlet } from 'react-router-dom';
-import { getAllStudentsBySession } from '../../api/currentLevelAPI';
+import { getAllStudentsBySession } from '../../api/levelAPI';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import StudentNav from './layout/StudentNav';
 import { UserContext } from '../../context/providers/UserProvider';

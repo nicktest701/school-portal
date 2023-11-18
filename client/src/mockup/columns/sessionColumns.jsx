@@ -703,8 +703,8 @@ export const USERS_COLUMNS = [
     export: true,
   },
   {
-    field: null,
     title: 'Role',
+    field: 'role',
     render: (rowData) => (
       <ListItemText
         primary={<Typography variant='body2'>{rowData.username}</Typography>}
@@ -715,6 +715,7 @@ export const USERS_COLUMNS = [
         }
       />
     ),
+    export: false,
   },
   {
     title: 'Username',

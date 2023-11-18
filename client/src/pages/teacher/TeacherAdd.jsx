@@ -5,7 +5,6 @@ import {
   Stack,
   TextField,
   Typography,
-  FormLabel,
   MenuItem,
   Button,
   Autocomplete,
@@ -26,6 +25,7 @@ import CustomDatePicker from '../../components/inputs/CustomDatePicker';
 import moment from 'moment';
 import { TOWNS } from '../../mockup/data/towns';
 import { NATIONALITY } from '../../mockup/data/nationality';
+import CustomImageChooser from '../../components/inputs/CustomImageChooser';
 
 const TeacherAdd = ({ setTab }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -85,42 +85,18 @@ const TeacherAdd = ({ setTab }) => {
             handleSubmit,
             handleReset,
           }) => {
+            const uploadProfile = (e) => {
+              setFieldValue('profile', e.target.files[0]);
+              setProfieImg(URL.createObjectURL(e.target.files[0]));
+            };
             return (
               <Stack padding={2} spacing={1}>
-                <Stack
-                  spacing={2}
-                  justifyContent='center'
-                  alignItems='center'
-                  paddingY={1}
-                >
-                  <Avatar src={profileImg} sx={{ width: 80, height: 80 }} />
-                  <FormLabel
-                    htmlFor='profile'
-                    sx={{
-                      padding: 1,
-                      fontSize: 12,
-                      border: '1px solid black',
-                      borderRadius: 1,
-                      cursor: 'pointer',
-                      '&:hover': {
-                        bgcolor: 'primary.main',
-                        color: 'primary.contrastText',
-                      },
-                    }}
-                  >
-                    Attach Photo
-                  </FormLabel>
-                  <input
-                    type='file'
-                    id='profile'
-                    name='profile'
-                    accept='.png,.jpeg,.jpg,.webp'
-                    hidden
-                    onChange={(e) => {
-                      setFieldValue('profile', e.target.files[0]);
-                      setProfieImg(URL.createObjectURL(e.target.files[0]));
-                    }}
+                <Stack sx={{ position: 'relative', height: 100 }}>
+                  <Avatar
+                    srcSet={profileImg}
+                    sx={{ width: 100, height: 100, alignSelf: 'center' }}
                   />
+                  <CustomImageChooser handleImageUpload={uploadProfile} />
                 </Stack>
                 <Typography
                   variant='body2'
@@ -181,8 +157,8 @@ const TeacherAdd = ({ setTab }) => {
                     error={Boolean(touched.gender && errors.gender)}
                     helperText={touched.gender && errors.gender}
                   >
-                    <MenuItem value='male'>male</MenuItem>
-                    <MenuItem value='female'>female</MenuItem>
+                    <MenuItem value='male'>Male</MenuItem>
+                    <MenuItem value='female'>Female</MenuItem>
                   </TextField>
                 </CustomFormControl>
                 <CustomFormControl>

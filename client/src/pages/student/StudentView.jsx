@@ -9,7 +9,7 @@ import student_icon from '../../assets/images/header/student_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
 import CustomTitle from '../../components/custom/CustomTitle';
 import { useQuery } from '@tanstack/react-query';
-import { getAllStudentsBySession } from '../../api/currentLevelAPI';
+import { getAllStudentsBySession } from '../../api/levelAPI';
 import { UserContext } from '../../context/providers/UserProvider';
 import _ from 'lodash';
 

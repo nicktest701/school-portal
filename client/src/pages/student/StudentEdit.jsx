@@ -63,7 +63,7 @@ const StudentEdit = () => {
 
   //Put student
   const { mutateAsync, isLoading } = useMutation({ mutationFn: putStudent });
-  const onSubmit = (values, options) => {
+  const onSubmit = (values) => {
     values.dateofbirth = moment(dob).format('L');
     // //console.log(values);
     // delete values.profile;
@@ -71,10 +71,8 @@ const StudentEdit = () => {
 
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(['students']);
-        queryClient.invalidateQueries(['student-by-id']);
-        queryClient.invalidateQueries(['all-students']);
-        options.setSubmitting(false);
+        queryClient.invalidateQueries(['student-profile']);
+  
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));

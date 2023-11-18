@@ -9,12 +9,11 @@ import { useQuery } from '@tanstack/react-query';
 import feeEmptyImg from '../../assets/images/empty/fees-empty2.png';
 import { getStudentAllFeeHistory } from '../../api/currentFeeAPI';
 import StudentFeeReportListItem from '../../components/list/StudentFeeReportListItem';
-import { getAllStudentsBySession } from '../../api/currentLevelAPI';
+import { getAllStudentsBySession } from '../../api/levelAPI';
 import Scrollbars from 'react-custom-scrollbars';
 import { UserContext } from '../../context/providers/UserProvider';
 import CustomTitle from '../../components/custom/CustomTitle';
 import { EMPTY_IMAGES } from '../../config/images';
-import { CircularProgress } from '@mui/material';
 const FeeHistory = () => {
   const uniqueID = useId();
   const {

@@ -46,8 +46,7 @@ function UserHome() {
                   }}
                 />
               }
-              iconPosition='start'
-              color='#fff'
+              iconPosition='start'           
             />
           </TabList>
           <Divider />

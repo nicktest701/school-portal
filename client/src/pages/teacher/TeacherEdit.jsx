@@ -44,7 +44,7 @@ const TeacherEdit = () => {
   useEffect(() => {
     setDob(moment(teacher?.dateofbirth));
     setProfileImage(
-       `${import.meta.env.VITE_BASE_URL}/images/teachers/${teacher?.profile}`
+       `${import.meta.env.VITE_BASE_URL}/images/users/${teacher?.profile}`
     );
   }, [teacher]);
 

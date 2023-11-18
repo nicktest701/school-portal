@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+const user = JSON.parse(localStorage.getItem('@user'));
+axios.defaults.headers.common.Authorization = `Bearer ${user}`;
+
 //Get all Users
 export const getAllUsers = async () => {
   try {

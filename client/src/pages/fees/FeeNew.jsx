@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Container, useTheme } from '@mui/material';
+import { Container} from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import { deleteFee, getAllFees } from '../../api/feeAPI';
@@ -61,7 +61,7 @@ const FeeNew = () => {
   };
 
   const handleEdit = (rowData) => {
-    // //console.log(rowData);
+   
     schoolSessionDispatch({
       type: 'setFeeEditData',
       payload: {
@@ -72,7 +72,7 @@ const FeeNew = () => {
   };
 
   const handleView = ({ levelId, level, fee, noOfStudents, amount }) => {
-    // //console.log(levelId);
+   
     schoolSessionDispatch({
       type: 'viewLevelFeeInfo',
       payload: {

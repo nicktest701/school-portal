@@ -8,7 +8,6 @@ function CustomDatePicker({
   error,
   helperText,
   disableFuture,
-  handleChange,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>

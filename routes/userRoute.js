@@ -7,6 +7,7 @@ const multer = require('multer');
 const { randomUUID } = require('crypto');
 const verifyJWT = require('../middlewares/verifyJWT');
 const User = require('../models/userModel');
+const Teacher = require('../models/teacherModel');
 const School = require('../models/schoolModel');
 
 const Storage = multer.diskStorage({
@@ -24,33 +25,13 @@ const upload = multer({ storage: Storage });
 //@PGET all users
 router.get(
   '/',
+  verifyJWT,
   asyncHandler(async (req, res) => {
     const users = await User.find({}).select('-password');
-    // console.log(users);
 
-    // if (_.isEmpty(users)) {
-    //   return res.status(404).json("Error fetching user information");
-    // }
     res.json(users);
   })
 );
-
-//@PGET all users
-// router.get(
-//   '/quick-add',
-//   asyncHandler(async (req, res) => {
-//     const hashedPassword = await bcrypt.hash('Akwasi21@guy', 10);
-//     const users = await User.create({
-//       fullname: 'Nana',
-//       role: 'Administrator',
-//       email: 'kwasiowusuansah00@gmail.com',
-//       username: 'Admin',
-//       password: hashedPassword,
-//     });
-
-//     res.json(users);
-//   })
-// );
 
 //@PGET all users
 router.get(
@@ -123,6 +104,7 @@ router.post(
 //@POST add new user
 router.post(
   '/',
+  verifyJWT,
   upload.single('profile'),
   asyncHandler(async (req, res) => {
     const newUser = req.body;
@@ -152,6 +134,7 @@ router.post(
 //@Update User Information
 router.put(
   '/',
+  verifyJWT,
   asyncHandler(async (req, res) => {
     const { _id, password } = req.body;
 
@@ -169,6 +152,9 @@ router.put(
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json('Error updating user info.Try Again Later.');
     }
+    await Teacher.findByIdAndUpdate(_id, req.body, {
+      new: true,
+    });
 
     res.status(200).json('User info updated successfully !!!');
   })
@@ -177,6 +163,7 @@ router.put(
 //@POST Update User profile
 router.put(
   '/profile',
+  verifyJWT,
   upload.single('profile'),
   asyncHandler(async (req, res) => {
     const { _id } = req.body;
@@ -191,6 +178,12 @@ router.put(
         .status(400)
         .json('Error updating profile image.Try again later.');
     }
+
+    await Teacher.findByIdAndUpdate(_id, {
+      $set: {
+        profile: req.file?.filename,
+      },
+    });
 
     res.status(201).json('Profile image updated!!!');
   })
@@ -229,6 +222,7 @@ router.get(
 //@PUT Reset Password
 router.put(
   '/reset',
+  verifyJWT,
   asyncHandler(async (req, res) => {
     const { id, oldPassword, newPassword } = req.body;
     const user = await User.findById(id);
@@ -256,6 +250,7 @@ router.put(
 //@POST Reset User Password
 router.put(
   '/reset-password',
+  verifyJWT,
   asyncHandler(async (req, res) => {
     const { id, password } = req.body;
 
@@ -282,6 +277,7 @@ router.put(
 //@PUT Reset Password
 router.patch(
   '/admin/reset-password',
+  verifyJWT,
   asyncHandler(async (req, res) => {
     const { id, password } = req.body;
     const user = await User.findById(id);
@@ -306,6 +302,7 @@ router.patch(
 
 router.patch(
   '/',
+  verifyJWT,
   asyncHandler(async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(req.body.id, req.body, {
       new: true,
@@ -322,6 +319,7 @@ router.patch(
 //Enable or Disable User Account
 router.put(
   '/account',
+  verifyJWT,
   asyncHandler(async (req, res) => {
     const { id, active } = req.body;
 
@@ -380,6 +378,7 @@ router.get(
 // EDIT School Information
 router.put(
   '/school',
+  verifyJWT,
   asyncHandler(async (req, res) => {
     const schoolInfo = req.body;
     const school = await School.findOneAndUpdate(
@@ -407,6 +406,7 @@ router.put(
 //@POST Update User profile
 router.put(
   '/school/profile',
+  verifyJWT,
   upload.single('badge'),
   asyncHandler(async (req, res) => {
     const updatedBadge = await School.findOneAndUpdate(

@@ -52,14 +52,14 @@ const SchoolSession = () => {
     localStorage.setItem('@school_session', JSON.stringify(session));
     userDispatch({ type: 'setSession', payload: session });
 
-    navigate(currentPath, {
+    navigate('/', {
       replace: true,
     });
   };
 
   const handleOpenAddSession = () => setOpenAddSession(true);
 
-  if (_.isEmpty(user)) {
+  if (_.isEmpty(user?.id)) {
     return <Navigate to='/login' />;
   }
 

@@ -38,8 +38,6 @@ router.get(
   })
 );
 
-
-
 //@GET All students
 router.get(
   '/',
@@ -186,8 +184,6 @@ router.get(
   })
 );
 
-
-
 //@GET ALL student for search
 router.post(
   '/search/all',
@@ -207,13 +203,10 @@ router.post(
     //filter out all students
 
     const uniqueStudents = currentLevel.students.map((student) => {
-      const fullName = _.startCase(
-        `${student?.surname} ${student?.firstname} ${student?.othername}`
-      );
       return {
         id: student._id,
         profile: student.profile,
-        fullName,
+        fullName: student?.fullName,
         level: currentLevel?._id,
         levelType: `${currentLevel.level?.name}${currentLevel.level?.type}`,
       };
@@ -391,7 +384,7 @@ router.post(
       });
     }
 
-    res.status(200).json('Students Info has been Updated Successfully!!!');
+    res.status(200).json('Changes Saved!!!');
   })
 );
 //@PUT students
@@ -421,7 +414,7 @@ router.put(
         .json('Error updating student info.Try again later.');
     }
 
-    res.status(200).json('Student Info has been Updated Successfully!!!');
+    res.status(200).json('Changes Saved!!!');
   })
 );
 

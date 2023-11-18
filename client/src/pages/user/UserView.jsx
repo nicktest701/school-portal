@@ -17,7 +17,6 @@ import {
   DialogTitle,
   Divider,
   Stack,
-  useTheme,
 } from '@mui/material';
 
 import Swal from 'sweetalert2';
@@ -37,7 +36,6 @@ const UserView = () => {
   const queryClient = useQueryClient();
   const [profileImage, setProfileImage] = useState(null);
   const [openUpdatePassword, setOpenUpdatePassword] = useState(null);
-  const { palette } = useTheme();
 
   const {
     schoolSessionState: { userViewData },
@@ -65,8 +63,6 @@ const UserView = () => {
         : 'Do you want to enable this account?',
       text: user?.active ? 'Disabling Account' : 'Enabling Account',
       showCancelButton: true,
-      backdrop: false,
-      allowOutsideClick: false,
     }).then((data) => {
       if (data.isConfirmed) {
         const info = {
@@ -88,6 +84,17 @@ const UserView = () => {
     });
   };
 
+  // //EDIT User Info
+  // const editPassword = () => {
+  //   schoolSessionDispatch({
+  //     type: 'editUser',
+  //     payload: {
+  //       open: true,
+  //       data: user,
+  //     },
+  //   });
+  //   handleClose();
+  // };
   //EDIT User Info
   const editUserInfo = () => {
     schoolSessionDispatch({
@@ -113,13 +120,14 @@ const UserView = () => {
 
   //DELETE User Info
 
-  const { mutateAsync: deleteMutate } = useMutation(deleteUser);
+  const { mutateAsync: deleteMutate } = useMutation({
+    mutationFn: deleteUser,
+  });
 
   const handleDelete = () => {
     Swal.fire({
       title: 'Deleting User',
       text: 'Do you want to delete?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
     }).then((data) => {
       if (data.isConfirmed) {
@@ -138,7 +146,10 @@ const UserView = () => {
   };
 
   //UPDATE User Password
-  const handleOpenUpdatePassword = () => setOpenUpdatePassword(true);
+  const handleOpenUpdatePassword = () => {
+    // handleClose();
+    setOpenUpdatePassword(true);
+  };
 
   //OPEN Quick Message
   //CLOSE

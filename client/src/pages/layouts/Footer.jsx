@@ -5,7 +5,8 @@ const Footer = () => {
   return (
     <footer
       style={{
-        heigt: 100,
+        // position: 'fixed',
+        // bottom: 0,
         backgroundColor: '#333',
         display: 'grid',
         placeItems: 'center',

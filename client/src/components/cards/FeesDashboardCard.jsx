@@ -8,7 +8,6 @@ const FeesDashboardCard = ({ text, value }) => {
     <Stack
       spacing={1}
       sx={{
-        width: 200,
         backgroundColor: '#fff',
         padding: 2,
         borderRadius: '8px',

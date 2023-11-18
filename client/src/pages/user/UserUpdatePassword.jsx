@@ -33,15 +33,17 @@ function UserUpdatePassword({ open, setOpen }) {
     confirmPassword: '',
   };
 
-  const { mutateAsync } = useMutation({ mutationFn: updateUserPassword });
+  const { mutateAsync, isLoading } = useMutation({
+    mutationFn: updateUserPassword,
+  });
 
   const onSubmit = (values, options) => {
     delete values.confirmPassword;
+  
     Swal.fire({
       title: 'Updating Password',
       text: 'Do you wish to proceed?',
       showCancelButton: true,
-      backdrop: false,
       allowOutsideClick: false,
     }).then(({ isConfirmed, isDenied, isDismissed }) => {
       if (isConfirmed) {
@@ -80,17 +82,10 @@ function UserUpdatePassword({ open, setOpen }) {
       <Formik
         initialValues={iniitalValues}
         onSubmit={onSubmit}
-        // enableReinitialize={true}
+        enableReinitialize={true}
         validationSchema={userResetPasswordValidationSchema}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-        }) => {
+        {({ values, errors, touched, handleChange, handleSubmit }) => {
           return (
             <>
               <DialogContent>
@@ -100,6 +95,7 @@ function UserUpdatePassword({ open, setOpen }) {
                     label='Password'
                     fullWidth
                     size='small'
+                    autoComplete='no'
                     value={values.password}
                     onChange={handleChange('password')}
                     error={Boolean(touched.password && errors.password)}
@@ -123,7 +119,7 @@ function UserUpdatePassword({ open, setOpen }) {
               </DialogContent>
               <DialogActions>
                 <LoadingButton
-                  loading={isSubmitting}
+                  loading={isLoading}
                   variant='contained'
                   color='primary'
                   onClick={handleSubmit}

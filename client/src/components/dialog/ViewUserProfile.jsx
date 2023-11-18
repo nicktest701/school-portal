@@ -16,8 +16,6 @@ function ViewUserProfile({ open, setOpen }) {
   const [openUpdateUserProfile, setOpenUpdateUserProfile] = useState(false);
   const { user } = useContext(UserContext);
 
- 
-
   const handleOpenUpdateUserProfile = () => {
     setOpenUpdateUserProfile(true);
   };
@@ -34,7 +32,11 @@ function ViewUserProfile({ open, setOpen }) {
         <Stack justifyContent='center' alignItems='center' rowGap={2}>
           <Stack sx={{ position: 'relative' }}>
             <Avatar
-              src={ `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`}
+              src={
+                `${import.meta.env.VITE_BASE_URL}/images/users/${
+                  user?.profile
+                }` 
+              }
               sx={{ height: 75, width: 75 }}
             />
           </Stack>

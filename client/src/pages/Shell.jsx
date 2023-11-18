@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../context/providers/UserProvider';
 import _ from 'lodash';
-import Swal from 'sweetalert2';
-import { useNavigate, useLocation, Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import GlobalAlert from '../components/alerts/GlobalAlert';
 import QuickMessage from '../components/modals/QuickMessage';
 import Footer from './layouts/Footer';
@@ -23,6 +22,7 @@ import { ArrowDropDown, Menu, NotificationsSharp } from '@mui/icons-material';
 import HorizontalSidebar from './layouts/HorizontalSidebar';
 import ViewUserProfile from '../components/dialog/ViewUserProfile';
 
+
 const Shell = () => {
   const [openMiniBar, setOpenMiniBar] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
@@ -32,15 +32,6 @@ const Shell = () => {
     schoolSessionState: { generalAlert },
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
-  const [shadow, setShadow] = useState('none');
-
-  window.onscroll = function (e) {
-    if (window.scrollY > 5) {
-      setShadow('2px 3px 5px rgba(0,0,0,0.15)');
-    } else {
-      setShadow('none');
-    }
-  };
 
   const closeGeneralAlert = () => {
     schoolSessionDispatch({
@@ -57,8 +48,9 @@ const Shell = () => {
   //OPEN user profile
   const handleOpenUserProfile = () => setOpenUserProfile(true);
 
-  if (session?.id || !user?.id) {
-    <Navigate to='/login' />;
+
+  if (_.isEmpty(session?.sessionId) || _.isEmpty(user?.id)) {
+    return <Navigate to='/login' />;
   }
 
   return (
@@ -91,9 +83,6 @@ const Shell = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'start',
-          // overscrollBehaviorInline: 'contain',
-          gap: 1,
-          // pb: 2,
         }}
       >
         <Sidebar onLogOut={logOutUser} />
@@ -101,13 +90,10 @@ const Shell = () => {
         <div
           style={{
             flexGrow: 1,
+            paddingBottom: '8px',
           }}
         >
-          <AppBar
-            position='sticky'
-            sx={{ bgcolor: 'white', boxShadow: shadow }}
-            elevation={0}
-          >
+          <AppBar position='sticky' sx={{ bgcolor: 'white' }} elevation={1}>
             <Box
               sx={{
                 position: 'relative',
@@ -117,16 +103,20 @@ const Shell = () => {
             >
               <IconButton
                 sx={{
-                  // display: { xs: 'block', sm: 'none' },
-                  alignSelf: 'flex-end',
-                  py: 1,
+                  display: { xs: 'block', sm: 'none', px: 1 },
                 }}
                 onClick={handleOpenBar}
               >
                 <Menu />
               </IconButton>
 
-              <Stack direction='row' spacing={3} alignItems='center'>
+              <Stack
+                flex={1}
+                direction='row'
+                spacing={3}
+                alignSelf='flex-end'
+                justifyContent='flex-end'
+              >
                 <IconButton>
                   <Badge badgeContent={2} color='error'>
                     <NotificationsSharp />
@@ -149,6 +139,7 @@ const Shell = () => {
               </Stack>
             </Box>
           </AppBar>
+
           <Scrollbars style={{ width: '100%', height: '100dvh' }} autoHide>
             <Outlet />
           </Scrollbars>

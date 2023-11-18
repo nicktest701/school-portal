@@ -19,7 +19,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { TabContext, TabList,} from '@mui/lab';
 import Swal from 'sweetalert2';
 import React, { useContext, useState } from 'react';
 import { TeacherContext } from '../../context/providers/TeacherProvider';
@@ -27,7 +27,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteTeacher } from '../../api/teacherAPI';
 import TeacherAssignLevel from './TeacherAssignLevel';
 
-import { unassignTeacherLevel } from '../../api/currentLevelDetailAPI';
+import { unassignTeacherLevel } from '../../api/levelAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import {
   alertError,
@@ -204,7 +204,7 @@ const TeacherView = () => {
               gap={1}
             >
               <Avatar
-                src={`${import.meta.env.VITE_BASE_URL}/images/teachers/${
+                src={`${import.meta.env.VITE_BASE_URL}/images/users/${
                   teacher?.profile
                 }`}
                 sx={{ width: 70, height: 70 }}

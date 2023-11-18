@@ -41,7 +41,6 @@ const Sidebar = ({ onLogOut }) => {
         width: { xs: 0, sm: 80, md: 220 },
         minHeight: '100dvh',
         display: { xs: 'none', sm: 'block' },
-        mt: 2,
         pt: 2,
         transition: 'all 0.4s ease-in-out',
         gap: 1,

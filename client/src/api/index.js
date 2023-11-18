@@ -18,26 +18,11 @@ import {
   generateNewCurrentLevelDetailsFromLevels,
   getTodaysBirth,
   getDashboardInfo,
-} from './levelAPI';
-import {
-  getAllCurrentLevelDetails,
-  postCurrentLevelDetails,
-  putCurrentLevelDetails,
-  deleteCurrentLevelDetails,
   getTeacherLevel,
   assignTeacherLevel,
   unassignTeacherLevel,
-} from './currentLevelDetailAPI';
-import {
-  getAllCurrentLevels,
-  getAllPreviousLevels,
-  getCurrentLevel,
-  getStudentsByLevel,
-  getAllStudentsBySession,
-  postCurrentLevel,
-  putCurrentLevel,
-  deleteCurrentLevel,
-} from './currentLevelAPI';
+} from './levelAPI';
+
 import {
   getAllStudents,
   getAllStudentsForSearch,
@@ -163,25 +148,11 @@ export default {
   generateNewCurrentLevelDetailsFromLevels,
   getTodaysBirth,
   getDashboardInfo,
-
-  //current level details
-  getAllCurrentLevelDetails,
-  postCurrentLevelDetails,
-  putCurrentLevelDetails,
-  deleteCurrentLevelDetails,
   getTeacherLevel,
   assignTeacherLevel,
   unassignTeacherLevel,
 
-  //current level
-  getAllCurrentLevels,
-  getCurrentLevel,
-  getAllStudentsBySession,
-  getStudentsByLevel,
-  getAllPreviousLevels,
-  postCurrentLevel,
-  putCurrentLevel,
-  deleteCurrentLevel,
+
 
   //users
   getAllUsers,

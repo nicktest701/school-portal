@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import React, { useContext, useState } from 'react';
-import { getAllPreviousLevels } from '../../api/currentLevelAPI';
+import { getAllPreviousLevels } from '../../api/levelAPI';
 import { getAllTerms } from '../../api/termAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import { UserContext } from '../../context/providers/UserProvider';

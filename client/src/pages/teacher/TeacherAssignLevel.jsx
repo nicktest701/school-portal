@@ -10,7 +10,7 @@ import {
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { Formik } from 'formik';
-import { assignTeacherLevel } from '../../api/currentLevelDetailAPI';
+import { assignTeacherLevel } from '../../api/levelAPI';
 import { currentLevelValidationSchema } from '../../config/validationSchema';
 import {
   alertError,

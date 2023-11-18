@@ -6,11 +6,9 @@ export default function Input(theme) {
   return {
     MuiInputBase: {
       defaultProps: {
-        // disableElevation: true,
         sx: {
-          borderRadius: "2px",
-          // paddingY: "13px",
-   
+          borderRadius: '2px',
+          autoComplete: false,
         },
       },
       styleOverrides: {

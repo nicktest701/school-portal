@@ -115,7 +115,11 @@ const UpdateUserProfile = ({ open, setOpen }) => {
           return (
             <>
               <DialogContent>
-                <Stack direction='row' justifyContent='center' columnGap={3}>
+                <Stack
+                  direction={{ xs: 'column', md: 'row' }}
+                  justifyContent='center'
+                  columnGap={3}
+                >
                   <Stack sx={{ position: 'relative', height: 100 }}>
                     <Avatar
                       srcSet={profileImage}
@@ -203,7 +207,7 @@ const UpdateUserProfile = ({ open, setOpen }) => {
                             : touched.confirmPassword && errors.confirmPassword
                         }
                         FormHelperTextProps={{
-                          color: '#f00',
+                          color: 'error.main',
                         }}
                       />
                     </CustomFormControl>

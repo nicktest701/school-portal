@@ -15,7 +15,7 @@ const User = require('../models/userModel');
 //
 const Storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './images/teachers/');
+    cb(null, './images/users/');
   },
   filename: function (req, file, cb) {
     const ext = file?.originalname?.split('.')[1];
@@ -31,21 +31,14 @@ const upload = multer({ storage: Storage });
 router.get(
   '/',
   AsyncHandler(async (req, res) => {
-    const teachers = await Teacher.find({});
+    const teachers = await Teacher.find({
+      active: true,
+    });
 
     if (_.isEmpty(teachers)) {
       return res.status(200).json([]);
     }
-
-    const modifiedTeachers = teachers.map((teacher) => {
-      return {
-        ...teacher._doc,
-        fullName: _.startCase(
-          `${teacher?.surname} ${teacher?.firstname} ${teacher?.othername}`
-        ),
-      };
-    });
-    res.status(200).json(modifiedTeachers);
+    res.status(200).json(teachers);
   })
 );
 
@@ -74,16 +67,19 @@ router.post(
       return res.status(404).json('Couldnt save Teacher info.Try again.');
     }
 
-    const hashedPassword =await bcrypt.hash(teacher.surname, 10);
+    const hashedPassword = await bcrypt.hash(teacher?.phonenumber, 10);
 
     const user = {
       _id: teacher?._id,
-      profile: teacher?.profile,
-      fullName: teacher?.fullName,
-      username: teacher?.surname,
+      profile: req.file.filename,
+      fullname: _.startCase(
+        `${newTeacher?.surname} ${newTeacher?.firstname} ${newTeacher?.othername}`
+      ),
+      username: teacher?.phonenumber,
       dateofbirth: teacher?.dateofbirth,
+      email: teacher?.email,
       gender: teacher?.gender,
-      role: 'Teacher',
+      role: 'teacher',
       phonenumber: teacher?.phonenumber,
       address: teacher?.address,
       residence: teacher?.residence,
@@ -115,6 +111,12 @@ router.put(
         .json('Error updating profile image.Try again later.');
     }
 
+    await User.findByIdAndUpdate(_id, {
+      $set: {
+        profile: req.file?.filename,
+      },
+    });
+
     res.status(201).json('Profile image updated!!!');
   })
 );
@@ -129,7 +131,7 @@ router.put(
       return res.status(400).json('Invalid Teacher id');
     }
 
-    const modifiedTeacher = req.body;
+    let modifiedTeacher = req.body;
     const updatedTeacher = await Teacher.findByIdAndUpdate(
       id,
       modifiedTeacher,
@@ -143,7 +145,13 @@ router.put(
       return res.status(404).json('Couldnt update Teacher info.Try again.');
     }
 
-    res.status(201).json('Teacher info has been updated successfully!!!');
+    modifiedTeacher.fullname=_.startCase(
+      `${updatedTeacher?.surname} ${updatedTeacher?.firstname} ${updatedTeacher?.othername}`
+    );
+
+    await User.findByIdAndUpdate(id, modifiedTeacher);
+
+    res.status(201).json('Changes Saved!!!');
   })
 );
 
@@ -164,7 +172,12 @@ router.delete(
     if (_.isEmpty(teacher)) {
       return res.status(400).json("Couldn't remove Teacher info.Try again.");
     }
-    res.status(200).json('Teacher has been removed successfully!!!');
+
+    await User.findByIdAndUpdate(id, {
+      $set: { active: false },
+    });
+
+    res.status(200).json('Changes Saved!!!');
   })
 );
 

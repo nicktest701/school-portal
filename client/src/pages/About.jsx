@@ -1,7 +1,6 @@
 import { Container, Stack, Typography } from '@mui/material';
 import React from 'react';
 import about from '../assets/images/empty/about_bg.svg';
-import Back from '../components/Back';
 const About = () => {
   return (
     <div
@@ -13,7 +12,6 @@ const About = () => {
       }}
     >
       <Container maxWidth='md' sx={{ padding: 2 }}>
-        {/* <Back color='#333' /> */}
         <Stack rowGap={2} paddingY={3}>
           <Typography textAlign='right' variant='h2'>
             About Us

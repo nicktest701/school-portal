@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 const URL = import.meta.env.VITE_BASE_URL;
+const user = JSON.parse(localStorage.getItem('@user'));
+axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
 //Get all Students
 export const getAllExams = async (id) => {

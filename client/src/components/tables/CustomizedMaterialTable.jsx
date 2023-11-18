@@ -90,22 +90,9 @@ function CustomizedMaterialTable({
           }
           icons={tableIcons}
           columns={modifiedColumns}
-          // columns={[
-          //   {
-          //     customFilterAndSearch: (data, rowData) => {
-          //       return data.toLowerCase().lastIndexOf(rowData.fullName) > -1;
-          //     },
-
-          //   },
-          // ]}
           data={data === undefined ? [] : data}
-          // cellEditable={true}
-          // editable={true}
           options={{
-            // selection: true,
-
             draggable: true,
-
             search: search || false,
             searchFieldVariant: 'outlined',
             // searchFieldStyle: { width: '20vw' },
@@ -117,6 +104,7 @@ function CustomizedMaterialTable({
               marginRight: '20px',
               height: '40px',
               width: { xs: 100, md: '300px' },
+              
             },
 
             exportButton: true,

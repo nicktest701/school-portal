@@ -1,4 +1,6 @@
 import axios from 'axios';
+const user = JSON.parse(localStorage.getItem('@user'));
+axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
 //Get all Students
 export const getAllLevels = async (session, term) => {
@@ -115,6 +117,42 @@ export const deleteLevel = async ({ id, sessionId, termId }) => {
   }
 };
 
+
+export const getAllPreviousLevels = async (session) => {
+  try {
+    const res = await axios({
+      method: "GET",
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/previous`,
+      params: session,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
+export const getAllStudentsBySession = async (session) => {
+  try {
+    const res = await axios({
+      method: "POST",
+      url:  `${import.meta.env.VITE_BASE_URL}/levels/students/all`,
+      data: {
+        sessionId: session.sessionId,
+        termId: session.termId,
+      
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
+
+
+
 //////////-------------SUBJECTS----------//////////
 
 export const getSubjectsForLevel = async (levelId) => {
@@ -170,6 +208,53 @@ export const getDashboardInfo = async (info) => {
       method: 'GET',
       url: `${import.meta.env.VITE_BASE_URL}/levels/dashboard-info`,
       params: info,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
+///Teacher
+
+//Get Teacher assigned Level
+export const getTeacherLevel = async (assignedLevelDetails) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `${import.meta.env.VITE_BASE_URL}/levels/assign-teacher`,
+      data: assignedLevelDetails,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
+export const assignTeacherLevel = async (updatedLevel) => {
+  try {
+    const res = await axios({
+      method: 'PUT',
+      url: `${import.meta.env.VITE_BASE_URL}/levels/assign-teacher`,
+      data: updatedLevel,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+  }
+};
+
+export const unassignTeacherLevel = async (id) => {
+  try {
+    const res = await axios({
+      method: 'PUT',
+      url: `${import.meta.env.VITE_BASE_URL}/levels/unassign-teacher`,
+      params: {
+        id,
+      },
     });
 
     return res.data;

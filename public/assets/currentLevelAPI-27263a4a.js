@@ -1,1 +1,0 @@
-import{b2 as t}from"./index-7dcfaf27.js";const a=async s=>{try{return(await t({method:"GET",url:"/levels/previous",params:s})).data}catch{}},o=async s=>{try{return(await t({method:"POST",url:"/levels/students/all",data:{sessionId:s.sessionId,termId:s.termId}})).data}catch{}};export{a,o as g};
