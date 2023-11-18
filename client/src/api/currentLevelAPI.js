@@ -47,7 +47,7 @@ export const getCurrentLevel = async (id) => {
   }
 };
 
-export const getAllStudentsBySession = async (session, type) => {
+export const getAllStudentsBySession = async (session) => {
   try {
     const res = await axios({
       method: "POST",
@@ -55,7 +55,7 @@ export const getAllStudentsBySession = async (session, type) => {
       data: {
         sessionId: session.sessionId,
         termId: session.termId,
-        type,
+      
       },
     });
 

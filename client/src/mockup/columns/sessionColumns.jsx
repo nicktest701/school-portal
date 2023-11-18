@@ -79,7 +79,7 @@ export const SCHOOL_SESSION_COLUMN = (
       export: false,
       render: (rowData) =>
         rowData.termId === session?.termId ? (
-          <Button  sx={{ color: 'info.darker', bgcolor: 'info.lighter' }}>
+          <Button sx={{ color: 'info.darker', bgcolor: 'info.lighter' }}>
             Current Session
           </Button>
         ) : null,
@@ -95,7 +95,6 @@ export const SCHOOL_SESSION_COLUMN = (
               onClick={() => handleEdit(rowData)}
               title='Edit'
               titleAccess='Edit'
-              
             />
             <Delete
               className='ico delete'
@@ -126,8 +125,19 @@ export const SCHOOL_LEVELS = [
     hidden: true,
   },
   {
+    field: 'level',
+    title: 'Level',
+    hidden: true,
+  },
+  {
     field: 'type',
     title: 'Level',
+  },
+  {
+    field: 'noOfStudents',
+    title: 'No. Of Students',
+    type: 'numeric',
+    align: 'center',
   },
   {
     field: 'subjects',
@@ -170,6 +180,7 @@ export const SCHOOl_SUBJECTS = [
 ];
 
 export const LEVEL_OPTIONS = [
+  'Day Care',
   'Creche',
   'Nursery 1',
   'Nursery 2',
@@ -216,6 +227,7 @@ export const SUBJECT_OPTIONS = [
   'Integrated Science',
   'Natural Science',
   'Social Studies',
+  'History',
   'Religious & Moral Education',
   'Creative Arts & Design',
   'Career Technology',
@@ -223,10 +235,163 @@ export const SUBJECT_OPTIONS = [
   'Computing',
   'Ghanaian Language',
   'French',
-  'History',
   'Arabic',
   'Physical Education',
   'Physical & Health Education',
+];
+
+export const SUBJECTS = [
+  {
+    code: '',
+    name: 'ENGLISH LANGUAGE',
+    isCore: true,
+  },
+  {
+    code: '',
+    name: 'MATHEMATICS',
+    isCore: true,
+  },
+  {
+    code: '',
+    name: 'INTEGRATED SCIENCE',
+    isCore: true,
+  },
+  {
+    code: '',
+    name: 'NATURAL SCIENCE',
+    isCore: true,
+  },
+  {
+    code: '',
+    name: 'HISTORY',
+    isCore: true,
+  },
+  {
+    code: '',
+    name: 'SOCIAL STUDIES',
+    isCore: true,
+  },
+  {
+    code: '',
+    name: 'OUR WORLD,OUR PEOPLE',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'RELIGIOUS & MORAL EDUCATION',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'COMPUTING',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'CREATIVE ARTS & DESIGN',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'CAREER TECHNOLOGY',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'GHANAIAN LANGUAGE',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'FRENCH',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'ARABIC',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'PHYSICAL & HEALTH EDUCATION',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'PHYSICAL EDUCATION',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'READING',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'WRITING',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'MUSIC & DANCE',
+    isCore: false,
+  },
+  {
+    code: '',
+    name: 'ORALS & RHYMES',
+    isCore: false,
+  },
+];
+
+export const GRADES = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  'A1',
+  'B2',
+  'B3',
+  'C4',
+  'C5',
+  'C6',
+  'D7',
+  'E8',
+  'F9',
+  'A+',
+  'A',
+  'B+',
+  'B',
+  'C+',
+  'C',
+  'D+',
+  'E',
+  'F',
+];
+export const REMARKS = [
+  'Excellent',
+  'Distinct',
+  'Highest',
+  'Very Good',
+  'Higher',
+  'Good',
+  'High',
+  'High Average',
+  'Average',
+  'Below Average',
+  'Low Average',
+  'Credit',
+  'Low',
+  'Pass',
+  'Lower',
+  'Weak Pass',
+  'Weak',
+  'Lowest',
+  'Fail',
 ];
 
 export const FEES_OPTIONS = [
@@ -343,7 +508,7 @@ export const STUDENT_FEES_HISTORY_COLUMNS = [
         primary={new Date(date).toDateString()}
         secondary={new Date(date).toLocaleTimeString()}
         primaryTypographyProps={{
-          fontSize: 14,
+          fontSize: 12,
         }}
       />
     ),
@@ -366,6 +531,9 @@ export const STUDENT_FEES_HISTORY_COLUMNS = [
   {
     field: 'issuer',
     title: 'Issuer',
+    cellStyle: {
+      textTransform: 'capitalize',
+    },
   },
 ];
 
@@ -616,5 +784,80 @@ export const USERS_COLUMNS = [
   {
     field: 'nationality',
     title: 'Nationality',
+  },
+];
+
+export const SUBJECT_COLUMNS = [
+  {
+    field: '_id',
+    title: 'ID',
+    hidden: true,
+  },
+  {
+    field: 'code',
+    title: 'Code',
+  },
+  {
+    field: 'name',
+    title: 'Subject',
+  },
+  {
+    field: 'isCore',
+    title: 'Core',
+    render: ({ isCore }) =>
+      isCore ? (
+        <Button
+          sx={{
+            bgcolor: 'info.lighter',
+            color: 'info.darker',
+          }}
+        >
+          Core
+        </Button>
+      ) : null,
+  },
+];
+
+export const COURSE_LEVEL_COLUMNS = [
+  {
+    field: '_id',
+    title: 'ID',
+    hidden: true,
+  },
+  {
+    field: 'type',
+    title: 'Level',
+  },
+  {
+    field: 'noOfStudents',
+    title: 'Students',
+  },
+  {
+    field: 'noOfSubjects',
+    title: 'Subjects',
+  },
+];
+export const ASSIGNED_COURSE_COLUMNS = [
+  {
+    field: '_id',
+    title: 'ID',
+    hidden: true,
+  },
+  {
+    field: 'levelId',
+    title: 'level ID',
+    hidden: true,
+  },
+  {
+    field: 'subject',
+    title: 'Asigned Course',
+  },
+  {
+    field: 'level',
+    title: 'Level',
+  },
+  {
+    field: 'students',
+    title: 'Students',
   },
 ];

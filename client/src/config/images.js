@@ -6,6 +6,8 @@ import sms from '../assets/images/empty/sms.svg';
 import student from '../assets/images/empty/student.svg';
 import teacher from '../assets/images/empty/teacher.svg';
 import score from '../assets/images/header/score_ico.svg';
+import grade from '../assets/images/header/grade.svg';
+import subject from '../assets/images/header/subject.svg';
 
 //IMAGES
 export const EMPTY_IMAGES = {
@@ -17,4 +19,6 @@ export const EMPTY_IMAGES = {
   student,
   teacher,
   score,
+  subject,
+  grade,
 };

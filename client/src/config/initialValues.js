@@ -20,6 +20,7 @@ export const levelInitialValues = {
   level: '',
   type: '',
   subjects: [],
+  teacher: { _id: '', fullName: '' },
 };
 
 //student
@@ -76,7 +77,6 @@ export const teacherInitialValues = {
   residence: '',
   nationality: '',
 };
-
 
 //student
 export const userInitialValues = {

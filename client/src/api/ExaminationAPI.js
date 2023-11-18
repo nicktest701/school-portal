@@ -35,6 +35,21 @@ export const getExamsDetails = async (session) => {
     throw error.response.data;
   }
 };
+//Get all level exams details
+export const getSubjectScore = async (session) => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `${URL}/examinations/subject`,
+      params: session,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
 
 //GENERATE REPORTS
 export const generateReports = async (session) => {
@@ -89,10 +104,7 @@ export const getStudentAcademics = async (session, student, level) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${URL}/examinations/student/all`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      url: `${URL}/examinations/student/academics`,
       data: {
         student,
         session: session.sessionId,

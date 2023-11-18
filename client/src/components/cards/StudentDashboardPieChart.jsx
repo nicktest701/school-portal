@@ -8,7 +8,7 @@ import { Doughnut } from 'react-chartjs-2';
 const StudentDashboardPieChart = ({ females, males }) => {
   const { palette } = useTheme();
   return (
-    <Card sx={{border:'1px solid lightgray'}}>
+    <Card elevation={1}>
       <CardHeader avatar={<PivotTableChartRounded />} title='Males & Females' />
       <CardContent>
         <Doughnut

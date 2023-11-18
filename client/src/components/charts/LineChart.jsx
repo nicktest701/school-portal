@@ -1,73 +1,69 @@
 import { Line } from 'react-chartjs-2';
 import { useTheme } from '@mui/material';
-import Box from '@mui/material/Box,';
-import Card from '@mui/material/Card,';
-import CardContent from '@mui/material/CardContent,';
-import CardHeader from '@mui/material/CardHeader,';
-import Typography from '@mui/material/Typography,';
-import BarChartRounded from '@mui/icons-material/BarChartRounded';
+import Box from '@mui/material/Box';
 
-const LineChart = () => {
+const LineChart = ({ labels, values, values2 }) => {
   const { palette } = useTheme();
 
   return (
-    <Card>
-      <CardHeader
-        avatar={<BarChartRounded />}
-        subheader={<Typography color='primary'>No. of Students</Typography>}
-        color='primary'
-      />
-      <CardContent>
-        <Box
-          sx={{
-            minWidth: 150,
-            height: 150,
-          }}
-        >
-          <Line
-            datasetIdKey='id'
-            data={{
-              labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+    <Box
+      sx={{
+        minWidth: 200,
+        height: 200,
+      }}
+    >
+      <Line
+        datasetIdKey='line'
+        data={{
+          labels,
 
-              datasets: [
-                {
-                  data: [65, 34, 90, 47, 59],
-                  borderColor: palette.primary.main,
-                },
-                {
-                  data: [90, 12, 54, 47, 12],
-                  borderColor: palette.secondary.main,
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              layout: {
-                padding: 10,
+          datasets: [
+            {
+              label: 'Present',
+              data: values,
+              borderColor: palette.secondary.main,
+              tension: 0.3,
+            },
+            values2 && {
+              label: 'Absent',
+              data: values2,
+              borderColor: palette.primary.main,
+              tension: 0.3,
+            },
+          ],
+        }}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: 10,
+          },
+          scales: {
+            x: {
+              ticks: {
+                // display: false,
               },
-              scales: {
-                x: {
-                  ticks: {
-                    display: false,
-                  },
-                },
-                y: {
-                  ticks: {
-                    display: false,
-                  },
-                },
+              grid: {
+                display: false,
               },
-              plugins: {
-                legend: {
-                  display: false,
-                },
+            },
+            y: {
+              ticks: {
+                // display: false,
               },
-            }}
-          />
-        </Box>
-      </CardContent>
-    </Card>
+              grid: {
+                display: false,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              // display: false,
+            },
+          },
+        }}
+      />
+    </Box>
   );
 };
 

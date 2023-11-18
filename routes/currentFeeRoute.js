@@ -136,10 +136,8 @@ router.get(
 
       if (!_.isEmpty(paidForToday)) {
         studentPaymentForOnADate.push({
-          student: _.startCase(
-            `${student.surname} ${student.firstname} ${student.othername}`
-          ),
-          level: `${level.level.name}${level.level.type}`,
+          student: student?.fullName,
+          level: level?.levelName,
           payment: paidForToday,
         });
       }
@@ -154,28 +152,30 @@ router.get(
   '/recent',
   asyncHandler(async (req, res) => {
     const { session, term } = req.query;
-    const recentFeePayment = await CurrentFee.find({
-      session: new ObjectId(session),
-      term: new ObjectId(term),
-    })
-      .populate('level')
-      .populate('student')
-      .sort({ updatedAt: -1 })
-      .limit(10);
-    const modifiedFees = recentFeePayment.flatMap(
-      ({ _id, level: { level }, student, payment }) => {
-        return payment.map(({ date, paid, outstanding }) => {
-          return {
-            _id,
-            date,
-            student: student.fullName,
-            level: `${level?.name}${level.type}`,
-            paid: currencyConverter(paid),
-            outstanding: currencyConverter(outstanding),
-          };
-        });
-      }
-    );
+    
+      const recentFeePayment = await CurrentFee.find({
+        session: new ObjectId(session),
+        term: new ObjectId(term),
+      })
+        .populate('level')
+        .populate('student')
+        .sort({ updatedAt: -1 })
+        .limit(10);
+      const modifiedFees = recentFeePayment.flatMap(
+        ({ _id, level, student, payment }) => {
+          return payment.map(({ date, paid, outstanding }) => {
+            return {
+              _id,
+              date,
+              student: student?.fullName,
+              level: level?.levelName,
+              paid: currencyConverter(paid),
+              outstanding: currencyConverter(outstanding),
+            };
+          });
+        }
+      );
+    
     // console.log(modifiedFees);
 
     res.status(200).json(_.orderBy(modifiedFees, 'date', 'desc'));
@@ -259,10 +259,10 @@ router.get(
       ({ _id, term, level, session }) => {
         return {
           id: _id,
-          academicYear: session.academicYear,
-          term: term.term,
-          levelId: level._id,
-          levelType: `${level.level?.name}${level.level?.type}`,
+          academicYear: session?.academicYear,
+          term: term?.term,
+          levelId: level?._id,
+          levelType: level?.levelName,
         };
       }
     );

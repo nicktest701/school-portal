@@ -1,20 +1,11 @@
 import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
 import StudentReducer from '../reducers/StudentReducer';
-import { useQuery } from '@tanstack/react-query';
-import { getAllStudents } from '../../api/studentAPI';
 
 export const StudentContext = React.createContext();
 
 const StudentProvider = ({ children }) => {
   const session = JSON.parse(localStorage.getItem('@school_session'));
-  // console.log(session);
-
-  const students = useQuery({
-    queryKey: ['main-students', session?.sessionId],
-    queryFn: () => getAllStudents(),
-    enabled: !!session?.sessionId,
-  });
 
   const studentValues = {
     allStudents: [],
@@ -32,14 +23,19 @@ const StudentProvider = ({ children }) => {
     },
 
     //current student fee info
-    currentStudentFeeInfo: {
-      id: '',
-      level: '',
+    viewStudentFeeHistory: {
+      open: false,
+      data: {
+        id: '',
+        level: '',
+        feeId: '',
+      },
     },
     ///new student
 
     newStudent: {
       personal: {
+        indexnumber: '',
         firstname: '',
         surname: '',
         othername: '',
@@ -136,9 +132,7 @@ const StudentProvider = ({ children }) => {
   );
 
   return (
-    <StudentContext.Provider
-      value={{ studentState, studentDispatch, mainStudents: students?.data }}
-    >
+    <StudentContext.Provider value={{ studentState, studentDispatch }}>
       {children}
     </StudentContext.Provider>
   );

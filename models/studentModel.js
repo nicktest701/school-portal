@@ -5,6 +5,12 @@ const db = require('../db/DBConnection');
 const StudentSchema = new mongoose.Schema(
   {
     profile: String,
+    indexnumber: {
+      type: String,
+      lowercase: true,
+      required: true,
+      unique: true,
+    },
     firstname: {
       type: String,
       lowercase: true,
@@ -55,6 +61,8 @@ const StudentSchema = new mongoose.Schema(
         },
       },
     },
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 module.exports = db.model('Student', StudentSchema);

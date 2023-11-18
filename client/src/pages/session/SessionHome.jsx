@@ -29,8 +29,6 @@ const SessionHome = () => {
   //Query CLient
   const queryClient = useQueryClient();
 
-  const [openEditSession, setOpenEditSession] = useState(false);
-
   const sessions = useQuery({
     queryKey: ['terms'],
     queryFn: () => getAllTerms(),
@@ -66,12 +64,14 @@ const SessionHome = () => {
   };
 
   //Edit session
-  const handlEditSession = (rowData) => {
+  const handlEditSession = (data) => {
     schoolSessionDispatch({
-      type: 'setSessionEditData',
-      payload: rowData,
+      type: 'editSession',
+      payload: {
+        open: true,
+        data,
+      },
     });
-    setOpenEditSession(true);
   };
 
   const handleOpenSession = () => {
@@ -135,7 +135,7 @@ const SessionHome = () => {
         handleRefresh={sessions.refetch}
       />
       <AddSession />
-      <EditSession open={openEditSession} setOpen={setOpenEditSession} />
+      <EditSession />
     </>
   );
 };

@@ -13,7 +13,7 @@ import React, { useContext, useState } from 'react';
 import { getAllPreviousLevels } from '../../api/currentLevelAPI';
 import { getAllTerms } from '../../api/termAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import moment from 'moment';
 
 function PreviousSession({ open, setOpen }) {

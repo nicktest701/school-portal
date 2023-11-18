@@ -24,12 +24,6 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         subjectsWithScore: payload,
       };
 
-    case 'setSessionEditData':
-      return {
-        ...state,
-        sessionEditData: payload,
-      };
-
     case 'setFeesReceiptData':
       return {
         ...state,
@@ -188,7 +182,73 @@ const SchoolSessionReducer = (state, { type, payload }) => {
     case 'openGeneralAlert':
       return {
         ...state,
-        generalAlert: payload
+        generalAlert: payload,
+      };
+
+    case 'editSession':
+      return {
+        ...state,
+        editSession: {
+          open: payload.open,
+          data: payload.data,
+        },
+      };
+    case 'viewLevel':
+      return {
+        ...state,
+        viewLevel: {
+          open: payload.open,
+          data: payload.data,
+        },
+      };
+
+    case 'editLevel':
+      return {
+        ...state,
+        editLevel: {
+          open: payload.open,
+          data: payload.data,
+        },
+      };
+    case 'editSubject':
+      return {
+        ...state,
+        editSubject: {
+          open: payload.open,
+          data: payload.data,
+        },
+      };
+
+    case 'viewGrade':
+      return {
+        ...state,
+        viewGrades: {
+          open: payload.open,
+          ratings: payload.data,
+        },
+      };
+
+    case 'editGrade':
+      return {
+        ...state,
+        editGrades: {
+          open: payload.open,
+          data: payload.data,
+        },
+      };
+
+    case 'assignGrade':
+      return {
+        ...state,
+        assignGrades: {
+          open: payload.open,
+          data: payload.data,
+        },
+      };
+    case 'addStudentResults':
+      return {
+        ...state,
+        addStudentResults: payload,
       };
 
     default:

@@ -12,18 +12,14 @@ import _ from 'lodash';
 import { useQuery } from '@tanstack/react-query';
 import { getAllTerms } from '../api/termAPI';
 import { SchoolSessionContext } from '../context/providers/SchoolSessionProvider';
-import { UserContext } from '../context/providers/userProvider';
+import { UserContext } from '../context/providers/UserProvider';
 import AddSchoolSession from './session/AddSchoolSession';
 
 const SchoolSession = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const {
-    userDispatch,
-    userState: { user },
-  } = useContext(UserContext);
+  const { userDispatch, user } = useContext(UserContext);
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [options, setOptions] = useState([]);
   const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState('');
   const [session, setSession] = useState({
@@ -32,30 +28,20 @@ const SchoolSession = () => {
     term: '',
   });
 
-  // useEffect(() => {
-  //   if (_.isEmpty(user)) {
-  //     navigate('/login', { replace: true });
-  //   }
-  // }, []);
-
-  useQuery({
+  const sessions = useQuery({
     queryKey: ['terms'],
     queryFn: () => getAllTerms(),
-    onSuccess: (sessions) => {
+    select: (sessions) => {
       if (user?.role === 'administrator') {
-        setOptions(sessions);
+        return sessions;
       } else {
-        const filteredSession = sessions.filter(
-          (session) => session.active !== false
-        );
-        setOptions(filteredSession);
+        return sessions.filter((session) => session.active !== false);
       }
     },
   });
   const currentPath = state?.path || '/';
 
   const handleSession = () => {
-    
     setSessionError('');
     if (session.termId === '') {
       setSessionError('Session is Required*');
@@ -96,7 +82,7 @@ const SchoolSession = () => {
           School Portal
         </Typography>
         <Autocomplete
-          options={options}
+          options={sessions?.data ? sessions.data : []}
           noOptionsText='School Session not found'
           closeText=''
           clearText=' '

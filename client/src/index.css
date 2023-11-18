@@ -397,7 +397,8 @@ template {
 .swal2-container {
   z-index: 110000 !important;
   font-family: inherit;
-  background-color: var(--primary) !important;
+  /* background-color: var(--primary) !important; */
+  background-color: rgba(0, 0, 0, 0.3) !important;
 }
 .swal2-title {
   font-size: 1.2rem !important;
@@ -445,7 +446,7 @@ tbody tr:hover .edit {
 }
 
 tbody tr:hover .delete {
-  fill: #B72136 !important;
+  fill: #b72136 !important;
 }
 
 tbody tr:hover svg {
@@ -460,9 +461,10 @@ tbody tr:hover svg {
   .add-remarks-btn,
   .add-remark,
   .hide-on-print {
-    display: none;
+    display: none !important;
     background-color: transparent;
     color: transparent;
+    visibility: hidden !important;
   }
   .print-container {
     display: block;
@@ -476,16 +478,10 @@ tbody tr:hover svg {
     /* padding: 0; */
     border: 0;
   }
-  .admission-form {
-    background: linear-gradient(
-        to top right,
-        rgba(255, 255, 255, 0.9),
-        rgba(255, 255, 255, 0.9)
-      ),
-      url(http://localhost:8000/images/users/31e82772-f633-47f6-a7df-f04822864a64.png);
-    background-size: contain;
-    background-position: center !important;
-  }
+
+  /* .table-container{
+    padding-top: -20px;
+  } */
 }
 
 /* SPinners */

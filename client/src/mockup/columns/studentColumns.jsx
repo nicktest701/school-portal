@@ -3,6 +3,7 @@ import {
   Avatar,
   Button,
   FormControlLabel,
+  LinearProgress,
   ListItemText,
   Radio,
   RadioGroup,
@@ -10,12 +11,19 @@ import {
   Typography,
 } from '@mui/material';
 import _ from 'lodash';
+import { gradeColor } from '../../config/gradeColor';
+import { overallScoreGradeColor } from '../../config/overallScoreGradeColor';
 
 export const STUDENTS_COLUMN = [
   {
     field: '_id',
     title: 'ID',
     hidden: true,
+  },
+  {
+    field: 'indexnumber',
+    title: 'Student ID',
+    // hidden: true,
   },
   {
     field: 'fullName',
@@ -47,10 +55,10 @@ export const STUDENTS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-              //     rowData.profile
-              //   }`
-                :rowData?.profile
+              : // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                //     rowData.profile
+                //   }`
+                rowData?.profile
           }
         />
         <ListItemText
@@ -166,6 +174,109 @@ export const STUDENTS_COLUMN = [
     hidden: true,
   },
 ];
+export const RECENT_STUDENTS_COLUMN = [
+  {
+    field: '_id',
+    title: 'ID',
+    hidden: true,
+  },
+  {
+    field: 'indexnumber',
+    title: 'Student ID',
+    // hidden: true,
+  },
+  {
+    field: 'fullName',
+    title: 'FullName',
+    searchable: true,
+    customFilterAndSearch: (data, rowData) => {
+      return (
+        rowData.fullName.toLowerCase().lastIndexOf(data.toLowerCase()) > -1
+      );
+    },
+    hidden: true,
+    export: true,
+  },
+
+  {
+    title: 'Profile',
+    field: 'profile',
+    export: false,
+    width: 400,
+    searchable: true,
+    render: (rowData) => (
+      <Stack
+        direction='row'
+        columnGap={1}
+        justifyContent='center'
+        alignItems='center'
+      >
+        <Avatar
+          src={
+            rowData.profile === undefined || rowData.profile === ''
+              ? null
+              : // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                //     rowData.profile
+                //   }`
+                rowData?.profile
+          }
+        />
+        <ListItemText
+          primary={
+            <Typography
+              variant='body2'
+              sx={{
+                whiteSpace: 'nowrap',
+                fontWeight: 'bold',
+              }}
+            >
+              {rowData.fullName}
+            </Typography>
+          }
+          secondary={
+            <Typography variant='caption'>{`${_.startCase(rowData.gender)} ,${
+              new Date().getFullYear() -
+              new Date(rowData.dateofbirth).getUTCFullYear()
+            }yrs`}</Typography>
+          }
+        />
+      </Stack>
+    ),
+  },
+
+  {
+    field: 'levelName',
+    title: 'Level',
+    export: true,
+    // hidden: true,
+  },
+
+  {
+    field: 'gender',
+    title: 'Gender',
+    hidden: true,
+    export: true,
+  },
+  {
+    field: null,
+    title: 'Contact Info',
+    render: (rowData) => (
+      <ListItemText
+        primary={<Typography variant='body2'>{rowData.email}</Typography>}
+        secondary={
+          <Typography variant='caption' color='primary' fontWeight='bold'>
+            {rowData.phonenumber}
+          </Typography>
+        }
+      />
+    ),
+  },
+
+  {
+    field: 'levelId',
+    hidden: true,
+  },
+];
 
 export const STUDENTS_ATTENDANCE_COLUMNS = [
   {
@@ -182,10 +293,10 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
         src={
           rowData.profile === undefined || rowData.profile === ''
             ? null
-            :rowData?.profile
-            // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-            //     rowData.profile
-            //   }`
+            : rowData?.profile
+          // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+          //     rowData.profile
+          //   }`
         }
       />
     ),
@@ -227,9 +338,16 @@ export const STUDENTS_EXAMS_COLUMN = [
     field: '_id',
     title: 'ID',
     hidden: true,
-    // render: (rowData) => {
-    //   console.log(rowData);
-    // },
+  },
+  {
+    field: 'studentId',
+    title: 'studentId',
+    hidden: true,
+  },
+  {
+    field: 'indexnumber',
+    title: 'Index Number',
+    hidden: true,
   },
   {
     field: 'profile',
@@ -246,10 +364,10 @@ export const STUDENTS_EXAMS_COLUMN = [
           src={
             rowData.profile === undefined || rowData.profile === ''
               ? null
-              :rowData?.profile
-              // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-              //     rowData.profile
-              //   }`
+              : rowData?.profile
+            // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+            //     rowData.profile
+            //   }`
           }
         />
         <ListItemText
@@ -265,10 +383,9 @@ export const STUDENTS_EXAMS_COLUMN = [
             </Typography>
           }
           secondary={
-            <Typography variant='caption'>{`${_.startCase(rowData.gender)} ,${
-              new Date().getFullYear() -
-              new Date(rowData.dateofbirth).getUTCFullYear()
-            }yrs`}</Typography>
+            <Typography variant='caption'>{`${
+              rowData?.indexnumber || ''
+            },${_.startCase(rowData?.gender)}`}</Typography>
           }
         />
       </Stack>
@@ -282,43 +399,106 @@ export const STUDENTS_EXAMS_COLUMN = [
   },
 
   {
+    title: 'Level',
+    field: 'level',
+  },
+
+  {
+    title: 'Score',
+    field: 'overallScore',
+    render: (data) => (
+      <Button
+        sx={{
+          color: overallScoreGradeColor(data?.overallScore).color,
+          bgcolor: overallScoreGradeColor(data?.overallScore).bg,
+        }}
+      >
+        {data?.overallScore}
+      </Button>
+    ),
+  },
+
+  {
+    title: 'Completed',
+    field: 'entry',
+    render: ({ entry, overallScore }) => (
+      <Stack spacing={1}>
+        <LinearProgress
+          variant='determinate'
+          value={entry?.percent}
+          sx={{ width: 100 }}
+          color='secondary'
+        />
+        <Typography textAlign='center' fontSize={11}>
+          {entry?.completed}/{entry?.total}
+        </Typography>
+      </Stack>
+    ),
+  },
+
+  {
     field: 'levelId',
     hidden: true,
   },
-  {
-    field: 'levelName',
-    title: 'Level',
-    // hidden: true,
-    export: true,
-  },
+  // {
+  //   field: 'levelName',
+  //   title: 'Level',
+  //   // hidden: true,
+  //   export: true,
+  // },
 ];
 
-export const studentExamsReportColumns = [
+export const STUDENT_RESULT_COLUMNS = [
   {
-    name: 'subject',
-    title: 'Subject',
+    field: '_id',
+    title: 'ID',
+    hidden: true,
+    export: false,
   },
   {
-    name: 'classScore',
+    field: 'indexnumber',
+    title: 'Index Number',
+  },
+  {
+    field: 'student',
+    title: 'Student',
+  },
+  {
+    field: 'course.subject',
+    title: 'Subject',
+    export: false,
+  },
+  {
+    field: 'course.classScore',
     title: 'Class Score',
   },
   {
-    name: 'examsScore',
+    field: 'course.examsScore',
     title: 'Exams Score',
   },
   {
-    name: 'totalScore',
+    field: 'course.totalScore',
     title: 'Total Score',
   },
   {
-    name: 'grade',
+    field: 'course.grade',
     title: 'Grade',
   },
   {
-    name: 'remarks',
+    field: 'course.remarks',
     title: 'Remarks',
-    render: () => {
-      return <Button>Hello</Button>;
+    render: ({ course }) => {
+      return (
+        <Button
+          size='small'
+          sx={{
+            color: gradeColor(course?.totalScore).color,
+            bgcolor: gradeColor(course?.totalScore).bg,
+          }}
+        >
+          {course?.remarks}
+        </Button>
+      );
     },
   },
 ];
@@ -359,5 +539,57 @@ export const studentFeesReportColumns = [
   {
     name: 'issuer',
     title: 'Issuer',
+  },
+];
+
+export const IMPORT_STUDENT_COLUMNS = [
+  {
+    name: '_id',
+    title: 'ID',
+    hidden: true,
+  },
+  {
+    field: 'indexnumber',
+    title: 'STUDENT ID',
+  },
+  {
+    field: 'firstname',
+    title: 'FIRST NAME',
+  },
+  {
+    field: 'surname',
+    title: 'SURNAME',
+  },
+  {
+    field: 'othername',
+    title: 'OTHER NAME',
+  },
+  {
+    field: 'dateofbirth',
+    title: 'DATE OF BIRTH',
+  },
+  {
+    field: 'gender',
+    title: 'GENDER',
+  },
+  {
+    field: 'email',
+    title: 'EMAIL ADDRESS',
+  },
+  {
+    field: 'phonenumber',
+    title: 'TELEPHONE NUMBER',
+  },
+  {
+    field: 'address',
+    title: 'HOUSE/GPS ADDRESS',
+  },
+  {
+    field: 'residence',
+    title: 'RESIDENCE',
+  },
+  {
+    field: 'nationality',
+    title: 'NATIONALITY',
   },
 ];

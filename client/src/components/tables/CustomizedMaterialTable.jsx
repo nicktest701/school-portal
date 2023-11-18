@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
-import { FormLabel, Input, Typography } from '@mui/material';
+
+import { Card, FormLabel, Input, Typography } from '@mui/material';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import { tableIcons } from '../../config/tableIcons';
 import { Add, Delete, Refresh } from '@mui/icons-material';
@@ -23,6 +24,7 @@ function CustomizedMaterialTable({
   exportFileName,
   isLoading,
   search,
+  style,
   columns,
   data,
   options,
@@ -80,7 +82,7 @@ function CustomizedMaterialTable({
 
   return (
     <AnimatedContainer>
-      {/* <Box paddingY={2} > */}
+      <Box className='table-container'>
         <MaterialTable
           isLoading={isLoading}
           title={
@@ -97,6 +99,8 @@ function CustomizedMaterialTable({
           //   },
           // ]}
           data={data === undefined ? [] : data}
+          // cellEditable={true}
+          // editable={true}
           options={{
             // selection: true,
 
@@ -126,21 +130,21 @@ function CustomizedMaterialTable({
               showPaging ||
               (data === undefined || data.length === 0 ? false : true),
             pageSize: 5,
-            pageSizeOptions: [5, 10, 20, 30, 40, 50, 100],
+            pageSizeOptions: [3, 5, 10, 20, 30, 40, 50, 100],
             paginationType: 'stepped',
-            paginationPosition:'top',
+            paginationPosition: 'top',
             actionsColumnIndex: -1,
             overflowY: 'scroll',
             header: data === undefined || data.length === 0 ? false : true,
+            // toolbarButtonAlignment:'left',
             headerStyle: {
               color: 'rgb(1, 46, 84)',
-              // backgroundColor: '#eee',
               fontWeight: 'bold',
-              // textTransform:'uppercase'
-              // fontSize: 17,
             },
+
             rowStyle: {
               boxShadow: showRowShadow ? '0 1px 2px rgba(0,0,0,0.15)' : 'none',
+
               // paddingBlock: 2,
             },
             ...options,
@@ -149,9 +153,11 @@ function CustomizedMaterialTable({
             padding: '8px',
             boxShadow: 'none',
             border: '1px solid lightgray',
-            fontSize: 13,
+            fontSize: 12,
+            ...style,
           }}
           actions={[
+            ...actions,
             handleRefresh && {
               icon: () => <Refresh className='hide-on-print' />,
               position: 'toolbar',
@@ -165,8 +171,6 @@ function CustomizedMaterialTable({
               tooltip: 'Delete',
               onClick: () => alert('Delete All'),
             },
-
-            ...actions,
           ]}
           onRowClick={(e, rowData) => onRowClick && onRowClick(rowData)}
           components={{
@@ -174,6 +178,7 @@ function CustomizedMaterialTable({
               return data === undefined || data.length === 0 ? null : (
                 <>
                   <Box
+                    className='hide-on-print'
                     sx={{
                       display: 'flex',
                       justifyContent: 'flex-end',
@@ -229,7 +234,7 @@ function CustomizedMaterialTable({
                       </FormLabel>
                     )}
                   </Box>
-                  <MTableToolbar {...props} />
+                  <MTableToolbar {...props} className='hide-on-print' />
                 </>
               );
             },
@@ -257,7 +262,7 @@ function CustomizedMaterialTable({
             },
           }}
         />
-      {/* </Box> */}
+      </Box>
     </AnimatedContainer>
   );
 }

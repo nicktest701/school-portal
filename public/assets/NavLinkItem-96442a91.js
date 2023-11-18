@@ -1,0 +1,1 @@
+import{Y as a,j as i,bO as l}from"./index-7dcfaf27.js";const c=({to:t,text:o,color:n})=>{const{palette:r}=a(),s=({isActive:e})=>({textDecoration:"none",borderBottom:e?`solid 2px ${r.secondary.main}`:null,color:n||"#012e54",fontWeight:e?"bold":"400",whiteSpace:"nowrap"});return i.jsx(l,{to:t,style:s,end:!0,children:o})};export{c as N};

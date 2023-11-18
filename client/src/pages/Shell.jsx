@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../context/providers/userProvider';
+import React, { useContext, useState } from 'react';
+import { UserContext } from '../context/providers/UserProvider';
 import _ from 'lodash';
 import Swal from 'sweetalert2';
-import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { getSchoolInfo, verifyUser } from '../api/userAPI';
-import { useQuery } from '@tanstack/react-query';
+import { useNavigate, useLocation, Outlet, Navigate } from 'react-router-dom';
 import GlobalAlert from '../components/alerts/GlobalAlert';
 import QuickMessage from '../components/modals/QuickMessage';
 import Footer from './layouts/Footer';
@@ -16,10 +14,8 @@ import {
   Badge,
   Box,
   Button,
-  Container,
   IconButton,
   Stack,
-  useTheme,
 } from '@mui/material';
 import { SchoolSessionContext } from '../context/providers/SchoolSessionProvider';
 import Sidebar from './layouts/Sidebar';
@@ -30,72 +26,21 @@ import ViewUserProfile from '../components/dialog/ViewUserProfile';
 const Shell = () => {
   const [openMiniBar, setOpenMiniBar] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
-  const { palette } = useTheme();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const {
-    userState: { default_school_info, user },
-    userDispatch,
-  } = useContext(UserContext);
+  const { user, logOutUser, session } = useContext(UserContext);
 
   const {
     schoolSessionState: { generalAlert },
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
+  const [shadow, setShadow] = useState('none');
 
-  const schoolSession = JSON.parse(localStorage.getItem('@school_session'));
-  const path = location.pathname || '/';
-
-  useQuery({
-    queryKey: ['school'],
-    queryFn: () => getSchoolInfo(),
-    onSuccess: (data) => {
-      userDispatch({
-        type: 'setSchoolInfo',
-        payload: !_.isEmpty(data) ? data : default_school_info,
-      });
-      // localStorage.setItem('@school_info', JSON.stringify(data));
-    },
-  });
-
-  useEffect(() => {
-    //Set default loading
-    userDispatch({ type: 'setLoading' });
-
-    //Get user information
-    async function getData() {
-      try {
-        const data = await verifyUser();
-        //  console.log(data);
-        if (_.isEmpty(data?.id) || _.isEmpty(schoolSession)) {
-          userDispatch({
-            type: 'signOut',
-          });
-          navigate('/login', {
-            state: { path },
-            replace: true,
-          });
-        } else {
-          userDispatch({
-            type: 'signIn',
-            payload: { user: data, session: schoolSession },
-          });
-
-          navigate(path, {
-            replace: true,
-          });
-        }
-      } catch (error) {
-        navigate('/login', {
-          replace: true,
-          state: { error },
-        });
-      }
+  window.onscroll = function (e) {
+    if (window.scrollY > 5) {
+      setShadow('2px 3px 5px rgba(0,0,0,0.15)');
+    } else {
+      setShadow('none');
     }
-    getData();
-
-    return () => getData;
-  }, []);
+  };
 
   const closeGeneralAlert = () => {
     schoolSessionDispatch({
@@ -107,28 +52,14 @@ const Shell = () => {
     });
   };
 
-  //LOG OUT from System
-  const handleLogOut = () => {
-    Swal.fire({
-      title: 'Exiting',
-      text: 'Do you want to exit app?',
-      confirmButtonColor: palette.primary.main,
-      showCancelButton: true,
-      backdrop: false,
-    }).then(({ isConfirmed }) => {
-      if (isConfirmed) {
-        userDispatch({ type: 'signOut' });
-        localStorage.removeItem('@school_session');
-        localStorage.removeItem('@user');
-        navigate('/login');
-      }
-    });
-  };
-
   const handleOpenBar = () => setOpenMiniBar(true);
 
   //OPEN user profile
   const handleOpenUserProfile = () => setOpenUserProfile(true);
+
+  if (session?.id || !user?.id) {
+    <Navigate to='/login' />;
+  }
 
   return (
     <>
@@ -152,91 +83,80 @@ const Shell = () => {
       <HorizontalSidebar
         open={openMiniBar}
         setOpen={setOpenMiniBar}
-        onLogOut={handleLogOut}
+        onLogOut={logOutUser}
       />
-      <div
-        style={{
-          display: 'grid',
-          gridAutoRows: '1fr auto',
-          height: '100dvh',
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'start',
+          // overscrollBehaviorInline: 'contain',
+          gap: 1,
+          // pb: 2,
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'start',
-            overscrollBehaviorInline: 'contain',
-            gap: 1,
-            pb: 2,
+        <Sidebar onLogOut={logOutUser} />
+
+        <div
+          style={{
+            flexGrow: 1,
           }}
         >
-          <Sidebar onLogOut={handleLogOut} />
-          <div
-            style={{
-              flexGrow: 1,
-              display: 'grid',
-              gridTemplateRows: '1fr auto',
-            }}
+          <AppBar
+            position='sticky'
+            sx={{ bgcolor: 'white', boxShadow: shadow }}
+            elevation={0}
           >
-            <Scrollbars style={{ width: '100%', height: '100vh' }} autoHide>
-              <AppBar
-                position='sticky'
-                sx={{ bgcolor: 'white', py: 1, px: 2 }}
-                elevation={0}
+            <Box
+              sx={{
+                position: 'relative',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <IconButton
+                sx={{
+                  // display: { xs: 'block', sm: 'none' },
+                  alignSelf: 'flex-end',
+                  py: 1,
+                }}
+                onClick={handleOpenBar}
               >
-                {/* <Toolbar> */}
-                <Box
-                  sx={{
-                    position: 'relative',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                  }}
+                <Menu />
+              </IconButton>
+
+              <Stack direction='row' spacing={3} alignItems='center'>
+                <IconButton>
+                  <Badge badgeContent={2} color='error'>
+                    <NotificationsSharp />
+                  </Badge>
+                </IconButton>
+                <Button
+                  startIcon={
+                    <Avatar
+                      src={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                        user?.profile
+                      }`}
+                      sx={{ width: 30, height: 30, cursor: 'pointer' }}
+                    />
+                  }
+                  endIcon={<ArrowDropDown />}
+                  onClick={handleOpenUserProfile}
                 >
-                  <IconButton
-                    sx={{
-                      // display: { xs: 'block', sm: 'none' },
-                      alignSelf: 'flex-end',
-                      py: 1,
-                    }}
-                    onClick={handleOpenBar}
-                  >
-                    <Menu />
-                  </IconButton>
+                  {_.startCase(user?.fullname)}
+                </Button>
+              </Stack>
+            </Box>
+          </AppBar>
+          <Scrollbars style={{ width: '100%', height: '100dvh' }} autoHide>
+            <Outlet />
+          </Scrollbars>
+        </div>
+      </Box>
 
-                  <Stack direction='row' spacing={3} alignItems='center'>
-                    <IconButton>
-                      <Badge badgeContent={2} color='error'>
-                        <NotificationsSharp />
-                      </Badge>
-                    </IconButton>
-                    <Button
-                      startIcon={
-                        <Avatar
-                          src={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                            user?.profile
-                          }`}
-                          sx={{ width: 30, height: 30, cursor: 'pointer' }}
-                        />
-                      }
-                      endIcon={<ArrowDropDown />}
-                      onClick={handleOpenUserProfile}
-                    >
-                      {_.startCase(user?.fullname)}
-                    </Button>
-                  </Stack>
-                </Box>
-                {/* </Toolbar> */}
-              </AppBar>
-              <Container>
-                <Outlet />
-              </Container>
-            </Scrollbars>
-          </div>
-        </Box>
+      <Footer bgcolor='transparent' color='#333' />
 
-        <Footer bgcolor='transparent' color='#333' />
-      </div>
       <ViewUserProfile open={openUserProfile} setOpen={setOpenUserProfile} />
     </>
   );

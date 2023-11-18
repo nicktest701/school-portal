@@ -11,7 +11,7 @@ import {
 } from '../../context/actions/globalAlertActions';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { putSchoolInfo, updateSchoolLogo } from '../../api/userAPI';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 
 function SchoolSettingsTab() {
   const school_info = JSON.parse(localStorage.getItem('@school_info'));

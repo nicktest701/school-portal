@@ -10,7 +10,7 @@ import { Link, useParams } from 'react-router-dom';
 import Report from './Report';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { generateReports, publishReports } from '../../api/ExaminationAPI';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import ViewScoreSheet from './ViewScoreSheet';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import { ArrowBack, Note } from '@mui/icons-material';

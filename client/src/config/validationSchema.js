@@ -21,6 +21,13 @@ export const currentLevelValidationSchema = object().shape({
   _id: string().required('Required*'),
   type: string().required('Required*'),
 });
+export const assignLevelValidationSchema = object().shape({
+  currentLevel: object({
+    _id: string().required('Required*'),
+    type: string().required('Required*'),
+  }),
+  subject: string().required('Required*'),
+});
 
 export const studentValidationSchema = object().shape({
   firstname: string().required('Required*'),
@@ -208,6 +215,7 @@ export const examsScoreValidationSchema = object().shape({
 
 //Personal Data
 export const studentPersonalDataValidationSchema = object().shape({
+  indexnumber: string().required('Required*'),
   firstname: string().required('Required*'),
   surname: string().required('Required*'),
   gender: string().required('Required*'),
@@ -265,4 +273,17 @@ export const studentCurrentLevelValidationSchema = object().shape({
     _id: string().required('Required*'),
     type: string().required('Required*'),
   }),
+});
+
+export const gradesValidationSchema = object().shape({
+  lowestMark: number()
+    .required('Required*')
+    .min(0, 'Marks cannot be less than 0')
+    .max(100, 'Marks cannot be more than 100'),
+  highestMark: number()
+    .required('Required*')
+    .min(0, 'Marks cannot be less than 0')
+    .max(100, 'Marks cannot be more than 100'),
+  grade: string().trim().required('Required*'),
+  remarks: string().trim().required('Required*'),
 });

@@ -17,11 +17,12 @@ import ReactToPrint from 'react-to-print';
 import { STUDENT_FEES_HISTORY_COLUMNS } from '../../mockup/columns/sessionColumns';
 import PropTypes from 'prop-types';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import { PrintRounded } from '@mui/icons-material';
 import history_icon from '../../assets/images/header/history_ico.svg';
+import FeeReport from './FeeReport';
 
-const StudentFeesHistory = ({ open, setOpen }) => {
+const StudentFeesHistory = () => {
   const {
     userState: { session },
   } = useContext(UserContext);
@@ -29,42 +30,43 @@ const StudentFeesHistory = ({ open, setOpen }) => {
   const componentRef = useRef();
 
   const {
-    studentState: { currentStudentFeeInfo },
+    studentState: {
+      viewStudentFeeHistory: { open, data },
+    },
     studentDispatch,
   } = useContext(StudentContext);
 
-  const studentFee = useQuery(
-    ['student-fee-history'],
-    () =>
+  const studentFee = useQuery({
+    queryKey: ['student-fee-history', data?.id, data?.level],
+    queryFn: () =>
       getStudentFeeHistory({
         sessionId: session.sessionId,
         termId: session?.termId,
-        studentId: currentStudentFeeInfo?.id,
-        levelId: currentStudentFeeInfo?.level,
-        feeId: currentStudentFeeInfo?.feeId,
+        studentId: data?.id,
+        levelId: data?.level,
+        feeId: data?.feeId,
       }),
-    {
-      enabled: !!currentStudentFeeInfo?.id && !!currentStudentFeeInfo?.level,
-    }
-  );
+    enabled: !!data?.id && !!data?.level,
+  });
 
   const handleClose = () => {
-    setOpen(false);
     studentDispatch({
-      type: 'setCurrentStudentFeeInfo',
+      type: 'viewStudentFeeHistory',
       payload: {
-        id: '',
-        level: '',
+        open: false,
+        data: {},
       },
     });
   };
+
+  // console.log(studentFee?.data);
 
   return (
     <Dialog maxWidth='md' fullWidth open={open} onClose={handleClose}>
       <CustomDialogTitle title='Student Fee Payment ' onClose={handleClose} />
       <DialogActions>
         <ReactToPrint
-          pageStyle={'width:8.5in";min-height:11in"; margin:auto",padding:8px;'}
+          // pageStyle={'width:8.5in";min-height:11in"; margin:auto",padding:8px;'}
           trigger={() => (
             <Button startIcon={<PrintRounded />} variant='contained'>
               Print Report
@@ -73,48 +75,23 @@ const StudentFeesHistory = ({ open, setOpen }) => {
           content={() => componentRef.current}
         />
       </DialogActions>
-      <DialogContent ref={componentRef}>
+      <DialogContent>
         {studentFee.isLoading && <Typography>Please Wait.....</Typography>}
 
-        {/* school details */}
-        {/* <Stack justifyContent='center' alignItems='center'>
-       
-          <Typography variant='h4'>Frebbys International School</Typography>
-          <Typography sx={{ fontSize: '14px' }}>
-            Post Office Box KS 134
-          </Typography>
-          <Typography sx={{ fontSize: '14px' }}>Kumasi</Typography>
-          <Typography
-            sx={{
-              textAlign: 'center',
-              textDecoration: 'underline',
-              borderTop: `solid 5px ${palette.secondary.main}`,
-              bgcolor: 'primary.main',
-              color: 'primary.contrastText',
-              width: '100%',
-              padding: 1,
-            }}
-          >
-            Fees History
-          </Typography>
-        </Stack> */}
-
-        <Stack justifyContent='center' alignItems='center'>
+        <Stack justifyContent='center' alignItems='center' spacing={2}>
           <Avatar
             srcSet={
               studentFee?.data?.profile === undefined ||
               studentFee?.data?.profile === ''
                 ? null
-                :  studentFee?.data?.profile
-                // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                //     studentFee?.data?.profile
-                //   }`
+                : studentFee?.data?.profile
+              // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+              //     studentFee?.data?.profile
+              //   }`
             }
             sx={{ width: 70, height: 70 }}
           />
-          <Typography variant='h5'>
-            {studentFee?.data?.fullName}
-          </Typography>
+          <Typography variant='h5'>{studentFee?.data?.fullName}</Typography>
           <Typography variant='caption'>
             {studentFee?.data?.levelType}
             {/* {studentFee?.data?.term} */}
@@ -138,10 +115,17 @@ const StudentFeesHistory = ({ open, setOpen }) => {
             options={{
               paging: false,
               selection: false,
+              columnsButton: false,
+            }}
+            style={{
+              border: 'none',
             }}
           />
         </>
       </DialogContent>
+      <div ref={componentRef} className='print-container' >
+        <FeeReport student={studentFee?.data} />
+      </div>
     </Dialog>
   );
 };

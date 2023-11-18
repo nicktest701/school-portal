@@ -1,1 +1,0 @@
-const o=(s,a)=>{const r=Number(s)+Number(a);let e="",l="";return r>=75?(e="A1",l="Excellent"):r>=70?(e="B2",l="Very Good"):r>=65?(e="B3",l="Good"):r>=60?(e="C4",l="Good"):r>=55?(e="C5",l="Average"):r>=50?(e="C6",l="Average"):r>=45?(e="D7",l="Pass"):r>=40?(e="E8",l="Weak"):(e="F9",l="Fail"),{totalScore:r,grade:e,remarks:l}};export{o as g};

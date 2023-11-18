@@ -1,16 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Calendar from 'react-calendar';
-import _ from 'lodash';
-import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Container,
-  Divider,
-  Stack,
-  Typography,
-} from '@mui/material';
-
-
+import { Box, Container, Divider, Stack, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { generateNewCurrentLevelDetailsFromLevels } from '../api/levelAPI';
 import DashboardSwiper from '../components/swiper/DashboardSwiper';
@@ -18,33 +8,32 @@ import CustomParticle from '../components/animations/CustomParticle';
 import Birthday from '../components/items/Birthday';
 import 'react-calendar/dist/Calendar.css';
 import '../theme/Calendar.css';
-import { UserContext } from '../context/providers/userProvider';
+import { UserContext } from '../context/providers/UserProvider';
 import DashboardCardsContainer from '../components/cards/DashboardCardsContainer';
+import CustomCard from '../components/cards/CustomCard';
 
 const Dashboard = () => {
   const {
-    userState: { user, session },
+    user,
+    userState: { session },
   } = useContext(UserContext);
-
-  const navigate = useNavigate();
 
   const [value, onChange] = useState(new Date());
 
-  useEffect(() => {
-    if (_.isEmpty(user?.id)) {
-      navigate('/login', { replace: true });
-      return;
-    }
-  }, []);
-
   //check if current level details exists
-  useQuery(
-    ['generate-current-level-details'],
-    () => generateNewCurrentLevelDetailsFromLevels(session),
-    {
-      enabled: !!session,
-    }
-  );
+  useQuery({
+    queryKey: [
+      'generate-current-level-details',
+      session?.sessionId,
+      session?.termId,
+    ],
+    queryFn: () =>
+      generateNewCurrentLevelDetailsFromLevels({
+        sessionId: session?.sessionId,
+        termId: session?.termId,
+      }),
+    enabled: !!session?.sessionId && !!session?.termId,
+  });
 
   return (
     <>
@@ -63,7 +52,6 @@ const Dashboard = () => {
             overscrollBehaviorInline: 'contain',
           }}
         >
-          
           <Typography variant='h6' paragraph>
             Dashboard
           </Typography>
@@ -83,15 +71,6 @@ const Dashboard = () => {
                 {new Date().toDateString()}
               </Typography>
             </Stack>
-
-            {/* <Stack direction='row'>
-              <IconButton>
-                <NotificationsRounded />
-              </IconButton>
-              <IconButton>
-                <MoreVertRoundedIcon />
-              </IconButton>
-            </Stack> */}
           </Box>
           <Typography
             variant='h6'
@@ -118,7 +97,9 @@ const Dashboard = () => {
           }}
         >
           <Stack spacing={3}>
-            <Calendar onChange={onChange} value={value} />
+            <CustomCard title='Recent Events'>
+              <Calendar onChange={onChange} value={value} />
+            </CustomCard>
             <Birthday />
           </Stack>
         </Container>

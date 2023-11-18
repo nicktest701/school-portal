@@ -1,10 +1,8 @@
-import { Container,  Stack, Typography } from '@mui/material';
+import { Container, Stack, Typography } from '@mui/material';
 import React from 'react';
 import about from '../assets/images/empty/about_bg.svg';
 import Back from '../components/Back';
 const About = () => {
-
-
   return (
     <div
       style={{
@@ -59,6 +57,7 @@ const About = () => {
             All rights reserved | FrebbyTech Consults @{' '}
             {new Date().getFullYear()}
           </Typography>
+          <Typography textAlign='center' fontWeight='bold'>+233543772591</Typography>
         </Stack>
       </Container>
     </div>

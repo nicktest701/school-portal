@@ -106,7 +106,7 @@ router.post(
       return {
         feesId: _id,
         levelId: level?._id,
-        levelType: `${level.level?.name}${level.level?.type}`,
+        levelType: level?.levelName,
         fees: _.sumBy(amount, "amount"),
       };
     });

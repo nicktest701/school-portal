@@ -1,5 +1,11 @@
-import React, { Suspense, lazy, useContext, useState } from 'react';
-import { Box, Button, Container } from '@mui/material';
+import React, {
+  Suspense,
+  lazy,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
+import { Box, Button, Container, Typography } from '@mui/material';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
@@ -7,38 +13,37 @@ import DoNotDisturbOnTotalSilenceOutlinedIcon from '@mui/icons-material/DoNotDis
 import BookmarksOutlinedIcon from '@mui/icons-material/BookmarksOutlined';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { useQuery } from '@tanstack/react-query';
-import {  useNavigate, useParams } from 'react-router-dom';
+import * as XLSX from 'xlsx';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { STUDENTS_EXAMS_COLUMN } from '../../mockup/columns/studentColumns';
 import ExamsHomeCard from '../../components/cards/ExamsHomeCard';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import ExamsScore from './ExamsScore';
 import { getExamsDetails } from '../../api/ExaminationAPI';
-import useLevelById from '../../components/hooks/useLevelById';
 import { BookSharp, NoteOutlined, List } from '@mui/icons-material';
 
 import student_icon from '../../assets/images/header/student_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
 import CustomTitle from '../../components/custom/CustomTitle';
 import exams_icon from '../../assets/images/header/exams_ico.svg';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import Loader from '../../config/Loader';
+import Back from '../../components/Back';
+import { getSubjectsForLevel } from '../../api/levelAPI';
 
 const LevelExamScoreInput = lazy(() => import('./LevelExamScoreInput'));
-const ViewReports = lazy(() => import('./ViewReports'));
 const ViewRawSheet = lazy(() => import('./ViewRawSheet'));
 
-const ExamsLevel = () => {
+const ExamsLevel = ({ type }) => {
   const navigate = useNavigate();
   const {
     userState: { session },
   } = useContext(UserContext);
 
   const { levelId, level } = useParams();
-  
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const [ViewReport, setViewReport] = useState(false);
-  const [viewRawSheet, setViewRawSheet] = useState(false);
   const [viewLevelScoreInput, setViewLevelScoreInput] = useState(false);
 
   //GET All Details about exams
@@ -54,20 +59,38 @@ const ExamsLevel = () => {
     enabled: !!levelId && !!session.sessionId && !!session.termId,
   });
 
-  // useQuery({
-  //   queryKey: ['exams-reports'],
-  //   queryFn: () =>
-  //     generateReports({
-  //       sessionId: session.sessionId,
-  //       termId: session.termId,
-  //       levelId,
-  //     }),
-  //   enabled: !!session.sessionId && !!session.termId,
-  // });
+  const levelOptions = useQuery({
+    queryKey: ['subjects', levelId],
+    queryFn: () => getSubjectsForLevel(levelId),
+    enabled: !!levelId,
+    select: ({ subjects, grades }) => {
+      return {
+        subjects,
+        grades,
+      };
+    },
+  });
 
-  //FETCH all students from current level
+  const handleViewExamsDetails = (rowData) => {
+    setSearchParams((params) => {
+      params.set('exams_id', rowData?._id);
+      params.set('student_id', rowData?.studentId);
 
-  const { levelLoading, students, refetch } = useLevelById(levelId);
+      return params;
+    });
+    schoolSessionDispatch({
+      type: 'openAddExamsScore',
+      payload: {
+        open: true,
+        data: {
+          levelId,
+          studentId: rowData.studentId,
+          sessionId: session.sessionId,
+          termId: session.termId,
+        },
+      },
+    });
+  };
 
   const column = [
     ...STUDENTS_EXAMS_COLUMN,
@@ -79,20 +102,7 @@ const ExamsLevel = () => {
         return (
           <Button
             variant='outlined'
-            onClick={() => {
-              schoolSessionDispatch({
-                type: 'openAddExamsScore',
-                payload: {
-                  open: true,
-                  data: {
-                    levelId,
-                    studentId: rowData._id,
-                    sessionId: session.sessionId,
-                    termId: session.termId,
-                  },
-                },
-              });
-            }}
+            onClick={() => handleViewExamsDetails(rowData)}
           >
             View Details
           </Button>
@@ -101,45 +111,84 @@ const ExamsLevel = () => {
     },
   ];
 
-  // const openExamsScore = (rowData) => {
-  //   schoolSessionDispatch({
-  //     type: 'openAddExamsScore',
-  //     payload: {
-  //       open: true,
-  //       data: {
-  //         levelId,
-  //         studentId: rowData._id,
-  //         sessionId: session.sessionId,
-  //         termId: session.termId,
-  //       },
-  //     },
-  //   });
-  // };
-
   const iconStyle = { width: 28, height: 28 };
 
   //Generate reports for whole level
   const handleGenerateReports = () => {
-    setViewReport(true);
-    navigate(`/examination/reports/${levelId}`);
+    // setViewReport(true);
+    navigate(`/${type}/reports/${levelId}`);
   };
 
-  const handleViewRawSheet = () => {
-    setViewRawSheet(true);
-  };
+  const downloadSheet = useCallback(() => {
+    const columns = [
+      'Index Number',
+      'Student',
+      'Class  Score',
+      'Exams  Score',
+      'Total  Score',
+    ];
+    const modifiedSheet = examDetails?.data?.students?.map((student) => {
+      return {
+        indexnumber: student?.indexnumber,
+        student: student?.fullName,
+      };
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(modifiedSheet);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, level || 'Subject');
+    XLSX.utils.sheet_add_aoa(worksheet, [columns], {
+      origin: 'A1',
+    });
+
+    /* calculate column width */
+    const max_width = modifiedSheet.reduce(
+      (w, r) => Math.max(w, r?.student?.length),
+      10
+    );
+    worksheet['!cols'] = [{ wch: max_width }];
+    XLSX.writeFile(workbook, `${level || 'Subject'}.xlsx`, {
+      compression: true,
+    });
+  }, [examDetails?.data?.students]);
 
   const handleViewLevelScoreInput = () => {
     setViewLevelScoreInput(true);
   };
 
   return (
-    <Container>
-      <CustomTitle
-        title='Examination Portal'
-        subtitle='Track,manage and control academic and class activities'
-        img={exams_icon}
-        backColor='#012e54'
+    <Container sx={{ width: '95%' }}>
+      <Back
+        to={type === 'course' ? '/course/level' : `/examination`}
+        color='primary.main'
       />
+
+      <Container
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column-reverse', sm: 'row' },
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 2,
+          paddingY: 4,
+        }}
+      >
+        <CustomTitle
+          title='Examination Portal'
+          subtitle='Track,manage and control academic and class activities'
+          img={exams_icon}
+          backColor='#012e54'
+        />
+        <Typography
+          sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+          variant='h5'
+          paragraph
+          whiteSpace='nowrap'
+        >
+          {level}
+        </Typography>
+      </Container>
+
       <Box
         sx={{
           width: '100%',
@@ -190,17 +239,16 @@ const ExamsLevel = () => {
       <CustomizedMaterialTable
         title={level ?? 'Students'}
         icon={student_icon}
-        isLoading={levelLoading}
+        isLoading={examDetails.isLoading}
         columns={column}
         search={true}
-        // data={[]}
-        data={students}
+        data={examDetails?.data?.students}
         actions={[
           {
             icon: () => <NoteOutlined color='info' />,
             position: 'toolbar',
-            tooltip: 'Raw Sheet',
-            onClick: handleViewRawSheet,
+            tooltip: 'Download Assessment Sheet',
+            onClick: downloadSheet,
             isFreeAction: true,
           },
           {
@@ -213,31 +261,23 @@ const ExamsLevel = () => {
           {
             icon: () => <List color='error' />,
             position: 'toolbar',
-            tooltip: 'Reports',
+            tooltip: 'View Students Report',
             onClick: handleGenerateReports,
             isFreeAction: true,
           },
         ]}
-        handleRefresh={refetch}
+        handleRefresh={examDetails.refetch}
         addButtonImg={EMPTY_IMAGES.student}
         addButtonMessage='😑 No Students results available !!!!'
         // onRowClick={(rowData) => openExamsScore(rowData)}
       />
       <ExamsScore />
       <Suspense fallback={<Loader />}>
-        <ViewReports open={ViewReport} setOpen={setViewReport} />
-      </Suspense>
-      <Suspense fallback={<Loader />}>
         <LevelExamScoreInput
           open={viewLevelScoreInput}
           setOpen={setViewLevelScoreInput}
-        />
-      </Suspense>
-      <Suspense fallback={<Loader />}>
-        <ViewRawSheet
-          open={viewRawSheet}
-          setOpen={setViewRawSheet}
-          students={students}
+          grades={levelOptions?.data?.grades}
+          defaultSubject=''
         />
       </Suspense>
     </Container>

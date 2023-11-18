@@ -1,59 +1,49 @@
 import {
+  BedroomBabyRounded,
   DeleteRounded,
   Edit,
   MessageRounded,
   Person,
-} from "@mui/icons-material";
+  Person2Sharp,
+} from '@mui/icons-material';
 import {
   Avatar,
   Box,
   Button,
-  Chip,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  Divider,
   Stack,
+  Tab,
+  Typography,
   useTheme,
-} from "@mui/material";
+} from '@mui/material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
+import Swal from 'sweetalert2';
+import React, { useContext, useState } from 'react';
+import { TeacherContext } from '../../context/providers/TeacherProvider';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteTeacher } from '../../api/teacherAPI';
+import TeacherAssignLevel from './TeacherAssignLevel';
 
-import Swal from "sweetalert2";
-import React, { useContext, useEffect, useState } from "react";
-import ProfileItem from "../../components/typo/ProfileItem";
-import { TeacherContext } from "../../context/providers/TeacherProvider";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteTeacher } from "../../api/teacherAPI";
-import TeacherAssignLevel from "./TeacherAssignLevel";
-
-import {
-  getTeacherLevel,
-  unassignTeacherLevel,
-} from "../../api/currentLevelDetailAPI";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { unassignTeacherLevel } from '../../api/currentLevelDetailAPI';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import {
   alertError,
   alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import moment from "moment";
-import { UserContext } from "../../context/providers/userProvider";
+} from '../../context/actions/globalAlertActions';
+
+import TeacherProfile from './TeacherProfile';
+import TeacherLevels from './TeacherLevels';
+import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
+import TeacherCourses from './TeacherCourses';
 
 const TeacherView = () => {
- 
-
-  const {
-    userState: { session:{ sessionId, termId } },
-  } = useContext(UserContext);
-
-
   const queryClient = useQueryClient();
-  const [profileImage, setProfileImage] = useState(null);
   const { palette } = useTheme();
   const [openTeacherAssignLevel, setOpenTeacherAssignLevel] = useState(false);
-  const [assignedLevel, setAssignedLevel] = useState({
-    _id: "",
-    type: "",
-  });
+  const [tab, setTab] = useState('1');
 
   const {
     teacherState: { viewTeacherData },
@@ -63,28 +53,10 @@ const TeacherView = () => {
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
-  useEffect(() => {
-    setProfileImage(
-       `${import.meta.env.VITE_BASE_URL}/images/teachers/${teacher?.profile}`
-    );
-  }, [teacher]);
-
-  //GET Teacher assigned Level
-  useQuery(
-    ["teacher-level"],
-    () => getTeacherLevel({ sessionId, termId, teacher: teacher?._id }),
-    {
-      enabled: !!sessionId && !!termId && !!teacher?._id,
-      onSuccess: (level) => {
-        setAssignedLevel(level);
-      },
-    }
-  );
-
   //EDIT Teacher Info
   const editTeacherInfo = () => {
     teacherDispatch({
-      type: "editTeacher",
+      type: 'editTeacher',
       payload: {
         open: true,
         data: teacher,
@@ -95,9 +67,8 @@ const TeacherView = () => {
 
   //CLOSE view Teacher Info
   const handleClose = () => {
-    setAssignedLevel("");
     teacherDispatch({
-      type: "viewTeacher",
+      type: 'viewTeacher',
       payload: {
         open: false,
         data: {},
@@ -105,35 +76,61 @@ const TeacherView = () => {
     });
   };
 
+  //CLOSE view Teacher Info
+  const openAssignCourse = () => {
+    teacherDispatch({
+      type: 'assignTeacherCourse',
+      payload: {
+        open: true,
+        data: {
+          id: teacher?._id,
+        },
+      },
+    });
+  };
+
   //UNASSIGN Teacher from level
-  const { mutateAsync: unassignTeacher } = useMutation(unassignTeacherLevel);
-  const handleUnassignTeacher = () => {
-    unassignTeacher(assignedLevel._id, {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(["teacher-level"]);
-        schoolSessionDispatch(alertSuccess(data));
-      },
-      onError: (error) => {
-        schoolSessionDispatch(alertError(error));
-      },
+  const { mutateAsync: unassignTeacher, isLoading } = useMutation({
+    mutationFn: unassignTeacherLevel,
+  });
+  const handleUnassignTeacher = (id) => {
+    Swal.fire({
+      title: 'Unassign Teacher',
+      text: 'Do you want to unassign teacher from this level?',
+      confirmButtonColor: palette.primary.main,
+      showCancelButton: true,
+    }).then((data) => {
+      if (data.isConfirmed) {
+        unassignTeacher(id, {
+          onSuccess: (data) => {
+            queryClient.invalidateQueries(['levels']);
+            schoolSessionDispatch(alertSuccess(data));
+          },
+          onError: (error) => {
+            schoolSessionDispatch(alertError(error));
+          },
+        });
+      }
     });
   };
 
   //DELETE Teacher Info
 
-  const { mutateAsync } = useMutation(deleteTeacher);
+  const { mutateAsync } = useMutation({
+    mutationFn: deleteTeacher,
+  });
 
   const handleDelete = () => {
     Swal.fire({
-      title: "Deleting Teacher",
-      text: "Do you want to delete?",
+      title: 'Deleting Teacher',
+      text: 'Do you want to delete?',
       confirmButtonColor: palette.primary.main,
       showCancelButton: true,
     }).then((data) => {
       if (data.isConfirmed) {
         mutateAsync(teacher?._id, {
           onSuccess: (data) => {
-            queryClient.invalidateQueries(["teachers"]);
+            queryClient.invalidateQueries(['teachers']);
             schoolSessionDispatch(alertSuccess(data));
             handleClose();
           },
@@ -149,7 +146,7 @@ const TeacherView = () => {
   //CLOSE
   const openQuickMessage = () => {
     schoolSessionDispatch({
-      type: "sendQuickMessage",
+      type: 'sendQuickMessage',
       payload: {
         open: true,
         data: {
@@ -165,99 +162,110 @@ const TeacherView = () => {
       <Dialog
         tabIndex={-1}
         open={viewTeacherData.open}
-        maxWidth="md"
+        maxWidth='md'
+        // fullScreen
         fullWidth
         onClose={handleClose}
       >
-        <DialogTitle>Teacher Information</DialogTitle>
-        <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
-          <Box>
+        <CustomDialogTitle
+          title='Teacher Information'
+          subtitle='Manage teachers profile and assigned levels and courses.'
+          onClose={handleClose}
+        />
+        <DialogContent>
+          <Stack direction='row' justifyContent='flex-end'>
+            <Button size='small' endIcon={<Edit />} onClick={editTeacherInfo}>
+              Edit
+            </Button>
+            <Button
+              color='error'
+              size='small'
+              endIcon={<DeleteRounded />}
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          </Stack>
+          <Container
+            maxWidth='md'
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              justifyContent: 'space-between',
+              alignItems: { xs: 'center', md: 'flex-start' },
+              gap: { xs: 2, md: 0 },
+            }}
+          >
             <Box
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-              width="100%"
-              paddingY={2}
+              display='flex'
+              flexDirection='column'
+              justifyContent='center'
+              alignItems='center'
               gap={1}
             >
-              <Avatar srcSet={profileImage} sx={{ width: 80, height: 80 }} />
+              <Avatar
+                src={`${import.meta.env.VITE_BASE_URL}/images/teachers/${
+                  teacher?.profile
+                }`}
+                sx={{ width: 70, height: 70 }}
+              />
+
+              <Typography paragraph>{teacher?.fullName}</Typography>
               <Button
-                size="small"
+                size='small'
                 startIcon={<MessageRounded />}
                 onClick={openQuickMessage}
               >
                 Send Message
               </Button>
-              <Stack direction="row" spacing={2} flexWrap="wrap">
+              <Stack direction='row' pt={2} spacing={2} flexWrap='wrap'>
                 <Button
-                  size="small"
+                  variant='outlined'
+                  color='secondary'
+                  size='small'
                   endIcon={<Person />}
                   onClick={() => setOpenTeacherAssignLevel(true)}
                 >
                   Assign Level
                 </Button>
                 <Button
-                  size="small"
-                  endIcon={<Edit />}
-                  onClick={editTeacherInfo}
+                  variant='outlined'
+                  color='info'
+                  size='small'
+                  endIcon={<Person />}
+                  onClick={openAssignCourse}
                 >
-                  Edit
-                </Button>
-                <Button
-                  color="error"
-                  size="small"
-                  endIcon={<DeleteRounded />}
-                  onClick={handleDelete}
-                >
-                  Delete
+                  Assign Course
                 </Button>
               </Stack>
             </Box>
 
-            <Divider flexItem>
-              <Chip label="Personal Information" color="primary" />
-            </Divider>
-
-            <ProfileItem
-              label="Name"
-              text={`${teacher?.surname} ${teacher?.firstname} ${teacher?.othername}`}
-            />
-            <ProfileItem
-              label="Date Of Birth"
-              tex
-              text={moment(new Date(teacher?.dateofbirth)).format(
-                "Do MMMM, YYYY."
-              )}
-            />
-            <ProfileItem label="Gender" text={teacher?.gender} />
-            <ProfileItem label="Email Address" text={teacher?.email} />
-            <ProfileItem label="Telephone No." text={teacher?.phonenumber} />
-            <ProfileItem label="Address" text={teacher?.address} />
-            <ProfileItem label="Residence" text={teacher?.residence} />
-
-            <ProfileItem label="Nationality" text={teacher?.nationality} />
-            <Divider flexItem>
-              <Chip label="Level Information" color="primary" />
-            </Divider>
-            {assignedLevel._id && (
-              <Stack direction="row" spacing={2} width="inherit">
-                <ProfileItem
-                  label="Assigned Level"
-                  text={assignedLevel?.type}
-                />
-                <Button
-                  title="Unassigned from level"
-                  color="error"
-                  size="small"
-                  endIcon={<DeleteRounded />}
+            <Box sx={{ flex: 0.9 }}>
+              <TabContext value={tab}>
+                <TabList centered onChange={(e, value) => setTab(value)}>
+                  <Tab
+                    label='Personal'
+                    value='1'
+                    icon={<Person2Sharp />}
+                    iconPosition='start'
+                  />
+                  <Tab
+                    label='Levels'
+                    value='2'
+                    icon={<BedroomBabyRounded />}
+                    iconPosition='start'
+                  />
+                  <Tab label='Courses' value='3' />
+                </TabList>
+                <TeacherProfile teacher={teacher} />
+                <TeacherLevels
+                  id={teacher?._id}
                   onClick={handleUnassignTeacher}
-                >
-                  Remove
-                </Button>
-              </Stack>
-            )}
-          </Box>
+                />
+                <TeacherCourses id={teacher?._id} />
+              </TabContext>
+            </Box>
+          </Container>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
@@ -266,7 +274,7 @@ const TeacherView = () => {
       <TeacherAssignLevel
         open={openTeacherAssignLevel}
         setOpen={setOpenTeacherAssignLevel}
-        teacher={teacher._id}
+        teacher={{ _id: teacher._id, fullName: teacher?.fullName }}
       />
     </>
   );

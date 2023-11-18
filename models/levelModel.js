@@ -12,9 +12,9 @@ const LevelSchema = new mongoose.Schema(
       ref: 'Term',
     },
     teacher: {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Teacher',
+      type: mongoose.SchemaTypes.Mixed,
     },
+
     fee: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Fee',
@@ -27,6 +27,7 @@ const LevelSchema = new mongoose.Schema(
     students: [
       { type: mongoose.SchemaTypes.ObjectId, ref: 'Student', default: [] },
     ],
+    grades: Array,
     rollNumber: {
       type: Number,
       default: 0,
@@ -46,10 +47,16 @@ const LevelSchema = new mongoose.Schema(
     virtuals: {
       levelName: {
         get() {
-          const name = `${this.level?.name} ${this.level?.type} `;
+          const name = `${this.level?.name}${this.level?.type}`;
           return name;
         },
       },
+    },
+    toJSON: {
+      virtuals: true,
+    },
+    toObject: {
+      virtuals: true,
     },
   }
 );

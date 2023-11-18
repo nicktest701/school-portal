@@ -59,17 +59,16 @@ function ConfirmStudent({ open, setOpen, setMode }) {
         queryClient.invalidateQueries(['all-students']);
       },
       onSuccess: (data) => {
-        localStorage.removeItem('@student');
-
         if (data) {
           schoolSessionDispatch(alertSuccess('New Student Added'));
           setHideSaveBtn(true);
           setId(data);
+          localStorage.removeItem('@student');
         }
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));
-        console.log(error);
+        // console.log(error);
       },
     });
   };
@@ -105,23 +104,23 @@ function ConfirmStudent({ open, setOpen, setMode }) {
       <CustomDialogTitle title='Admission Form' onClose={handleClose} />
       <DialogActions>
         {/* {hideSaveBtn ? ( */}
-          <ReactToPrint
-            // pageStyle={
-            //   'width:8.5in";min-height:11in"; margin:auto",padding:4px;'
-            // }
-            trigger={() => <Button variant='outlined'>Print Form</Button>}
-            content={() => componentRef.current}
-            documentTitle='Admission'
-          />
+        <ReactToPrint
+          // pageStyle={
+          //   'width:8.5in";min-height:11in"; margin:auto",padding:4px;'
+          // }
+          trigger={() => <Button variant='outlined'>Print Form</Button>}
+          content={() => componentRef.current}
+          documentTitle='Admission'
+        />
         {/* // ) : ( */}
-          <LoadingButton
-            loading={isLoading}
-            variant='contained'
-            color='primary'
-            onClick={onSubmit}
-          >
-            Save Data
-          </LoadingButton>
+        <LoadingButton
+          loading={isLoading}
+          variant='contained'
+          color='primary'
+          onClick={onSubmit}
+        >
+          Save Data
+        </LoadingButton>
         {/* // )} */}
       </DialogActions>
 
@@ -137,9 +136,9 @@ function ConfirmStudent({ open, setOpen, setMode }) {
             padding: '16px',
             border: '1px solid lightgray',
             position: 'relative',
-            background: `linear-gradient(to top right,rgba(255,255,255,0.9),rgba(255,255,255,0.9)),url(${
-              import.meta.env.VITE_BASE_URL
-            }/images/users/${school_info?.badge})`,
+            // background: `linear-gradient(to top right,rgba(255,255,255,0.9),rgba(255,255,255,0.9)),url(${
+            //   import.meta.env.VITE_BASE_URL
+            // }/images/users/${school_info?.badge})`,
             backgroundSize: 'contain',
             backgroundPosition: 'center center !important',
           }}
@@ -211,7 +210,12 @@ function ConfirmStudent({ open, setOpen, setMode }) {
           {/* Personal Information  */}
           <div style={{ paddingBottom: '8px' }}>
             <legend style={legendStyle}>Personal Data</legend>
-
+            <ListItemText
+              secondary='Student ID'
+              primary={personal?.indexnumber}
+              primaryTypographyProps={primaryStyle}
+              secondaryTypographyProps={secondaryStyle}
+            />
             <div
               style={{
                 display: 'grid',
@@ -219,23 +223,25 @@ function ConfirmStudent({ open, setOpen, setMode }) {
               }}
             >
               <ListItemText
-                secondary='Surname'
-                primary={personal?.surname}
+                secondary='Full Name'
+                primary={`${personal?.surname} ${personal?.firstname} ${personal?.othername}`}
                 primaryTypographyProps={primaryStyle}
                 secondaryTypographyProps={secondaryStyle}
               />
-              <ListItemText
+              {/* <ListItemText
                 secondary='First Name'
                 primary={personal?.firstname}
                 primaryTypographyProps={primaryStyle}
                 secondaryTypographyProps={secondaryStyle}
               />
-              <ListItemText
-                secondary='Other Name'
-                primary={personal?.othername}
-                primaryTypographyProps={primaryStyle}
-                secondaryTypographyProps={secondaryStyle}
-              />
+              {personal?.othername && (
+                <ListItemText
+                  secondary='Other Name'
+                  primary={personal?.othername}
+                  primaryTypographyProps={primaryStyle}
+                  secondaryTypographyProps={secondaryStyle}
+                />
+              )} */}
               <ListItemText
                 secondary='Date of Birth'
                 primary={moment(new Date(personal?.dateofbirth)).format('LL')}

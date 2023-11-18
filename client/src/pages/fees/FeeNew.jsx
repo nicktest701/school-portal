@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Container, Divider, Typography, useTheme } from '@mui/material';
+import { Container, useTheme } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import { deleteFee, getAllFees } from '../../api/feeAPI';
@@ -11,18 +11,18 @@ import EditFee from './EditFee';
 import { EMPTY_IMAGES } from '../../config/images';
 import ViewLevelFeeInfo from './ViewLevelFeeInfo';
 import fee_icon from '../../assets/images/header/fee_ico.svg';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import {
   alertError,
   alertSuccess,
 } from '../../context/actions/globalAlertActions';
+import CustomTitle from '../../components/custom/CustomTitle';
 
 const FeeNew = () => {
   const {
     userState: { session },
   } = useContext(UserContext);
 
-  const { palette } = useTheme();
   const queryClient = useQueryClient();
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -40,9 +40,7 @@ const FeeNew = () => {
     Swal.fire({
       title: 'Removing',
       text: 'Do you want to remove Fee?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
-      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         mutateAsync(id, {
@@ -93,12 +91,14 @@ const FeeNew = () => {
 
   return (
     <>
-      <Container >
-        <Typography variant='h4'>New Fee</Typography>
-        <Typography>
-          Add new <b>TERM/SEMESTER</b> fees for a particular level
-        </Typography>
-        <Divider />
+      <Container sx={{ width: '90%' }}>
+        <CustomTitle
+          title='New Fee'
+          subtitle='Add new TERM/SEMESTER fees for a particular level'
+          img={fee_icon}
+          color='primary.main'
+        />
+
         <CustomizedMaterialTable
           title='School Fees'
           icon={fee_icon}

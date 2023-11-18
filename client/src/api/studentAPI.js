@@ -60,27 +60,8 @@ export const getAllStudentsForSearch = async (session) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${BASE_URL}/students/search/all`,
+      url: `${BASE_URL}/levels/students`,
       data: session,
-    });
-
-    return res.data;
-  } catch (error) {
-    //console.log(error.response.data);
-    throw error.response.data;
-  }
-};
-
-export const getStudentsByID = async (studentId, levelId, levelName) => {
-  try {
-    const res = await axios({
-      method: 'POST',
-      url: `${BASE_URL}/students/current`,
-      data: {
-        studentId,
-        levelId,
-        levelName,
-      },
     });
 
     return res.data;

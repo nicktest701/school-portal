@@ -1,6 +1,6 @@
-import React, { useReducer } from "react";
-import PropTypes from 'prop-types'
-import TeacherReducer from "../reducers/TeacherReducer";
+import React, { useReducer } from 'react';
+import PropTypes from 'prop-types';
+import TeacherReducer from '../reducers/TeacherReducer';
 
 export const TeacherContext = React.createContext();
 const TeacherProvider = ({ children }) => {
@@ -13,9 +13,18 @@ const TeacherProvider = ({ children }) => {
       open: false,
       data: {},
     },
+
+    assignTeacherCourse: {
+      open: false,
+      data: {
+        id: '',
+      },
+    },
+    
+
     alertData: {
-      severity: "",
-      message: "",
+      severity: '',
+      message: '',
     },
   };
   const [teacherState, teacherDispatch] = useReducer(

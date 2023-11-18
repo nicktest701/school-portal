@@ -10,14 +10,13 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import Transition from '../animations/Transition';
 import CustomDialogTitle from './CustomDialogTitle';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import UpdateUserProfile from './UpdateUserProfile';
 function ViewUserProfile({ open, setOpen }) {
   const [openUpdateUserProfile, setOpenUpdateUserProfile] = useState(false);
+  const { user } = useContext(UserContext);
 
-  const {
-    userState: { user },
-  } = useContext(UserContext);
+ 
 
   const handleOpenUpdateUserProfile = () => {
     setOpenUpdateUserProfile(true);

@@ -23,7 +23,7 @@ const Back = ({ to, color, bg }) => {
         <ArrowBackRounded sx={{ color: color || '#fff' }} />
       </IconButton>
 
-      <Link
+      {/* <Link
         to='/'
         style={{
           color: color || '#fff',
@@ -37,7 +37,7 @@ const Back = ({ to, color, bg }) => {
       >
         <span> Dashboard</span>
         <DashboardRounded />
-      </Link>
+      </Link> */}
     </Container>
   );
 };

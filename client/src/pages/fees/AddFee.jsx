@@ -31,7 +31,7 @@ import {
 } from "../../context/actions/globalAlertActions";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
-import { UserContext } from "../../context/providers/userProvider";
+import { UserContext } from "../../context/providers/UserProvider";
 
 
 const AddFee = ({ open, setOpen }) => {

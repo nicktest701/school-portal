@@ -13,7 +13,7 @@ const PieChart = () => {
       }}
     >
       <Doughnut
-        datasetIdKey='id'
+        datasetIdKey='pie'
         data={{
           labels: ['Sent', 'Received'],
 

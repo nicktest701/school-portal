@@ -73,7 +73,7 @@ const StudentEdit = () => {
       onSettled: () => {
         queryClient.invalidateQueries(['students']);
         queryClient.invalidateQueries(['student-by-id']);
-        queryClient.invalidateQueries(['sll-students']);
+        queryClient.invalidateQueries(['all-students']);
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
@@ -153,6 +153,17 @@ const StudentEdit = () => {
                   >
                     Personal information
                   </Typography>
+                  <TextField
+                    label='Student ID'
+                    type='text'
+                    // fullWidth
+                    sx={{ maxWidth: 300 }}
+                    size='small'
+                    value={values.indexnumber}
+                    onChange={handleChange('indexnumber')}
+                    error={Boolean(touched.indexnumber && errors.indexnumber)}
+                    helperText={touched.indexnumber && errors.indexnumber}
+                  />
                   <CustomFormControl>
                     <TextField
                       label='Firstname'

@@ -9,7 +9,10 @@ const createError = require('http-errors');
 const db = require('./db/DBConnection');
 const sessionRoute = require('./routes/sessionRoute');
 const termRoute = require('./routes/termRoute');
+const gradeRoute = require('./routes/gradeRoute');
 const levelRoute = require('./routes/levelRoute');
+const subjectRoute = require('./routes/subjectRoute');
+const courseRoute = require('./routes/courseRoute');
 const studentRoute = require('./routes/studentRoute');
 const teacherRoute = require('./routes/teacherRoute');
 const parentRoute = require('./routes/parentRoute');
@@ -64,29 +67,35 @@ app.use('/students', studentRoute);
 app.use('/parents', parentRoute);
 app.use('/teachers', teacherRoute);
 app.use('/levels', levelRoute);
+app.use('/subjects', subjectRoute);
+app.use('/courses', courseRoute);
+app.use('/grades', gradeRoute);
 app.use('/examinations', examinationRoute);
 app.use('/fees', feeRoute);
 app.use('/current-fees', currentFeeRoute);
 app.use('/messages', messageRoute);
 app.use('/attendances', attendanceRoute);
 
-if (process.env.NODE_ENV === 'production') {
-app.get('/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
- }
+// if (process.env.NODE_ENV === 'production') {
+  app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+// }
 
 //error handlers
-app.use((req, res, next) => {
-  next(createError.NotFound());
-});
+// app.use((req, res, next) => {
+//   next(createError.NotFound());
+// });
 
 app.use((err, req, res, next) => {
+  // console.log(err);
   res.status(err.status || 500);
+
   res.send({
     error: {
       status: err.status || 500,
       message: err.message,
+      stack: err.stack,
     },
   });
 });

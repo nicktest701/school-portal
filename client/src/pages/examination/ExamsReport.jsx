@@ -25,11 +25,15 @@ import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import _ from 'lodash';
 import { SchoolRounded } from '@mui/icons-material';
 import { useMutation } from '@tanstack/react-query';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import { publishStudentReport } from '../../api/ExaminationAPI';
 import { LoadingButton } from '@mui/lab';
+import {
+  alertError,
+  alertSuccess,
+} from '../../context/actions/globalAlertActions';
 
-const ExamsReport = () => {
+const ExamsReport = ({ student }) => {
   const school_info = JSON.parse(localStorage.getItem('@school_info'));
   const {
     userState: { session },
@@ -41,10 +45,9 @@ const ExamsReport = () => {
   const componentRef = useRef();
 
   const open = schoolSessionState.viewReport.open;
-  const student = schoolSessionState.viewReport.data;
   const [openRemarks, setOpenRemarks] = useState(false);
 
-  console.log(student);
+  // console.log(student);
 
   //close dialog
   const handleClose = () => {
@@ -84,23 +87,16 @@ const ExamsReport = () => {
 
         mutateAsync(reportInfo, {
           onSuccess: () => {
-            schoolSessionDispatch({
-              type: 'openGeneralAlert',
-              payload: {
-                message: 'Results have been published Successfully!!!',
-                severity: 'success',
-              },
-            });
+            schoolSessionDispatch(
+              alertSuccess('Results have been published Successfully!!!')
+            );
           },
           onError: () => {
-            schoolSessionDispatch({
-              type: 'openGeneralAlert',
-              payload: {
-                message:
-                  'An error has occured.Couldnt Generate Reports.Try again later',
-                severity: 'error',
-              },
-            });
+            schoolSessionDispatch(
+              alertError(
+                'An error has occured.Couldnt Generate Reports.Try again later'
+              )
+            );
           },
         });
       }
@@ -204,10 +200,10 @@ const ExamsReport = () => {
                   student?.profile === undefined ||
                   student?.profile === null
                     ? null
-                    :student?.profile
-                    // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                    //     student?.profile
-                    //   }`
+                    : student?.profile
+                  // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                  //     student?.profile
+                  //   }`
                 }
                 sx={{ width: 60, height: 60, alignSelf: 'center' }}
               />
@@ -224,6 +220,7 @@ const ExamsReport = () => {
             >
               <Box>
                 <Stack>
+                  <ReportItem title='ID' text={student?.indexnumber} />
                   <ReportItem title='Full Name' text={student?.fullName} />
                   <ReportItem title='Class' text={`${student?.level}`} />
                   <ReportItem title='No. On Roll' text={student?.rollNumber} />

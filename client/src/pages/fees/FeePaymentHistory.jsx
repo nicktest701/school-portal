@@ -10,7 +10,7 @@ import _ from 'lodash';
 import { currencyFormatter } from '../../config/currencyFormatter';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import Transition from '../../components/animations/Transition';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import fee_icon from '../../assets/images/header/fee_ico.svg';
 
 function FeePaymentHistory({ open, setOpen }) {

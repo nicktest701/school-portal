@@ -7,7 +7,7 @@ import { Person3 } from '@mui/icons-material';
 import DashboardCard from './DashboardCard';
 import { useQuery } from '@tanstack/react-query';
 import { getDashboardInfo } from '../../api/levelAPI';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import { useErrorBoundary } from 'react-error-boundary';
 import DashboardSkeleton from '../skeleton/DashboardSkeleton';
 import { IconButton } from '@mui/material';
@@ -15,15 +15,14 @@ import { IconButton } from '@mui/material';
 function DashboardCardsContainer() {
   const { showBoundary } = useErrorBoundary();
   const {
-    userState: {
-      session: { sessionId: session, termId: term },
-    },
+    userState: { session },
   } = useContext(UserContext);
 
   const info = useQuery({
-    queryKey: ['dashboard-info', session, term],
-    queryFn: () => getDashboardInfo({ session, term }),
-    enabled: !!session && !!term,
+    queryKey: ['dashboard-info', session?.sessionId, session?.termId],
+    queryFn: () =>
+      getDashboardInfo({ session: session?.sessionId, term: session?.termId }),
+    enabled: !!session?.sessionId && !!session?.termId,
     onError: (error) => {
       showBoundary(error);
     },
@@ -35,9 +34,9 @@ function DashboardCardsContainer() {
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
+        gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))',
         gap: 2,
-        py: 1,
+        py: 4,
       }}
     >
       <DashboardCard

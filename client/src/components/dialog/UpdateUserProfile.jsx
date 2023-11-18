@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useMutation,  useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import { putUser } from '../../api/userAPI';
@@ -20,15 +20,12 @@ import {
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import { uploadProfileImage } from '../../api/sessionAPI';
 
-
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import CustomImageChooser from '../../components/inputs/CustomImageChooser';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 
 const UpdateUserProfile = ({ open, setOpen }) => {
-  const {
-    userState: { user },
-  } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const queryClient = useQueryClient();
   const [confirmPasswordErr, setConfirmPasswordError] = useState('');
@@ -36,7 +33,9 @@ const UpdateUserProfile = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   useEffect(() => {
-    setProfileImage( `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`);
+    setProfileImage(
+      `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`
+    );
   }, [user]);
 
   //CLOSE Edit User
@@ -58,7 +57,7 @@ const UpdateUserProfile = ({ open, setOpen }) => {
     values._id = user?.id;
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(['users']);
+        queryClient.invalidateQueries(['user']);
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
@@ -88,7 +87,7 @@ const UpdateUserProfile = ({ open, setOpen }) => {
     } catch (error) {
       schoolSessionDispatch(alertError(error));
     }
-    queryClient.invalidateQueries(['users']);
+    queryClient.invalidateQueries(['user']);
   };
 
   return (

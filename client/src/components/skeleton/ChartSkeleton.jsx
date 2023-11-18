@@ -6,12 +6,13 @@ const ChartSkeleton = () => {
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
+        gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
         backgroundColor: 'transparent',
         gap: 3,
         paddingY: 4,
       }}
     >
+      <Skeleton variant='rounded' height={200} />
       <Skeleton variant='rounded' height={200} />
       <Skeleton variant='rounded' height={200} />
       <Skeleton variant='rounded' height={200} />

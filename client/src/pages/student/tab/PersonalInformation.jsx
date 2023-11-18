@@ -16,7 +16,7 @@ import { NATIONALITY } from '../../../mockup/data/nationality';
 import { TOWNS } from '../../../mockup/data/towns';
 import { ArrowForward } from '@mui/icons-material';
 
-const PersonalInformation = ({  setMode }) => {
+const PersonalInformation = ({ setMode }) => {
   const {
     studentState: {
       newStudent: { personal },
@@ -58,11 +58,11 @@ const PersonalInformation = ({  setMode }) => {
         setFieldValue,
         handleChange,
         handleSubmit,
-      
+
         isSubmitting,
       }) => {
         return (
-          <Stack py={2} spacing={1}>
+          <Stack py={2} spacing={2}>
             <Stack direction='row' justifyContent='flex-end' spacing={2}>
               <LoadingButton
                 loading={isSubmitting}
@@ -81,6 +81,17 @@ const PersonalInformation = ({  setMode }) => {
             >
               Personal Details
             </Typography>
+            <TextField
+              label='Student ID'
+              type='text'
+              // fullWidth
+              sx={{ maxWidth: 300 }}
+              size='small'
+              value={values.indexnumber}
+              onChange={handleChange('indexnumber')}
+              error={Boolean(touched.indexnumber && errors.indexnumber)}
+              helperText={touched.indexnumber && errors.indexnumber}
+            />
             <CustomFormControl>
               <TextField
                 label='Firstname'

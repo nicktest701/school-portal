@@ -6,14 +6,11 @@ import SchoolSessionReducer from '../reducers/SchoolSessionReducer';
 
 export const SchoolSessionContext = React.createContext();
 const SchoolSessionProvider = ({ children }) => {
-
   const schoolSessionValues = {
-    
     displayAddSession: false,
     currentSession: {},
     currentLevel: [],
     subjectsWithScore: [],
-    sessionEditData: [],
 
     levelFeeInfo: {
       open: false,
@@ -102,6 +99,59 @@ const SchoolSessionProvider = ({ children }) => {
 
     ///fee details to be print
     feePrintData: {},
+
+    editSession: {
+      open: false,
+      data: {},
+    },
+    viewLevel: {
+      open: false,
+      data: {},
+    },
+    editLevel: {
+      open: false,
+      data: {},
+    },
+
+    //
+    editSubject: {
+      open: false,
+      data: {
+        name: '',
+        code: '',
+        isCore: '',
+      },
+    },
+    viewGrades: {
+      open: false,
+      ratings: [],
+    },
+
+    assignGrades: {
+      open: false,
+      data: { _id: '', name: '', ratings: [] },
+    },
+    editGrades: {
+      open: false,
+      data: {
+        name: '',
+        ratings: [],
+      },
+    },
+    addStudentResults: {
+      open: false,
+      data: {
+        _id: '',
+        student: '',
+        level: '',
+        classScore: '',
+        examsScore: '',
+        totalScore: '',
+        grade: '',
+        remarks: '',
+      },
+      grade: [],
+    },
   };
   const [schoolSessionState, schoolSessionDispatch] = useReducer(
     SchoolSessionReducer,
@@ -113,7 +163,6 @@ const SchoolSessionProvider = ({ children }) => {
       value={{
         schoolSessionState,
         schoolSessionDispatch,
-        
       }}
     >
       {children}

@@ -37,23 +37,7 @@ export const TEACHERSREMARKS = [
   "Have an interest in learning something new and be present while teaching. ",
   "Successfully passing the training phase, now it’s time to level up.",
   "Keep hustling you will achieve it soon.",
-  "Needs help to increase academic skills, such as reading and writing",
-  "Demonstrates a need for consistent effort and motivation, especially in extra curricula activites",
-  "Requires help with organizational skills, such as reading and writing",
-  "Could benefit from extra classes",
-  "Needs to be encouraged to comply with school rules, such as neatness",
-  "Could benefit from improving  work habits, such as reading",
-  "Needs to be encouraged to listen and pay attention in class",
-  "Needs help to understand instructions",
-  "Requires repetition to retain information",
-  "Needs encouragement to do work on your own",
-  "Demonstrates a need for direct supervision to complete work",
-  "Needs to be encouraged to work more slowly and accurately",
-  "Would benefit from supervision of homework",
-  "Requires support to interact with classmates in a positive way",
-  "Would benefit from learning self-control skills",
-  "Needs to be encouraged to accept responsibility for  errors and misbehavior",
-  "Needs to demonstrate improvement in academic work  to gain the fundamentals needed for this grade",
+
 ];
 
 export const INTEREST = [
@@ -68,7 +52,7 @@ export const INTEREST = [
   "Frequently discusses concepts about which they have read.",
   "Is a gifted performer.",
   "Is a talented artist.",
-  "Ias a flair for dramatic reading and acting.",
+  "Is a flair for dramatic reading and acting.",
   "Enjoys sharing their musical talent with the class.",
   "Discusses ideas that they’ve read regularly.",
   "Enjoys showing off their musical abilities to the rest of the class.",
@@ -138,4 +122,13 @@ export const CONDUCT = [
   "is very hardworking and always completes all of work",
   "is patient and kind when working with peers who need extra assistance",
   "trustworthy and can always be counted on to step in and help where needed",
+  // Has a great deal of respect for all visitors to the classroom.
+  // 22. Cares for and respects her classmates.
+  // 23. Is always respectful to classroom equipment.
+  // 24. Always puts her hand up and follows instructions.
+  // 25. Is very considerate of others and often puts others’ needs and
+  // interests at the front of her mind.
+  // 26. Is a very respectful and responsible classmate.
+  // 27. Has proven to be a courteous and polite classmate.
+  // 28. Is held in high regard for her kindness to others.
 ];

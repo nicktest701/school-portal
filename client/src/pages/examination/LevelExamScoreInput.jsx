@@ -34,55 +34,40 @@ import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialT
 import AnimatedContainer from '../../components/animations/AnimatedContainer';
 import { EMPTY_IMAGES } from '../../config/images';
 import { postBulkExams } from '../../api/ExaminationAPI';
-import { generateGrade } from '../../config/generateGrade';
-import { UserContext } from '../../context/providers/userProvider';
+import { generateCustomGrade } from '../../config/generateCustomGrade';
+import { UserContext } from '../../context/providers/UserProvider';
 
-const LevelExamScoreInput = ({ open, setOpen }) => {
+const LevelExamScoreInput = ({
+  open,
+  setOpen,
+  grades,
+  defaultSubject,
+  classLevelId,
+}) => {
   const CSV_FILE_TYPE = 'text/csv';
   const XLSX_FILE_TYPE =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   const XLS_FILE_TYPE = 'application/vnd.ms-excel';
 
-  const { schoolSessionDispatch } =
-    useContext(SchoolSessionContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
     userState: { session },
   } = useContext(UserContext);
   const { palette } = useTheme();
   const { levelId } = useParams();
   const queryClient = useQueryClient();
-  const [columns, setColumns] = useState([]);
+  // const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [fieldError, setFieldError] = useState('');
   const [mainError, setMainError] = useState('');
-  const [subject, setSubject] = useState('');
+  const [subject, setSubject] = useState(defaultSubject);
 
   const subjects = useQuery({
     queryKey: ['subjects'],
     queryFn: () => getSubjectsForLevel(levelId),
     enabled: !!levelId,
   });
-
-  useEffect(() => {
-    const cols = [
-      'ID',
-      'Student',
-      'Class Score',
-      'Exams Score',
-      'Total Score',
-      'Grade',
-      'Remarks',
-    ];
-    const modifiedColumns = cols.map((col) => {
-      return {
-        title: col,
-        field: _.camelCase(col),
-        hidden: col === 'ID',
-      };
-    });
-    setColumns(modifiedColumns);
-  }, []);
 
   useEffect(() => {
     if (data?.length > 0) {
@@ -123,6 +108,8 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
         if (files.type === CSV_FILE_TYPE) {
           results = readCSV(event.target.result);
         }
+
+        // console.log(results)
         if (results.length !== 0) {
           const modifiedResults = results.map((item) => {
             const classScore = Number(Object.values(item)[2] || 0);
@@ -138,15 +125,15 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
             }
 
             return {
-              id: Object.values(item)[0],
+              indexnumber: _.toString(Object.values(item)[0]),
               student: Object.values(item)[1],
               subject,
               classScore,
               examsScore,
-              ...generateGrade(classScore, examsScore),
-              session: session?.sessionId,
-              term: session?.termId,
-              level: levelId,
+              ...generateCustomGrade(Number(+classScore + +examsScore), grades),
+              // session: session?.sessionId,
+              // term: session?.termId,
+              // level: levelId,
             };
           });
 
@@ -206,12 +193,19 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
       text: `Do you want to import results in ${subject}?`,
       confirmButtonColor: palette.primary.main,
       showCancelButton: true,
-      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
-        mutateAsync(data, {
+        const students = {
+          session: session?.sessionId,
+          term: session?.termId,
+          level: levelId || classLevelId,
+          results: data,
+        };
+
+        mutateAsync(students, {
           onSettled: () => {
             queryClient.invalidateQueries(['all-results']);
+            queryClient.invalidateQueries(['subject-score']);
             setIsLoading(false);
           },
           onSuccess: (data) => {
@@ -226,6 +220,41 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
       setIsLoading(false);
     });
   };
+  const columns = [
+    {
+      title: 'Index Number',
+      field: 'indexnumber',
+    },
+    {
+      title: 'Student',
+      field: 'student',
+    },
+    {
+      title: 'Subject',
+      field: 'subject',
+      hidden: subject || defaultSubject,
+    },
+    {
+      title: 'Class Score(50%)',
+      field: 'classScore',
+    },
+    {
+      title: 'Exams Score(50%)',
+      field: 'examsScore',
+    },
+    {
+      title: 'Total Score(100%)',
+      field: 'totalScore',
+    },
+    {
+      title: 'Grade',
+      field: 'grade',
+    },
+    {
+      title: 'Remarks',
+      field: 'remarks',
+    },
+  ];
 
   return (
     <Dialog
@@ -253,12 +282,17 @@ const LevelExamScoreInput = ({ open, setOpen }) => {
             </AnimatedContainer>
           )}
           <Autocomplete
-            options={subjects.data?.subjects}
+            options={
+              subjects.data?.subjects
+                ? subjects.data?.subjects
+                : [defaultSubject]
+            }
             loading={subjects.isLoading}
             getOptionLabel={(option) => option || ''}
             isOptionEqualToValue={(option, value) =>
               value === undefined || value === '' || value === option
             }
+            defaultValue={defaultSubject}
             value={subject}
             onChange={(e, value) => setSubject(value)}
             sx={{ minWidth: 350 }}

@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { getAllStudentsBySession } from '../../api/currentLevelAPI';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import StudentNav from './layout/StudentNav';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 
 function Student() {
   const {
@@ -15,7 +15,7 @@ function Student() {
 
   useQuery({
     queryKey: ['all-students', session],
-    queryFn: () => getAllStudentsBySession(session, 'all'),
+    queryFn: () => getAllStudentsBySession(session),
     enabled: !!session.sessionId,
     onSuccess: (students) => {
       studentDispatch({ type: 'getAllStudents', payload: students });

@@ -9,16 +9,17 @@ const DrawerItem = ({ title, icon, to }) => {
   const myLinkStyles = ({ isActive }) => {
     return {
       textDecoration: 'none',
-      color: `${palette.text.primary}`,
-      backgroundColor: isActive ? palette.grey[300] : null,
+      color: isActive ? `${palette.secondary.main}` : '#fff',
+      // color: `${palette.text.primary}`,
+      backgroundColor: isActive ? 'rgba(255,255,255,0.3)' : null,
       fontWeight: isActive ? 'bold' : '400',
       whiteSpace: 'nowrap',
-      borderRadius:4
+      borderRadius: 4,
     };
   };
 
   return (
-    <NavLink to={to} style={myLinkStyles} >
+    <NavLink to={to} style={myLinkStyles}>
       <Stack
         direction='row'
         justifyContent='flex-start'
@@ -29,7 +30,7 @@ const DrawerItem = ({ title, icon, to }) => {
           width: { xs: 'inherit', md: 150 },
 
           '&:hover': {
-            backgroundColor: palette.grey[300],
+            backgroundColor: 'rgba(255,255,255,0.1)',
             borderRadius: '4px',
           },
         }}
@@ -41,6 +42,7 @@ const DrawerItem = ({ title, icon, to }) => {
           sx={{
             display: { xs: 'block', sm: 'none', md: 'block' },
             whiteSpace: 'noWrap',
+            // color: 'white',
           }}
         >
           {title}

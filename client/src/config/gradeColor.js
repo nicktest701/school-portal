@@ -2,9 +2,12 @@ export const gradeColor = (totalScore) => {
   let bg = '';
   let color = '';
 
-  if (totalScore >= 75) {
+  if (totalScore >= 80) {
     bg = 'success.darker';
     color = 'white';
+  } else if (totalScore >= 75) {
+    bg = 'success.light';
+    color = 'success.darker';
   } else if (totalScore >= 70) {
     bg = 'info.light';
     color = 'info.darker';
@@ -21,10 +24,10 @@ export const gradeColor = (totalScore) => {
     bg = 'warning.lighter';
     color = 'warning.darker';
   } else if (totalScore >= 45) {
-    bg = 'error.light';
+    bg = 'error.lighter';
     color = 'error.darker';
   } else if (totalScore >= 40) {
-    bg = 'error.lighter';
+    bg = 'error.light';
     color = 'error.darker';
   } else {
     bg = 'error.main';

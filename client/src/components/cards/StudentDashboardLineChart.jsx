@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import { Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import _ from 'lodash';
 const StudentDashboardLineChart = ({ data }) => {
   const [labels, setLabels] = useState([]);
@@ -18,11 +18,11 @@ const StudentDashboardLineChart = ({ data }) => {
   }, [data]);
 
   return (
-    <Card sx={{ border: '1px solid lightgray' }}>
-      <CardHeader avatar={<PieChartRounded />} title='Levels' />
+    <Card elevation={1}>
+      <CardHeader avatar={<PieChartRounded />} title='Students' />
       <CardContent>
         <Box>
-          <Pie
+          <Bar
             datasetIdKey='id'
             style={{
               minWidth: 100,
@@ -33,9 +33,9 @@ const StudentDashboardLineChart = ({ data }) => {
 
               datasets: [
                 {
-                  label: 'Level',
+                  label: 'Levels',
                   data: dataset,
-                  backgroundColor: ['rgb(255, 192, 159)', ' rgb(1, 46, 84)'],
+                  backgroundColor: ['#32D583', '#ffc09f', '#012E54'],
                 },
               ],
             }}

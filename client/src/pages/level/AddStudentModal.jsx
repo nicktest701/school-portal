@@ -19,7 +19,7 @@ import { Formik } from "formik";
 import { postStudent } from "../../api/studentAPI";
 import { useLocation } from "react-router-dom";
 import Back from "../../components/Back";
-import { UserContext } from "../../context/providers/userProvider";
+import { UserContext } from "../../context/providers/UserProvider";
 
 const AddStudentModal = () => {
 

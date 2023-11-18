@@ -21,9 +21,11 @@ import Transition from '../../components/animations/Transition';
 import moment from 'moment';
 import CustomDatePicker from '../../components/inputs/CustomDatePicker';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-const EditSession = ({ open, setOpen }) => {
+const EditSession = () => {
   const {
-    schoolSessionState: { sessionEditData },
+    schoolSessionState: {
+      editSession: { open, data },
+    },
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
@@ -35,21 +37,21 @@ const EditSession = ({ open, setOpen }) => {
   const [reOpeningDate, setReOpeningDate] = useState(null);
 
   useEffect(() => {
-    setFrom(moment(new Date(sessionEditData.from)));
-    setTo(moment(new Date(sessionEditData.to)));
-    setVacationDate(moment(new Date(sessionEditData.vacationDate)));
-    setReOpeningDate(moment(new Date(sessionEditData.reOpeningDate)));
-  }, [sessionEditData]);
+    setFrom(moment(new Date(data.from)));
+    setTo(moment(new Date(data.to)));
+    setVacationDate(moment(new Date(data.vacationDate)));
+    setReOpeningDate(moment(new Date(data.reOpeningDate)));
+  }, [data]);
   //initial states
   const initialValues = {
-    id: sessionEditData.termId,
+    id: data.termId,
     from,
     to,
     vacationDate,
     reOpeningDate,
-    academicYear: sessionEditData.academicYear,
-    term: sessionEditData.term,
-    session: sessionEditData.sessionId,
+    academicYear: data.academicYear,
+    term: data.term,
+    session: data.sessionId,
   };
 
   const { mutateAsync, isLoading } = useMutation({
@@ -65,7 +67,7 @@ const EditSession = ({ open, setOpen }) => {
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
-        setOpen(false);
+        handleClose();
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));
@@ -73,15 +75,26 @@ const EditSession = ({ open, setOpen }) => {
     });
   };
 
+  //Edit session
+  const handleClose = () => {
+    schoolSessionDispatch({
+      type: 'editSession',
+      payload: {
+        open: false,
+        data: {},
+      },
+    });
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={handleClose}
       fullWidth
       maxWidth='xs'
       TransitionComponent={Transition}
     >
-      <CustomDialogTitle title='Edit Session' onClose={() => setOpen(false)} />
+      <CustomDialogTitle title='Edit Session' onClose={handleClose} />
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}

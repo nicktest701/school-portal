@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Container, Divider, } from '@mui/material';
+import { Container, Divider } from '@mui/material';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { useNavigate } from 'react-router-dom';
 import { MESSAGE_COLUMNS } from '../../mockup/columns/sessionColumns';
@@ -58,7 +58,11 @@ const SMSHome = () => {
   // ];
 
   return (
-    <Container>
+    <Container
+      sx={{
+        width: '95%',
+      }}
+    >
       <CustomTitle
         title='SMS & Notifications'
         subtitle=' Send single and bulk SMS to students and parents'
@@ -82,7 +86,7 @@ const SMSHome = () => {
           <SMSCards />
           <SMSCards />
         </Container> */}
-        <Divider />
+        
 
         <CustomizedMaterialTable
           title='Recent Messages'

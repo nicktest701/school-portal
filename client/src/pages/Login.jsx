@@ -10,43 +10,24 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import _ from 'lodash';
 import CustomParticle from '../components/animations/CustomParticle';
 import { Formik } from 'formik';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { loginUserValidationSchema } from '../config/validationSchema';
-import { getSchoolInfo, getUserAuth } from '../api/userAPI';
-import { UserContext } from '../context/providers/userProvider';
+import { getUserAuth } from '../api/userAPI';
+import { UserContext } from '../context/providers/UserProvider';
 import { useLocation, useNavigate } from 'react-router-dom';
 import StudentFeeSkeleton from '../components/skeleton/StudentFeeSkeleton';
 
 const Login = () => {
   const navigate = useNavigate();
-const { state } = useLocation();
-  const {
-    userState: { school_info, default_school_info },
-    userDispatch,
-  } = useContext(UserContext);
+  const { state } = useLocation();
+  const { school_info, logInUser } = useContext(UserContext);
   const initialValues = {
     username: '',
     password: '',
   };
   const [msg, setMsg] = useState('');
-
-  const schoolInformation = useQuery({
-    queryKey: ['school'],
-    queryFn: () => getSchoolInfo(),
-    onSuccess: (data) => {
-      userDispatch({
-        type: 'setSchoolInfo',
-        payload: !_.isEmpty(data) ? data : default_school_info,
-      });
-      localStorage.setItem(
-        '@school_info',
-        JSON.stringify(!_.isEmpty(data) ? data : default_school_info)
-      );
-    },
-  });
 
   useEffect(() => {
     if (typeof state?.error === 'string') {
@@ -54,19 +35,15 @@ const { state } = useLocation();
     }
   }, [state]);
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isLoading } = useMutation({
     mutationFn: getUserAuth,
   });
-  const onSubmit = (values, options) => {
+  const onSubmit = (values) => {
     setMsg('');
     mutateAsync(values, {
-      onSettled: () => {
-        options.setSubmitting(false);
-      },
       onSuccess: (data) => {
-        localStorage.setItem('@user', JSON.stringify(data?.token));
-        delete data?.token;
-        userDispatch({ type: 'signIn', payload: { user: data, session: {} } });
+     
+        logInUser(data);
         navigate('/school-session', { replace: true });
       },
       onError: (error) => {
@@ -95,43 +72,39 @@ const { state } = useLocation();
             color: 'primary.contrastText',
           }}
         >
-          {schoolInformation.isLoading ? (
-            <StudentFeeSkeleton />
-          ) : (
-            <Stack
-              rowGap={3}
-              justifyContent='çenter'
-              alignItems='center'
-              sx={{
-                filter: 'blur',
-                background: 'linear-gradient(rgba(0,0,0,0.1),rgba(0,0,0,0.1))',
-                padding: 4,
-              }}
-            >
-              {school_info?.badge ? (
-                <Avatar
-                  alt='school logo'
-                  loading='lazy'
-                  srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                    school_info?.badge
-                  }`}
-                  sx={{
-                    width: 150,
-                    height: 150,
-                  }}
-                />
-              ) : (
-                <SchoolRounded sx={{ width: 100, height: 100 }} />
-              )}
+          <Stack
+            rowGap={3}
+            justifyContent='çenter'
+            alignItems='center'
+            sx={{
+              filter: 'blur',
+              background: 'linear-gradient(rgba(0,0,0,0.1),rgba(0,0,0,0.1))',
+              padding: 4,
+            }}
+          >
+            {school_info?.badge ? (
+              <Avatar
+                alt='school logo'
+                loading='lazy'
+                srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                  school_info?.badge
+                }`}
+                sx={{
+                  width: 150,
+                  height: 150,
+                }}
+              />
+            ) : (
+              <SchoolRounded sx={{ width: 100, height: 100 }} />
+            )}
 
-              <Typography variant='h3' textAlign='center'>
-                {school_info?.name}
-              </Typography>
-              <Typography variant='body2' fontStyle='italic' textAlign='center'>
-                {`" ${school_info?.motto} "`}
-              </Typography>
-            </Stack>
-          )}
+            <Typography variant='h3' textAlign='center'>
+              {school_info?.name}
+            </Typography>
+            <Typography variant='body2' fontStyle='italic' textAlign='center'>
+              {`" ${school_info?.motto} "`}
+            </Typography>
+          </Stack>
         </Box>
         <Container
           maxWidth='xs'
@@ -210,7 +183,7 @@ const { state } = useLocation();
                     helperText={touched.password && errors.password}
                   />
                   <LoadingButton
-                    loading={isSubmitting}
+                    loading={isLoading}
                     fullWidth
                     variant='contained'
                     onClick={handleSubmit}

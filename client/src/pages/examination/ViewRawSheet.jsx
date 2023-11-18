@@ -1,17 +1,24 @@
-import { Autocomplete, Dialog, DialogContent, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import {
+  Autocomplete,
+  Button,
+  Dialog,
+  DialogContent,
+  TextField,
+} from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getSubjectsForLevel } from '../../api/levelAPI';
 import MaterialTable from 'material-table';
+import * as XLSX from 'xlsx';
 import { tableIcons } from '../../config/tableIcons';
 
 const ViewRawSheet = ({ open, setOpen, students }) => {
   const { levelId } = useParams();
 
   const [data, setData] = useState([]);
-  const [subject, setSubject] = useState('English Language');
+  const [subject, setSubject] = useState('');
 
   const subjects = useQuery(
     ['subjects', levelId],
@@ -22,15 +29,76 @@ const ViewRawSheet = ({ open, setOpen, students }) => {
   );
 
   useEffect(() => {
-    const modifiedStudents = students?.map(({ _id, fullName }) => {
+    const modifiedStudents = students?.map(({ _id, indexnumber, fullName }) => {
       return {
         _id,
+        indexnumber,
         fullName,
       };
     });
 
     setData(modifiedStudents);
   }, [students]);
+
+  const downloadSheet = useCallback(() => {
+    const columns = [
+      'Index Number',
+      'Student',
+      'Class  Score',
+      'Exams  Score',
+      'Total  Score',
+      'Grade',
+    ];
+    const modifiedSheet = data?.map((student) => student?.student);
+
+    const worksheet = XLSX.utils.json_to_sheet(modifiedSheet);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, subject || 'Subject');
+    XLSX.utils.sheet_add_aoa(worksheet, [columns], {
+      origin: 'A1',
+    });
+
+    /* calculate column width */
+    const max_width = modifiedSheet.reduce((w, r) => Math.max(w, r.fullName.length), 10);
+    worksheet['!cols'] = [{ wch: max_width }];
+    XLSX.writeFile(workbook, `${subject || 'Subject'}.xlsx`, {
+      compression: true,
+    });
+  }, [data]);
+
+  const columns = [
+    {
+      title: 'No',
+      render: (rowData) => rowData.tableData.id + 1,
+      width: 50,
+    },
+
+    {
+      title: 'Index Number',
+      field: 'indexnumber',
+    },
+    {
+      title: 'Student',
+      field: 'fullName',
+      width: 300,
+    },
+    {
+      title: 'Class  Score',
+      field: 'classScore',
+    },
+    {
+      title: 'Exams  Score',
+      field: 'examsScore',
+    },
+    {
+      title: 'Total  Score',
+      field: 'totalScore',
+    },
+    {
+      title: 'Grade',
+      field: 'grade',
+    },
+  ];
 
   return (
     <Dialog open={open} maxWidth='lg' fullScreen>
@@ -65,48 +133,12 @@ const ViewRawSheet = ({ open, setOpen, students }) => {
             />
           )}
         />
+        <Button onClick={downloadSheet}>Download SBA</Button>
 
         <MaterialTable
           exportFileName={subject}
           icons={tableIcons}
-          columns={[
-            {
-              title: 'No',
-              render: (rowData) => rowData.tableData.id + 1,
-              width: 50,
-            },
-            {
-              title: 'ID',
-              field: '_id',
-              export: true,
-              hidden: true,
-            },
-            {
-              title: 'Student',
-              field: 'fullName',
-              width: 300,
-            },
-            {
-              title: 'Class  Score',
-              field: 'classScore',
-            },
-            {
-              title: 'Exams  Score',
-              field: 'examsScore',
-            },
-            {
-              title: 'Total  Score',
-              field: 'totalScore',
-            },
-            // {
-            //   title: 'Position',
-            //   field: 'position',
-            // },
-            {
-              title: 'Grade',
-              field: 'grade',
-            },
-          ]}
+          columns={columns}
           data={data ?? []}
           title={subject}
           options={{
@@ -114,7 +146,7 @@ const ViewRawSheet = ({ open, setOpen, students }) => {
             exportAllData: true,
             exportButton: true,
             pageSize: 10,
-            paginationType:'stepped',
+            paginationType: 'stepped',
             pageSizeOptions: [10, 20, 40, 60, 100],
           }}
         />

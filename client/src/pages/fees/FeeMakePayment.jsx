@@ -16,19 +16,12 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material';
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-} from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useFormik } from 'formik';
 import _ from 'lodash';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getAllStudentsForSearch } from '../../api/studentAPI';
-import StudentFeeSkeleton from '../../components/skeleton/StudentFeeSkeleton';
+
 import { getAllFeesByCurrentLevel } from '../../api/feeAPI';
 import {
   getCurrentFeeForStudent,
@@ -37,48 +30,47 @@ import {
 import { currencyFormatter } from '../../config/currencyFormatter';
 import { StudentContext } from '../../context/providers/StudentProvider';
 import StudentFeesHistory from './StudentFeesHistory';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import FeePaymentHistory from './FeePaymentHistory';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-
-
-
+import CustomTitle from '../../components/custom/CustomTitle';
+import { EMPTY_IMAGES } from '../../config/images';
+import { MonetizationOn, Person2Sharp } from '@mui/icons-material';
+import useLevelById from '../../components/hooks/useLevelById';
+import {
+  alertError,
+  alertSuccess,
+} from '../../context/actions/globalAlertActions';
 
 const FeeMakePayment = () => {
   const { palette } = useTheme();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   //Get Session id
   const {
-    userState: { user, session },
+    user,
+    userState: {  session },
   } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
   const { studentDispatch } = useContext(StudentContext);
   const queryClient = useQueryClient();
-  const [isPending, startTransition] = useTransition();
 
   //States
   const [msg, setMsg] = useState({ severity: '', text: '' });
   const [openFeesHistory, setOpenFeesHistory] = useState(false);
   const [openStudentFeesHistory, setOpenStudentFeesHistory] = useState(false);
-  const [studentInfo, setStudentInfo] = useState({});
-  const [levelOption, setLevelOption] = useState([]);
+  const [studentInfo, setStudentInfo] = useState({
+    _id: '',
+    fullName: '',
+    profile: '',
+  });
   const [currentLevel, setCurrentLevel] = useState({
     levelId: '',
     levelType: '',
     feesId: '',
     fees: 0,
-  });
-  const [currentStudents, setCurrentStudents] = useState([]);
-  const [searchValue, setSearchValue] = useState({
-    id: '',
-    profile: '',
-    fullName: '',
-    label: '',
-    level: '',
-    levelType: '',
   });
 
   //fee info
@@ -88,85 +80,30 @@ const FeeMakePayment = () => {
   const [totalAmountPaid, setTotalAmountPaid] = useState(Number(0));
   const [currentAmount, setCurrentAmount] = useState(Number(0));
 
-  useQuery(
-    ['all-level-fees'],
-    () =>
+  const levelOptions = useQuery({
+    queryKey: ['all-level-fees', session.sessionId, session.termId],
+    queryFn: () =>
       getAllFeesByCurrentLevel({
         session: session.sessionId,
         term: session.termId,
       }),
-    {
-      onSuccess: (fees) => {
-        setLevelOption(fees);
-      },
-    }
-  );
+    enabled: !!session?.sessionId && !!session?.termId,
+  });
 
-  useEffect(() => {
-    setCurrentStudents([]);
-    setSearchValue({
-      id: '',
-      profile: '',
-      fullName: '',
-      label: '',
-      level: '',
-      levelType: '',
-    });
-    setStudentInfo({});
-  }, [currentLevel]);
-
-  //Get All Students for search
-  useQuery(
-    ['all-students-for-search', currentLevel?.levelId],
-    () =>
-      getAllStudentsForSearch({
-        session: session.sessionId,
-        term: session.termId,
-        level: currentLevel.levelId,
-      }),
-    {
-      enabled: !!currentLevel?.levelId,
-      onSuccess: (students) => {
-        if (students.length === 0) {
-          setCurrentStudents([]);
-          return;
-        }
-        setCurrentStudents(students);
-      },
-    }
-  );
-
-  //Search Student
-  useEffect(() => {
-    startTransition(() => {
-      if (searchValue?.fullName === '') {
-        setStudentInfo({});
-        return;
-      }
-
-      const student = currentStudents.filter(({ fullName }) => {
-        return (
-          fullName
-            ?.toLowerCase()
-            ?.lastIndexOf(searchValue?.fullName?.toLowerCase()) > -1
-        );
-      });
-      setStudentInfo(student[0]);
-    });
-  }, [searchValue, currentStudents]);
+  const { students, levelLoading } = useLevelById(currentLevel?.levelId);
 
   ///Get Student fees info
   useQuery(
-    ['student-fees', studentInfo?.id, studentInfo?.level],
+    ['student-fees', studentInfo?._id, searchParams.get('level_id')],
     () =>
       getCurrentFeeForStudent({
         session: session.sessionId,
         term: session.termId,
-        student: studentInfo?.id,
-        level: studentInfo?.level,
+        student: studentInfo?._id,
+        level: searchParams.get('level_id'),
       }),
     {
-      enabled: !!studentInfo?.id && !!studentInfo?.level,
+      enabled: !!studentInfo?._id && !!searchParams.get('level_id'),
       onSuccess: (data) => {
         setTotalAmountPaid(data?.totalAmountPaid);
         setTotalArreas(data?.totalArreas);
@@ -216,7 +153,7 @@ const FeeMakePayment = () => {
   }, [currentAmount, totalOutStanding, totalAmountPaid, totalFees]);
 
   //Add fees to database
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isLoading } = useMutation({
     mutationFn: postCurrentFee,
   });
 
@@ -225,17 +162,15 @@ const FeeMakePayment = () => {
     const payment = {
       session: session.sessionId,
       term: session.termId,
-      level: studentInfo?.level,
-      student: studentInfo?.id,
+      level: currentLevel.levelId,
+      student: studentInfo?._id,
       fee: currentLevel?.feesId,
       payment: [feeCalculation],
     };
     Swal.fire({
       title: 'Making Payment',
       text: 'Do you want to proceed with the payment?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
-      backdrop: false,
     }).then(({ isConfirmed, isDenied, isDismissed }) => {
       if (isConfirmed) {
         mutateAsync(payment, {
@@ -245,26 +180,21 @@ const FeeMakePayment = () => {
             options.setSubmitting(false);
           },
           onSuccess: async () => {
-            setMsg({ severity: 'info', text: 'Payment made successfully!!!' });
+            // setMsg({ severity: 'info', text: 'Payment made successfully!!!' });
+            schoolSessionDispatch(alertSuccess('Payment Done!'));
 
-            // console.log(payment);
-
-            await schoolSessionDispatch({
-              type: 'printFees',
-              payload: {
-                fullName: studentInfo.fullName,
-                levelType: studentInfo.levelType,
-                payment: payment.payment[0],
+            navigate('/fee/print', {
+              state: {
+                feePrintData: {
+                  fullName: studentInfo.fullName,
+                  levelType: currentLevel?.levelType,
+                  payment: payment.payment[0],
+                },
               },
             });
-            navigate('/fee/print');
-            options.resetForm();
           },
           onError: () => {
-            setMsg({
-              severity: 'error',
-              text: 'Couldnt make payment.Try again',
-            });
+            schoolSessionDispatch(alertError('An unknown error has occurred!'));
           },
         });
       }
@@ -285,10 +215,14 @@ const FeeMakePayment = () => {
   //View Student Current fee info
   const handleViewStudentFeeHistory = () => {
     studentDispatch({
-      type: 'setCurrentStudentFeeInfo',
+      type: 'viewStudentFeeHistory',
       payload: {
-        id: studentInfo?.id,
-        level: studentInfo?.level,
+        open: true,
+        data: {
+          id: studentInfo?._id,
+          level: searchParams.get('level_id'),
+          // feeId: currentLevel?.feesId,
+        },
       },
     });
     setOpenStudentFeesHistory(true);
@@ -298,10 +232,14 @@ const FeeMakePayment = () => {
   const handleOpenPaymentHistory = () => setOpenFeesHistory(true);
 
   return (
-    <Container >
-      <Typography variant='h4'>Fees Payment</Typography>
-      <Typography>Access,manage and control payment of school fees</Typography>
-      <Divider />
+    <Container sx={{ width: '90%' }}>
+      <CustomTitle
+        title='Fees Payment'
+        subtitle='Access,manage and control payment of school fees'
+        img={EMPTY_IMAGES.assessment}
+        color='primary.main'
+      />
+
       <Stack paddingY={4} spacing={2}>
         <Stack
           direction={{ xs: 'column-reverse', sm: 'row' }}
@@ -311,7 +249,8 @@ const FeeMakePayment = () => {
           <Autocomplete
             sx={{ width: 250 }}
             fullWidth
-            options={levelOption}
+            options={levelOptions?.data ? levelOptions.data : []}
+            loading={levelOptions?.isLoading}
             disableClearable
             closeText=' '
             noOptionsText='No Level Available'
@@ -324,11 +263,18 @@ const FeeMakePayment = () => {
             value={currentLevel}
             onChange={(e, value) => {
               setCurrentLevel(value);
-              setCurrentStudents([]);
+              setSearchParams((params) => {
+                params.set('level_id', value?.levelId);
+                params.set('level_name', value?.levelType);
+                return params;
+              });
             }}
             onClose={() => {
-              setSearchValue({});
-              setStudentInfo({});
+              setStudentInfo({
+                // _id: '',
+                // fullName: '',
+                // profile: '',
+              });
             }}
             renderInput={(params) => (
               <TextField {...params} label='Select Level' size='small' />
@@ -346,82 +292,109 @@ const FeeMakePayment = () => {
         {/* search */}
         <Autocomplete
           fullWidth
-          options={currentStudents}
+          options={students ? students : []}
+          loading={levelLoading}
           disableClearable
           closeText=' '
           noOptionsText='No Student found'
           isOptionEqualToValue={(option, value) =>
-            value.id === undefined || value.id === '' || option.id === value.id
+            value?._id === undefined ||
+            value?._id === '' ||
+            option?._id === value?._id
           }
-          getOptionLabel={(option) => option.fullName || ''}
-          value={searchValue}
-          onChange={(e, value) => {
-            setStudentInfo({});
-            setSearchValue(value);
-          }}
+          getOptionLabel={(option) => option?.fullName || ''}
+          value={studentInfo}
+          onChange={(e, value) => setStudentInfo(value)}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              // size="small"
-              placeholder='Search for student'
-            />
+            <TextField {...params} placeholder='Search for student' />
           )}
         />
       </Stack>
 
       <Grid container spacing={4} paddingY={2}>
-        {isPending ? (
-          <Grid item xs={12} md={6} paddingY={4}>
-            <StudentFeeSkeleton />
-          </Grid>
-        ) : (
-          <Grid item xs={12} md={6} paddingY={4}>
+        <Grid item xs={12} md={6} paddingY={6}>
+          <div style={{ display: 'flex', gap: '4px', paddingBottom: '4px' }}>
+            <Person2Sharp color='secondary' />
             <Typography variant='h6'>Personal Details</Typography>
-            <Divider />
+          </div>
+          <Divider />
 
-            <Stack
-              spacing={1}
-              justifyContent='center'
-              alignItems='center'
-              paddingY={2}
+          <Stack
+            spacing={1}
+            justifyContent='center'
+            alignItems='center'
+            paddingY={2}
+          >
+            <Avatar
+              src={
+                studentInfo?.profile === undefined ||
+                studentInfo?.profile === ''
+                  ? null
+                  : studentInfo?.profile
+                // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                //     studentInfo?.profile
+                //   }`
+              }
+              sx={{ width: 80, height: 80 }}
+            />
+          </Stack>
+          <Stack spacing={2} paddingY={2}>
+            <TextField
+              size='small'
+              label="Student's Name"
+              InputProps={{
+                readOnly: true,
+              }}
+              value={studentInfo?.fullName || ''}
+            />
+
+            <TextField
+              size='small'
+              // label='Level'
+              value={currentLevel?.levelType || searchParams.get('level_name')}
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </Stack>
+          <Stack spacing={2} paddingY={2}>
+            <TextField
+              type='number'
+              inputMode='numeric'
+              label='Amount'
+              size='small'
+              placeholder='Enter Amount here'
+              value={currentAmount}
+              onChange={(e) => setCurrentAmount(e.target.valueAsNumber)}
+              error={formik.errors.amount}
+              helperText={formik.touched.amount && formik.errors.amount}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>GHS</InputAdornment>
+                ),
+                endAdornment: <InputAdornment position='end'>p</InputAdornment>,
+              }}
+            />
+
+            {/* <Button>Cancel</Button> */}
+            <LoadingButton
+              disabled={_.isEmpty(studentInfo?._id)}
+              size='large'
+              variant='contained'
+              startIcon={<MonetizationOnRounded />}
+              loading={isLoading}
+              onClick={formik.handleSubmit}
             >
-              <Avatar
-                src={
-                  studentInfo?.profile === undefined ||
-                  studentInfo?.profile === ''
-                    ? null
-                    :studentInfo?.profile
-                    // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                    //     studentInfo?.profile
-                    //   }`
-                }
-                sx={{ width: 80, height: 80 }}
-              />
-            </Stack>
-            <Stack spacing={2} paddingY={2}>
-              <TextField
-                size='small'
-                label="Student's Name"
-                InputProps={{
-                  readOnly: true,
-                }}
-                value={studentInfo?.fullName || ''}
-              />
+              Make Payment
+            </LoadingButton>
+          </Stack>
+        </Grid>
 
-              <TextField
-                size='small'
-                label='Level'
-                value={studentInfo?.levelType || ''}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Stack>
-          </Grid>
-        )}
-
-        <Grid item xs={12} md={6} paddingY={2}>
-          <Typography variant='h6'>Fees Details</Typography>
+        <Grid item xs={12} md={6} paddingY={6}>
+          <div style={{ display: 'flex', gap: '4px', paddingBottom: '4px' }}>
+            <MonetizationOn color='secondary' />
+            <Typography variant='h6'>Fees Details</Typography>
+          </div>
           <Divider />
           <Paper elevation={1} sx={{ marginTop: 2 }}>
             <Stack spacing={2} padding={2}>
@@ -429,13 +402,13 @@ const FeeMakePayment = () => {
                 variant='outlined'
                 size='small'
                 onClick={handleViewStudentFeeHistory}
-                disabled={_.isEmpty(studentInfo) ? true : false}
+                disabled={_.isEmpty(studentInfo?._id)}
               >
                 Payment Details
               </Button>
               <Stack direction='row' justifyContent='space-between'>
                 <Typography fontWeight='bold'>Fees</Typography>
-                {!_.isEmpty(studentInfo) && totalOutStanding === 0 ? (
+                {!_.isEmpty(studentInfo?._id) && totalOutStanding === 0 ? (
                   <Chip
                     label='Full Payment'
                     color='success'
@@ -461,7 +434,7 @@ const FeeMakePayment = () => {
               >
                 <Typography variant='body2'>Fees For Term</Typography>
                 <Typography variant='body2'>
-                  {_.isEmpty(studentInfo)
+                  {_.isEmpty(studentInfo?._id)
                     ? 'GHS 0.00'
                     : currencyFormatter(currentLevel?.fees || 0)}
                 </Typography>
@@ -484,7 +457,7 @@ const FeeMakePayment = () => {
               >
                 <Typography fontWeight='bold'>Total </Typography>
                 <Typography variant='body2'>
-                  {_.isEmpty(studentInfo)
+                  {_.isEmpty(studentInfo?._id)
                     ? 'GHS 0.00'
                     : currencyFormatter(totalFeesToBePaid)}
                 </Typography>
@@ -496,7 +469,7 @@ const FeeMakePayment = () => {
               >
                 <Typography fontWeight='bold'>Fees Paid </Typography>
                 <Typography variant='body2'>
-                  {_.isEmpty(studentInfo)
+                  {_.isEmpty(studentInfo?._id)
                     ? 'GHS 0.00'
                     : currencyFormatter(currentFeesPaid)}
                 </Typography>
@@ -509,46 +482,16 @@ const FeeMakePayment = () => {
               >
                 <Typography fontWeight='bold'>Outstanding Fees </Typography>
                 <Typography variant='body2'>
-                  {_.isEmpty(studentInfo)
+                  {_.isEmpty(studentInfo?._id)
                     ? 'GHS 0.00'
                     : currencyFormatter(totalOutStanding)}
                 </Typography>
               </Stack>
             </Stack>
           </Paper>
-          <Stack spacing={2} paddingY={2}>
-            <TextField
-              type='number'
-              inputMode='number'
-              label='Amount'
-              placeholder='Enter Amount here'
-              value={currentAmount}
-              onChange={(e) => setCurrentAmount(e.target.valueAsNumber)}
-              error={formik.errors.amount}
-              helperText={formik.touched.amount && formik.errors.amount}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>GHS</InputAdornment>
-                ),
-                endAdornment: <InputAdornment position='end'>p</InputAdornment>,
-              }}
-            />
-          </Stack>
         </Grid>
       </Grid>
-      <Divider />
-      <Stack direction='row' justifyContent='flex-end' paddingY={1} spacing={2}>
-        <Button>Cancel</Button>
-        <LoadingButton
-          disabled={_.isEmpty(studentInfo) ? true : false}
-          variant='contained'
-          startIcon={<MonetizationOnRounded />}
-          loading={formik.isSubmitting}
-          onClick={formik.handleSubmit}
-        >
-          Make Payment
-        </LoadingButton>
-      </Stack>
+
       {/*View  Student fee History */}
       <FeePaymentHistory open={openFeesHistory} setOpen={setOpenFeesHistory} />
 

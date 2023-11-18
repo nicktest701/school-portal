@@ -18,7 +18,7 @@ function DashboardSwiperContent({ title, content, img }) {
         <Button
           variant='contained'
           color='secondary'
-          // disableElevation
+          
           sx={{ paddingX: 5 }}
         >
           Learn More

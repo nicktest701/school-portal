@@ -1,25 +1,29 @@
 import React, { useContext } from 'react';
 import {
   Box,
+  Card,
   Container,
-  Divider,
+  IconButton,
   List,
   ListItem,
+  ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import { STUDENTS_COLUMN } from '../../mockup/columns/studentColumns';
+import { RECENT_STUDENTS_COLUMN } from '../../mockup/columns/studentColumns';
 import StudentDashboardBarChart from '../../components/cards/StudentDashboardBarChart';
 import StudentDashboardPieChart from '../../components/cards/StudentDashboardPieChart';
 import { getAllStudentsDetails } from '../../api/studentAPI';
 import StudentDashboardLineChart from '../../components/cards/StudentDashboardLineChart';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import student_icon from '../../assets/images/header/student_ico.svg';
 import { EMPTY_IMAGES } from '../../config/images';
 import ChartSkeleton from '../../components/skeleton/ChartSkeleton';
 import CustomTitle from '../../components/custom/CustomTitle';
+import DashboardCard from '../../components/cards/DashboardCard';
+import { Person } from '@mui/icons-material';
 
 const StudentHome = () => {
   const {
@@ -27,7 +31,7 @@ const StudentHome = () => {
   } = useContext(UserContext);
 
   const studentDetails = useQuery({
-    queryKey: ['student-details'],
+    queryKey: ['student-details', session?.sessionId, session?.termId],
     queryFn: () =>
       getAllStudentsDetails({
         sessionId: session.sessionId,
@@ -36,66 +40,118 @@ const StudentHome = () => {
     enabled: !!session.sessionId && !!session.termId,
   });
 
-  // console.log(studentDetails?.data?.noOfStudentsInEachLevel);
-
   return (
-    <Box
-      // bgcolor='primary.main'
-      width='inherit'
+    <Container
       sx={{
         position: 'relative',
         height: 200,
+        bgcolor: 'primary.main',
+        width: '95%',
       }}
     >
-      <Container
+      <CustomTitle
+        title='Student Portal'
+        subtitle='Track,manage and control student information'
+        img={student_icon}
+        color='primary.contrastText'
+      />
+      <Box
         sx={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          // bgcolor:'rgb(241, 244, 250)'
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
+          gap: 2,
+          pt: 2,
         }}
       >
-        <CustomTitle
-          title='Student Portal'
-          subtitle='Track,manage and control student information'
-          img={student_icon}
-          color='primary.main'
+        <DashboardCard
+          title='Students'
+          value={108}
+          icon={
+            <IconButton sx={{ bgcolor: 'secondary.lighter' }}>
+              <Person
+                sx={{
+                  width: 20,
+                  height: 20,
+                  color: 'secondary.darker',
+                }}
+              />
+            </IconButton>
+          }
         />
+        <DashboardCard
+          title='Males'
+          value={60}
+          icon={
+            <IconButton sx={{ bgcolor: 'warning.lighter' }}>
+              <Person
+                sx={{
+                  width: 20,
+                  height: 20,
+                  color: 'warning.darker',
+                }}
+              />
+            </IconButton>
+          }
+        />
+      
+        <DashboardCard
+          title='Females'
+          value={48}
+          icon={
+            <IconButton sx={{ bgcolor: 'info.lighter' }}>
+              <Person
+                sx={{
+                  width: 20,
+                  height: 20,
+                  color: 'info.darker',
+                }}
+              />
+            </IconButton>
+          }
+        />
+      </Box>
 
-        <Divider />
+      {studentDetails.isLoading && <ChartSkeleton />}
 
-        {studentDetails.isLoading && <ChartSkeleton />}
-
-        {studentDetails.data && (
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
-              gap: 2,
-              py: 2,
-            }}
-          >
-            <StudentDashboardLineChart
-              data={studentDetails?.data?.noOfStudentsInEachLevel}
-            />
-            <StudentDashboardBarChart
-              data={studentDetails?.data?.noOfStudentsForEachTerm}
-            />
-            <StudentDashboardPieChart {...studentDetails?.data} />
-
-            {/* <StudentDashboardCard /> */}
-          </Box>
-        )}
-
+      {studentDetails.data && (
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            justifyContent: { xs: 'center', md: 'space-between' },
-            pt: 3,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
             gap: 2,
+            pt: 2,
+          }}
+        >
+          <StudentDashboardBarChart
+            data={studentDetails?.data?.noOfStudentsForEachTerm}
+          />
+          <StudentDashboardLineChart
+            data={studentDetails?.data?.noOfStudentsInEachLevel}
+          />
+
+          <StudentDashboardPieChart {...studentDetails?.data} />
+
+          {/* <StudentDashboardCard /> */}
+        </Box>
+      )}
+
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          flexDirection: { xs: 'column', lg: 'row' },
+          justifyContent: 'space-between',
+          // border: '1px solid red',
+          pt: 3,
+          gap: 2,
+        }}
+      >
+        <Card
+          sx={{
+            borderRadius: '8px',
+            overflow: 'hidden',
+            flex: 1,
+            minWidth: 200,
           }}
         >
           <List
@@ -104,45 +160,49 @@ const StudentHome = () => {
                 Number of Students
               </ListSubheader>
             }
-            sx={{
-              borderRadius: '8px',
-              border: '1px solid lightgray',
-              minWidth: 250,
-              overflow: 'hidden',
-            }}
           >
             <ListItem divider>
               <ListItemText>Students</ListItemText>
-              <ListItemText>Number</ListItemText>
+              <ListItemSecondaryAction>
+                <ListItemText>Number</ListItemText>
+              </ListItemSecondaryAction>
             </ListItem>
             {studentDetails?.data?.noOfStudentsInEachLevel?.map((item) => {
               return (
                 <ListItem key={item?.level} divider>
                   <ListItemText>{item?.level}</ListItemText>
-                  <ListItemText>{item?.students}</ListItemText>
+                  <ListItemSecondaryAction>
+                    <ListItemText>{item?.students}</ListItemText>
+                  </ListItemSecondaryAction>
                 </ListItem>
               );
             })}
           </List>
+        </Card>
 
-          <CustomizedMaterialTable
-            title='Recently Added Students'
-            icon={student_icon}
-            isLoading={studentDetails.isLoading}
-            columns={STUDENTS_COLUMN}
-            // data={[]}
-            options={{
-              paginationPosition: 'bottom',
-            }}
-            data={studentDetails.data?.recentStudents ?? []}
-            actions={[]}
-            handleRefresh={studentDetails.refetch}
-            addButtonImg={EMPTY_IMAGES.student}
-            addButtonMessage='😑 No Students recently added !!!!'
-          />
-        </Box>
-      </Container>
-    </Box>
+        <CustomizedMaterialTable
+          title='Recently Added Students'
+          icon={student_icon}
+          isLoading={studentDetails.isLoading}
+          columns={RECENT_STUDENTS_COLUMN}
+          // data={[]}
+          options={{
+            paginationPosition: 'bottom',
+            pageSize: 3,
+            selection: false,
+          }}
+          data={studentDetails.data?.recentStudents ?? []}
+          actions={[]}
+          handleRefresh={studentDetails.refetch}
+          addButtonImg={EMPTY_IMAGES.student}
+          addButtonMessage='😑 No Students recently added !!!!'
+          style={{
+            border: 'none',
+            boxShadow: '0px 1px 5px rgba(0,0,0,0.07)',
+          }}
+        />
+      </Box>
+    </Container>
   );
 };
 

@@ -16,7 +16,7 @@ import ReactToPrint from 'react-to-print';
 import { StyleOutlined } from '@mui/icons-material';
 import _ from 'lodash';
 import FeesItem from '../list/FeesItem';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;

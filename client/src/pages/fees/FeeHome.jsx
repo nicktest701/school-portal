@@ -7,7 +7,7 @@ import {
   getAllCurrentFeesSummary,
   getAllRecentlyPaidFees,
 } from '../../api/currentFeeAPI';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import { EMPTY_IMAGES } from '../../config/images';
 import teacher_icon from '../../assets/images/header/teacher_ico.svg';
 import moment from 'moment';
@@ -36,8 +36,7 @@ const FeeHome = () => {
     <Container
       // bgcolor='primary.main'
       sx={{
-        position: 'relative',
-        height: 300,
+        width: '90%',
       }}
     >
       <CustomTitle
@@ -49,12 +48,10 @@ const FeeHome = () => {
 
       <Box
         sx={{
-          display: { xs: 'none', md: 'flex' },
-          flexDirection: { xs: 'column', md: 'row' },
-          alignItems: 'center',
-          justifyContent: 'center',
+          display: { xs: 'none', md: 'grid' },
+          gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
           gap: 2,
-          paddingY: 2,
+          py: 3,
         }}
       >
         <FeesDashboardCard text='Today' value={feeSummary?.data?.today} />
@@ -63,19 +60,6 @@ const FeeHome = () => {
         <FeesDashboardCard text='Year' value={feeSummary?.data?.year} />
       </Box>
 
-      {/* <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          <StudentDashboardCard />
-          <StudentDashboardCard />
-          <StudentDashboardCard />
-        </Box> */}
       <CustomizedMaterialTable
         isLoading={recentFees.isLoading}
         title='Recent Fee Payment'
@@ -87,8 +71,9 @@ const FeeHome = () => {
             type: 'date',
             render: ({ date }) => (
               <ListItemText
-                primary={moment(date).format('ddd, Do MMMM YYYY')}
+                primary={moment(date).format('ddd,LL')}
                 secondary={moment(date).format('hh:mm a')}
+                secondaryTypographyProps={{ color: 'secondary.main' }}
               />
             ),
           },

@@ -11,7 +11,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ThemeProvider from './theme';
 import Root from './pages/layouts/Root';
 import SchoolSessionProvider from './context/providers/SchoolSessionProvider';
-import UserProvider from './context/providers/userProvider';
+import UserProvider from './context/providers/UserProvider';
 import TeacherProvider from './context/providers/TeacherProvider';
 import Error from './pages/Error';
 
@@ -33,8 +33,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary FallbackComponent={Error} onReset={reset}>
-        <ThemeProvider>
-          <UserProvider>
+        <UserProvider>
+          <ThemeProvider>
             <SchoolSessionProvider>
               <TeacherProvider>
                 <StudentProvider>
@@ -44,8 +44,8 @@ function App() {
                 </StudentProvider>
               </TeacherProvider>
             </SchoolSessionProvider>
-          </UserProvider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </UserProvider>
       </ErrorBoundary>
     </QueryClientProvider>
   );

@@ -1,19 +1,10 @@
 import { Container, Stack, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { getStudentAllFeeHistory } from '../../api/currentFeeAPI';
 import StudentFeeReportListItem from '../../components/list/StudentFeeReportListItem';
 import { v4 as uuid } from 'uuid';
-const StudentFees = () => {
+const StudentFees = ({ data }) => {
   const { studentId } = useParams();
-
-  //Get Academic Terms for students
-  const studentFees = useQuery({
-    queryKey: ['student-fees', studentId],
-    queryFn: () => getStudentAllFeeHistory(studentId),
-    enabled: !!studentId,
-  });
 
   return (
     <Container>
@@ -26,9 +17,9 @@ const StudentFees = () => {
           // border: "1px solid black",
         }}
       >
-        {studentFees?.data?.fees !== undefined ? (
+        {data?.fees !== undefined ? (
           <>
-            {studentFees?.data?.fees.map((session) => {
+            {data?.fees.map((session) => {
               const id = uuid();
               return (
                 <StudentFeeReportListItem

@@ -1,22 +1,24 @@
-const router = require("express").Router();
-const AsyncHandler = require("express-async-handler");
-const crypto = require("crypto");
-const mongoose = require("mongoose");
-const createError = require("http-errors");
+const router = require('express').Router();
+const AsyncHandler = require('express-async-handler');
+const crypto = require('crypto');
+const mongoose = require('mongoose');
+const createError = require('http-errors');
+const bcrypt = require('bcryptjs');
 const {
-  Types: {  ObjectId },
-} = require("mongoose");
-const _ = require("lodash");
-const multer = require("multer");
-const Teacher = require("../models/teacherModel");
+  Types: { ObjectId },
+} = require('mongoose');
+const _ = require('lodash');
+const multer = require('multer');
+const Teacher = require('../models/teacherModel');
+const User = require('../models/userModel');
 
 //
 const Storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./images/teachers/");
+    cb(null, './images/teachers/');
   },
   filename: function (req, file, cb) {
-    const ext = file?.originalname?.split(".")[1];
+    const ext = file?.originalname?.split('.')[1];
 
     cb(null, `${crypto.randomUUID()}.${ext}`);
   },
@@ -27,7 +29,7 @@ const upload = multer({ storage: Storage });
 
 //@GET All teachers
 router.get(
-  "/",
+  '/',
   AsyncHandler(async (req, res) => {
     const teachers = await Teacher.find({});
 
@@ -49,7 +51,7 @@ router.get(
 
 //@GET Teacher by id
 router.get(
-  "/:id",
+  '/:id',
   AsyncHandler(async (req, res) => {
     const id = req.params.id;
     const teacher = await Teacher.findById(id);
@@ -59,24 +61,45 @@ router.get(
 
 //@POST Teacher
 router.post(
-  "/",
-  upload.single("profile"),
+  '/',
+  upload.single('profile'),
   AsyncHandler(async (req, res) => {
     const newTeacher = req.body;
     newTeacher.profile = req.file.filename;
+
+    // console.log(newTeacher)
     const teacher = await Teacher.create(newTeacher);
 
     if (_.isEmpty(teacher)) {
-      return res.status(404).json("Couldnt save Teacher info.Try again.");
+      return res.status(404).json('Couldnt save Teacher info.Try again.');
     }
 
-    res.status(201).json("New Teacher info has been saved successfully!!!");
+    const hashedPassword =await bcrypt.hash(teacher.surname, 10);
+
+    const user = {
+      _id: teacher?._id,
+      profile: teacher?.profile,
+      fullName: teacher?.fullName,
+      username: teacher?.surname,
+      dateofbirth: teacher?.dateofbirth,
+      gender: teacher?.gender,
+      role: 'Teacher',
+      phonenumber: teacher?.phonenumber,
+      address: teacher?.address,
+      residence: teacher?.residence,
+      nationality: teacher?.nationality,
+      password: hashedPassword,
+    };
+
+    await User.create(user);
+
+    res.status(201).json('New Teacher Added!!!');
   })
 );
 //@POST Update Teacher profile
 router.put(
-  "/profile",
-  upload.single("profile"),
+  '/profile',
+  upload.single('profile'),
   AsyncHandler(async (req, res) => {
     const { _id } = req.body;
 
@@ -89,21 +112,21 @@ router.put(
     if (_.isEmpty(updatedTeacher)) {
       return res
         .status(400)
-        .json("Error updating profile image.Try again later.");
+        .json('Error updating profile image.Try again later.');
     }
 
-    res.status(201).json("Profile image updated!!!");
+    res.status(201).json('Profile image updated!!!');
   })
 );
 
 //@PUT teacher
 router.put(
-  "/",
+  '/',
   AsyncHandler(async (req, res) => {
     const id = req.body._id;
 
     if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json("Invalid Teacher id");
+      return res.status(400).json('Invalid Teacher id');
     }
 
     const modifiedTeacher = req.body;
@@ -117,21 +140,21 @@ router.put(
     );
 
     if (_.isEmpty(updatedTeacher)) {
-      return res.status(404).json("Couldnt update Teacher info.Try again.");
+      return res.status(404).json('Couldnt update Teacher info.Try again.');
     }
 
-    res.status(201).json("Teacher info has been updated successfully!!!");
+    res.status(201).json('Teacher info has been updated successfully!!!');
   })
 );
 
 //@DELETE teacher
 router.delete(
-  "/:id",
+  '/:id',
   AsyncHandler(async (req, res) => {
     const id = req.params.id;
 
     if (!mongoose.isValidObjectId(id)) {
-      return res.status(403).json("Invalid information provided.");
+      return res.status(403).json('Invalid information provided.');
     }
 
     const teacher = await Teacher.findByIdAndUpdate(id, {
@@ -141,7 +164,7 @@ router.delete(
     if (_.isEmpty(teacher)) {
       return res.status(400).json("Couldn't remove Teacher info.Try again.");
     }
-    res.status(200).json("Teacher has been removed successfully!!!");
+    res.status(200).json('Teacher has been removed successfully!!!');
   })
 );
 

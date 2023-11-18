@@ -77,10 +77,13 @@ const StudentReducer = (state, action) => {
         studentReportDetails: action.payload,
       };
 
-    case 'setCurrentStudentFeeInfo':
+    case 'viewStudentFeeHistory':
       return {
         ...state,
-        currentStudentFeeInfo: action.payload,
+        viewStudentFeeHistory: {
+          open: action.payload?.open,
+          data: action.payload?.data,
+        },
       };
 
     default:

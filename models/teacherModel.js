@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const db = require("../db/DBConnection");
+const mongoose = require('mongoose');
+const _ = require('lodash');
+const db = require('../db/DBConnection');
 
 const TeacherSchema = new mongoose.Schema(
   {
@@ -7,12 +8,12 @@ const TeacherSchema = new mongoose.Schema(
     firstname: {
       type: String,
       lowercase: true,
-      required: true,
+      // required: true,
     },
     surname: {
       type: String,
       lowercase: true,
-      required: true,
+      // required: true,
     },
     othername: {
       type: String,
@@ -35,6 +36,22 @@ const TeacherSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    virtuals: {
+      fullName: {
+        get() {
+          const name = _.startCase(
+            `${this.surname} ${this.firstname} ${this.othername}`
+          );
+          return name;
+        },
+      },
+    },
+    toJSON: {
+      virtuals: true,
+    },
+    toObject: {
+      virtuals: true,
+    },
   }
 );
-module.exports = db.model("Teacher", TeacherSchema);
+module.exports = db.model('Teacher', TeacherSchema);

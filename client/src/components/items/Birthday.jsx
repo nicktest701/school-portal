@@ -1,22 +1,20 @@
-import { Card,  List, Stack, Typography } from '@mui/material';
+import { Card, List, Stack, Typography } from '@mui/material';
 import React, { memo, useContext } from 'react';
 import BirthdayItem from './BirthdayItem';
 import { useQuery } from '@tanstack/react-query';
 import { getTodaysBirth } from '../../api/levelAPI';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import db from '../../assets/images/header/bd1.svg';
 import BirthdaySkeleton from '../skeleton/BirthdaySkeleton';
 const Birthday = () => {
   const {
-    userState: {
-      session: { sessionId, termId },
-    },
+    userState: { session },
   } = useContext(UserContext);
 
   const students = useQuery({
-    queryKey: ['birthday'],
-    queryFn: () => getTodaysBirth(sessionId, termId),
-    enabled: !!sessionId && !!termId,
+    queryKey: ['birthday', session?.sessionId, session?.termId],
+    queryFn: () => getTodaysBirth(session?.sessionId, session?.termId),
+    enabled: !!session?.sessionId && !!session?.termId,
   });
 
   if (students.isLoading) return <BirthdaySkeleton />;
@@ -32,7 +30,7 @@ const Birthday = () => {
         }
       >
         {students.isLoading && <Typography>Loading...</Typography>}
-        
+
         {students?.data?.length !== 0 ? (
           students?.data?.map((student) => (
             <BirthdayItem key={student?._id} {...student} />

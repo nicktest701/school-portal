@@ -2,7 +2,7 @@ import { Container, Divider, Stack, Typography } from '@mui/material';
 import React from 'react';
 
 import PropTypes from 'prop-types';
-function CustomTitle({ title, subtitle, img, color, backColor }) {
+function CustomTitle({ title, subtitle, img, icon, color, backColor }) {
   CustomTitle.propTypes = {
     title: PropTypes.string,
     subtitle: PropTypes.string,
@@ -21,23 +21,32 @@ function CustomTitle({ title, subtitle, img, color, backColor }) {
           justifyContent: { xs: 'center', md: 'flex-start' },
           alignItems: 'center',
           py: 3,
+          my: 2,
         }}
       >
         <Stack
-          direction={{ xs: 'column-reverse', md: 'row' }}
+          direction={{ xs: 'column', md: 'row' }}
           justifyContent='center'
           alignItems='center'
           gap={2}
         >
-          <img
-            src={img}
-            style={{
-              width: '40px',
-              height: '40px',
-            }}
-          />
+          {img ? (
+            <img
+              src={img}
+              style={{
+                width: '40px',
+                height: '40px',
+              }}
+            />
+          ) : (
+            icon
+          )}
           <Stack color={color}>
-            <Typography variant='h6' textAlign={{ xs: 'center', md: 'left' }}>
+            <Typography
+              color='secondary.main'
+              variant='h6'
+              textAlign={{ xs: 'center', md: 'left' }}
+            >
               {title}
             </Typography>
             <Typography
@@ -48,7 +57,7 @@ function CustomTitle({ title, subtitle, img, color, backColor }) {
             </Typography>
           </Stack>
         </Stack>
-        <Divider/>
+        <Divider />
       </Container>
     </>
   );

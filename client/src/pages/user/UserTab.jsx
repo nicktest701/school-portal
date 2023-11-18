@@ -31,12 +31,11 @@ function UserTab() {
   return (
     <>
       <CustomizedMaterialTable
-        isLoading={users.isFetching}
+        isLoading={users.isLoading}
         title="Users"
         icon={users_icon}
         search={true}
         columns={USERS_COLUMNS}
-        // data={[]}
         data={users.data !== undefined ? users.data : []}
         actions={[]}
         showAddButton

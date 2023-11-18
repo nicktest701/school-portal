@@ -20,27 +20,50 @@ import { useParams } from 'react-router-dom';
 import StudentProfile from '../../components/tabs/student/StudentProfile';
 import StudentFees from './StudentFees';
 import StudentAcademics from '../../components/tabs/student/StudentAcademics';
-import { useQuery } from '@tanstack/react-query';
-import { getStudentsByID } from '../../api/studentAPI';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getStudent } from '../../api/studentAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import Back from '../../components/Back';
+import { getStudentAcademics } from '../../api/ExaminationAPI';
+import { UserContext } from '../../context/providers/UserProvider';
+import { getStudentAllFeeHistory } from '../../api/currentFeeAPI';
 
 const StudentDetails = () => {
+  const {
+    userState: { session },
+  } = useContext(UserContext);
+
+  const queryClient = useQueryClient();
   ///Params
-  const { studentId, id, type } = useParams();
+  const { studentId, type, id } = useParams();
 
   //States
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [tab, setTab] = useState('1');
 
   ///
-  const { data: student } = useQuery(
-    ['student-by-id'],
-    () => getStudentsByID(studentId, id, type),
-    {
-      enabled: !!studentId,
-    }
-  );
+  const { data: student } = useQuery({
+    queryKey: ['student-profile', studentId],
+    queryFn: () => getStudent(studentId),
+    enabled: !!studentId,
+    initialData: queryClient
+      .getQueryData(['all-students'])
+      ?.find((student) => student?._id === studentId),
+  });
+
+  //Get Academic Terms for students
+  const studentAcademics = useQuery({
+    queryKey: ['student-academics', studentId],
+    queryFn: () => getStudentAcademics(session, studentId, id),
+    enabled: !!studentId && !!id,
+  });
+
+  //Get Academic Terms for students
+  const studentFees = useQuery({
+    queryKey: ['student-fees', studentId],
+    queryFn: () => getStudentAllFeeHistory(studentId),
+    enabled: !!studentId,
+  });
 
   //OPEN Quick Message
   //CLOSE
@@ -98,8 +121,11 @@ const StudentDetails = () => {
             }}
           />
 
+          <Typography>{student?.indexnumber}</Typography>
           <Typography variant='h6'>{student?.fullName}</Typography>
-          <Typography variant='body2'>{`${student?.levelName}`}</Typography>
+          <Typography variant='body2'>
+            {type || `${student?.levelName}`}
+          </Typography>
           <Button
             variant='contained'
             startIcon={<MessageRounded />}
@@ -140,10 +166,10 @@ const StudentDetails = () => {
               <StudentProfile student={student} />
             </TabPanel>
             <TabPanel value='2'>
-              <StudentAcademics />
+              <StudentAcademics data={studentAcademics?.data} />
             </TabPanel>
             <TabPanel value='3'>
-              <StudentFees />
+              <StudentFees data={studentFees?.data} />
             </TabPanel>
           </TabContext>
         </Box>

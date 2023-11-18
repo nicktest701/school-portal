@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 
 const AnimatedContainer = ({ children }) => {
   return (
-    <AnimatePresence mode='sync'>
+    <AnimatePresence mode='wait'>
       <motion.div
-        initial={{ y: 20, opacity: 0 }}
+        initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -20, opacity: 0 }}
-        transition={{ duration: 0.1 }}
-        
+        exit={{ y: -10, opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        // className='hide-on-print'
       >
         {children}
       </motion.div>

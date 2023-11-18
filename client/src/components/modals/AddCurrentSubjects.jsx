@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -13,10 +13,16 @@ import SaveAltRounded from '@mui/icons-material/SaveAltRounded';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import _ from 'lodash';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { SUBJECT_OPTIONS } from '../../mockup/columns/sessionColumns';
-import SubjectItem from '../list/SubjectItem';
-import { addSubjectsToLevel, getSubjectsForLevel } from '../../api/levelAPI';
+import { addSubjectsToLevel } from '../../api/levelAPI';
 import CustomDialogTitle from '../dialog/CustomDialogTitle';
+import LevelSubjectItem from '../items/LevelSubjectItem';
+import { getSubjects } from '../../api/subjectAPI';
+
+import {
+  alertError,
+  alertSuccess,
+} from '../../context/actions/globalAlertActions';
+import useLevelById from '../hooks/useLevelById';
 
 const AddCurrentSubjects = ({ open, setOpen }) => {
   const queryClient = useQueryClient();
@@ -25,35 +31,29 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
-  const [subject, setSubject] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [subject, setSubject] = useState([]);
   const [subjectList, setSubjectList] = useState([]);
 
-  useQuery(
-    ['subjects', currentLevel._id],
-    () => getSubjectsForLevel(currentLevel._id),
-    {
-      enabled: !!currentLevel._id,
-      onSuccess: (currentSubject) => {
-        // //console.log(currentSubject);
-        setSubjectList(currentSubject.subjects);
-      },
-    }
-  );
+  const { subjects, levelLoading } = useLevelById(currentLevel?._id);
+
+  const subjectOptions = useQuery({
+    queryKey: ['subjects'],
+    queryFn: () => getSubjects(),
+    select: (subjects) => {
+      return _.map(subjects, 'name');
+    },
+  });
+
+  useEffect(() => {
+    setSubjectList(subjects);
+  }, [currentLevel._id, subjects]);
 
   //Add Subjects to subject list
   const handleAddSubject = () => {
-    if (subject === '') {
-      return;
-    }
-    setSubjectList((prev) => {
-      const newSubjects =
-        prev !== undefined ? _.uniq([...prev, subject]) : [subject];
+    const newSubjects = _.uniq([...subjectList, ...subject]);
+    setSubjectList(newSubjects);
 
-      return newSubjects;
-    });
-
-    setSubject('');
+    setSubject([]);
   };
 
   //Remove subject from class
@@ -67,11 +67,10 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
     });
   };
 
-  const { mutateAsync } = useMutation(addSubjectsToLevel);
+  const { mutateAsync, isLoading } = useMutation(addSubjectsToLevel);
 
   //Save subjects to db
   const handleSaveSubjects = () => {
-    setLoading(true);
     const values = {
       levelId: currentLevel._id,
       subjects: subjectList,
@@ -80,25 +79,14 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
     mutateAsync(values, {
       onSettled: () => {
         queryClient.invalidateQueries(['subjects']);
-        setLoading(false);
+        queryClient.invalidateQueries(['level', currentLevel._id]);
       },
       onSuccess: (data) => {
-        schoolSessionDispatch({
-          type: 'showAlert',
-          payload: {
-            severity: 'info',
-            message: data,
-          },
-        });
+        schoolSessionDispatch(alertSuccess(data));
+        setOpen(false);
       },
       onError: (error) => {
-        schoolSessionDispatch({
-          type: 'showAlert',
-          payload: {
-            severity: 'error',
-            message: error,
-          },
-        });
+        schoolSessionDispatch(alertError(error));
       },
     });
   };
@@ -116,12 +104,12 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
 
           <Stack direction='row' spacing={2} alignItems='center'>
             <Autocomplete
-              // multiple={true}
+              multiple={true}
               freeSolo
               fullWidth
-              options={SUBJECT_OPTIONS}
+              options={subjectOptions.data ?? []}
+              disableCloseOnSelect
               getOptionLabel={(option) => option || ''}
-              defaultValue={SUBJECT_OPTIONS[0]}
               value={subject}
               onChange={(e, value) => setSubject(value)}
               renderInput={(params) => (
@@ -129,7 +117,7 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
                   {...params}
                   label='Select Course'
                   size='small'
-                  onChange={(e) => setSubject(e.target.value)}
+                  // onChange={(e) => setSubject(e.target.value)}
                   focused
                 />
               )}
@@ -139,11 +127,15 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
             </Button>
           </Stack>
           <List sx={{ maxHeight: 400 }}>
+            {levelLoading && <Typography variant='h6'>Loading.... </Typography>}
+            <Typography variant='h6'>
+              {subjectList.length} Courses Available
+            </Typography>
             {subjectList?.map((subject) => {
               return (
-                <SubjectItem
+                <LevelSubjectItem
                   key={subject}
-                  subject={subject}
+                  name={subject}
                   removeSubject={handleRemoveSubject}
                 />
               );
@@ -154,9 +146,10 @@ const AddCurrentSubjects = ({ open, setOpen }) => {
       <DialogActions sx={{ padding: 2 }}>
         <LoadingButton
           startIcon={<SaveAltRounded />}
-          loading={loading}
+          loading={isLoading}
           variant='contained'
           onClick={handleSaveSubjects}
+          disabled={subjectList?.length === 0}
         >
           Save Courses
         </LoadingButton>

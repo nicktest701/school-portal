@@ -31,9 +31,10 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import ViewParent from '../../../pages/student/tab/ViewParent';
 import MedicalInformationEdit from '../../../pages/student/MedicalInformationEdit';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import ViewPreviousReport from '../../../pages/student/tab/ViewPreviousReport';
 const StudentProfile = ({ student }) => {
+  const { type } = useParams();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
   const { palette } = useTheme();
@@ -123,6 +124,7 @@ const StudentProfile = ({ student }) => {
 
         <ChipItem divider={true} label='Basic Info' icon={<PersonRounded />} />
         <Stack paddingY={2}>
+          <ProfileItem label='ID' text={student?.indexnumber} />
           <ProfileItem label='Name' text={student?.fullName} />
           <ProfileItem
             label='Date of Birth'
@@ -152,10 +154,15 @@ const StudentProfile = ({ student }) => {
           icon={<EditRounded />}
         />
         <Stack paddingY={2}>
-          <ProfileItem label='Current Level' text={`${student?.levelName} `} />
+          <ProfileItem
+            label='Current Level'
+            text={type || `${student?.levelName} `}
+          />
           <ProfileItem
             label='Previous School'
-            text={`${student?.academic?.previousSchool?.name || "Not Available"} `}
+            text={`${
+              student?.academic?.previousSchool?.name || 'Not Available'
+            } `}
           />
           <Button
             startIcon={<Report />}

@@ -7,12 +7,18 @@ function CustomDialogTitle({ title, subtitle, onClose }) {
   return (
     <DialogTitle>
       <Stack direction='row' justifyContent='space-between' alignItems='center'>
-        <Typography variant='h5'>{title}</Typography>
-        <IconButton onClick={onClose}>
-          <CloseSharp />
-        </IconButton>
+        <Typography variant='h6'>{title}</Typography>
+        {onClose && (
+          <IconButton onClick={onClose}>
+            <CloseSharp />
+          </IconButton>
+        )}
       </Stack>
-      {subtitle && <Typography>{subtitle}</Typography>}
+      {subtitle && (
+        <Typography variant='body2' color='secondary.main'>
+          {subtitle}
+        </Typography>
+      )}
       {/* <Divider /> */}
     </DialogTitle>
   );

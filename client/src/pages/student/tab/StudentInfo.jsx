@@ -12,7 +12,7 @@ import { SchoolSessionContext } from '../../../context/providers/SchoolSessionPr
 import { readCSV } from '../../../config/readCSV';
 import { readXLSX } from '../../../config/readXLSX';
 import PreviousSession from '../PreviousSession';
-import { ArrowBackRounded, NoteRounded } from '@mui/icons-material';
+import { ArrowBackRounded, NoteRounded, School } from '@mui/icons-material';
 import PersonalInformation from './PersonalInformation';
 import ParentInfo from './ParentInfo';
 import MedicalInformation from './MedicalInformation';
@@ -20,6 +20,7 @@ import AcademicInformation from './AcademicInformation';
 import PhotoUpload from './PhotoUpload';
 import { Box, IconButton } from '@mui/material';
 import CustomStepper from '../../../components/custom/CustomStepper';
+import CustomTitle from '../../../components/custom/CustomTitle';
 
 const CSV_FILE_TYPE = 'text/csv';
 const XLSX_FILE_TYPE =
@@ -70,6 +71,7 @@ const StudentInfo = () => {
           students = readCSV(event.target.result);
         }
         if (students.length !== 0) {
+          console.log(students);
           schoolSessionDispatch({
             type: 'openAddStudentFileDialog',
             payload: { data: students, type: 'file' },
@@ -106,8 +108,13 @@ const StudentInfo = () => {
   return (
     <>
       {/* <Prompt when={true} message={confirmMessage} /> */}
-      <Container sx={{ position: 'relative' }}>
-        <Typography variant='h4'>Student Information</Typography>
+      <Container>
+        <CustomTitle
+          title='New Student'
+          subtitle='  Track,manage and control academic and class activities'
+          icon={<School sx={{ width: 30, height: 30 }} />}
+          color='primary.main'
+        />
 
         {/* Stepper  */}
         <CustomStepper />
@@ -152,7 +159,7 @@ const StudentInfo = () => {
                   inputProps={{
                     accept: '.xlsx,.xls,.csv',
                   }}
-                  onChange={(event) => handleLoadFile(event)}
+                  onChange={handleLoadFile}
                   onClick={(e) => {
                     e.target.value = null;
                     e.currentTarget.value = null;

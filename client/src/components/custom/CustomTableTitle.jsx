@@ -1,3 +1,4 @@
+import { SchoolRounded } from '@mui/icons-material';
 import { ListItemText, Stack } from '@mui/material';
 import PropTypes from 'prop-types';
 function CustomTableTitle({ icon, title, subtitle }) {
@@ -8,14 +9,19 @@ function CustomTableTitle({ icon, title, subtitle }) {
       justifyContent='center'
       alignItems='center'
       p={2}
+      className='hide-on-print'
     >
-      <img
-        alt='ico'
-        loading='lazy'
-        src={icon}
-        style={{ width: '40px', heigth: '40px' }}
-        className='hide-on-print'
-      />
+      {icon ? (
+        <img
+          alt='ico'
+          loading='lazy'
+          src={icon}
+          style={{ width: '40px', heigth: '40px' }}
+        />
+      ) : (
+        <SchoolRounded color='primary' />
+      )}
+
       <ListItemText
         primary={title}
         primaryTypographyProps={{
@@ -23,7 +29,6 @@ function CustomTableTitle({ icon, title, subtitle }) {
           fontWeight: 'bold',
         }}
         secondary={subtitle}
-        className='hide-on-print'
       />
     </Stack>
   );

@@ -38,29 +38,7 @@ router.get(
   })
 );
 
-//@GET student by student id
-router.post(
-  '/current',
-  AsyncHandler(async (req, res) => {
-    const { levelId, levelName, studentId } = req.body;
 
-    const student = await Student.findById(studentId);
-
-    if (_.isEmpty(student)) {
-      return res.json('No Such Student exists');
-    }
-
-    const modifiedStudent = {
-      ...student?._doc,
-      fullName: _.startCase(
-        `${student?.surname} ${student?.firstname} ${student?.othername}`
-      ),
-      levelId,
-      levelName,
-    };
-    res.status(200).json(modifiedStudent);
-  })
-);
 
 //@GET All students
 router.get(
@@ -76,7 +54,6 @@ router.get(
   '/details',
   AsyncHandler(async (req, res) => {
     const { sessionId, termId } = req.query;
-    // console.log("Helo")
 
     const allLevels = await Level.find({
       session: new ObjectId(sessionId),
@@ -194,6 +171,23 @@ router.get(
   })
 );
 
+//@GET student by student id
+router.get(
+  '/:id',
+  AsyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const student = await Student.findById(id);
+
+    if (_.isEmpty(student)) {
+      return res.json('No Such Student exists');
+    }
+    res.status(200).json(student);
+  })
+);
+
+
+
 //@GET ALL student for search
 router.post(
   '/search/all',
@@ -233,13 +227,14 @@ router.post(
 //@POST students
 router.post(
   '/',
-  upload.single('profile'),
+  // upload.single('profile'),
   AsyncHandler(async (req, res) => {
     const { personal, medical, academic, parent } = req.body;
 
     //Add new Student
     const student = await Student.create({
       profile: personal.profile,
+      indexnumber: personal.indexnumber,
       firstname: personal.firstname,
       surname: personal.surname,
       othername: personal.othername,
@@ -315,6 +310,22 @@ router.post(
   '/many',
   AsyncHandler(async (req, res) => {
     const { session, students, type } = req.body;
+
+    const indexNumbers = _.map(students, 'indexnumber');
+
+    const existingStudents = await Student.find({
+      indexnumber: {
+        $in: indexNumbers,
+      },
+    });
+
+    if (!_.isEmpty(existingStudents)) {
+      return res
+        .status(404)
+        .json(
+          `A student with the ID ${existingStudents[0].indexnumber} already exists`
+        );
+    }
 
     let studentIds = _.map(students, '_id');
 

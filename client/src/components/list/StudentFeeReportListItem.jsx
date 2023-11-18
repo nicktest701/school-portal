@@ -16,11 +16,14 @@ const StudentFeeReportListItem = ({ item, studentId }) => {
 
   const handleViewFeesDetailsByTerm = (feeId, level) => {
     studentDispatch({
-      type: 'setCurrentStudentFeeInfo',
+      type: 'viewStudentFeeHistory',
       payload: {
-        id: studentId,
-        level: level,
-        feeId,
+        open: true,
+        data: {
+          id: studentId,
+          level: level,
+          feeId,
+        },
       },
     });
     setOpenFeesHistory(true);
@@ -42,7 +45,7 @@ const StudentFeeReportListItem = ({ item, studentId }) => {
       >
         {item[1]?.map(({ term, levelId, levelType, id }) => {
           const uniqueId = uuid();
-     
+
           return (
             <>
               <ListItemButton

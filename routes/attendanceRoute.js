@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const _ = require('lodash');
+const moment = require('moment');
 const asyncHandler = require('express-async-handler');
 const Attendance = require('../models/attendanceModel');
+const Level = require('../models/levelModel');
 const {
-  Types: {  ObjectId },
+  Types: { ObjectId },
 } = require('mongoose');
 
 //@GET All school Attendance
@@ -58,11 +60,35 @@ router.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { date } = req.query;
-    // //console.log(id, date);
+
     const attendance = await Attendance.findOne({
       level: new ObjectId(id),
       date,
     });
+
+    if (_.isEmpty(attendance)) {
+      //Select students from the level with this id
+      const level = await Level.findById(id).populate({
+        path: 'students',
+        match: { active: true },
+      });
+
+      const students = level.students.map((student) => {
+        return {
+          _id: student?._id,
+          fullName: student?.fullName,
+          status: '',
+        };
+      });
+
+      const selectedAttendance = {
+        level: id,
+        date,
+        status: students,
+      };
+      const savedAttendance = await Attendance.create(selectedAttendance);
+      return res.status(200).json(savedAttendance);
+    }
 
     res.status(200).json(attendance);
   })
@@ -73,19 +99,78 @@ router.post(
   asyncHandler(async (req, res) => {
     const { date, level } = req.body;
 
-    //Find if a attendance already exits
+    const attendance = await Attendance.findOneAndUpdate(
+      {
+        level: new ObjectId(level),
+        date: date,
+        active: true,
+      },
+      {
+        $set: {
+          status: req.body?.status,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
+
+    if (_.isEmpty(attendance)) {
+      return res
+        .status(404)
+        .json('Error creating new attendance.Try again later!!!');
+    }
+
+    return res.status(201).json('Attendance saved Successfully!!!');
+  })
+);
+
+//Add new School Attendance
+router.post(
+  '/student',
+  asyncHandler(async (req, res) => {
+    const { date, level, status } = req.body;
+
     const exists = await Attendance.findOne({
       level: new ObjectId(level),
       date: date,
       active: true,
     });
 
-    if (!_.isEmpty(exists)) {
-      return res.status(400).json('Attendance already exists.');
+    if (_.isEmpty(exists)) {
+      const attendance = {
+        level,
+        date,
+        status: [status],
+      };
+
+      await Attendance.create(attendance);
+
+      return res.status(200).json('Attendance Saved!');
     }
 
-    //Create new Attendance
-    const attendance = await Attendance.create(req.body);
+    const updatedAttendance = _.values(
+      _.merge(_.keyBy([...exists?.status, status], '_id'))
+    );
+
+    const attendance = await Attendance.findOneAndUpdate(
+      {
+        level: new ObjectId(level),
+        date: date,
+        active: true,
+      },
+      {
+        $set: {
+          status: updatedAttendance,
+        },
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
+
     if (_.isEmpty(attendance)) {
       return res
         .status(404)

@@ -2,27 +2,30 @@ import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Chip,
+  CircularProgress,
   Container,
-  Dialog,
   DialogActions,
   DialogContent,
   Divider,
   FormControlLabel,
   Radio,
   RadioGroup,
+  Typography,
 } from '@mui/material';
 import moment from 'moment';
-import React, { useContext, useState } from 'react';
-import { useEffect } from 'react';
-import Transition from '../../components/animations/Transition';
+import React, { useContext, useMemo, useState } from 'react';
+
 import CustomDatePicker from '../../components/inputs/CustomDatePicker';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import useLevelById from '../../components/hooks/useLevelById';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getAttendance, postAttendance } from '../../api/attendanceAPI';
+import {
+  getAttendance,
+  postAttendance,
+  postStudentAttendance,
+} from '../../api/attendanceAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import {
   alertError,
@@ -31,73 +34,61 @@ import {
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import student_icon from '../../assets/images/header/student_ico.svg';
 import { SaveAsRounded } from '@mui/icons-material';
+import SaveAltRounded from '@mui/icons-material/SaveAltRounded';
+import Back from '../../components/Back';
 
-function NewAttendance({ open, setOpen }) {
+function NewAttendance({ to }) {
   const { id, type } = useParams();
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  //Get Students in Current Level id
-  const { students } = useLevelById(id, true);
+
   const [date, setDate] = useState(moment());
   const [allstudents, setAllStudents] = useState([]);
-  const [attendanceList, setAttendanceList] = useState([]);
-  const [isAttendancePresent, setIsAttendancePresent] = useState(false);
 
   //GET attendance by level id and date
-  useQuery({
-    queryKey: ['attendance', date],
+  const attendance = useQuery({
+    queryKey: ['attendance', id, date],
     queryFn: () => getAttendance(id, date.format('L')),
     enabled: !!id && !!date,
     onSuccess: (attendance) => {
-      if (!_.isEmpty(attendance)) {
-        setIsAttendancePresent(true);
-        setAttendanceList(attendance.status);
-      } else {
-        setIsAttendancePresent(false);
-      }
+      setAllStudents(attendance?.status);
     },
   });
 
-  useEffect(() => {
-    const localStudents = JSON.parse(localStorage.getItem(id.toString()));
-    if (!_.isEmpty(localStudents)) {
-      setAllStudents(localStudents);
-      return;
-    }
+  const completed = useMemo(() => {
+    const markedStudents = _.filter(allstudents, ({ status }) =>
+      ['Present', 'Absent'].includes(status)
+    )?.length;
+    const percent = parseInt(
+      Number(markedStudents / allstudents?.length) * 100
+    );
 
-    if (students) {
-      const modifiedStudents = students.map((stud) => {
-        return {
-          _id: stud?._id,
-          fullName: stud?.fullName,
-          status: 'present',
-        };
-      });
-      setAllStudents(modifiedStudents);
-    }
-  }, [students, id]);
+    return {
+      done: markedStudents,
+      percent,
+    };
+  }, [allstudents]);
 
   const handleCheckAttendance = (value, rowData) => {
-    rowData.status = _.startCase(value);
+    rowData.status = value;
 
     const updatedStudents = _.values(
       _.merge(_.keyBy([...allstudents, rowData], '_id'))
     );
-    localStorage.setItem(id, JSON.stringify(updatedStudents));
-    setAttendanceList(updatedStudents);
     setAllStudents(updatedStudents);
   };
 
   ///POST new Attendance
-  const { mutateAsync: postAttendanceAsync } = useMutation({
-    mutationFn: postAttendance,
-  });
+  const { mutateAsync: postAttendanceAsync, isLoading: isPostingAttendance } =
+    useMutation({
+      mutationFn: postAttendance,
+    });
 
   const handleSaveAttendance = () => {
     const newAttendance = {
       level: id,
       date: date.format('L'),
-      status: attendanceList.length !== 0 ? attendanceList : allstudents,
+      status: allstudents,
     };
 
     postAttendanceAsync(newAttendance, {
@@ -106,7 +97,31 @@ function NewAttendance({ open, setOpen }) {
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
-        setOpen(false);
+      },
+      onError: (error) => {
+        schoolSessionDispatch(alertError(error));
+      },
+    });
+  };
+
+  ///POST new Attendance
+  const { mutateAsync: postStudentAttendanceAsync, isLoading } = useMutation({
+    mutationFn: postStudentAttendance,
+  });
+
+  const handleSaveStudentAttendance = (data) => {
+    const newAttendance = {
+      level: id,
+      date: date.format('L'),
+      status: data,
+    };
+
+    postStudentAttendanceAsync(newAttendance, {
+      onSettled: () => {
+        queryClient.invalidateQueries(['attendance-history']);
+      },
+      onSuccess: (data) => {
+        schoolSessionDispatch(alertSuccess(data));
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));
@@ -115,32 +130,28 @@ function NewAttendance({ open, setOpen }) {
   };
 
   return (
-    <Dialog
-      open={open}
-      fullWidth
-      maxWidth='md'
-      TransitionComponent={Transition}
-    >
+    <Container maxWidth=''>
+      <Back
+        to={to === '/course' ? '/course/level' : `${to}/${id}/${type}`}
+        color='primary.main'
+      />
       <CustomDialogTitle
         title='New Attendance'
-        onClose={() => setOpen(false)}
+        subtitle='Mark new attendance'
+        // onClose={handleClose}
       />
       <DialogActions sx={{ padding: 2 }}>
-        {isAttendancePresent ? null : (
-          <LoadingButton
-            variant='contained'
-            startIcon={<SaveAsRounded />}
-            onClick={handleSaveAttendance}
-          >
-            Save Attendance
-          </LoadingButton>
-        )}
+        <LoadingButton
+          variant='contained'
+          startIcon={<SaveAsRounded />}
+          onClick={handleSaveAttendance}
+          loading={isPostingAttendance}
+        >
+          {isPostingAttendance ? 'Saving' : 'Save Attendance'}
+        </LoadingButton>
       </DialogActions>
       <DialogContent sx={{ padding: 2 }}>
         <Container>
-        <Divider textAlign='center'>
-            <Chip label='Details' color='secondary' />
-          </Divider>
           <Box display='flex' justifyContent='flex-start' width={280}>
             <CustomDatePicker
               label='Date of Attendance'
@@ -149,10 +160,26 @@ function NewAttendance({ open, setOpen }) {
               disableFuture={true}
             />
           </Box>
-       
+          <Box sx={{ display: 'flex', justifyContent: 'center', pt: 3 }}>
+            <CircularProgress
+              variant='determinate'
+              value={completed.percent}
+              size={80}
+              color='secondary'
+            />
+            <Typography variant='h5' textAlign='center'>
+              {completed.done}/{allstudents?.length}
+              <small style={{ marginLeft: '4px' }}>completed</small>
+            </Typography>
+            {/* <Typography>completed</Typography> */}
+          </Box>
+          <Divider textAlign='center' sx={{ py: 4 }}>
+            <Chip label='Details' color='secondary' />
+          </Divider>
+
           <CustomizedMaterialTable
-            // search={true}
-            // isLoading={levelLoading}
+            search={true}
+            isLoading={attendance.isLoading}
             icon={student_icon}
             title={`Attendance for ${type}`}
             exportFileName={`Attendance for ${type} on ${date.format(
@@ -172,42 +199,58 @@ function NewAttendance({ open, setOpen }) {
               {
                 field: 'status',
                 title: 'Status',
-                render: (rowData) => {
-                  return isAttendancePresent ? (
-                    rowData.status
-                  ) : (
-                    <RadioGroup
-                      row
-                      aria-labelledby='attendance-status'
-                      name='status'
-                      value={rowData?.status}
-                      onChange={(e) =>
-                        handleCheckAttendance(e.target.value, rowData)
-                      }
-                    >
-                      <FormControlLabel
-                        value='Present'
-                        control={<Radio size='small' />}
-                        label='Present'
-                      />
-                      <FormControlLabel
-                        value='Absent'
-                        control={<Radio size='small' />}
-                        label='Absent'
-                      />
-                    </RadioGroup>
-                  );
-                },
+                render: (rowData) => (
+                  <RadioGroup
+                    row
+                    aria-labelledby='attendance-status'
+                    name='status'
+                    value={rowData?.status}
+                    onChange={(e) =>
+                      handleCheckAttendance(e.target.value, rowData)
+                    }
+                  >
+                    <FormControlLabel
+                      value='Present'
+                      control={<Radio size='small' />}
+                      label='Present'
+                    />
+                    <FormControlLabel
+                      value='Absent'
+                      control={<Radio size='small' />}
+                      label='Absent'
+                    />
+                  </RadioGroup>
+                ),
+
                 export: true,
               },
+              {
+                field: null,
+                title: 'Action',
+                render: (rowData) => (
+                  <LoadingButton
+                    size='small'
+                    startIcon={<SaveAltRounded color='secondary' />}
+                    onClick={() => handleSaveStudentAttendance(rowData)}
+                    loading={isLoading}
+                  >
+                    Save
+                  </LoadingButton>
+                ),
+              },
             ]}
-            data={attendanceList?.length !== 0 ? attendanceList : allstudents}
+            data={allstudents}
             actions={[]}
             showRowShadow
+            options={{
+              pageSize: 10,
+              selection: false,
+            }}
+            handleRefresh={attendance.refetch}
           />
         </Container>
       </DialogContent>
-    </Dialog>
+    </Container>
   );
 }
 

@@ -7,6 +7,9 @@ import User from '../user';
 import Login from '../Login';
 import FeePrint from '../fees/FeePrint';
 import LevelFeeInformation from '../fees/LevelFeeInformation';
+import Subject_Grade from '../subject';
+import NewAttendance from '../level/NewAttendance';
+
 // import ViewExamsReports from '../examination/ViewExamsReports';
 
 const FeeNew = lazy(() => import('../fees/FeeNew'));
@@ -50,6 +53,13 @@ const Level = lazy(() => import('../level'));
 const LevelDashboard = lazy(() => import('../level/LevelDashboard'));
 const CurrentLevel = lazy(() => import('../level/CurrentLevel'));
 const StudentDetails = lazy(() => import('../student/StudentDetails'));
+const Course = lazy(() => import('../course'));
+const CourseHome = lazy(() => import('../course/CourseHome'));
+const CourseLevel = lazy(() => import('../course/CourseLevel'));
+const AssignedCourses = lazy(() => import('../course/AssignedCourses'));
+const AssignedCoursesResults = lazy(() =>
+  import('../course/AssignedCoursesResults')
+);
 
 const Root = () => {
   // useEffect(() => {
@@ -104,6 +114,14 @@ const Root = () => {
               }
               path='current/:id/:type'
             />
+            <Route
+              path='attendance/:id/:type'
+              element={
+                <Suspense fallback={<Loader />}>
+                  <NewAttendance to='/level/current' />
+                </Suspense>
+              }
+            />
             {/* <Route
           element={
             <Suspense fallback={<Loader />}>
@@ -113,6 +131,15 @@ const Root = () => {
           path="student/new"
         /> */}
           </Route>
+
+          <Route
+            path='subject'
+            element={
+              <Suspense fallback={<Loader />}>
+                <Subject_Grade />
+              </Suspense>
+            }
+          />
 
           {/* Student */}
           <Route
@@ -258,7 +285,74 @@ const Root = () => {
               path='print'
             />
           </Route>
-          {/* <Route element={<Suspense><Assessment /></Suspense>} path="/assessment" /> */}
+          {/* Course */}
+          <Route
+            element={
+              <Suspense fallback={<Loader />}>
+                <Course />
+              </Suspense>
+            }
+            path='/course'
+          >
+            <Route
+              index
+              element={
+                <Suspense fallback={<Loader />}>
+                  <CourseHome />
+                </Suspense>
+              }
+            />
+            <Route
+              path='assign'
+              element={
+                <Suspense fallback={<Loader />}>
+                  <AssignedCourses />
+                </Suspense>
+              }
+            />
+            <Route
+              path='assign/students'
+              element={
+                <Suspense fallback={<Loader />}>
+                  <AssignedCoursesResults />
+                </Suspense>
+              }
+            />
+            <Route
+              path='level'
+              element={
+                <Suspense fallback={<Loader />}>
+                  <CourseLevel />
+                </Suspense>
+              }
+            />
+            <Route
+              path='level/:levelId/:level'
+              element={
+                <Suspense fallback={<Loader />}>
+                  <ExamsLevel type='course' />
+                </Suspense>
+              }
+            />
+
+            <Route
+              path='reports/:levelId'
+              element={
+                <Suspense fallback={<Loader />}>
+                  <ViewExamsReports />
+                </Suspense>
+              }
+            />
+            <Route
+              path='attendance/:id/:type'
+              element={
+                <Suspense fallback={<Loader />}>
+                  <NewAttendance to='/course' />
+                </Suspense>
+              }
+            />
+          </Route>
+
           {/* Examination */}
           <Route
             element={
@@ -277,7 +371,10 @@ const Root = () => {
               }
             />
 
-            <Route path='level/:levelId/:level' element={<ExamsLevel />} />
+            <Route
+              path='level/:levelId/:level'
+              element={<ExamsLevel type='examination' />}
+            />
             <Route
               path='reports/:levelId'
               element={
@@ -386,7 +483,6 @@ const Root = () => {
           path='*'
         />
       </Routes>
-      
     </>
   );
 };

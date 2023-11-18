@@ -16,6 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import { getExams } from '../../api/ExaminationAPI';
 import ExamsItem from '../../components/list/ExamsItem';
+import Report from './Report';
 
 const ViewExamsRecord = () => {
   const { palette } = useTheme();
@@ -29,7 +30,6 @@ const ViewExamsRecord = () => {
     queryKey: ['student-exams-records', examsRecord.id],
     queryFn: () => getExams(examsRecord.id),
     enabled: !!examsRecord.id,
- 
   });
 
   //close dialog
@@ -70,16 +70,16 @@ const ViewExamsRecord = () => {
             documentTitle={'Report'}
           />
         </DialogActions>
-        <DialogContent ref={componentRef}>
+        <DialogContent>
           <Stack direction='row' spacing={2}>
-            <Typography variant='h5' >
+            <Typography variant='h5'>
               {student?.level}-{student?.term}
             </Typography>
           </Stack>
           <Stack>
             <table
               style={{ textAlign: 'center', borderCollapse: 'collapse' }}
-              border='1'
+              // border='1'
             >
               <thead>
                 <tr>
@@ -134,6 +134,9 @@ const ViewExamsRecord = () => {
           </Stack>
         </DialogContent>
       </Dialog>
+      <div className='print-container' ref={componentRef}>
+        <Report student={student} />
+      </div>
     </>
   );
 };

@@ -17,7 +17,7 @@ import MaterialTable from 'material-table';
 import { tableIcons } from '../../config/tableIcons';
 import { useLocation } from 'react-router-dom';
 import { postManyStudents } from '../../api/studentAPI';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import {
   alertError,
   alertSuccess,

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Add, PersonRounded } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import {  Container, Divider, Tab } from '@mui/material';
+import { Container, Tab } from '@mui/material';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import TeacherAdd from './TeacherAdd';
 import { TEACHERS_COLUMN } from '../../mockup/columns/teacherColumn';
@@ -11,7 +11,7 @@ import { TeacherContext } from '../../context/providers/TeacherProvider';
 import { EMPTY_IMAGES } from '../../config/images';
 import teacher_icon from '../../assets/images/header/teacher_ico.svg';
 import CustomTitle from '../../components/custom/CustomTitle';
-
+import TeacherAssignCourse from './TeacherAssignCourse';
 
 const TeacherHome = () => {
   const [tab, setTab] = useState('1');
@@ -65,14 +65,13 @@ const TeacherHome = () => {
             iconPosition='start'
           />
         </TabList>
-        <Divider />
+
         <TabPanel value='1'>
           <CustomizedMaterialTable
             title='Teachers'
             icon={teacher_icon}
             isLoading={teachers.isLoading}
             columns={TEACHERS_COLUMN}
-            // data={[]}
             data={teachers.data ? teachers.data : []}
             actions={[]}
             onRowClick={viewTeacherInfo}
@@ -87,6 +86,7 @@ const TeacherHome = () => {
           <TeacherAdd setTab={setTab} />
         </TabPanel>
       </TabContext>
+      <TeacherAssignCourse />
     </Container>
   );
 };

@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Drawer, IconButton, Stack } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import MiniDrawerItem from '../../components/MiniDrawerItem';
+import { UserContext } from '../../context/providers/UserProvider';
 
 const HorizontalSidebar = ({ open, setOpen, onLogOut }) => {
+  const { user } = useContext(UserContext);
   const handleClose = () => setOpen(false);
 
   return (
-    <Drawer open={open} onClose={handleClose}
-     sx={{ zIndex: 9999 }}
-     >
+    <Drawer open={open} onClose={handleClose} sx={{ zIndex: 9999 }}>
       <Stack
         sx={{
           minHeight: '100vh',
@@ -24,17 +24,69 @@ const HorizontalSidebar = ({ open, setOpen, onLogOut }) => {
           <Close />
         </IconButton>
 
-        <MiniDrawerItem title='Dashboard' to='/' />
-        <MiniDrawerItem title='Session' to='/session' />
-        <MiniDrawerItem title='Levels & Subjects' to='/level' />
-        <MiniDrawerItem title='Student' to='/student' />
-        <MiniDrawerItem title='Teacher' to='/teacher' />
-        <MiniDrawerItem title='School Fees' to='/fee' />
-        <MiniDrawerItem title='Examination' to='/examination' />
-        <MiniDrawerItem title='Messages' to='/sms' />
-        <MiniDrawerItem title='Users' to='/users' />
-        <MiniDrawerItem title='Settings' to='/settings' />
-        <MiniDrawerItem title='About' to='/about' />
+        <MiniDrawerItem title='Dashboard' to='/' handleClose={handleClose} />
+
+        {user?.role === 'administrator' ? (
+          <>
+            <MiniDrawerItem
+              title='Sessions'
+              to='/session'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Levels'
+              to='/level'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Subjects & Grades'
+              to='/subject'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Students'
+              to='/student'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Teachers'
+              to='/teacher'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='School Fees'
+              to='/fee'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Exams Portal'
+              to='/examination'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Messages'
+              to='/sms'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Users'
+              to='/users'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Settings'
+              to='/settings'
+              handleClose={handleClose}
+            />
+          </>
+        ) : (
+          <MiniDrawerItem
+            title='Levels & Courses'
+            to='/course'
+            handleClose={handleClose}
+          />
+        )}
+        <MiniDrawerItem title='About' to='/about' handleClose={handleClose} />
         <a className='mini-drawer-link' onClick={onLogOut}>
           Log Out
         </a>

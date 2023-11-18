@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
-import Delete from '@mui/icons-material/Delete';
-import {  Box, Link, Stack,  useTheme } from '@mui/material';
+import { Box, Link, Stack, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import AddLevel from './AddLevel';
@@ -12,9 +11,11 @@ import { deleteLevel } from '../../api/levelAPI';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { EMPTY_IMAGES } from '../../config/images';
 import useLevel from '../../components/hooks/useLevel';
-import { UserContext } from '../../context/providers/userProvider';
+import { UserContext } from '../../context/providers/UserProvider';
 import level_icon from '../../assets/images/header/level_ico.svg';
-
+import ActionItem from '../../components/items/ActionItem';
+import EditLevel from './EditLevel';
+import ViewLevel from './ViewLevel';
 
 const LevelTab = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -34,7 +35,7 @@ const LevelTab = () => {
   const { levelsOption, levelLoading, levelRefetch } = useLevel();
   const { mutateAsync } = useMutation(deleteLevel);
 
-  const handleDeleteLevel = (id) => {
+  const handleDelete = (id) => {
     const values = {
       id,
       sessionId: session?.sessionId,
@@ -72,6 +73,26 @@ const LevelTab = () => {
           },
         });
       }
+    });
+  };
+
+  const handleEdit = (data) => {
+    const level = {
+      _id: data?._id,
+      level: data?.level?.name,
+      type: data?.level?.type,
+      teacher: data?.teacher,
+    };
+    schoolSessionDispatch({
+      type: 'editLevel',
+      payload: { open: true, data: level },
+    });
+  };
+
+  const handleView = (data) => {
+    schoolSessionDispatch({
+      type: 'viewLevel',
+      payload: { open: true, data },
     });
   };
 
@@ -115,12 +136,25 @@ const LevelTab = () => {
     },
     {
       field: null,
-      title: '',
-      render: (rowData) => (
-        <Delete
-          className='ico'
-          sx={{ cursor: 'pointer' }}
-          onClick={() => handleDeleteLevel(rowData._id)}
+      title: 'Action',
+      render: (data) => (
+        <ActionItem
+          // data={rowData}
+          viewProps={{
+            title: 'View level information',
+            titleAccess: 'View level information',
+          }}
+          editProps={{
+            title: 'Edit level information',
+            titleAccess: 'Edit level information',
+          }}
+          deleteProps={{
+            title: 'Delete level information',
+            titleAccess: 'Delete level information',
+          }}
+          handleView={() => handleView(data)}
+          handleEdit={() => handleEdit(data)}
+          handleDelete={() => handleDelete(data?._id)}
         />
       ),
     },
@@ -143,7 +177,9 @@ const LevelTab = () => {
         onAddButtonClicked={() => setOpenAddCurrentLevel(true)}
         handleRefresh={levelRefetch}
       />
+      <ViewLevel />
       <AddLevel open={openAddCurrentLevel} setOpen={setOpenAddCurrentLevel} />
+      <EditLevel />
       <AddCurrentSubjects open={openAddSubjects} setOpen={setOpenAddSubjects} />
     </Box>
   );

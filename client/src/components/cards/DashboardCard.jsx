@@ -10,11 +10,11 @@ const DashboardCard = ({ title, value, icon }) => {
     <Card
       sx={{
         // border: '1px solid lightgray',
-        borderTop: '2px solid #012e54',
+        // borderTop: '2px solid #012e54',
         position: 'relative',
-        borderRadius:0
+        borderRadius:2
       }}
-      elevation={0}
+      elevation={1}
     >
       <CardContent>
         <Typography variant='h5' textAlign='center' sx={{ paddingY: 1 }}>

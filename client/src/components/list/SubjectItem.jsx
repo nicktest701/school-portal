@@ -1,28 +1,69 @@
+import { SaveAltSharp } from '@mui/icons-material';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import {
+  Checkbox,
   Divider,
-  Link,
+  FormControlLabel,
+  IconButton,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
-} from "@mui/material";
-import React from "react";
+  TextField,
+} from '@mui/material';
+import React, { useState } from 'react';
 
-const SubjectItem = ({ subject, removeSubject }) => {
+const SubjectItem = ({
+  name,
+  code,
+  isCore,
+  removeSubject,
+  appendCode,
+  setCore,
+  handleIsCore,
+}) => {
+  const [value, setValue] = useState(code);
+
   return (
     <>
       <ListItem>
-        <ListItemText
-          secondary={subject}
-          secondaryTypographyProps={{ fontSize: 12, fontStyle: "italic" }}
+        <TextField
+          placeholder='code '
+          size='small'
+          sx={{ width: 100, mr: 2 }}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={() => appendCode({ name, isCore, code: value })}
         />
-        <ListItemSecondaryAction>
-          <Link
-            size="small"
-            sx={{ cursor: "pointer" }}
-            onClick={() => removeSubject(subject)}
-          >
-            Remove
-          </Link>
+        <ListItemText
+          secondary={name}
+          secondaryTypographyProps={{ fontSize: 12, fontStyle: 'italic' }}
+        />
+        <ListItemSecondaryAction
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
+          <FormControlLabel
+            label='Core'
+            control={
+              <Checkbox
+                title='Core'
+                checked={isCore}
+                value={isCore}
+                onChange={(e) => handleIsCore(name, !isCore)}
+              />
+            }
+          />
+          {/* <IconButton onClick={() => removeSubject(name)}>
+            <SaveAltSharp />
+          </IconButton> */}
+
+          <IconButton onClick={() => removeSubject(name)}>
+            <DeleteOutline />
+          </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
       <Divider />

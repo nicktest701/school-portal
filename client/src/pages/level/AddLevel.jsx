@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from 'react';
 import {
   Stack,
   Dialog,
@@ -6,40 +6,54 @@ import {
   DialogActions,
   TextField,
   Autocomplete,
-} from "@mui/material";
-import _ from "lodash";
-import { Formik } from "formik";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoadingButton } from "@mui/lab";
+} from '@mui/material';
+import _ from 'lodash';
+import { Formik } from 'formik';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { LoadingButton } from '@mui/lab';
 import {
   LEVEL_OPTIONS,
   LEVEL_TYPE_OPTIONS,
-} from "../../mockup/columns/sessionColumns";
-import { levelValidationSchema } from "../../config/validationSchema";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+} from '../../mockup/columns/sessionColumns';
+import { levelValidationSchema } from '../../config/validationSchema';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import {
   alertError,
   alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import useLevel from "../../components/hooks/useLevel";
-import { postLevel } from "../../api/levelAPI";
-import { levelInitialValues } from "../../config/initialValues";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
-import { UserContext } from "../../context/providers/userProvider";
+} from '../../context/actions/globalAlertActions';
+import useLevel from '../../components/hooks/useLevel';
+import { postLevel } from '../../api/levelAPI';
+import { levelInitialValues } from '../../config/initialValues';
+import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
+import { UserContext } from '../../context/providers/UserProvider';
+import { getAllTeachers } from '../../api/teacherAPI';
 
 const AddLevel = ({ open, setOpen }) => {
-
   const {
     userState: { session },
   } = useContext(UserContext);
-
 
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { levelsOption } = useLevel();
 
+  const teachers = useQuery({
+    queryKey: ['teachers'],
+    queryFn: () => getAllTeachers(),
+    select: (teachers) => {
+      const modifiedTeachers = teachers?.map((teacher) => {
+        return {
+          _id: teacher?._id,
+          fullName: teacher?.fullName,
+        };
+      });
+      // console.log(modifiedTeachers);
+      return modifiedTeachers;
+    },
+  });
+
   //ADD New Level
-  const { mutateAsync } = useMutation(postLevel);
+  const { mutateAsync, isLoading } = useMutation({ mutationFn: postLevel });
 
   const onSubmit = (values, options) => {
     const newType = `${values.level}${values.type}`;
@@ -48,7 +62,7 @@ const AddLevel = ({ open, setOpen }) => {
     );
 
     if (!_.isEmpty(isMatch)) {
-      schoolSessionDispatch(alertError("Level already exists!!!"));
+      schoolSessionDispatch(alertError('Level already exists!!!'));
       options.setSubmitting(false);
       return;
     }
@@ -60,14 +74,13 @@ const AddLevel = ({ open, setOpen }) => {
         name: values.level,
         type: values.type,
       },
+      teacher: values.teacher,
     };
-
-    // //console.log(newLevel);
 
     mutateAsync(newLevel, {
       onSettled: () => {
         options.setSubmitting(false);
-        queryClient.invalidateQueries(["levels"]);
+        queryClient.invalidateQueries(['levels']);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -81,8 +94,8 @@ const AddLevel = ({ open, setOpen }) => {
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
-      <CustomDialogTitle title="New Level" onClose={() => setOpen(false)} />
+    <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth='xs'>
+      <CustomDialogTitle title='New Level' onClose={() => setOpen(false)} />
       <Formik
         initialValues={levelInitialValues}
         onSubmit={onSubmit}
@@ -103,14 +116,14 @@ const AddLevel = ({ open, setOpen }) => {
                   <Autocomplete
                     freeSolo
                     options={LEVEL_OPTIONS}
-                    getOptionLabel={(option) => option || ""}
+                    getOptionLabel={(option) => option || ''}
                     value={values.level}
-                    onInputChange={(e, value) => setFieldValue("level", value)}
+                    onInputChange={(e, value) => setFieldValue('level', value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Level"
-                        size="small"
+                        label='Level'
+                        size='small'
                         error={Boolean(touched.level && errors.level)}
                         helperText={touched.level && errors.level}
                       />
@@ -119,19 +132,33 @@ const AddLevel = ({ open, setOpen }) => {
                   <Autocomplete
                     freeSolo
                     options={LEVEL_TYPE_OPTIONS}
-                    getOptionLabel={(option) => option || ""}
+                    getOptionLabel={(option) => option || ''}
                     value={values.type}
-                    onInputChange={(e, value) => setFieldValue("type", value)}
+                    onInputChange={(e, value) => setFieldValue('type', value)}
                     renderInput={(params) => (
-                      <TextField {...params} label="type" size="small" />
+                      <TextField {...params} label='type' size='small' />
+                    )}
+                  />
+                  <Autocomplete
+                    options={teachers.data}
+                    loading={teachers.isLoading}
+                    getOptionLabel={(option) => option?.fullName || ''}
+                    value={values.teacher}
+                    onChange={(e, value) => setFieldValue('teacher', value)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label='Assign Teacher'
+                        size='small'
+                      />
                     )}
                   />
                 </Stack>
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
                 <LoadingButton
-                  loading={isSubmitting}
-                  variant="contained"
+                  loading={isLoading}
+                  variant='contained'
                   onClick={handleSubmit}
                 >
                   Save

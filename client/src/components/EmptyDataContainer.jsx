@@ -14,7 +14,7 @@ const EmptyDataContainer = ({
   showAddButton,
 }) => {
   return (
-    <Container sx={{ backgroundColor: '#fff' }}>
+    <Container className='hide-on-pint' sx={{ backgroundColor: '#fff' }}>
       <Stack
         justifyContent='center'
         alignItems='center'

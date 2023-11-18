@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import {
   Avatar,
   Container,
-
   Stack,
   TextField,
   Typography,
@@ -85,7 +84,6 @@ const TeacherAdd = ({ setTab }) => {
             handleChange,
             handleSubmit,
             handleReset,
-            
           }) => {
             return (
               <Stack padding={2} spacing={1}>

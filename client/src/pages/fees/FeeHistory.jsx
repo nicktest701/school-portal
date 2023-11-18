@@ -1,142 +1,109 @@
-import React, { useEffect, useId, useState, startTransition,useContext } from "react";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import Stack from "@mui/material/Stack";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import Avatar from "@mui/material/Avatar";
-import { useQuery } from "@tanstack/react-query";
-import feeEmptyImg from "../../assets/images/empty/fees-empty2.png";
-import { getStudentAllFeeHistory } from "../../api/currentFeeAPI";
-import StudentFeeReportListItem from "../../components/list/StudentFeeReportListItem";
-import { getAllStudentsBySession } from "../../api/currentLevelAPI";
-import Scrollbars from "react-custom-scrollbars";
-import _ from "lodash";
-import { UserContext } from "../../context/providers/userProvider";
+import React, { useId, useState, useContext } from 'react';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Avatar from '@mui/material/Avatar';
+import { useQuery } from '@tanstack/react-query';
+import feeEmptyImg from '../../assets/images/empty/fees-empty2.png';
+import { getStudentAllFeeHistory } from '../../api/currentFeeAPI';
+import StudentFeeReportListItem from '../../components/list/StudentFeeReportListItem';
+import { getAllStudentsBySession } from '../../api/currentLevelAPI';
+import Scrollbars from 'react-custom-scrollbars';
+import { UserContext } from '../../context/providers/UserProvider';
+import CustomTitle from '../../components/custom/CustomTitle';
+import { EMPTY_IMAGES } from '../../config/images';
+import { CircularProgress } from '@mui/material';
 const FeeHistory = () => {
   const uniqueID = useId();
   const {
     userState: { session },
   } = useContext(UserContext);
 
-
-  // const queryClient = useQueryClient();
-  
-
-  //
-
-  const [profileImage, setProfileImage] = useState(null);
-  const [currentStudentsOptions, setCurrentStudentsOptions] = useState([]);
-  const [studentInfo, setStudentInfo] = useState({});
-  const [searchValue, setSearchValue] = useState({
-    id: "",
-    profile: "",
-    fullName: "",
-    label: "",
-    level: "",
-    levelType: "",
+  const [studentInfo, setStudentInfo] = useState({
+    _id: '',
+    profile: '',
+    fullName: '',
   });
 
   const allStudents = useQuery(
-    ["all-students", session],
-    () => getAllStudentsBySession(session, "search"),
+    ['all-students', session],
+    () => getAllStudentsBySession(session),
     {
       enabled: !!session.sessionId,
-      onSuccess: (students) => {
-        if (students.length !== 0) {
-          setCurrentStudentsOptions(students);
-        }
-      },
     }
   );
-
-  //Search Student
-  useEffect(() => {
-    startTransition(() => {
-      if (searchValue?.fullName === "") {
-        setStudentInfo({});
-        return;
-      }
-
-      const student = currentStudentsOptions.filter(({ fullName }) => {
-        return (
-          fullName
-            ?.toLowerCase()
-            ?.lastIndexOf(searchValue?.fullName?.toLowerCase()) > -1
-        );
-      });
-      setStudentInfo(student[0]);
-    });
-  }, [searchValue, currentStudentsOptions]);
 
   const studentFeesHistory = useQuery(
-    ["all-fees-history"],
-    () => getStudentAllFeeHistory(studentInfo?.id),
+    ['all-fees-history', studentInfo?._id],
+    () => getStudentAllFeeHistory(studentInfo?._id),
     {
-      enabled: !!studentInfo?.id,
-      onSuccess: (fees) => {
-        if (!_.isEmpty(fees)) {
-          setProfileImage(
-            fees.profile === undefined || fees.profile === ""
-              ? null
-              :fees?.profile
-              // :  `${import.meta.env.VITE_BASE_URL}/images/students/${fees.profile}`
-          );
-        }
-      },
+      enabled: !!studentInfo?._id,
     }
   );
+  // :  `${import.meta.env.VITE_BASE_URL}/images/students/${fees.profile}`
 
   return (
-    <Container maxWidth="md" sx={{ paddingY: 2 }}>
-      <Typography variant="h5">Fees History</Typography>
-      <Typography>Manage Student fee payment history</Typography>
-      <Divider />
+    <Container sx={{ width: '90%' }}>
+      <CustomTitle
+        title='Fees History'
+        subtitle='Manage Student fee payment history'
+        img={EMPTY_IMAGES.assessment}
+        color='primary.main'
+      />
+
       <Stack paddingY={4}>
         {/* search */}
         <Autocomplete
           fullWidth
           disableClearable
-          clearText=" "
-          options={currentStudentsOptions}
+          clearText=' '
+          options={allStudents?.data ?? []}
           loading={allStudents.isLoading}
-          loadingText="Loading Students.Please Wait..."
-          noOptionsText="No Student found"
+          loadingText='Loading Students.Please Wait...'
+          noOptionsText='No Student found'
           isOptionEqualToValue={(option, value) =>
-            value.id === undefined || value.id === "" || option.id === value.id
+            value?._id === undefined ||
+            value?._id === '' ||
+            option.id === value?._id
           }
-          getOptionLabel={(option) => option.fullName || ""}
-          value={searchValue}
+          getOptionLabel={(option) => option?.fullName || ''}
+          value={studentInfo}
           onChange={(e, value) => {
-            setStudentInfo({});
-            setSearchValue(value);
+            setStudentInfo(value);
           }}
-          sx={{ textTransform: "capitalize" }}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              // size="small"
-              placeholder="Search for student"
-            />
+            <TextField {...params} placeholder='Search for student' />
           )}
         />
       </Stack>
 
-      {studentFeesHistory?.data !== undefined ? (
+      {/* {studentFeesHistory?.isLoading ? (
+        <Typography>Please Wait...</Typography>
+      ) : studentFeesHistory?.error ? (
+        <Typography>An error has occurred!</Typography>
+      ) : */}
+      {studentFeesHistory?.data ? (
         <>
           <Stack
-            justifyContent="center"
+            justifyContent='center'
             paddingY={2}
             spacing={1}
-            alignItems="center"
+            alignItems='center'
           >
-            <Avatar src={profileImage} sx={{ width: 80, height: 80 }} />
-            <Typography sx={{ textTransform: "capitalize" }}>
-              {studentFeesHistory?.data?.fullName}
-            </Typography>
+            <>
+              <Avatar
+                src={studentInfo?.profile}
+                sx={{ width: 80, height: 80 }}
+              />
+              <Typography sx={{ textTransform: 'capitalize' }}>
+                {studentInfo?.fullName}
+              </Typography>
+            </>
           </Stack>
-          <Scrollbars style={{ width: "100%", minHeight: "300px" }} autoHide>
+
+          <Scrollbars style={{ width: '100%', minHeight: '300px' }} autoHide>
             {studentFeesHistory?.data?.fees?.map((session) => (
               <StudentFeeReportListItem
                 key={uniqueID}
@@ -147,9 +114,9 @@ const FeeHistory = () => {
           </Scrollbars>
         </>
       ) : (
-        <Stack spacing={2} justifyContent="center" alignItems="center">
+        <Stack spacing={2} justifyContent='center' alignItems='center'>
           <Avatar src={feeEmptyImg} sx={{ width: 200, height: 200 }} />
-          <Typography variant="body2">No Records available</Typography>
+          <Typography variant='body2'>No Records available</Typography>
         </Stack>
       )}
     </Container>
