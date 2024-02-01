@@ -15,7 +15,7 @@
 <style>
     :root {
         --primary: #012e54;
-        --secondary: #ffc09f;
+        --secondary: #32D583;
     }
 
     html {
@@ -79,7 +79,7 @@
         height: 80px;
     }
 
-    .school-info {}
+ 
 
     .school-info p {
         text-align: center;
@@ -176,6 +176,15 @@
                 <!-- personal-info -->
                 <div class="personal-info" style="flex: 0.38;">
                     <div>
+                        <!-- Index Number  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                ID :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.indexnumber %>
+                            </span>
+                        </div>
                         <!-- fullname  -->
                         <div class="report-item-container">
                             <span class="report-item-title">

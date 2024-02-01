@@ -1,6 +1,13 @@
 import React, { useContext, useState } from 'react';
 import Calendar from 'react-calendar';
-import { Box, Container, Divider, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Container,
+  Divider,
+  Stack,
+  Typography,
+  Avatar,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { generateNewCurrentLevelDetailsFromLevels } from '../api/levelAPI';
 import DashboardSwiper from '../components/swiper/DashboardSwiper';
@@ -11,6 +18,7 @@ import '../theme/Calendar.css';
 import { UserContext } from '../context/providers/UserProvider';
 import DashboardCardsContainer from '../components/cards/DashboardCardsContainer';
 import CustomCard from '../components/cards/CustomCard';
+import { EMPTY_IMAGES } from '../config/images';
 
 const Dashboard = () => {
   const {
@@ -45,15 +53,36 @@ const Dashboard = () => {
           overscrollBehaviorInline: 'contain',
           gap: 1,
           pt: 2,
+          minHeight: '100svh',
+          position: 'sticky',
+          top: 0,
         }}
       >
-        <Container
-          sx={{
-            position: 'sticky',
-            top: 0,
-          }}
-        >
-          <Typography variant='h6' paragraph>
+        <Container>
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              pt: 2,
+            }}
+          >
+            <Box>
+              <Typography variant='h4' textAlign='right'>
+                Welcome,
+              </Typography>
+              <Typography>Your current dashboard for today!</Typography>
+            </Box>
+            <Avatar
+              alt='wave_hand'
+              src={EMPTY_IMAGES.hand}
+              style={{ width: '48px', height: '48px' }}
+              variant='square'
+            />
+          </Box>
+
+          <Typography variant='h2' paragraph>
             Dashboard
           </Typography>
           <DashboardCardsContainer />

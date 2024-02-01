@@ -80,12 +80,24 @@ const HorizontalSidebar = ({ open, setOpen, onLogOut }) => {
             />
           </>
         ) : (
-          <MiniDrawerItem
-            title='Levels & Courses'
-            to='/course'
-            handleClose={handleClose}
-          />
+          <>
+            <MiniDrawerItem
+              title='Performance Index'
+              to='/course'
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
+              title='Levels & Courses'
+              to='/course'
+              handleClose={handleClose}
+            />
+          </>
         )}
+        <MiniDrawerItem
+          title='Activities & Notifications'
+          to='/course'
+          handleClose={handleClose}
+        />
         <MiniDrawerItem title='About' to='/about' handleClose={handleClose} />
         <a className='mini-drawer-link' onClick={onLogOut}>
           Log Out

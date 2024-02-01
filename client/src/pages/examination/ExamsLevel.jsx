@@ -32,7 +32,7 @@ import Back from '../../components/Back';
 import { getSubjectsForLevel } from '../../api/levelAPI';
 
 const LevelExamScoreInput = lazy(() => import('./LevelExamScoreInput'));
-const ViewRawSheet = lazy(() => import('./ViewRawSheet'));
+
 
 const ExamsLevel = ({ type }) => {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const ExamsLevel = ({ type }) => {
   } = useContext(UserContext);
 
   const { levelId, level } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [_searchParams, setSearchParams] = useSearchParams();
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [viewLevelScoreInput, setViewLevelScoreInput] = useState(false);

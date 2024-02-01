@@ -7,7 +7,7 @@ import NavLinkItem from '../../components/list/NavLinkItem';
 const CourseNav = () => {
   return (
     <>
-      <AppBar position='sticky' sx={{ bgcolor: 'white' }} elevation={0}>
+      <AppBar position='sticky' sx={{ bgcolor: 'white',zIndex:99 }} elevation={0}>
         
         <Toolbar>
           <Container

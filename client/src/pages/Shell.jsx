@@ -14,7 +14,6 @@ import {
   Button,
   IconButton,
   Stack,
-
 } from '@mui/material';
 import { SchoolSessionContext } from '../context/providers/SchoolSessionProvider';
 import Sidebar from './layouts/Sidebar';
@@ -22,11 +21,14 @@ import { ArrowDropDown, Menu, NotificationsSharp } from '@mui/icons-material';
 import HorizontalSidebar from './layouts/HorizontalSidebar';
 import ViewUserProfile from '../components/dialog/ViewUserProfile';
 import Content from './layouts/Content';
+import NotificationDropdown from '../components/dropdowns/NotificationDropdown';
 
 const Shell = () => {
   const [openMiniBar, setOpenMiniBar] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
   const { user, logOutUser, session } = useContext(UserContext);
+  const [showNotificationDropdown, setShowNotificationDropdown] =
+    useState(false);
 
   const {
     schoolSessionState: { generalAlert },
@@ -47,6 +49,10 @@ const Shell = () => {
 
   //OPEN user profile
   const handleOpenUserProfile = () => setOpenUserProfile(true);
+
+  const toggleNotification = () => {
+    setShowNotificationDropdown(!showNotificationDropdown);
+  };
 
   if (_.isEmpty(session?.sessionId) || _.isEmpty(user?.id)) {
     return <Navigate to='/login' />;
@@ -111,12 +117,19 @@ const Shell = () => {
                 spacing={3}
                 alignSelf='flex-end'
                 justifyContent='flex-end'
+                pt={1}
               >
-                <IconButton>
-                  <Badge badgeContent={2} color='error'>
-                    <NotificationsSharp />
-                  </Badge>
-                </IconButton>
+                <div style={{ position: 'relative' }}>
+                  <IconButton onClick={toggleNotification}>
+                    <Badge badgeContent={2} color='error'>
+                      <NotificationsSharp />
+                    </Badge>
+                    <NotificationDropdown
+                      display={showNotificationDropdown}
+                      setClose={setShowNotificationDropdown}
+                    />
+                  </IconButton>
+                </div>
                 <Button
                   startIcon={
                     <Avatar

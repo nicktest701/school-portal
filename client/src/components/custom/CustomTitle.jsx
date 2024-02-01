@@ -44,7 +44,7 @@ function CustomTitle({ title, subtitle, img, icon, color, backColor }) {
           <Stack color={color}>
             <Typography
               color='secondary.main'
-              variant='h6'
+              variant='h3'
               textAlign={{ xs: 'center', md: 'left' }}
             >
               {title}

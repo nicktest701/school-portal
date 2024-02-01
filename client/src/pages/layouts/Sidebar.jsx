@@ -24,8 +24,10 @@ import DrawerItem from '../../components/DrawerItem';
 import {
   BookRounded,
   ExitToAppSharp,
+  NotificationsSharp,
   NumbersSharp,
   SchoolRounded,
+  StarsSharp,
 } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import { UserContext } from '../../context/providers/UserProvider';
@@ -39,7 +41,7 @@ const Sidebar = ({ onLogOut }) => {
     <Box
       sx={{
         width: { xs: 0, sm: 80, md: 220 },
-        minHeight: '100%',
+        minHeight: '100svh',
         display: { xs: 'none', sm: 'block' },
         pt: 2,
         transition: 'all 0.4s ease-in-out',
@@ -77,11 +79,7 @@ const Sidebar = ({ onLogOut }) => {
         </Typography>
       </Stack>
       {/* <Divider /> */}
-      <Stack
-        padding={1}
-        flex={1}
-        // overflow='scroll'
-      >
+      <Stack padding={1} flex={1}>
         <DrawerItem title='Dashboard' icon={<GridViewRoundedIcon />} to='/' />
         {user?.role === 'administrator' ? (
           <>
@@ -138,12 +136,25 @@ const Sidebar = ({ onLogOut }) => {
             />
           </>
         ) : (
-          <DrawerItem
-            title='Levels & Courses'
-            icon={<BookRounded />}
-            to='/course'
-          />
+          <>
+            <DrawerItem
+              title='Perfomance Index'
+              icon={<StarsSharp />}
+              to='/course'
+            />
+            <DrawerItem
+              title='Levels & Courses'
+              icon={<BookRounded />}
+              to='/course'
+            />
+          </>
         )}
+
+        <DrawerItem
+          title='Notifications & Activites'
+          icon={<NotificationsSharp />}
+          to='/'
+        />
         <DrawerItem title='About' icon={<InfoRoundedIcon />} to='/about' />
 
         <Button

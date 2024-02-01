@@ -4,7 +4,6 @@ const path = require('path');
 const asyncHandler = require('express-async-handler');
 const School = require('../models/schoolModel');
 const Examination = require('../models/examinationModel');
-const CurrentLevelDetail = require('../models/currentLevelDetailModel');
 const Level = require('../models/levelModel');
 const _ = require('lodash');
 const pLimit = require('p-limit');
@@ -122,8 +121,6 @@ router.get(
         };
       }
     );
-    // console.log(selectedStudents);
-    // examsDetails.students = selectedStudents;
 
     res.status(200).json({
       ...examsDetails,
@@ -242,7 +239,6 @@ router.get(
       if (fs.existsSync(url)) {
         SCHOOL_PHOTO = await ImageToBase64(url, 'image/png');
       }
-      // console.log(SCHOOL_PHOTO);
     }
 
     school.badge = SCHOOL_PHOTO;
@@ -299,7 +295,6 @@ router.get(
 
         const position =
           positions.find((exams) => {
-            //console.log(exams._id);
             return exams._id.toString() === _id.toString();
           }).position || '';
 
@@ -382,7 +377,7 @@ router.get(
                 fullName,
               })
             );
-            // console.log(mailResults?.messageId);
+
             return mailResults?.messageId;
           }
         );
@@ -392,7 +387,6 @@ router.get(
 
       return res.send('ok');
     } catch (error) {
-
       return res.status(400).json('An unknown error has occured.');
     }
   })
@@ -424,7 +418,6 @@ router.get(
 
     const position =
       positions.find((exams) => {
-        //console.log(exams._id);
         return exams._id.toString() === _id.toString();
       }).position || '';
 
@@ -493,7 +486,6 @@ router.get(
               },
       };
     });
-    // console.log(results);
 
     res.status(200).json(results);
   })
@@ -502,17 +494,22 @@ router.get(
 router.post(
   '/publish/student',
   asyncHandler(async (req, res) => {
-    const { student } = req.body;
+    const { student: studentExamID, sessionId, termId, level } = req.body;
 
     const studentRecords = await Examination.find({
-      _id: new ObjectId(student),
+      session: new ObjectId(sessionId),
+      term: new ObjectId(termId),
+      level: new ObjectId(level),
     })
       .populate('term')
       .populate('level')
       .populate('student');
-    // console.log(studentRecords);
 
-    if (_.isEmpty(studentRecords)) {
+    const studentRecord = studentRecords.filter(
+      (exam) => exam?._id?.toString() === studentExamID
+    );
+
+    if (_.isEmpty(studentRecord)) {
       return res.status(200).json([]);
     }
 
@@ -527,7 +524,6 @@ router.post(
       if (fs.existsSync(url)) {
         SCHOOL_PHOTO = await ImageToBase64(url, 'image/png');
       }
-      // console.log(SCHOOL_PHOTO);
     }
 
     school.badge = SCHOOL_PHOTO;
@@ -542,39 +538,9 @@ router.post(
     try {
       //GENERATE STUDENT RESULTS
 
-      const generatedResults = studentRecords.map(async (report) => {
+      const generatedResults = studentRecord.map(async (report) => {
         const { _id, term, level, scores, overallScore, comments, student } =
           report;
-
-        //CONVERT IMAGE TO BASE64
-        let STUDENT_PHOTO = '';
-
-        // if (student?.profile) {
-        //   const url = path.join(
-        //     process.cwd(),
-        //     '/images/students/',
-        //     student?.profile
-        //   );
-
-        //   if (fs.existsSync(url)) {
-        //     STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
-        //   } else {
-        //     const url = path.join(
-        //       process.cwd(),
-        //       '/images/students/',
-        //       'noimage.png'
-        //     );
-        //     STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
-        //   }
-        // }
-
-        // const url = path.join(
-        //   process.cwd(),
-        //   '/images/students/',
-        //   'noimage.png'
-        // );
-
-        // STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
 
         //GET Student Grade
         const grade = await generateTotalGrade(scores, level?.grades);
@@ -584,18 +550,17 @@ router.post(
 
         const position =
           positions.find((exams) => {
-            //console.log(exams._id);
             return exams._id.toString() === _id.toString();
           }).position || '';
 
         const modifiedStudentRecord = {
           _id,
-          academicYear: term.academicYear,
-          term: term.term,
-          vacationDate: moment(new Date(term.vacationDate)).format(
+          academicYear: term?.academicYear,
+          term: term?.term,
+          vacationDate: moment(new Date(term?.vacationDate)).format(
             'Do MMMM,YYYY'
           ),
-          reOpeningDate: moment(new Date(term.reOpeningDate)).format(
+          reOpeningDate: moment(new Date(term?.reOpeningDate)).format(
             'Do MMMM,YYYY'
           ),
           report_id: `${student?.fullName}_${level?.level?.name}${level?.level?.type}_${term.term}`,
@@ -660,7 +625,7 @@ router.post(
 
       if (allReports) {
         const mailedReports = tra.map(
-          async ({ _id, fullName, email, report_id }) => {
+          async ({ fullName, email, report_id }) => {
             const mailResults = limit(() =>
               sendReportMail({
                 id: report_id,
@@ -715,7 +680,6 @@ router.post(
 
     const position =
       positions.find((exams) => {
-        //console.log(exams._id);
         return exams._id.toString() === _id.toString();
       }).position || '';
 
@@ -742,7 +706,6 @@ router.post(
       grade,
       comments,
     };
-    // //console.log(modifiedStudentRecord);
 
     res.status(200).json(modifiedStudentRecord);
   })
@@ -752,8 +715,6 @@ router.post(
   '/student/academics',
   asyncHandler(async (req, res) => {
     const { session, term, level, student } = req.body;
-
-    // console.log(req.body);
 
     //find if current term exams details exists
     const exists = await Examination.findOne({
@@ -821,7 +782,7 @@ router.post(
 
     const overallScore = _.sumBy(newScores, 'totalScore');
     const comments = generateRemarks(overallScore);
-    
+
     const updatedScores = await Examination.findByIdAndUpdate(
       examsInfo._id,
       {
@@ -880,7 +841,6 @@ router.post(
         _.merge(_.keyBy([...exams.scores, ...scores], 'subject'))
       );
 
-
       const overallScore = _.sumBy(newScores, 'totalScore');
       const comments = generateRemarks(overallScore);
       const updatedScores = await Examination.findByIdAndUpdate(
@@ -902,83 +862,15 @@ router.post(
     });
 
     const p = await Promise.all(r);
-    //  console.log(p);
-
-    //FInd results with matching indexnumber
 
     return res.status(200).json('Results uploaded!');
   })
 );
-// router.post(
-//   '/bulk',
-//   asyncHandler(async (req, res) => {
-//     const examsDetails = req.body;
-
-//     const modifiedResults = examsDetails.map(
-//       async ({
-//         id,
-//         subject,
-//         classScore,
-//         examsScore,
-//         totalScore,
-//         grade,
-//         remarks,
-//         session,
-//         term,
-//         level,
-//       }) => {
-//         const exam = await Examination.findOne({
-//           session: new ObjectId(session),
-//           term: new ObjectId(term),
-//           level: new ObjectId(level),
-//           student: new ObjectId(id),
-//         });
-
-//         const scores = [
-//           {
-//             subject,
-//             classScore,
-//             examsScore,
-//             totalScore,
-//             grade,
-//             remarks,
-//           },
-//         ];
-
-//         const newScores = _.values(
-//           _.merge(_.keyBy([...exam.scores, ...scores], 'subject'))
-//         );
-
-//         const updatedScores = await Examination.findByIdAndUpdate(
-//           exam._id,
-//           {
-//             $set: {
-//               scores: newScores,
-//               overallScore: _.sumBy(newScores, 'totalScore'),
-//             },
-//           },
-//           {
-//             upsert: true,
-//             new: true,
-//           }
-//         );
-
-//         return updatedScores;
-//       }
-//     );
-
-//     await Promise.all(modifiedResults);
-
-//     res.status(200).json('Results uploaded!');
-//     // res.json(updatedScores);
-//   })
-// );
 
 router.post(
   '/update',
   asyncHandler(async (req, res) => {
     const { session, scores } = req.body;
-
 
     // Find if student exam details exists
     const examsInfo = await Examination.findOne({

@@ -1,7 +1,5 @@
-import Container from '@mui/material/Container'
-
 function Content({ children }) {
-  return <Container >{children}</Container>;
+  return <div>{children}</div>;
 }
 
 export default Content;

@@ -2,22 +2,12 @@ import {
   Avatar,
   Box,
   Container,
-  Divider,
-  FormControl,
   Grid,
-  InputLabel,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
   ListItemText,
-  MenuItem,
-  Select,
   Stack,
   Typography,
 } from '@mui/material';
 import React, { useContext } from 'react';
-import _ from 'lodash';
 import { UserContext } from '../../context/providers/UserProvider';
 import CourseStudentCard from './CourseStudentCard';
 import CustomCard from '../../components/cards/CustomCard';
@@ -65,7 +55,7 @@ function CourseHome() {
   );
 
   return (
-    <Box >
+    <Box>
       <Container sx={{ width: '95%' }}>
         <Stack
           direction='row'
@@ -101,7 +91,6 @@ function CourseHome() {
               secondaryTypographyProps={{ color: 'secondary.main' }}
             />
           </Stack>
-        
         </Stack>
         {/* student cards  */}
         {/* <Typography>Students</Typography>

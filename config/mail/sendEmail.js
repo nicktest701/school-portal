@@ -19,22 +19,22 @@ const sendEMail = async (email_address, message) => {
     // verify connection configuration
     transportMail.verify(function (error, success) {
       if (error) {
-     
       } else {
         console.log('Server is ready to take our messages');
       }
     });
 
     const mailOptions = {
-      from: process.env.MAIL_CLIENT_USER,
+      from: `FrebbyTech School Portal ${process.env.MAIL_CLIENT_USER}`,
+      sender: process.env.MAIL_CLIENT_USER,
       to: [email_address],
-      subject: 'Gab Powerful Consult',
+      subject: 'FrebbyTech School Portal',
       text: '',
       html: message,
     };
 
     const mailResult = await transportMail.sendMail(mailOptions);
-   
+
     return mailResult;
   } catch (error) {
     console.log(error.message);

@@ -18,10 +18,11 @@ const sendReportMail = async ({ email, fullName, id }) => {
     });
 
     const mailOptions = {
-      from: process.env.MAIL_CLIENT_USER,
+      from: `FrebbyTech School Portal ${process.env.MAIL_CLIENT_USER}`,
+      sender: process.env.MAIL_CLIENT_USER,
       to: [email],
       subject:
-        'Important Notification - Your Results Are Now Available',
+        'Your Results Are Now Available',
       text: 'Terminal Report',
       html: `<div>
       <h5>Dear ${fullName},</h5>

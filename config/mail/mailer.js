@@ -26,10 +26,11 @@ const sendMail = async (body, emailList) => {
     });
 
     const mailOptions = {
-      from: process.env.MAIL_CLIENT_USER,
+      from: `FrebbyTech School Portal ${process.env.MAIL_CLIENT_USER}`,
+      sender: process.env.MAIL_CLIENT_USER,
       to: emailList,
       subject: body?.title,
-      text: 'FREBBYS SCHOOL',
+      text: 'FrebbyTech School Portal',
       html: `<!DOCTYPE html>
       <html lang="en">
       <head>
