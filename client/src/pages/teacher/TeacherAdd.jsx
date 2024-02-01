@@ -45,12 +45,9 @@ const TeacherAdd = ({ setTab }) => {
     // //console.log(values);
     values.dateofbirth = moment(dob).format('L');
     mutateAsync(values, {
-      onSettled: () => {
-        queryClient.invalidateQueries(['teachers']);
-        options.setSubmitting(false);
-      },
       onSuccess: (data) => {
-        schoolSessionDispatch(alertSuccess(data));
+        queryClient.invalidateQueries(['teachers']);
+        // schoolSessionDispatch(alertSuccess(data));
         options.resetForm();
         setProfieImg(null);
         setTab('1');
@@ -125,16 +122,16 @@ const TeacherAdd = ({ setTab }) => {
                     error={Boolean(touched.surname && errors.surname)}
                     helperText={touched.surname && errors.surname}
                   />
-                  <TextField
-                    label='Othername'
-                    fullWidth
-                    size='small'
-                    value={values.othername}
-                    onChange={handleChange('othername')}
-                    error={Boolean(touched.othername && errors.othername)}
-                    helperText={touched.othername && errors.othername}
-                  />
                 </CustomFormControl>
+                <TextField
+                  label='Username'
+                  fullWidth
+                  size='small'
+                  value={values.username}
+                  onChange={handleChange('username')}
+                  error={Boolean(touched.username && errors.username)}
+                  helperText={touched.username && errors.username}
+                />
                 <CustomFormControl>
                   <CustomDatePicker
                     label='Date of Birth'

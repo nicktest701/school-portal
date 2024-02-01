@@ -44,8 +44,7 @@ const StudentHome = () => {
     <Container
       sx={{
         position: 'relative',
-        height: 200,
-        bgcolor: 'primary.main',
+        // bgcolor: 'primary.main',
         width: '95%',
       }}
     >
@@ -53,7 +52,7 @@ const StudentHome = () => {
         title='Student Portal'
         subtitle='Track,manage and control student information'
         img={student_icon}
-        color='primary.contrastText'
+        color='primary.main'
       />
       <Box
         sx={{
@@ -93,7 +92,7 @@ const StudentHome = () => {
             </IconButton>
           }
         />
-      
+
         <DashboardCard
           title='Females'
           value={48}

@@ -19,6 +19,9 @@ const TeacherSchema = new mongoose.Schema(
       type: String,
       lowercase: true,
     },
+    username: {
+      type: String,
+    },
     dateofbirth: String,
     gender: String,
     email: {
@@ -40,7 +43,7 @@ const TeacherSchema = new mongoose.Schema(
       fullName: {
         get() {
           const name = _.startCase(
-            `${this.surname} ${this.firstname} ${this.othername}`
+            `${this.surname} ${this.firstname}`
           );
           return name;
         },

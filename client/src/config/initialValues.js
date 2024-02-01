@@ -68,7 +68,7 @@ export const teacherInitialValues = {
   profile: null,
   firstname: '',
   surname: '',
-  othername: '',
+  username: '',
   dateofbirth: '',
   gender: '',
   email: '',

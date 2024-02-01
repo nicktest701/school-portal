@@ -39,7 +39,7 @@ const Sidebar = ({ onLogOut }) => {
     <Box
       sx={{
         width: { xs: 0, sm: 80, md: 220 },
-        minHeight: '100dvh',
+        minHeight: '100%',
         display: { xs: 'none', sm: 'block' },
         pt: 2,
         transition: 'all 0.4s ease-in-out',
@@ -79,10 +79,8 @@ const Sidebar = ({ onLogOut }) => {
       {/* <Divider /> */}
       <Stack
         padding={1}
-        justifyContent='flex-start'
-        alignItems='flex-start'
-        // border='1px solid black'
         flex={1}
+        // overflow='scroll'
       >
         <DrawerItem title='Dashboard' icon={<GridViewRoundedIcon />} to='/' />
         {user?.role === 'administrator' ? (

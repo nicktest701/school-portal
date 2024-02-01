@@ -124,6 +124,7 @@ const SchoolSessionReducer = (state, { type, payload }) => {
       };
 
     case 'openAddStudentFileDialog':
+      // console.log(payload.data)
       return {
         ...state,
         addStudentFileData: {

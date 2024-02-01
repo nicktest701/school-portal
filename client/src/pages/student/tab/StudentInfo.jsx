@@ -71,7 +71,7 @@ const StudentInfo = () => {
           students = readCSV(event.target.result);
         }
         if (students.length !== 0) {
-          console.log(students);
+       
           schoolSessionDispatch({
             type: 'openAddStudentFileDialog',
             payload: { data: students, type: 'file' },

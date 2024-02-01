@@ -5,7 +5,6 @@ import { Outlet, Navigate } from 'react-router-dom';
 import GlobalAlert from '../components/alerts/GlobalAlert';
 import QuickMessage from '../components/modals/QuickMessage';
 import Footer from './layouts/Footer';
-import Scrollbars from 'react-custom-scrollbars';
 import {
   Alert,
   AppBar,
@@ -15,13 +14,14 @@ import {
   Button,
   IconButton,
   Stack,
+
 } from '@mui/material';
 import { SchoolSessionContext } from '../context/providers/SchoolSessionProvider';
 import Sidebar from './layouts/Sidebar';
 import { ArrowDropDown, Menu, NotificationsSharp } from '@mui/icons-material';
 import HorizontalSidebar from './layouts/HorizontalSidebar';
 import ViewUserProfile from '../components/dialog/ViewUserProfile';
-
+import Content from './layouts/Content';
 
 const Shell = () => {
   const [openMiniBar, setOpenMiniBar] = useState(false);
@@ -48,7 +48,6 @@ const Shell = () => {
   //OPEN user profile
   const handleOpenUserProfile = () => setOpenUserProfile(true);
 
-
   if (_.isEmpty(session?.sessionId) || _.isEmpty(user?.id)) {
     return <Navigate to='/login' />;
   }
@@ -72,6 +71,7 @@ const Shell = () => {
         </Alert>
       )}
       <QuickMessage />
+
       <HorizontalSidebar
         open={openMiniBar}
         setOpen={setOpenMiniBar}
@@ -80,19 +80,14 @@ const Shell = () => {
 
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'start',
+          display: 'grid',
+          gridTemplateColumns: 'auto 1fr',
+          minHeight: '100svh',
         }}
       >
         <Sidebar onLogOut={logOutUser} />
 
-        <div
-          style={{
-            flexGrow: 1,
-            paddingBottom: '8px',
-          }}
-        >
+        <div>
           <AppBar position='sticky' sx={{ bgcolor: 'white' }} elevation={1}>
             <Box
               sx={{
@@ -139,10 +134,9 @@ const Shell = () => {
               </Stack>
             </Box>
           </AppBar>
-
-          <Scrollbars style={{ width: '100%', height: '100dvh' }} autoHide>
+          <Content>
             <Outlet />
-          </Scrollbars>
+          </Content>
         </div>
       </Box>
 

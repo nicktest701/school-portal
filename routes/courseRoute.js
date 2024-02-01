@@ -106,7 +106,7 @@ router.get(
         };
       }
     );
-    console.log(groupedWeeklyAttendance);
+   
 
     // console.log(_.values(_.merge(_.keyBy(weeklyGroup, 'date'))));
 

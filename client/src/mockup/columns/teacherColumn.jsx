@@ -57,6 +57,11 @@ export const TEACHERS_COLUMN = [
     ),
   },
   {
+    field: 'username',
+    title: 'Username',
+
+  },
+  {
     field: 'active',
     title: 'Status',
     export: false,

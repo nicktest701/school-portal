@@ -92,7 +92,7 @@ if (process.env.NODE_ENV === 'production') {
 // });
 
 app.use((err, req, res, next) => {
-  // console.log(err);
+  console.log(err);
   res.status(err.status || 500);
 
   if (process.env.NODE_ENV === 'production') {

@@ -65,13 +65,14 @@ function CourseHome() {
   );
 
   return (
-    <Box sx={{ bgcolor: 'primary.main', height: 180, p: 2 }}>
+    <Box >
       <Container sx={{ width: '95%' }}>
         <Stack
           direction='row'
           justifyContent='space-between'
           alignItems='center'
-          pb={2}
+          p={2}
+          bgcolor='primary.main'
         >
           <Stack
             direction='row'

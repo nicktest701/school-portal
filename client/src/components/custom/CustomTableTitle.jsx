@@ -16,7 +16,7 @@ function CustomTableTitle({ icon, title, subtitle }) {
           alt='ico'
           loading='lazy'
           src={icon}
-          style={{ width: '40px', heigth: '40px' }}
+          style={{ width: '60px', heigth: '60px' }}
         />
       ) : (
         <SchoolRounded color='primary' />
@@ -25,7 +25,7 @@ function CustomTableTitle({ icon, title, subtitle }) {
       <ListItemText
         primary={title}
         primaryTypographyProps={{
-          fontSize: { xs: 12, sm: 16 },
+          fontSize: { xs: 14, sm: 16 },
           fontWeight: 'bold',
         }}
         secondary={subtitle}

@@ -218,7 +218,7 @@ const TeacherView = () => {
               >
                 Send Message
               </Button>
-              <Stack direction='row' pt={2} spacing={2} flexWrap='wrap'>
+              <Stack direction='row' pt={2} spacing={1} >
                 <Button
                   variant='outlined'
                   color='secondary'

@@ -157,6 +157,7 @@ function UserAdd({ open, setOpen }) {
                     <MenuItem value="director">Director</MenuItem>
                     <MenuItem value="secretary">Secretary</MenuItem>
                     <MenuItem value="coordinator">Exams Coordinator</MenuItem>
+                    {/* <MenuItem value="teacher">Teacher</MenuItem> */}
                   </TextField>
                 </CustomFormControl>
                 <CustomFormControl>

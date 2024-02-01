@@ -82,7 +82,7 @@ router.post(
   '/resend',
   asyncHandler(async (req, res) => {
     const { id, type, body } = req.body;
-    console.log(req.body);
+   
 
     const recipient = req?.body?.recipient;
 
@@ -91,7 +91,7 @@ router.post(
         await sendSMS(body, recipient?.phonenumber);
       }
       if (type === 'email') {
-        console.log(recipient?.email);
+    
         await sendMail(body, recipient?.email);
       }
       if (type === 'both') {
@@ -107,7 +107,7 @@ router.post(
 
       return res.status(200).json('Message delivered successfully!!!');
     } catch (error) {
-      console.log(error);
+ 
       return res.status(404).json('Couldnt send message.Try again later!!!');
     }
   })

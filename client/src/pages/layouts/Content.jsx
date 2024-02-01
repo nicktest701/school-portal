@@ -1,7 +1,7 @@
-import React from "react";
+import Container from '@mui/material/Container'
 
 function Content({ children }) {
-  return <div className="content" >{children}</div>;
+  return <Container >{children}</Container>;
 }
 
 export default Content;

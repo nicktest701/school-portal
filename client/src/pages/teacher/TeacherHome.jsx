@@ -35,14 +35,7 @@ const TeacherHome = () => {
   };
 
   return (
-    <Container
-      sx={{
-        position: 'relative',
-        height: 350,
-        color: 'primary.contrastText',
-        // bgcolor: 'secondary.main',
-      }}
-    >
+    <Container>
       <CustomTitle
         title='Teachers Portal'
         subtitle='Manage teaching staff information'

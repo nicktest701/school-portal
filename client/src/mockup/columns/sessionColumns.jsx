@@ -91,13 +91,13 @@ export const SCHOOL_SESSION_COLUMN = (
         return (
           <Stack direction='row' spacing={2}>
             <Edit
-              className='ico edit'
+              className='ico '
               onClick={() => handleEdit(rowData)}
               title='Edit'
               titleAccess='Edit'
             />
             <Delete
-              className='ico delete'
+              className='ico '
               onClick={() => handleDelete(rowData?.termId)}
               title='Delete'
               titleAccess='Delete'

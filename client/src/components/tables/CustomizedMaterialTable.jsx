@@ -82,7 +82,7 @@ function CustomizedMaterialTable({
 
   return (
     <AnimatedContainer>
-      <Box className='table-container'>
+      <Box className='table-container' py={2}>
         <MaterialTable
           isLoading={isLoading}
           title={

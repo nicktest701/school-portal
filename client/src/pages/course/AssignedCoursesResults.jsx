@@ -73,13 +73,7 @@ function AssignedCoursesResults() {
   ];
 
   return (
-    <Container
-      sx={{
-        position: 'relative',
-        height: '400px',
-        pt: 2,
-      }}
-    >
+    <Container>
       {/* <Back /> */}
       <Back to='/course/assign' color='primary.main' />
 

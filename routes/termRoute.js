@@ -146,7 +146,6 @@ router.put(
   '/account',
   asyncHandler(async (req, res) => {
     const { id, active } = req.body;
-    console.log(req.body);
 
     const updatedSession = await Term.findByIdAndUpdate(
       id,

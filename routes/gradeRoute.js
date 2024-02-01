@@ -43,7 +43,7 @@ router.post(
 router.put(
   '/',
   asyncHandler(async (req, res) => {
-    console.log(req.body)
+ 
     const modifiedGrade = await Grade.findByIdAndUpdate(
       req.body._id,
       {

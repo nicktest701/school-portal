@@ -33,11 +33,8 @@ router.get(
   AsyncHandler(async (req, res) => {
     const teachers = await Teacher.find({
       active: true,
-    });
+    }).sort({ createdAt: -1 });
 
-    if (_.isEmpty(teachers)) {
-      return res.status(200).json([]);
-    }
     res.status(200).json(teachers);
   })
 );
@@ -58,7 +55,31 @@ router.post(
   upload.single('profile'),
   AsyncHandler(async (req, res) => {
     const newTeacher = req.body;
-    newTeacher.profile = req.file.filename;
+    newTeacher.profile = req?.file?.filename;
+
+    const isTeacherUserNameExists = await Teacher.find({
+      username: newTeacher?.username,
+    });
+
+    if (!_.isEmpty(isTeacherUserNameExists)) {
+      return res
+        .status(400)
+        .json(
+          `Teacher with username '${newTeacher?.username}' already exists! `
+        );
+    }
+
+    const isUserNameExists = await User.find({
+      username: newTeacher?.username,
+    });
+
+    if (!_.isEmpty(isUserNameExists)) {
+      return res
+        .status(400)
+        .json(
+          `Teacher with username '${newTeacher?.username}' already exists! `
+        );
+    }
 
     // console.log(newTeacher)
     const teacher = await Teacher.create(newTeacher);
@@ -71,11 +92,9 @@ router.post(
 
     const user = {
       _id: teacher?._id,
-      profile: req.file.filename,
-      fullname: _.startCase(
-        `${newTeacher?.surname} ${newTeacher?.firstname} ${newTeacher?.othername}`
-      ),
-      username: teacher?.phonenumber,
+      profile: req?.file?.filename,
+      fullname: _.startCase(`${newTeacher?.surname} ${newTeacher?.firstname}`),
+      username: teacher?.username,
       dateofbirth: teacher?.dateofbirth,
       email: teacher?.email,
       gender: teacher?.gender,
@@ -145,8 +164,8 @@ router.put(
       return res.status(404).json('Couldnt update Teacher info.Try again.');
     }
 
-    modifiedTeacher.fullname=_.startCase(
-      `${updatedTeacher?.surname} ${updatedTeacher?.firstname} ${updatedTeacher?.othername}`
+    modifiedTeacher.fullname = _.startCase(
+      `${updatedTeacher?.surname} ${updatedTeacher?.firstname}`
     );
 
     await User.findByIdAndUpdate(id, modifiedTeacher);

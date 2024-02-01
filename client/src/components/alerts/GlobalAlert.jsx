@@ -22,7 +22,7 @@ const GlobalAlert = () => {
   return (
     <Snackbar
       anchorOrigin={{
-        horizontal: 'center',
+        horizontal: 'right',
         vertical: 'top',
       }}
       open={alertData?.message ? true : false}
@@ -44,6 +44,7 @@ const GlobalAlert = () => {
           // width: "100%",
           color: alertData?.severity === 'info' ? 'primary.main' : 'error.main',
           borderBottom: `2px solid ${color}`,
+          py:2
         }}
       >
         {alertData?.message}

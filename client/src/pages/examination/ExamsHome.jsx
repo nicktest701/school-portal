@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Container } from '@mui/material';
+import { Container } from '@mui/material';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { EXAMS_COLUMNS } from '../../mockup/columns/sessionColumns';
 import { useNavigate } from 'react-router-dom';
@@ -24,11 +24,7 @@ const ExamsHome = () => {
   return (
     <Container
       sx={{
-        position: 'relative',
-        height: 350,
-        color: 'primary.contrastText',
-        //  background: 'linear-gradient(to top right,#ffc09f,#012e54)',
-        width:'95%'
+        width: '95%',
       }}
     >
       <CustomTitle

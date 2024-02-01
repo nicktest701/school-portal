@@ -53,16 +53,7 @@ function AssignCourses({ id }) {
     },
   ];
   return (
-    <Container
-      sx={{
-        position: 'relative',
-        height: '400px',
-        width: '95%',
-        marginInline: 'auto',
-        color: 'primary.contrastText',
-        overscrollBehaviorInline: 'contain',
-      }}
-    >
+    <Container>
       <CustomTitle
         title='Assigned Courses'
         subtitle='Track,manage and control courses assigned to you'

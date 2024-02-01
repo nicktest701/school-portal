@@ -19,7 +19,7 @@ const sendEMail = async (email_address, message) => {
     // verify connection configuration
     transportMail.verify(function (error, success) {
       if (error) {
-        console.log('Err is', error);
+     
       } else {
         console.log('Server is ready to take our messages');
       }
@@ -34,11 +34,11 @@ const sendEMail = async (email_address, message) => {
     };
 
     const mailResult = await transportMail.sendMail(mailOptions);
-    console.log(mailResult);
+   
     return mailResult;
   } catch (error) {
     console.log(error.message);
-    throw error.message;
+    // throw error.message;
   }
 };
 

@@ -69,6 +69,10 @@ export const studentEditValidationSchema = object().shape({
 export const teacherValidationSchema = object().shape({
   firstname: string().required('Required*'),
   surname: string().required('Required*'),
+  username: string()
+    .required('Required*')
+    .min(3, 'Username Should be between 3-20 characters')
+    .max(20, 'Username Should be between 3-20 characters'),
   // dateofbirth: date()
   //   .required("Required*")
   //   .max(new Date(), "Date of birth cannot be in the future"),

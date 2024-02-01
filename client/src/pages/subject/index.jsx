@@ -1,4 +1,4 @@
-import { Box, Container, Tab } from '@mui/material';
+import { Container, Tab } from '@mui/material';
 import React, { useState } from 'react';
 import session_icon from '../../assets/images/header/session_ico.svg';
 import CustomTitle from '../../components/custom/CustomTitle';
@@ -11,13 +11,7 @@ function Subject_Grade() {
   return (
     <Container
       sx={{
-        position: 'relative',
-        height: '400px',
         width: '95%',
-        color: 'primary.contrastText',
-        // bgcolor: 'secondary.main',
-        overscrollBehaviorInline: 'contain',
-        // flexGrow: 1,
       }}
     >
       <CustomTitle

@@ -99,6 +99,7 @@ const UserProvider = ({ children }) => {
       title: 'Exiting',
       text: 'Do you want to exit app?',
       showCancelButton: true,
+      // backdrop:false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         localStorage.removeItem('@school_session');

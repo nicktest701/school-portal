@@ -7,7 +7,7 @@ const About = () => {
       style={{
         background: `url(${about}) no-repeat`,
         backgroundAttachment: 'scroll',
-        minHeight: '100%',
+        minHeight: '100svh',
         backgroundSize: 'cover',
       }}
     >

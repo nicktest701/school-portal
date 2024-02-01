@@ -392,7 +392,7 @@ router.get(
 
       return res.send('ok');
     } catch (error) {
-      console.log(error);
+
       return res.status(400).json('An unknown error has occured.');
     }
   })
@@ -821,7 +821,7 @@ router.post(
 
     const overallScore = _.sumBy(newScores, 'totalScore');
     const comments = generateRemarks(overallScore);
-    console.log(comments);
+    
     const updatedScores = await Examination.findByIdAndUpdate(
       examsInfo._id,
       {
@@ -879,7 +879,7 @@ router.post(
       const newScores = _.values(
         _.merge(_.keyBy([...exams.scores, ...scores], 'subject'))
       );
-      console.log(newScores);
+
 
       const overallScore = _.sumBy(newScores, 'totalScore');
       const comments = generateRemarks(overallScore);

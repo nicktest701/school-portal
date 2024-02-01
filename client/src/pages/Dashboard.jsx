@@ -49,7 +49,8 @@ const Dashboard = () => {
       >
         <Container
           sx={{
-            overscrollBehaviorInline: 'contain',
+            position: 'sticky',
+            top: 0,
           }}
         >
           <Typography variant='h6' paragraph>
@@ -87,7 +88,7 @@ const Dashboard = () => {
         </Container>
         {/* </Scrollbars> */}
 
-        <Container
+        <Box
           sx={{
             width: { xs: 0, sm: 280 },
             display: { xs: 'none', md: 'block' },
@@ -102,7 +103,7 @@ const Dashboard = () => {
             </CustomCard>
             <Birthday />
           </Stack>
-        </Container>
+        </Box>
       </Box>
 
       <CustomParticle />

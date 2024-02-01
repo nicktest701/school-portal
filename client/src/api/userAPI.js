@@ -45,7 +45,7 @@ export const verifyUser = async () => {
 
     return res.data;
   } catch (error) {
-    console.log(error.response.data);
+
     throw error?.response?.data || 'Session has expired.Please login again';
   }
 };
