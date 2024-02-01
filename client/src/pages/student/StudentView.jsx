@@ -11,7 +11,6 @@ import CustomTitle from '../../components/custom/CustomTitle';
 import { useQuery } from '@tanstack/react-query';
 import { getAllStudentsBySession } from '../../api/levelAPI';
 import { UserContext } from '../../context/providers/UserProvider';
-import _ from 'lodash';
 
 const StudentView = () => {
   const {

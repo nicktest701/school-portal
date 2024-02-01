@@ -48,7 +48,7 @@ function EditGrade() {
     remarks: '',
   };
 
-  const grade = useQuery({
+  useQuery({
     queryKey: ['grade', data?._id],
     queryFn: () => getGrade(data?._id),
     enabled: !!data?._id,

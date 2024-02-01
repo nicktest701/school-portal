@@ -11,10 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 function CourseLevel() {
   const navigate = useNavigate();
-  const {
-    user,
-    userState: { session },
-  } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const { levelsOption, levelLoading, levelRefetch } = useLevel();
 

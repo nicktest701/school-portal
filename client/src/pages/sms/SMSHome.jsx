@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Container, Divider } from '@mui/material';
+import { Container} from '@mui/material';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
 import { useNavigate } from 'react-router-dom';
 import { MESSAGE_COLUMNS } from '../../mockup/columns/sessionColumns';

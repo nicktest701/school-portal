@@ -153,7 +153,6 @@ const LevelExamScoreInput = ({
     Swal.fire({
       title: 'Exiting',
       text: 'Do you want to exit?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
       // background:'#ccc'
@@ -169,7 +168,6 @@ const LevelExamScoreInput = ({
     Swal.fire({
       title: 'Discarding',
       text: 'Discard Changes?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
       // background:'#ccc'
@@ -191,7 +189,6 @@ const LevelExamScoreInput = ({
     Swal.fire({
       title: 'Importing results',
       text: `Do you want to import results in ${subject}?`,
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {

@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material';
-import { PolarArea, Radar } from 'react-chartjs-2';
+import {  Radar } from 'react-chartjs-2';
 
 const RadarChart = ({ values, labels }) => {
   const { palette } = useTheme();

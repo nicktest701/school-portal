@@ -13,7 +13,7 @@ import _ from 'lodash';
 import ReactToPrint from 'react-to-print';
 import moment from 'moment';
 import FeePrintItem from './FeePrintItem';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, } from 'react-router-dom';
 
 import { currencyFormatter } from '../../config/currencyFormatter';
 import Back from '../../components/Back';

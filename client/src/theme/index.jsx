@@ -43,7 +43,7 @@ export default function ThemeProvider({ children }) {
   return (
     <StyledEngineProvider injectFirst>
       <MUIThemeProvider theme={theme}>
-        {/* <CssBaseline /> */}
+        <CssBaseline />
         <GlobalStyles />
         {children}
       </MUIThemeProvider>

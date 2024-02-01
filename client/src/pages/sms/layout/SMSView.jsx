@@ -62,7 +62,6 @@ function SMSView() {
     Swal.fire({
       title: 'Removing Message',
       text: 'Do you want to delete message?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {

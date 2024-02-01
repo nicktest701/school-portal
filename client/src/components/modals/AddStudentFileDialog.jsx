@@ -7,7 +7,6 @@ import {
   DialogContent,
   TextField,
   Typography,
-  useTheme,
 } from '@mui/material';
 
 import Swal from 'sweetalert2';
@@ -21,7 +20,6 @@ import {
   alertError,
   alertSuccess,
 } from '../../context/actions/globalAlertActions';
-// import { replaceKeys } from '../../config/replaceKeys';
 import { UserContext } from '../../context/providers/UserProvider';
 import { IMPORT_STUDENT_COLUMNS } from '../../mockup/columns/studentColumns';
 import CustomizedMaterialTable from '../tables/CustomizedMaterialTable';
@@ -34,7 +32,6 @@ function AddStudentFileDialog() {
   } = useContext(UserContext);
 
   //Params
-  const { palette } = useTheme();
   const queryClient = useQueryClient();
 
   const [fieldError, setFieldError] = useState('');

@@ -91,7 +91,7 @@ const AddSession = () => {
           touched,
           handleChange,
           handleSubmit,
-          isSubmitting,
+     
         }) => {
           return (
             <>

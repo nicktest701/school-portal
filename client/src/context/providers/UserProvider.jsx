@@ -1,12 +1,11 @@
 import React, { useReducer, useState } from 'react';
 import Swal from 'sweetalert2';
-import _ from 'lodash';
 import UserReducer from '../reducers/UserReducer';
 import PropTypes from 'prop-types';
 import { useQuery } from '@tanstack/react-query';
 import { getAllLevels } from '../../api/levelAPI';
 import { getSchoolInfo, verifyUser } from '../../api/userAPI';
-import { Navigate, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import Loader from '../../config/Loader';
 export const UserContext = React.createContext();
 

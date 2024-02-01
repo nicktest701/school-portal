@@ -36,7 +36,7 @@ const SubjectTab = () => {
     Swal.fire({
       title: "Removing",
       text: "Do you want to remove?",
-      confirmButtonColor: primary.main,
+
       showCancelButton: true,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {

@@ -47,7 +47,7 @@ const TeacherAdd = ({ setTab }) => {
     mutateAsync(values, {
       onSuccess: (data) => {
         queryClient.invalidateQueries(['teachers']);
-        // schoolSessionDispatch(alertSuccess(data));
+         schoolSessionDispatch(alertSuccess(data));
         options.resetForm();
         setProfieImg(null);
         setTab('1');

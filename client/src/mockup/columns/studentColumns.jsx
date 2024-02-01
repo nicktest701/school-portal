@@ -421,7 +421,7 @@ export const STUDENTS_EXAMS_COLUMN = [
   {
     title: 'Completed',
     field: 'entry',
-    render: ({ entry, overallScore }) => (
+    render: ({ entry }) => (
       <Stack spacing={1}>
         <LinearProgress
           variant='determinate'

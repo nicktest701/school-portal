@@ -17,7 +17,7 @@ import { loginUserValidationSchema } from '../config/validationSchema';
 import { getUserAuth } from '../api/userAPI';
 import { UserContext } from '../context/providers/UserProvider';
 import { useLocation, useNavigate } from 'react-router-dom';
-import StudentFeeSkeleton from '../components/skeleton/StudentFeeSkeleton';
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -155,7 +155,6 @@ const Login = () => {
             validationSchema={loginUserValidationSchema}
           >
             {({
-              isSubmitting,
               values,
               errors,
               touched,

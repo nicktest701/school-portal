@@ -1,6 +1,6 @@
 import { Button, Container, Typography } from '@mui/material';
 
-const Error = ({ error, resetErrorBoundary }) => {
+const Error = ({ _error, resetErrorBoundary }) => {
   return (
     <Container
       sx={{

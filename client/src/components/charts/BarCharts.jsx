@@ -1,7 +1,6 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import Box from '@mui/material/Box';
-import _ from 'lodash';
 import { useTheme } from '@emotion/react';
 const BarCharts = ({ labels, data }) => {
   const { palette } = useTheme();

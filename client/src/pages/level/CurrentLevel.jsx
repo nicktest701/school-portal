@@ -6,7 +6,7 @@ import CustomTitle from '../../components/custom/CustomTitle';
 import { useParams } from 'react-router-dom';
 
 const CurrentLevel = () => {
-  const { id, type } = useParams();
+  const { type } = useParams();
   return (
     <Container
       sx={{

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getCourseByTeacher } from '../../api/courseAPI';
 
-function AssignCourses({ id }) {
+function AssignCourses() {
   const navigate = useNavigate();
   const {
     user,

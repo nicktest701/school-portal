@@ -1,17 +1,14 @@
-import { SaveAltSharp } from '@mui/icons-material';
+
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import {
-  Checkbox,
   Divider,
-  FormLabel,
   IconButton,
-  Link,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
-  TextField,
+  
 } from '@mui/material';
-import React, { useState } from 'react';
+
 
 const LevelSubjectItem = ({ name, removeSubject }) => {
   return (

@@ -34,14 +34,14 @@ function Subject() {
     });
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: deleteSubject,
   });
   const removeSubject = (id) => {
     Swal.fire({
       title: 'Removing Subject',
       text: 'Do you want to remove?',
-      // confirmButtonColor: palette.primary.main,
+
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
@@ -98,8 +98,6 @@ function Subject() {
         data={subjects?.data}
         actions={[]}
         showRowShadow={false}
-        // handleEdit={handlEditSession}
-        // handleDelete={handleDeleteSession}
         showAddButton={true}
         addButtonImg={EMPTY_IMAGES.session}
         addButtonMessage='😑 No Subjects system available!.Create a new one!'

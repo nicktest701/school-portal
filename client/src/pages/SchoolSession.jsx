@@ -39,7 +39,7 @@ const SchoolSession = () => {
       }
     },
   });
-  const currentPath = state?.path || '/';
+  // const currentPath = state?.path || '/';
 
   const handleSession = () => {
     setSessionError('');

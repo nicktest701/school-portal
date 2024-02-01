@@ -67,7 +67,6 @@ const StudentProfile = ({ student }) => {
     Swal.fire({
       title: `${student?.active ? 'Disable' : 'Enable'} Student Acoount`,
       text: `Do you want to ${student?.active ? 'disable' : 'enable'} account?`,
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {

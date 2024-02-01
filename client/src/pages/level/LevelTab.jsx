@@ -44,7 +44,6 @@ const LevelTab = () => {
     Swal.fire({
       title: 'Removing Level',
       text: 'Do you want to remove level?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {

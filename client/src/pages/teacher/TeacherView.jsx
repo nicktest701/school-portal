@@ -90,14 +90,13 @@ const TeacherView = () => {
   };
 
   //UNASSIGN Teacher from level
-  const { mutateAsync: unassignTeacher, isLoading } = useMutation({
+  const { mutateAsync: unassignTeacher, } = useMutation({
     mutationFn: unassignTeacherLevel,
   });
   const handleUnassignTeacher = (id) => {
     Swal.fire({
       title: 'Unassign Teacher',
       text: 'Do you want to unassign teacher from this level?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
     }).then((data) => {
       if (data.isConfirmed) {
@@ -124,7 +123,6 @@ const TeacherView = () => {
     Swal.fire({
       title: 'Deleting Teacher',
       text: 'Do you want to delete?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
     }).then((data) => {
       if (data.isConfirmed) {

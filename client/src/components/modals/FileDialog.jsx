@@ -56,7 +56,7 @@ function FileDialog() {
     Swal.fire({
       title: 'Exiting',
       text: 'Do you want to exit?',
-      confirmButtonColor: palette.primary.main,
+
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
@@ -84,7 +84,6 @@ function FileDialog() {
     Swal.fire({
       title: 'Importing students',
       text: 'Do you want to import ?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {

@@ -1,4 +1,4 @@
-import { SaveAltSharp } from '@mui/icons-material';
+
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import {
   Checkbox,
@@ -18,7 +18,6 @@ const SubjectItem = ({
   isCore,
   removeSubject,
   appendCode,
-  setCore,
   handleIsCore,
 }) => {
   const [value, setValue] = useState(code);
@@ -57,9 +56,6 @@ const SubjectItem = ({
               />
             }
           />
-          {/* <IconButton onClick={() => removeSubject(name)}>
-            <SaveAltSharp />
-          </IconButton> */}
 
           <IconButton onClick={() => removeSubject(name)}>
             <DeleteOutline />

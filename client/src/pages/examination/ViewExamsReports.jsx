@@ -53,7 +53,6 @@ const ViewExamsReports = () => {
       text: `You are about to publish the report of ${
         reports?.data?.results?.length || 'all '
       } students.Do you wish to continue?`,
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {

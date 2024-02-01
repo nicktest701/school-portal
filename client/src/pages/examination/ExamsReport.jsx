@@ -65,7 +65,6 @@ const ExamsReport = ({ student }) => {
       text: `You are about to publish the report of ${
         student?.fullName || 'student'
       }.Do you wish to continue?`,
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {

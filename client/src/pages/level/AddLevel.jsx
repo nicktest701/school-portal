@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext,} from 'react';
 import {
   Stack,
   Dialog,
@@ -106,7 +106,6 @@ const AddLevel = ({ open, setOpen }) => {
           errors,
           touched,
           handleSubmit,
-          isSubmitting,
           setFieldValue,
         }) => {
           return (

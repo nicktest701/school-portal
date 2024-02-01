@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext,  } from 'react';
 import Swal from 'sweetalert2';
 import { useTheme } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -43,7 +43,6 @@ const SessionHome = () => {
     Swal.fire({
       title: 'Removing Session',
       text: 'Removing session will delete all of its related content.Do you want to remove?',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
@@ -88,7 +87,6 @@ const SessionHome = () => {
         ? 'Do you want to disable this session'
         : 'Do you want to enable this session',
       text: active ? 'Disabling Session' : 'Enabling Session',
-      confirmButtonColor: palette.primary.main,
       showCancelButton: true,
       backdrop: false,
     }).then((data) => {
