@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Card</title>
+    <link rel="stylesheet" href="fonts/fonts.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100;0,200;0,500;0,600;1,100;1,200&display=swap" rel="stylesheet">
+    <base href="http://localhost:8000/images/students/">
+</head>
+
+<style>
+    :root {
+        --primary: #012e54;
+        --secondary: #32D583;
+    }
+
+    html {
+        line-height: 1.15;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+
+    }
+
+    body {
+
+        font-family: 'Public Sans', 'Poppins', -apple-system,
+            BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+            'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-size: 14px !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #fff;
+    }
+
+
+
+
+    p,
+    td {
+        font-size: 14px;
+        white-space: nowrap !important;
+
+    }
+
+    .report {
+        width: 210mm;
+        height: 297mm;
+        max-width: 210mm;
+        max-height: 297mm;
+        margin-inline: auto;
+        padding: 16px;
+        /* border: 1px solid lightgray; */
+        display: flex;
+        flex-direction: column;
+
+
+    }
+
+    @media print {
+        .report {
+            margin: 0;
+            border: 0;
+        }
+    }
+
+    .report-header {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+
+    }
+
+    .school-logo {
+        width: 80px;
+        height: 80px;
+    }
+
+ 
+
+    .school-info p {
+        text-align: center;
+    }
+
+    .caption {
+        display: block;
+        text-align: center;
+        padding-bottom: 2px;
+    }
+
+    .card-title {
+        text-align: center;
+        border-top: solid 2px var(--secondary);
+        background-color: var(--primary);
+        color: #fff;
+        padding: 8px;
+
+    }
+
+    .report-item-container {
+        display: flex;
+        padding-block: 2px;
+
+    }
+
+    .report-item-title {
+        white-space: nowrap !important;
+        font-weight: bold;
+        padding-right: 5px;
+        text-transform: capitalize;
+
+
+    }
+
+    .report-item-text {
+        text-transform: capitalize;
+        white-space: nowrap !important;
+    }
+
+    .report-item-text-underline {
+        border-bottom: 1px dashed gray;
+    }
+</style>
+
+<body>
+
+    <!-- Print Template -->
+
+
+    <!-- Report 1  -->
+    <div class="report" id="report">
+
+
+        <!-- school details  -->
+
+        <div class="report-header">
+            <img src=<%=school?.badge %>
+            alt='school logo' loading='lazy' class="school-logo"
+            src="/images/users/b4f8526d-f1ec-4fa2-83ed-1bf9c6ad85ee.png" />
+            <div class="school-info">
+                <h2>
+                    <%= school?.name %>
+                </h2>
+                <span class='caption'>
+                    <%= school?.address %>
+                </span>
+                <span class='caption'>
+                    <%= school?.location %>
+                </span>
+                <span class='caption' style="font-style: italic;">
+                    <%= school?.motto %>
+                </span>
+                <span class='caption' style="font-style: italic;">
+                    <%= school?.email %> | <%= school?.phonenumber %>
+                </span>
+            </div>
+        </div>
+        <h4 class="card-title">
+            Report Card
+            </h3>
+
+            <!-- avatar  -->
+            <div style="display: flex;justify-content: center;align-items: center;">
+                <img style="align-self: center;border-radius: 50%;" width="60" height="60" alt="photo"
+                    src=<%=report?.profile %>
+                >
+
+            </div>
+
+            <!-- {/* name section */} -->
+            <div style='display: flex;justify-content: space-between;align-items: center;'>
+
+                <!-- personal-info -->
+                <div class="personal-info" style="flex: 0.38;">
+                    <div>
+                        <!-- Index Number  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                ID :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.indexnumber %>
+                            </span>
+                        </div>
+                        <!-- fullname  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                Full Name :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.fullName %>
+                            </span>
+                        </div>
+                        <!-- Class  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                Class :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.level %>
+                            </span>
+                        </div>
+                        <!-- No of roll  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                No. of Roll :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.rollNumber %>
+                            </span>
+                        </div>
+                        <!-- Grade  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                Grade :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.grade %>
+                            </span>
+                        </div>
+                        <!-- Promoted  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                Promoted :
+                            </span>
+                            <span class="report-item-text">
+
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Position -->
+                <div style=" text-align: center;">
+                    <p style="text-align: right;">Position</p>
+                    <h2 style="color: #b72338;">
+                        <%= report.position %>
+                    </h2>
+                </div>
+                <!-- academic-info -->
+                <div class="academic-info">
+                    <div>
+                        <!-- fullname  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                Academic Year :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.academicYear %>
+                            </span>
+                        </div>
+                        <!-- Term  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                Term/Semester :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.term %>
+                            </span>
+                        </div>
+                        <!-- Vacation date  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                Vacation Date :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.vacationDate %>
+                            </span>
+                        </div>
+                        <!-- Reopening Date  -->
+                        <div class="report-item-container">
+                            <span class="report-item-title">
+                                Reopening Date :
+                            </span>
+                            <span class="report-item-text">
+                                <%= report.reOpeningDate %>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- {/* results section */} -->
+            <div class="results-section" style="padding-block: 8px;">
+                <table style="text-align: center; border-collapse: collapse;width: 100%;" border="1">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th> Class Score (50%)</th>
+                            <th> Exams Score (50%)</th>
+                            <th>Total Score (100%)</th>
+                            <th>Grade</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- <tr>
+                        <td colSpan='7' style={{ padding: '3px 1px' , fontSize: '20px' }}>
+                            No Student Record Available
+                        </td>
+                    </tr> -->
+
+                        <% report.scores.forEach(score=> { %>
+                            <!-- subject  -->
+                            <tr>
+                                <td width="25%" style="text-align: left;padding-left: 2px;font-weight: bold;">
+                                    <%= score.subject %>
+                                </td>
+                                </td>
+                                <td width="18%">
+                                    <%= score.classScore %>
+                                </td>
+                                <td width="18%">
+                                    <%= score.examsScore %>
+                                </td>
+                                <td width="15%" style="color:#b72338 ;font-weight: bold;">
+                                    <%= score.totalScore %>
+                                </td>
+
+                                <td width="10%">
+                                    <%= score.grade %>
+                                </td>
+                                <td width="14%" style="color: green;">
+                                    <%= score.remarks %>
+                                </td>
+                            </tr>
+
+                            <% }) %>
+
+
+
+
+
+
+
+
+
+                    </tbody>
+                    <tfoot
+                        style="text-align: center;text-decoration: underline;border-top: solid 1px var(--secondary); background-color: var(--secondary);">
+                        <tr>
+                            <th>Overall Score</th>
+                            <th></th>
+                            <th></th>
+                            <th>
+                                <%= report.overallScore %>
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- {/* conduct */} -->
+            <div style="flex-grow: 1;">
+
+                <div
+                    style="display: flex;justify-content: flex-end;column-gap: 24px;gap: 24px;padding-top: 8px;padding-right: 40px;">
+                    <!-- Attendance  -->
+                    <div class="report-item-container">
+                        <span class="report-item-title">
+                            Attendance :
+                        </span>
+                        <span class="report-item-text">
+                            
+                        </span>
+                    </div>
+
+                    <!-- Out of  -->
+                    <div class="report-item-container">
+                        <span class="report-item-title">
+                            Out Of :
+                        </span>
+                        <span class="report-item-text">
+                            
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- Remarks  -->
+                <div style="padding-block: 16px;display: flex;flex-direction: column;gap:8px;">
+                    <!-- Conduct & Attitude  -->
+                    <div class="report-item-container">
+                        <span class="report-item-title">
+                            Conduct & Attitude :
+                        </span>
+                        <span class="report-item-text-underline">
+                            <%= report.comments?.conduct %>
+                        </span>
+                    </div>
+                    <!-- Interest  -->
+                    <div class="report-item-container">
+                        <span class="report-item-title">
+                            Interest :
+                        </span>
+                        <span class="report-item-text-underline">
+                            <%= report.comments?.interest %>
+                        </span>
+                    </div>
+                    <!-- Class Teacher's Remarks  -->
+                    <div class="report-item-container">
+                        <span class="report-item-title">
+                            Class Teacher's Remarks :
+                        </span>
+                        <span class="report-item-text-underline">
+                            <%= report.comments?.teachersComments %>
+                        </span>
+                    </div>
+                    <!-- Headmaster's Remarks  -->
+                    <div class="report-item-container">
+                        <span class="report-item-title">
+                            Headmaster's Remarks :
+                        </span>
+                        <span class="report-item-text-underline">
+                            <%= report.comments?.headteachersComments %>
+                        </span>
+                    </div>
+                </div>
+
+
+                <hr />
+            </div>
+
+            <!-- Bill  -->
+            <div style="display: flex;flex-direction: column; justify-content: center;align-items: center;">
+                <p style="font-weight: bold;">Bill</p>
+                <table width='60%' border='1' style="border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>GHS</th>
+                            <th>GHP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding-left: 5px;">
+                                Tuition Fee
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 5px;">Others</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 5px;">
+                                Arrears
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Total</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div style="display: flex; justify-content: space-between;align-items: center;">
+
+                <p style="font-size: 10px;font-style: italic;">
+                    Powered by FrebbyTech Consults (0543772591)
+                </p>
+                <span class="student-id" style="font-size: 10px;font-style: italic;">
+                    <%= report._id %>
+                </span>
+            </div>
+
+    </div>
+
+
+</body>
+
+</html>

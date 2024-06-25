@@ -1,0 +1,64 @@
+import { useContext } from 'react';
+import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
+import { useNavigate } from 'react-router-dom';
+import { MESSAGE_COLUMNS } from '../../mockup/columns/sessionColumns';
+import { useQuery } from '@tanstack/react-query';
+import { getAllMessages } from '../../api/messageAPI';
+import { EMPTY_IMAGES } from '../../config/images';
+import CustomTitle from '../../components/custom/CustomTitle';
+import sms_icon from '../../assets/images/header/sms_ico.svg';
+import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import SMSView from './layout/SMSView';
+const SMSHome = () => {
+
+
+  
+  const messages = useQuery({
+    queryKey: ['messages'],
+    queryFn: () => getAllMessages(),
+  });
+  const navigate = useNavigate();
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+
+  const handleView = (data) => {
+    schoolSessionDispatch({
+      type: 'viewMessage',
+      payload: {
+        data,
+        open: true,
+      },
+    });
+  };
+
+  return (
+    <>
+      <CustomTitle
+        title='SMS & Notifications'
+        subtitle=' Send single and bulk SMS to students and parents'
+        img={sms_icon}
+        color='text.main'
+        backColor='#012e54'
+      />
+
+      <CustomizedMaterialTable
+        title='Recent Messages'
+        icon={sms_icon}
+        isLoading={messages.isLoading}
+        columns={MESSAGE_COLUMNS}
+        // data={ []}
+        data={messages.data ? messages.data : []}
+        actions={[]}
+        showAddButton={true}
+        addButtonImg={EMPTY_IMAGES.sms}
+        addButtonText='New Message'
+        addButtonMessage='😑 Send your first SMS with just a button click !!!!'
+        onAddButtonClicked={() => navigate('new')}
+        onRowClick={handleView}
+      />
+
+      <SMSView />
+    </>
+  );
+};
+
+export default SMSHome;
