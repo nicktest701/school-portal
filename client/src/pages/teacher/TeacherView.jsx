@@ -1,10 +1,8 @@
 import {
-  BedroomBabyRounded,
   DeleteRounded,
   Edit,
   MessageRounded,
   Person,
-  Person2Sharp,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -12,19 +10,16 @@ import {
   Button,
   ButtonGroup,
   Container,
+  Divider,
   Stack,
-  Tab,
   Typography,
 } from "@mui/material";
-import { TabContext, TabList } from "@mui/lab";
 import Swal from "sweetalert2";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { TeacherContext } from "../../context/providers/TeacherProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router-dom";
 import { deleteTeacher, getTeacher } from "../../api/teacherAPI";
-import TeacherAssignLevel from "./TeacherAssignLevel";
-
-import { unassignTeacherLevel } from "../../api/levelAPI";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import {
   alertError,
@@ -32,19 +27,13 @@ import {
 } from "../../context/actions/globalAlertActions";
 
 import TeacherProfile from "./TeacherProfile";
-import TeacherLevels from "./TeacherLevels";
-import TeacherCourses from "./TeacherCourses";
-import { useParams, useNavigate } from "react-router-dom";
 import CustomTitle from "../../components/custom/CustomTitle";
-import Back from "../../components/Back";
-import TeacherAssignCourse from "./TeacherAssignCourse";
+// import Back from "../../components/Back";
 
 const TeacherView = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [openTeacherAssignLevel, setOpenTeacherAssignLevel] = useState(false);
-  const [tab, setTab] = useState("1");
 
   const { teacherDispatch } = useContext(TeacherContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -72,44 +61,6 @@ const TeacherView = () => {
         open: false,
         data: {},
       },
-    });
-  };
-
-  //CLOSE view Teacher Info
-  const openAssignCourse = () => {
-    teacherDispatch({
-      type: "assignTeacherCourse",
-      payload: {
-        open: true,
-        data: {
-          id,
-        },
-      },
-    });
-  };
-
-  //UNASSIGN Teacher from level
-  const { mutateAsync: unassignTeacher } = useMutation({
-    mutationFn: unassignTeacherLevel,
-  });
-  const handleUnassignTeacher = (id) => {
-    Swal.fire({
-      title: "Unassign Teacher",
-      text: "Do you want to unassign teacher from this level?",
-      showCancelButton: true,
-      backdrop: false,
-    }).then((data) => {
-      if (data.isConfirmed) {
-        unassignTeacher(id, {
-          onSuccess: (data) => {
-            queryClient.invalidateQueries(["levels"]);
-            schoolSessionDispatch(alertSuccess(data));
-          },
-          onError: (error) => {
-            schoolSessionDispatch(alertError(error));
-          },
-        });
-      }
     });
   };
 
@@ -156,116 +107,97 @@ const TeacherView = () => {
     });
   };
 
+  //Assign Level
+  const goToAssignLevel = () => {
+    navigate("level");
+  };
+  //Assign Course
+  const goToAssignCourse = () => {
+    navigate("course");
+  };
+
   return (
     <>
-      <Container sx={{ bgcolor: "#fff", minHeight: "100svh", pt: 2 }}>
-        <Back to="/teacher" color="primary.main" />
+      <Container sx={{ minHeight: "100svh" }}>
+        {/* <Back to="/teacher" color="primary.main" /> */}
         <CustomTitle
           title="Teacher Information"
           subtitle="Manage teachers profile and assigned levels and courses"
           color="primary.main"
         />
-        <Box>
-          <Stack py={2} justifyContent="flex-end" width="100%">
-            <ButtonGroup sx={{ alignSelf: "flex-end" }}>
-              <Button endIcon={<Edit />} onClick={editTeacherInfo}>
-                Edit
-              </Button>
-              <Button
-                color="error"
-                endIcon={<DeleteRounded />}
-                onClick={handleDelete}
-              >
-                Delete
-              </Button>
-            </ButtonGroup>
-          </Stack>
-          <Container
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 4,
-            }}
+        <Stack>
+          <Button
+            sx={{ alignSelf: "flex-end" }}
+            endIcon={<Edit />}
+            onClick={editTeacherInfo}
           >
+            Edit
+          </Button>
+        </Stack>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: { xs: "center", md: "space-evenly" },
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Stack alignItems="center" spacing={1}>
             <Box
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-              gap={1}
+              sx={{
+                p: 1,
+                border: "1px solid lightgray",
+                borderRadius: "50%",
+              }}
             >
               <Avatar
                 src={`${import.meta.env.VITE_BASE_URL}/images/users/${
                   teacher?.data?.profile
                 }`}
-                sx={{ width: 70, height: 70 }}
+                sx={{ width: 100, height: 100 }}
               />
+            </Box>
 
-              <Typography paragraph>{teacher?.data?.fullName}</Typography>
-              <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
-                Send Message
+            <Typography paragraph variant="h5">
+              {teacher?.data?.fullName}
+            </Typography>
+            <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
+              Send Message
+            </Button>
+            <ButtonGroup variant="contained">
+              <Button
+                color="secondary"
+                endIcon={<Person />}
+                // onClick={() => setOpenTeacherAssignLevel(true)}
+                onClick={goToAssignLevel}
+              >
+                Assign Level
               </Button>
-              <ButtonGroup variant="contained">
-                <Button
-                  color="secondary"
-                  endIcon={<Person />}
-                  onClick={() => setOpenTeacherAssignLevel(true)}
-                >
-                  Assign Level
-                </Button>
-                <Button
-                  color="primary"
-                  endIcon={<Person />}
-                  onClick={openAssignCourse}
-                >
-                  Assign Course
-                </Button>
-              </ButtonGroup>
-            </Box>
-
-            <Box sx={{ width: "100%" }}>
-              <TabContext value={tab}>
-                <TabList
-                  centered
-                  onChange={(e, value) => setTab(value)}
-                  sx={{ pb: 4, bgcolor: "#fff" }}
-                  allowScrollButtonsMobile
-                >
-                  <Tab
-                    label="Personal"
-                    value="1"
-                    icon={<Person2Sharp />}
-                    iconPosition="start"
-                  />
-                  <Tab
-                    label="Levels"
-                    value="2"
-                    icon={<BedroomBabyRounded />}
-                    iconPosition="start"
-                  />
-                  <Tab label="Courses" value="3" />
-                </TabList>
-                <TeacherProfile teacher={teacher?.data} />
-                <TeacherLevels
-                  id={teacher?.data?._id}
-                  onClick={handleUnassignTeacher}
-                />
-                <TeacherCourses id={teacher?.data?._id} />
-              </TabContext>
-            </Box>
-          </Container>
+              <Button
+                color="primary"
+                endIcon={<Person />}
+                // onClick={openAssignCourse}
+                onClick={goToAssignCourse}
+              >
+                Assign Course
+              </Button>
+            </ButtonGroup>
+          </Stack>
+          <Stack spacing={2}>
+            <TeacherProfile teacher={teacher?.data} />
+            <Divider />
+            <Button
+              color="error"
+              variant="contained"
+              endIcon={<DeleteRounded />}
+              onClick={handleDelete}
+            >
+              Remove Account
+            </Button>
+          </Stack>
         </Box>
       </Container>
-
-      <TeacherAssignCourse />
-      <TeacherAssignLevel
-        open={openTeacherAssignLevel}
-        setOpen={setOpenTeacherAssignLevel}
-        teacher={{ _id: teacher._id, fullName: teacher?.data?.fullName }}
-      />
     </>
   );
 };

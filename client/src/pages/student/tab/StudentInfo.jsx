@@ -1,41 +1,42 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from "react";
 
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import FormLabel from '@mui/material/FormLabel';
-import Button from '@mui/material/Button';
-import Input from '@mui/material/Input';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import PublishIcon from '@mui/icons-material/Publish';
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import FormLabel from "@mui/material/FormLabel";
+import Button from "@mui/material/Button";
+import Input from "@mui/material/Input";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import { useMediaQuery, useTheme } from "@mui/material";
+import PublishIcon from "@mui/icons-material/Publish";
 
-import { SchoolSessionContext } from '../../../context/providers/SchoolSessionProvider';
-import { readCSV } from '../../../config/readCSV';
-import { readXLSX } from '../../../config/readXLSX';
-import PreviousSession from '../PreviousSession';
-import { ArrowBackRounded, NoteRounded, School } from '@mui/icons-material';
-import PersonalInformation from './PersonalInformation';
-import ParentInfo from './ParentInfo';
-import MedicalInformation from './MedicalInformation';
-import AcademicInformation from './AcademicInformation';
-import PhotoUpload from './PhotoUpload';
-import { Box, IconButton } from '@mui/material';
-import CustomStepper from '../../../components/custom/CustomStepper';
-import CustomTitle from '../../../components/custom/CustomTitle';
+import { SchoolSessionContext } from "../../../context/providers/SchoolSessionProvider";
+import { readCSV } from "../../../config/readCSV";
+import { readXLSX } from "../../../config/readXLSX";
+import PreviousSession from "../PreviousSession";
+import { ArrowBackRounded, NoteRounded, School } from "@mui/icons-material";
+import PersonalInformation from "./PersonalInformation";
+import ParentInfo from "./ParentInfo";
+import MedicalInformation from "./MedicalInformation";
+import AcademicInformation from "./AcademicInformation";
+import PhotoUpload from "./PhotoUpload";
+import { Box, IconButton } from "@mui/material";
+import CustomStepper from "../../../components/custom/CustomStepper";
+import CustomTitle from "../../../components/custom/CustomTitle";
 
-const CSV_FILE_TYPE = 'text/csv';
+const CSV_FILE_TYPE = "text/csv";
 const XLSX_FILE_TYPE =
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-const XLS_FILE_TYPE = 'application/vnd.ms-excel';
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+const XLS_FILE_TYPE = "application/vnd.ms-excel";
 
 const StudentInfo = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
-  const [mode, setMode] = useState('personal-info');
-
+  const [mode, setMode] = useState("personal-info");
   const [openPreviousSession, setOpenPreviousSession] = useState(false);
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("md"));
 
   const confirmMessage =
-    'Are you sure you want to leave this page? Your changes may not be saved.';
+    "Are you sure you want to leave this page? Your changes may not be saved.";
 
   useEffect(() => {
     const beforeUnloadHandler = (e) => {
@@ -43,10 +44,10 @@ const StudentInfo = () => {
       e.returnValue = confirmMessage;
     };
 
-    window.addEventListener('beforeunload', beforeUnloadHandler);
+    window.addEventListener("beforeunload", beforeUnloadHandler);
 
     return () => {
-      window.removeEventListener('beforeunload', beforeUnloadHandler);
+      window.removeEventListener("beforeunload", beforeUnloadHandler);
     };
   }, []);
 
@@ -71,10 +72,9 @@ const StudentInfo = () => {
           students = readCSV(event.target.result);
         }
         if (students.length !== 0) {
-       
           schoolSessionDispatch({
-            type: 'openAddStudentFileDialog',
-            payload: { data: students, type: 'file' },
+            type: "openAddStudentFileDialog",
+            payload: { data: students, type: "file" },
           });
         }
       };
@@ -86,20 +86,20 @@ const StudentInfo = () => {
   const getPage = () => {
     let prevPage = mode;
     switch (mode) {
-      case 'photo-info':
-        prevPage = 'personal-info';
+      case "photo-info":
+        prevPage = "personal-info";
         break;
-      case 'parent-info':
-        prevPage = 'photo-info';
+      case "parent-info":
+        prevPage = "photo-info";
         break;
-      case 'medical-info':
-        prevPage = 'parent-info';
+      case "medical-info":
+        prevPage = "parent-info";
         break;
-      case 'academic-info':
-        prevPage = 'medical-info';
+      case "academic-info":
+        prevPage = "medical-info";
         break;
       default:
-        prevPage = 'photo-info';
+        prevPage = "photo-info";
     }
 
     return prevPage;
@@ -110,54 +110,54 @@ const StudentInfo = () => {
       {/* <Prompt when={true} message={confirmMessage} /> */}
       <>
         <CustomTitle
-          title='New Student'
-          subtitle='  Track,manage and control academic and class activities'
+          title="New Student"
+          subtitle="  Track,manage and control academic and class activities"
           icon={<School sx={{ width: 30, height: 30 }} />}
-          color='primary.main'
+          color="primary.main"
         />
 
         {/* Stepper  */}
-        <CustomStepper />
+        {matches && <CustomStepper />}
         <Box>
-          {mode !== 'personal-info' && (
+          {mode !== "personal-info" && (
             <IconButton onClick={() => setMode(getPage())}>
               <ArrowBackRounded />
             </IconButton>
           )}
 
           <ButtonGroup
-            size='small'
+            size="small"
             sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              pt: 2,
+              display: "flex",
+              justifyContent: "flex-end",
+              py: 2,
             }}
           >
             <Button>
               <FormLabel
-                htmlFor='studentFile'
-                title='Import students'
+                htmlFor="studentFile"
+                title="Import students"
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
 
                   gap: 1,
-                  color: 'primary.main',
+                  color: "primary.main",
                   fontSize: 11,
-                  cursor: 'pointer',
+                  cursor: "pointer",
                 }}
               >
                 <NoteRounded />
-                <Typography variant='caption'>From file</Typography>
+                <Typography variant="caption">From file</Typography>
 
                 <Input
-                  type='file'
-                  id='studentFile'
-                  name='studentFile'
+                  type="file"
+                  id="studentFile"
+                  name="studentFile"
                   hidden
                   inputProps={{
-                    accept: '.xlsx,.xls,.csv',
+                    accept: ".xlsx,.xls,.csv",
                   }}
                   onChange={handleLoadFile}
                   onClick={(e) => {
@@ -176,22 +176,22 @@ const StudentInfo = () => {
           </ButtonGroup>
         </Box>
 
-        <Container sx={{ py: 2, border: '1px solid lightgray' }}>
-          {mode === 'personal-info' && (
+        <Container sx={{ py: 2, border: "1px solid lightgray" }}>
+          {mode === "personal-info" && (
             <PersonalInformation mode={mode} setMode={setMode} />
           )}
-          {mode === 'photo-info' && (
+          {mode === "photo-info" && (
             <PhotoUpload mode={mode} setMode={setMode} />
           )}
-          {mode === 'parent-info' && (
+          {mode === "parent-info" && (
             <ParentInfo mode={mode} setMode={setMode} />
           )}
 
-          {mode === 'medical-info' && (
+          {mode === "medical-info" && (
             <MedicalInformation mode={mode} setMode={setMode} />
           )}
 
-          {mode === 'academic-info' && (
+          {mode === "academic-info" && (
             <AcademicInformation setMode={setMode} />
           )}
         </Container>

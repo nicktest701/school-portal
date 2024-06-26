@@ -1,28 +1,31 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState } from "react";
 import {
   Autocomplete,
   Button,
-  Dialog,
+  Container,
   DialogActions,
-  DialogContent,
+  Box,
   Stack,
   TextField,
-} from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { Formik } from 'formik';
-import { assignLevelValidationSchema } from '../../config/validationSchema';
+} from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { Formik } from "formik";
+import { assignLevelValidationSchema } from "../../config/validationSchema";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import useLevel from '../../components/hooks/useLevel';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import useLevelById from '../../components/hooks/useLevelById';
-import { TeacherContext } from '../../context/providers/TeacherProvider';
-import { UserContext } from '../../context/providers/UserProvider';
-import { postCourse } from '../../api/courseAPI';
+} from "../../context/actions/globalAlertActions";
+
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import useLevel from "../../components/hooks/useLevel";
+import CustomTitle from "../../components/custom/CustomTitle";
+import Back from "../../components/Back";
+import useLevelById from "../../components/hooks/useLevelById";
+import { UserContext } from "../../context/providers/UserProvider";
+import { postCourse } from "../../api/courseAPI";
+import TeacherCourses from "./TeacherCourses";
 
 const TeacherAssignCourse = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -30,17 +33,11 @@ const TeacherAssignCourse = () => {
     userState: { session },
   } = useContext(UserContext);
 
-  const {
-    teacherState: {
-      assignTeacherCourse: { open, data },
-    },
-    teacherDispatch,
-  } = useContext(TeacherContext);
   const queryClient = useQueryClient();
-  const [subject, setSubject] = useState('');
+  const [subject, setSubject] = useState("");
   const [currentLevel, setCurrentLevel] = useState({
-    _id: '',
-    type: '',
+    _id: "",
+    type: "",
   });
 
   const initialValues = {
@@ -52,30 +49,30 @@ const TeacherAssignCourse = () => {
   const { subjects, levelLoading: subjectLoading } = useLevelById(
     currentLevel?._id
   );
-  
+
+  const { id } = useParams();
+
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: postCourse,
   });
 
   const onSubmit = (values, options) => {
-    
     const info = {
       session: session?.sessionId,
       term: session?.termId,
-      teacher: data?.id,
+      teacher: id,
       level: values?.currentLevel?._id,
       subject: values?.subject,
     };
 
-
     mutateAsync(info, {
       onSettled: () => {
-        queryClient.invalidateQueries(['courses', data?.id]);
+        queryClient.invalidateQueries(["courses", id]);
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
-        handleClose();
+        options.resetForm();
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));
@@ -83,25 +80,13 @@ const TeacherAssignCourse = () => {
     });
   };
 
-  //CLOSE view Teacher Info
-  const handleClose = () => {
-    teacherDispatch({
-      type: 'assignTeacherCourse',
-      payload: {
-        open: false,
-        data: {
-          id: '',
-        },
-      },
-    });
-  };
-
   return (
-    <Dialog open={open} maxWidth='xs' fullWidth onClose={handleClose}>
-      <CustomDialogTitle
-        title='Assign  Course'
-        subtitle='Assign a selected course to a teacher'
-        onClose={handleClose}
+    <Container>
+      <Back to={`/teacher/${id}`} color="primary.main" />
+      <CustomTitle
+        title="Assign New Course"
+        subtitle="Assign a selected course to a teacher"
+        color="primary.main"
       />
 
       <Formik
@@ -110,31 +95,40 @@ const TeacherAssignCourse = () => {
         onSubmit={onSubmit}
         enableReinitialize={true}
       >
-        {({ errors, touched, handleSubmit }) => {
+        {({ errors, touched, handleSubmit, handleReset }) => {
           return (
             <>
-              <DialogContent>
-                <Stack spacing={1}>
+              <Box
+                sx={{
+                  mt: 4,
+                  py: 4,
+                  px: 2,
+                  border: "1px solid lightgray",
+                  // borderRadius: 2,
+                  bgcolor: "#fff",
+                }}
+              >
+                <Stack spacing={3}>
                   <Autocomplete
-                    size='small'
+                    size="small"
                     options={levelsOption}
                     loading={levelLoading}
-                    loadingText='Loading levels.Please wait...'
-                    getOptionLabel={(option) => option?.type || ''}
+                    loadingText="Loading levels.Please wait..."
+                    getOptionLabel={(option) => option?.type || ""}
                     isOptionEqualToValue={(option, value) =>
                       value._id === undefined ||
-                      value._id === '' ||
+                      value._id === "" ||
                       value._id === option._id
                     }
                     value={currentLevel}
                     onChange={(e, value) => {
                       setCurrentLevel(value);
-                      setSubject('');
+                      setSubject("");
                     }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Select a level'
+                        label="Select a level"
                         error={Boolean(
                           touched.currentLevel?.type &&
                             errors.currentLevel?.type
@@ -150,42 +144,45 @@ const TeacherAssignCourse = () => {
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    noOptionsText='No subject available'
+                    noOptionsText="No subject available"
                     loading={subjectLoading}
-                    loadingText={'Please Wait...'}
+                    loadingText={"Please Wait..."}
                     options={subjects ? subjects : []}
-                    closeText=' '
-                    getOptionLabel={(option) => option || ''}
+                    closeText=" "
+                    getOptionLabel={(option) => option || ""}
                     value={subject}
                     onChange={(e, value) => setSubject(value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Select Subject'
-                        size='small'
+                        label="Select Subject"
+                        size="small"
                         error={Boolean(touched.subject && errors.subject)}
                         helperText={touched.subject && errors.subject}
                       />
                     )}
                   />
                 </Stack>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <LoadingButton
-                  loading={isLoading}
-                  variant='contained'
-                  onClick={handleSubmit}
-                  disabled={currentLevel?._id === '' && subjects?.length === 0}
-                >
-                  Assign Course
-                </LoadingButton>
-              </DialogActions>
+                <DialogActions>
+                  <Button onClick={handleReset}>Cancel</Button>
+                  <LoadingButton
+                    loading={isLoading}
+                    variant="contained"
+                    onClick={handleSubmit}
+                    disabled={
+                      currentLevel?._id === "" && subjects?.length === 0
+                    }
+                  >
+                    Assign Course
+                  </LoadingButton>
+                </DialogActions>
+              </Box>
             </>
           );
         }}
       </Formik>
-    </Dialog>
+      <TeacherCourses />
+    </Container>
   );
 };
 

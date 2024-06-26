@@ -1,34 +1,37 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { LoadingButton } from '@mui/lab';
-import Avatar from '@mui/material/Avatar';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Formik } from 'formik';
-import PropTypes from 'prop-types';
-import { putUser } from '../../api/userAPI';
-import CustomFormControl from '../../components/inputs/CustomFormControl';
-import { updateProfileValidationSchema } from '../../config/validationSchema';
+import React, { useContext, useEffect, useState } from "react";
+import { LoadingButton } from "@mui/lab";
+import Avatar from "@mui/material/Avatar";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Formik } from "formik";
+import PropTypes from "prop-types";
+import { putUser } from "../../api/userAPI";
+import CustomFormControl from "../../components/inputs/CustomFormControl";
+import { updateProfileValidationSchema } from "../../config/validationSchema";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { uploadProfileImage } from '../../api/sessionAPI';
+} from "../../context/actions/globalAlertActions";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { uploadProfileImage } from "../../api/sessionAPI";
 
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import CustomImageChooser from '../../components/inputs/CustomImageChooser';
-import { UserContext } from '../../context/providers/UserProvider';
+import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
+import CustomImageChooser from "../../components/inputs/CustomImageChooser";
+import { UserContext } from "../../context/providers/UserProvider";
+import { useSearchParams } from "react-router-dom";
+import { Button } from "@mui/material";
 
-const UpdateUserProfile = ({ open, setOpen }) => {
+const UpdateUserProfile = () => {
   const { user } = useContext(UserContext);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const queryClient = useQueryClient();
-  const [confirmPasswordErr, setConfirmPasswordError] = useState('');
+  const [confirmPasswordErr, setConfirmPasswordError] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
@@ -38,16 +41,11 @@ const UpdateUserProfile = ({ open, setOpen }) => {
     );
   }, [user]);
 
-  //CLOSE Edit User
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   //PUT user
   const { mutateAsync } = useMutation(putUser);
   const onSubmit = (values, options) => {
     if (values.confirmPassword !== values.password) {
-      setConfirmPasswordError('Passwords do not match');
+      setConfirmPasswordError("Passwords do not match");
       options.setSubmitting(false);
       return;
     }
@@ -57,7 +55,7 @@ const UpdateUserProfile = ({ open, setOpen }) => {
     values._id = user?.id;
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries(["user"]);
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
@@ -77,7 +75,7 @@ const UpdateUserProfile = ({ open, setOpen }) => {
     const info = {
       _id: user?.id,
       profile,
-      type: 'users',
+      type: "users",
     };
 
     try {
@@ -87,17 +85,24 @@ const UpdateUserProfile = ({ open, setOpen }) => {
     } catch (error) {
       schoolSessionDispatch(alertError(error));
     }
-    queryClient.invalidateQueries(['user']);
+    queryClient.invalidateQueries(["user"]);
+  };
+
+  const handleClose = () => {
+    setSearchParams((params) => {
+      params.delete("e_p");
+      return params;
+    });
   };
 
   return (
-    <Dialog open={open} maxWidth='md' fullWidth>
-      <CustomDialogTitle title='Edit User' onClose={handleClose} />
+    <Dialog open={searchParams.get("e_p")} maxWidth="md" fullWidth>
+      <CustomDialogTitle title="Edit User" onClose={handleClose} />
 
       <Formik
         initialValues={{
-          password: '',
-          confirmPassword: '',
+          password: "",
+          confirmPassword: "",
           ...user,
         }}
         onSubmit={onSubmit}
@@ -116,88 +121,88 @@ const UpdateUserProfile = ({ open, setOpen }) => {
             <>
               <DialogContent>
                 <Stack
-                  direction={{ xs: 'column', md: 'row' }}
-                  justifyContent='center'
+                  direction={{ xs: "column", md: "row" }}
+                  justifyContent="center"
                   columnGap={3}
                 >
-                  <Stack sx={{ position: 'relative', height: 100 }}>
+                  <Stack sx={{ position: "relative", height: 100 }}>
                     <Avatar
                       srcSet={profileImage}
-                      sx={{ width: 100, height: 100, alignSelf: 'center' }}
+                      sx={{ width: 100, height: 100, alignSelf: "center" }}
                     />
                     <CustomImageChooser handleImageUpload={uploadProfile} />
                   </Stack>
 
                   <Stack padding={2} spacing={2}>
                     <Typography
-                      variant='body2'
-                      color='primary.main'
-                      sx={{ fontWeight: 'bold' }}
+                      variant="body2"
+                      color="primary.main"
+                      sx={{ fontWeight: "bold" }}
                     >
                       Personal information
                     </Typography>
 
                     <TextField
-                      label='Fullname'
-                      type='text'
+                      label="Fullname"
+                      type="text"
                       fullWidth
-                      size='small'
-                      value={values.fullname || ''}
-                      onChange={handleChange('fullname')}
+                      size="small"
+                      value={values.fullname || ""}
+                      onChange={handleChange("fullname")}
                       error={Boolean(touched.fullname && errors.fullname)}
                       helperText={touched.fullname && errors.fullname}
                     />
 
                     <TextField
-                      label='Username'
+                      label="Username"
                       fullWidth
-                      size='small'
-                      value={values.username || ''}
-                      onChange={handleChange('username')}
+                      size="small"
+                      value={values.username || ""}
+                      onChange={handleChange("username")}
                       error={Boolean(touched.username && errors.username)}
                       helperText={touched.username && errors.username}
                     />
                     <TextField
-                      label='Email'
+                      label="Email"
                       fullWidth
-                      size='small'
+                      size="small"
                       row={3}
                       maxRows={3}
-                      value={values.email || ''}
-                      onChange={handleChange('email')}
+                      value={values.email || ""}
+                      onChange={handleChange("email")}
                       error={Boolean(touched.email && errors.email)}
                       helperText={touched.email && errors.email}
                     />
 
                     <TextField
-                      label='Telephone No.'
-                      inputMode='tel'
-                      type='tel'
+                      label="Telephone No."
+                      inputMode="tel"
+                      type="tel"
                       fullWidth
-                      size='small'
-                      value={values.phonenumber || ''}
-                      onChange={handleChange('phonenumber')}
+                      size="small"
+                      value={values.phonenumber || ""}
+                      onChange={handleChange("phonenumber")}
                       error={Boolean(touched.phonenumber && errors.phonenumber)}
                       helperText={touched.phonenumber && errors.phonenumber}
                     />
                     <CustomFormControl>
                       <TextField
-                        type='password'
-                        label='Password'
+                        type="password"
+                        label="Password"
                         fullWidth
-                        size='small'
+                        size="small"
                         value={values.password}
-                        onChange={handleChange('password')}
+                        onChange={handleChange("password")}
                         error={Boolean(touched.password && errors.password)}
                         helperText={touched.password && errors.password}
                       />
                       <TextField
-                        type='password'
-                        label='Confirm Password'
+                        type="password"
+                        label="Confirm Password"
                         fullWidth
-                        size='small'
+                        size="small"
                         value={values.confirmPassword}
-                        onChange={handleChange('confirmPassword')}
+                        onChange={handleChange("confirmPassword")}
                         error={Boolean(
                           touched.confirmPassword && errors.confirmPassword
                         )}
@@ -207,7 +212,7 @@ const UpdateUserProfile = ({ open, setOpen }) => {
                             : touched.confirmPassword && errors.confirmPassword
                         }
                         FormHelperTextProps={{
-                          color: 'error.main',
+                          color: "error.main",
                         }}
                       />
                     </CustomFormControl>
@@ -215,10 +220,11 @@ const UpdateUserProfile = ({ open, setOpen }) => {
                 </Stack>
               </DialogContent>
               <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
                 <LoadingButton
                   loading={isSubmitting}
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   sx={{ minWidth: { xs: 100, sm: 150 } }}
                   onClick={handleSubmit}
                 >

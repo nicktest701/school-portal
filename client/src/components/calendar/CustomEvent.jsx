@@ -8,9 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { getAllEvents } from "../../api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 function CustomEvent() {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("md"));
 
   const events = useQuery({
     queryKey: ["events"],
@@ -27,10 +30,9 @@ function CustomEvent() {
     },
   });
 
-
   const handleDateSelect = (selectInfo) => {
     const { start, end } = selectInfo;
-    console.log('Selected range:', start, end);
+    console.log("Selected range:", start, end);
     // Add any other logic you need here, such as updating state or making an API call
   };
 
@@ -47,9 +49,11 @@ function CustomEvent() {
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
-          left: "prev,next today",
+          left: matches ? "prev,next,today" : "prev,next",
           center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
+          right: matches
+            ? "dayGridMonth,timeGridWeek,timeGridDay"
+            : "",
         }}
         editable={true}
         selectable={true}
@@ -62,8 +66,7 @@ function CustomEvent() {
         eventBorderColor="white"
         eventTextColor="#ffc09f"
         eventContent={CalendarEvent}
-        eventClick={({ event:{extendedProps} }) => {
-          
+        eventClick={({ event: { extendedProps } }) => {
           navigate(`/events/${extendedProps?._id}`);
         }}
         loading={events.isLoading}

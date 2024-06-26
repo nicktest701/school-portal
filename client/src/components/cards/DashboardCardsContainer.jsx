@@ -34,9 +34,10 @@ function DashboardCardsContainer() {
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))',
+        gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))',
         gap: 2,
         py: 4,
+        width:'100%'
       }}
     >
       <DashboardCard

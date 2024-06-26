@@ -19,6 +19,8 @@ import EventHome from "../events/EventHome";
 import NewEvent from "../events/NewEvent";
 import ViewEvent from "../events/ViewEvent";
 import EditEvent from "../events/EditEvent";
+import TeacherAssignLevel from "../teacher/TeacherAssignLevel";
+import TeacherAssignCourse from "../teacher/TeacherAssignCourse";
 
 const FeeNew = lazy(() => import("../fees/FeeNew"));
 const LevelExamScoreInput = lazy(() =>
@@ -238,6 +240,22 @@ const Root = () => {
                 </Suspense>
               }
               path=":id/edit"
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <TeacherAssignLevel />
+                </Suspense>
+              }
+              path=":id/level"
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <TeacherAssignCourse />
+                </Suspense>
+              }
+              path=":id/course"
             />
           </Route>
 

@@ -29,6 +29,7 @@ import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import Loader from "../../config/Loader";
 import { Box, Button, Container } from "@mui/material";
 import Back from "../../components/Back";
+import CustomTitle from "../../components/custom/CustomTitle";
 
 const TeacherEdit = () => {
   const queryClient = useQueryClient();
@@ -106,7 +107,11 @@ const TeacherEdit = () => {
   return (
     <Container>
       <Back to={`/teacher/${id}`} color="primary.main" />
-      <CustomDialogTitle title="Edit Teacher Information" />
+      <CustomTitle
+        title="Edit Teacher"
+        subtitle="Manage teachers profile"
+        color="primary.main"
+      />
 
       <Divider />
       <Formik
@@ -217,7 +222,9 @@ const TeacherEdit = () => {
                       size="small"
                       value={values?.phonenumber || ""}
                       onChange={handleChange("phonenumber")}
-                      error={Boolean(touched?.phonenumber && errors?.phonenumber)}
+                      error={Boolean(
+                        touched?.phonenumber && errors?.phonenumber
+                      )}
                       helperText={touched?.phonenumber && errors?.phonenumber}
                     />
                   </CustomFormControl>
@@ -249,7 +256,9 @@ const TeacherEdit = () => {
                           label="Residence"
                           fullWidth
                           size="small"
-                          error={Boolean(touched?.residence && errors?.residence)}
+                          error={Boolean(
+                            touched?.residence && errors?.residence
+                          )}
                           helperText={touched?.residence && errors?.residence}
                         />
                       )}
@@ -276,7 +285,9 @@ const TeacherEdit = () => {
                           error={Boolean(
                             touched?.nationality && errors?.nationality
                           )}
-                          helperText={touched?.nationality && errors?.nationality}
+                          helperText={
+                            touched?.nationality && errors?.nationality
+                          }
                         />
                       )}
                     />

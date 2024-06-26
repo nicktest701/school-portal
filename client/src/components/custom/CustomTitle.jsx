@@ -30,7 +30,7 @@ function CustomTitle({ title, subtitle, img, icon, color }) {
           justifyContent="center"
           alignItems="center"
           gap={2}
-          pl={2}
+      
         >
           {img ? (
             <img

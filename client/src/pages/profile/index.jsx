@@ -1,20 +1,23 @@
 import React, { useContext } from "react";
-import {
-  Avatar,
-  Container,
-  Typography,
-  Stack,
-  Button,
-  IconButton,
-} from "@mui/material";
+import { Avatar, Container, Typography, Stack, Button } from "@mui/material";
 import { UserContext } from "../../context/providers/UserProvider";
 import CustomFormControl from "../../components/inputs/CustomFormControl";
 import FormDisplayItem from "../../components/inputs/FormDisplayItem";
 import { Edit } from "@mui/icons-material";
 import CustomTitle from "../../components/custom/CustomTitle";
+import { useSearchParams } from "react-router-dom";
+import UpdateUserProfile from "../../components/dialog/UpdateUserProfile";
 
 function Profile() {
   const { user } = useContext(UserContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleOpenEdit = () => {
+    setSearchParams((params) => {
+      params.set("e_p", true);
+      return params;
+    });
+  };
 
   return (
     <Container>
@@ -57,7 +60,11 @@ function Profile() {
           </Typography>
           {/* <Typography variant="body2">@{user?.username}</Typography>
           <Typography variant="caption">{user?.email}</Typography> */}
-          <Button variant="contained" startIcon={<Edit />}>
+          <Button
+            variant="contained"
+            startIcon={<Edit />}
+            onClick={handleOpenEdit}
+          >
             Edit Profile
           </Button>
         </Stack>
@@ -78,6 +85,7 @@ function Profile() {
           <FormDisplayItem label="Role" value={user.role || ""} />
         </Stack>
       </Container>
+      <UpdateUserProfile />
     </Container>
   );
 }
