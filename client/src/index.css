@@ -259,12 +259,13 @@ a.button:active {
 }
 
 .swal2-html-container {
-  font-size: 0.85rem !important;
+  font-size: 1rem !important;
+  
 }
 
 .swal2-confirm,
 .swal2-cancel {
-  font-size: 0.75rem !important;
+  font-size: 1rem !important;
 }
 
 .swal2-confirm {
@@ -540,6 +541,49 @@ tbody tr:hover svg {
 
   100% {
     clip-path: inset(0 0 0 100%);
+  }
+}
+
+.spinner2 {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  border-radius: 50%;
+  -webkit-mask: radial-gradient(farthest-side, #0000 40%, #ffffff 41%);
+  background: linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 1) 0
+      )
+      center/4.5px 100%,
+    linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0.75) 0
+      )
+      center/100% 4.5px;
+  background-repeat: no-repeat;
+  animation: spinner2-d3o0rx 1s infinite steps(12);
+}
+
+.spinner2::before,
+.spinner2::after {
+  content: "";
+  grid-area: 1/1;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0.915;
+  transform: rotate(30deg);
+}
+
+.spinner2::after {
+  opacity: 0.83;
+  transform: rotate(60deg);
+}
+
+@keyframes spinner2-d3o0rx {
+  100% {
+    transform: rotate(1turn);
   }
 }
 

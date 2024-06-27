@@ -98,6 +98,20 @@ export const assignGradeToLevel = async (updatedLevel) => {
   }
 };
 
+export const deleteManyLevels = async (levels) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `${import.meta.env.VITE_BASE_URL}/levels/many`,
+      data: levels
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
 export const deleteLevel = async ({ id, sessionId, termId }) => {
   try {
     const res = await axios({
@@ -122,7 +136,7 @@ export const getAllPreviousLevels = async (session) => {
   try {
     const res = await axios({
       method: "GET",
-      url:  `${import.meta.env.VITE_BASE_URL}/levels/previous`,
+      url: `${import.meta.env.VITE_BASE_URL}/levels/previous`,
       params: session,
     });
 
@@ -136,11 +150,11 @@ export const getAllStudentsBySession = async (session) => {
   try {
     const res = await axios({
       method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/levels/students/all`,
+      url: `${import.meta.env.VITE_BASE_URL}/levels/students/all`,
       data: {
         sessionId: session.sessionId,
         termId: session.termId,
-      
+
       },
     });
 

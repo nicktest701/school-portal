@@ -44,23 +44,23 @@ router.get(
       terms = await Term.find().populate("session");
 
       // const terms_2 = await knex("session_term_info")
-        // .select(
-        //   "termId",
-        //   "sessionId",
-        //   "academicYear",
-        //   "term",
-        //   "from",
-        //   "to",
-        //   "vacationDate",
-        //   "reopeningDate as reOpeningDate",
-        //   "termActive as active",
-        //   "termCreatedAt as createdAt",
-        //   "userName as createdBy"
-        // )
-        // .where({
-        //   sessionSchoolId: "d8705acb-b88e-4ebb-adc3-54feea43ceed",
-        // })
-        // .orderByRaw("academicYear,term");
+      // .select(
+      //   "termId",
+      //   "sessionId",
+      //   "academicYear",
+      //   "term",
+      //   "from",
+      //   "to",
+      //   "vacationDate",
+      //   "reopeningDate as reOpeningDate",
+      //   "termActive as active",
+      //   "termCreatedAt as createdAt",
+      //   "userName as createdBy"
+      // )
+      // .where({
+      //   sessionSchoolId: "d8705acb-b88e-4ebb-adc3-54feea43ceed",
+      // })
+      // .orderByRaw("academicYear,term");
     }
     // const terms = await Term.find({ active: true }).populate('session');
 
@@ -296,6 +296,28 @@ router.put(
 //   })
 // );
 
+router.put(
+  "/remove",
+  asyncHandler(async (req, res) => {
+    const sessions = req.body
+    console.log(sessions)
+    const deletedTerms = await Term.deleteMany({
+      _id: { $in: sessions },
+    }, {
+      new: true
+    });
+
+    // const deletedTerms = await knex("terms").where("_id","IN" sessions).del();
+
+    if (_.isEmpty(deletedTerms)) {
+      return res
+        .status(404)
+        .json("Error removing session info.Try again later");
+    }
+
+    res.status(201).json(" Session have been removed successfully!!!");
+  })
+);
 router.delete(
   "/:id",
   asyncHandler(async (req, res) => {

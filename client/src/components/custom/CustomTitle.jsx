@@ -22,6 +22,7 @@ function CustomTitle({ title, subtitle, img, icon, color }) {
           alignItems: "center",
           py: 3,
           my: 2,
+          px:2,
           bgcolor: "#fff",
         }}
       >

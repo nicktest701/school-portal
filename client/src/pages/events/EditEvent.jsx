@@ -90,7 +90,7 @@ function EditEvent() {
     mutationFn: putEvent,
   });
 
-  const onSubmit = (values, options) => {
+  const onSubmit = (values) => {
 
     mutateAsync(values, {
       onSettled: () => {

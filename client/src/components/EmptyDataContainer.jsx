@@ -1,10 +1,10 @@
-import Container from '@mui/material/Container';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import React from 'react';
-import Add from '@mui/icons-material/Add';
-import { EMPTY_IMAGES } from '../config/images';
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import React from "react";
+import Add from "@mui/icons-material/Add";
+import { EMPTY_IMAGES } from "../config/images";
 
 const EmptyDataContainer = ({
   onClick,
@@ -14,28 +14,31 @@ const EmptyDataContainer = ({
   showAddButton,
 }) => {
   return (
-    <Container className='hide-on-pint' sx={{ backgroundColor: '#fff' }}>
+    <Container
+      className="hide-on-pint"
+      sx={{ backgroundColor: "#fff", height: "70svh" }}
+    >
       <Stack
-        justifyContent='center'
-        alignItems='center'
+        justifyContent="center"
+        alignItems="center"
         spacing={3}
         paddingY={4}
       >
         <img
-          loading='lazy'
+          loading="lazy"
           src={img || EMPTY_IMAGES.student}
-          alt='empty_image'
+          alt="empty_image"
           style={{
             width: 250,
             height: 250,
-            objectFit: 'contain',
+            objectFit: "contain",
           }}
         />
-        <Typography variant='body2' color='primary' textAlign='center'>
-          {message || 'No data available !'}
+        <Typography variant="body2" color="primary" textAlign="center">
+          {message || "No data available !"}
         </Typography>
         {showAddButton && (
-          <Button variant='contained' startIcon={<Add />} onClick={onClick}>
+          <Button variant="contained" startIcon={<Add />} onClick={onClick}>
             {buttonText}
           </Button>
         )}

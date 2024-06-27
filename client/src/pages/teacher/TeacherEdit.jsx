@@ -25,7 +25,6 @@ import CustomDatePicker from "../../components/inputs/CustomDatePicker";
 import { TOWNS } from "../../mockup/data/towns";
 import { NATIONALITY } from "../../mockup/data/nationality";
 import CustomImageChooser from "../../components/inputs/CustomImageChooser";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import Loader from "../../config/Loader";
 import { Box, Button, Container } from "@mui/material";
 import Back from "../../components/Back";

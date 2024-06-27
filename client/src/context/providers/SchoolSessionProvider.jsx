@@ -9,7 +9,6 @@ const SchoolSessionProvider = ({ children }) => {
   const schoolSessionValues = {
     displayAddSession: false,
     currentSession: {},
-    currentLevel: [],
     subjectsWithScore: [],
 
     levelFeeInfo: {

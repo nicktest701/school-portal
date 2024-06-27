@@ -88,19 +88,6 @@ function Grade() {
     },
     {
       field: null,
-      title: 'Assign',
-      render: (data) => (
-        <Link
-          sx={{ cursor: 'pointer' }}
-          onClick={() => handleOpenAssignGrade(data)}
-        >
-          Assign
-        </Link>
-      ),
-    },
-
-    {
-      field: null,
       title: 'View Grade',
       render: (row) => (
         <Button
@@ -114,6 +101,20 @@ function Grade() {
         </Button>
       ),
     },
+    {
+      field: null,
+      title: 'Assign',
+      render: (data) => (
+        <Link
+          sx={{ cursor: 'pointer' }}
+          onClick={() => handleOpenAssignGrade(data)}
+        >
+          Assign
+        </Link>
+      ),
+    },
+
+   
 
     {
       title: 'Action',

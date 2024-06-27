@@ -11,7 +11,6 @@ import {
   Avatar,
   Badge,
   Box,
-  Button,
   IconButton,
   Stack,
   Typography,
@@ -50,7 +49,7 @@ const Shell = () => {
   const handleOpenBar = () => setOpenMiniBar(true);
 
   //OPEN user profile
-  const handleOpenUserProfile = () => setOpenUserProfile(true);
+  // const handleOpenUserProfile = () => setOpenUserProfile(true);
 
   const toggleNotification = () => {
     setShowNotificationDropdown(!showNotificationDropdown);

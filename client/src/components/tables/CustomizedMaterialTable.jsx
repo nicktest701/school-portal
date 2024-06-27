@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 
-import { FormLabel, Input, Stack, Typography } from "@mui/material";
-import MaterialTable, { MTableToolbar, MTablePagination } from "material-table";
+import { FormLabel, Input, Typography } from "@mui/material";
+import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "../../config/tableIcons";
 import { Add, Delete, Refresh } from "@mui/icons-material";
 import PublishIcon from "@mui/icons-material/Publish";
@@ -18,7 +18,6 @@ import EmptyDataContainer from "../EmptyDataContainer";
 function CustomizedMaterialTable({
   title,
   subtitle,
-  icon,
   exportFileName,
   isLoading,
   search,
@@ -99,12 +98,12 @@ function CustomizedMaterialTable({
           // searchFieldStyle: { width: '20vw' },
           searchFieldStyle: {
             display: { xs: "none", sm: "block" },
-            borderRadius: "8px",
+            borderRadius: "24px",
             fontSize: "13px",
             marginTop: "10px",
-            marginRight: "20px",
+            marginInline: "10px",
             height: "40px",
-            minWidth: "50svw",
+            minWidth: "40svw",
             flex: 1,
             flexGrow: 1,
           },
@@ -112,7 +111,7 @@ function CustomizedMaterialTable({
           exportButton: true,
           exportAllData: true,
           exportFileName: exportFileName || title || "",
-          showTextRowsSelected: false,
+          // showTextRowsSelected: false,
           selection: true,
           showSelectAllCheckbox: true,
           columnsButton: true,

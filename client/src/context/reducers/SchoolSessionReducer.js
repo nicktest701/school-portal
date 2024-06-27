@@ -12,11 +12,6 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         ...state,
         currentSession: payload,
       };
-    case 'currentLevel':
-      return {
-        ...state,
-        currentLevel: payload,
-      };
 
     case 'subjectsWithScore':
       return {

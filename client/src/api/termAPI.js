@@ -16,10 +16,11 @@ export const getAllTerms = async (session) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
+
 
 export const getTerm = async (id) => {
   try {
@@ -33,10 +34,11 @@ export const getTerm = async (id) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
+
 
 export const postTerm = async (newTerm) => {
   try {
@@ -48,10 +50,11 @@ export const postTerm = async (newTerm) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
+
 
 export const putTerm = async (updatedSession) => {
   try {
@@ -63,10 +66,12 @@ export const putTerm = async (updatedSession) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
+
+
 export const disableSessionAccount = async ({ _id, active }) => {
   try {
     const res = await axios({
@@ -80,7 +85,21 @@ export const disableSessionAccount = async ({ _id, active }) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
+    throw error.response.data;
+  }
+};
+export const deleteManyTerms = async (terms) => {
+  try {
+    const res = await axios({
+      method: 'PUT',
+      url: `${import.meta.env.VITE_BASE_URL}/terms/remove`,
+      data: terms
+    });
+
+    return res.data;
+  } catch (error) {
+
     throw error.response.data;
   }
 };
@@ -94,7 +113,7 @@ export const deleteTerm = async (id) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };

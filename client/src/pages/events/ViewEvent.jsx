@@ -7,8 +7,8 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import React from "react";
 import { EMPTY_IMAGES } from "../../config/images";
 import { getEvent } from "../../api/eventAPI";
 import Back from "../../components/Back";
@@ -16,7 +16,7 @@ import moment from "moment";
 
 function ViewEvent() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+
   const { id } = useParams();
   // const [loaded, setLoaded] = useState(false);
 

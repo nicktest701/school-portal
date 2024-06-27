@@ -73,7 +73,7 @@ function NewEvent() {
     mutationFn: postEvent,
   });
 
-  const onSubmit = (values, options) => {
+  const onSubmit = (values) => {
     mutateAsync(values, {
       onSettled: () => {
         queryClient.invalidateQueries(["events"]);

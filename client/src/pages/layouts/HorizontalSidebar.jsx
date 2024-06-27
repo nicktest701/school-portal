@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Drawer, IconButton, Stack } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { Close, Event ,NotificationsSharp} from '@mui/icons-material';
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PropTypes from 'prop-types';
 import MiniDrawerItem from '../../components/MiniDrawerItem';
 import { UserContext } from '../../context/providers/UserProvider';
@@ -93,11 +94,24 @@ const HorizontalSidebar = ({ open, setOpen, onLogOut }) => {
             />
           </>
         )}
-        {/* <MiniDrawerItem
-          title='Activities & Notifications'
-          to='/course'
-          handleClose={handleClose}
-        /> */}
+            <MiniDrawerItem
+         title="Profile"
+          icon={<PeopleAltRoundedIcon />}
+        to="/profile"
+         />
+
+
+        <MiniDrawerItem
+          title="Events"
+          icon={<Event />}
+          to="/events"
+        />
+
+        <MiniDrawerItem
+          title="Notifications & Activites"
+          icon={<NotificationsSharp />}
+          to="/notifications"
+        />
         <MiniDrawerItem title='About' to='/about' handleClose={handleClose} />
         <a className='mini-drawer-link' onClick={onLogOut}>
           Log Out

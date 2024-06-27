@@ -21,6 +21,7 @@ import ViewEvent from "../events/ViewEvent";
 import EditEvent from "../events/EditEvent";
 import TeacherAssignLevel from "../teacher/TeacherAssignLevel";
 import TeacherAssignCourse from "../teacher/TeacherAssignCourse";
+import AddCurrentSubjects from "../../components/modals/AddCurrentSubjects";
 
 const FeeNew = lazy(() => import("../fees/FeeNew"));
 const LevelExamScoreInput = lazy(() =>
@@ -112,6 +113,14 @@ const Root = () => {
                   <LevelDashboard />
                 </Suspense>
               }
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <AddCurrentSubjects />
+                </Suspense>
+              }
+              path="course"
             />
             <Route
               element={

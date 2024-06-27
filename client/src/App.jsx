@@ -32,8 +32,8 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ErrorBoundary FallbackComponent={Error} onReset={reset}>
         <UserProvider>
+      <ErrorBoundary FallbackComponent={Error} onReset={reset}>
           <ThemeProvider>
             <SchoolSessionProvider>
               <TeacherProvider>
@@ -45,8 +45,8 @@ function App() {
               </TeacherProvider>
             </SchoolSessionProvider>
           </ThemeProvider>
-        </UserProvider>
       </ErrorBoundary>
+        </UserProvider>
     </QueryClientProvider>
   );
 }

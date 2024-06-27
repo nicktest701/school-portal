@@ -458,7 +458,7 @@ router.post(
       return res.status(404).json('Error removing levels info.Try again later');
     }
 
-    res.status(201).json(' Levels have been removed successfully!!!');
+    res.status(201).json(' Levels Removed!');
   })
 );
 

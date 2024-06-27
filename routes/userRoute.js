@@ -155,7 +155,7 @@ router.post(
     req.session.user = loggedInUser;
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "12h",
+      expiresIn: "24h",
     });
 
     loggedInUser.token = token;

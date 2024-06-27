@@ -28,6 +28,7 @@ import {
 
 import TeacherProfile from "./TeacherProfile";
 import CustomTitle from "../../components/custom/CustomTitle";
+import Back from "../../components/Back";
 // import Back from "../../components/Back";
 
 const TeacherView = () => {
@@ -118,84 +119,97 @@ const TeacherView = () => {
 
   return (
     <>
-      <Container sx={{ minHeight: "100svh" }}>
-        {/* <Back to="/teacher" color="primary.main" /> */}
+      <Container>
+        <Back to="/teacher" color="primary.main" />
         <CustomTitle
           title="Teacher Information"
           subtitle="Manage teachers profile and assigned levels and courses"
           color="primary.main"
         />
-        <Stack>
-          <Button
-            sx={{ alignSelf: "flex-end" }}
-            endIcon={<Edit />}
-            onClick={editTeacherInfo}
-          >
-            Edit
-          </Button>
-        </Stack>
+
         <Box
           sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            justifyContent: { xs: "center", md: "space-evenly" },
-            alignItems: "center",
-            gap: 2,
+            bgcolor: "#fff",
+            py: 4,
+            px: 2,
+            my: 4,
           }}
         >
-          <Stack alignItems="center" spacing={1}>
-            <Box
-              sx={{
-                p: 1,
-                border: "1px solid lightgray",
-                borderRadius: "50%",
-              }}
-            >
-              <Avatar
-                src={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                  teacher?.data?.profile
-                }`}
-                sx={{ width: 100, height: 100 }}
-              />
-            </Box>
-
-            <Typography paragraph variant="h5">
-              {teacher?.data?.fullName}
-            </Typography>
-            <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
-              Send Message
-            </Button>
-            <ButtonGroup variant="contained">
-              <Button
-                color="secondary"
-                endIcon={<Person />}
-                // onClick={() => setOpenTeacherAssignLevel(true)}
-                onClick={goToAssignLevel}
-              >
-                Assign Level
-              </Button>
-              <Button
-                color="primary"
-                endIcon={<Person />}
-                // onClick={openAssignCourse}
-                onClick={goToAssignCourse}
-              >
-                Assign Course
-              </Button>
-            </ButtonGroup>
-          </Stack>
-          <Stack spacing={2}>
-            <TeacherProfile teacher={teacher?.data} />
-            <Divider />
+          <Typography paragraph variant="h5">
+            Profile Details
+          </Typography>
+          <Stack>
             <Button
-              color="error"
-              variant="contained"
-              endIcon={<DeleteRounded />}
-              onClick={handleDelete}
+              sx={{ alignSelf: "flex-end" }}
+              endIcon={<Edit />}
+              onClick={editTeacherInfo}
             >
-              Remove Account
+              Edit
             </Button>
           </Stack>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: { xs: "center", md: "space-evenly" },
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <Stack alignItems="center" spacing={1}>
+              <Box
+                sx={{
+                  p: 1,
+                  border: "1px solid lightgray",
+                  borderRadius: "50%",
+                }}
+              >
+                <Avatar
+                  src={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                    teacher?.data?.profile
+                  }`}
+                  sx={{ width: 100, height: 100 }}
+                />
+              </Box>
+
+              <Typography paragraph variant="h5">
+                {teacher?.data?.fullName}
+              </Typography>
+              <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
+                Send Message
+              </Button>
+              <ButtonGroup variant="contained">
+                <Button
+                  color="secondary"
+                  endIcon={<Person />}
+                  // onClick={() => setOpenTeacherAssignLevel(true)}
+                  onClick={goToAssignLevel}
+                >
+                  Assign Level
+                </Button>
+                <Button
+                  color="primary"
+                  endIcon={<Person />}
+                  // onClick={openAssignCourse}
+                  onClick={goToAssignCourse}
+                >
+                  Assign Course
+                </Button>
+              </ButtonGroup>
+            </Stack>
+            <Stack spacing={2}>
+              <TeacherProfile teacher={teacher?.data} />
+              <Divider />
+              <Button
+                color="error"
+                variant="contained"
+                endIcon={<DeleteRounded />}
+                onClick={handleDelete}
+              >
+                Remove Account
+              </Button>
+            </Stack>
+          </Box>
         </Box>
       </Container>
     </>
