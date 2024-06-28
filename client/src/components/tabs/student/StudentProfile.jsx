@@ -14,7 +14,7 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material';
+
 import Swal from 'sweetalert2';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { StudentContext } from '../../../context/providers/StudentProvider';
@@ -37,7 +37,6 @@ const StudentProfile = ({ student }) => {
   const { type } = useParams();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
-  const { palette } = useTheme();
   const queryClient = useQueryClient();
   const [openViewParent, setOpenViewParent] = useState(false);
   const [openViewPreviousReport, setOpenViewPreviousReport] = useState(false);

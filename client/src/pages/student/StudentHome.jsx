@@ -2,12 +2,14 @@ import React, { useContext } from 'react';
 import {
   Box,
   Card,
+  Divider,
   IconButton,
   List,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
+  Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
@@ -47,6 +49,8 @@ const StudentHome = () => {
         img={student_icon}
         color='primary.main'
       />
+          <Typography  variant='h5' py={2}>Student Details Summary</Typography>
+          <Divider/>
       <Box
         sx={{
           display: 'grid',
@@ -102,7 +106,8 @@ const StudentHome = () => {
           }
         />
       </Box>
-
+      <Typography  variant='h5' py={2}>Chart History</Typography>
+          <Divider/>
       {studentDetails.isLoading && <ChartSkeleton />}
 
       {studentDetails.data && (

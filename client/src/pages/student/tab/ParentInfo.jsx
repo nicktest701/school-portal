@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
 import {
   Stack,
   Typography,
@@ -6,15 +6,15 @@ import {
   MenuItem,
   Autocomplete,
   Avatar,
-} from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { Formik } from 'formik';
-import CustomFormControl from '../../../components/inputs/CustomFormControl';
-import { StudentContext } from '../../../context/providers/StudentProvider';
-import { NATIONALITY } from '../../../mockup/data/nationality';
-import { TOWNS } from '../../../mockup/data/towns';
-import { RELATIONSHIP } from '../../../mockup/columns/sessionColumns';
-import { guardianValidationSchema } from '../../../config/validationSchema';
+} from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Formik } from "formik";
+import CustomFormControl from "../../../components/inputs/CustomFormControl";
+import { StudentContext } from "../../../context/providers/StudentProvider";
+import { NATIONALITY } from "../../../mockup/data/nationality";
+import { TOWNS } from "../../../mockup/data/towns";
+import { RELATIONSHIP } from "../../../mockup/columns/sessionColumns";
+import { guardianValidationSchema } from "../../../config/validationSchema";
 
 const ParentInfo = ({ setMode }) => {
   const {
@@ -26,7 +26,7 @@ const ParentInfo = ({ setMode }) => {
 
   const onSubmit = (values, options) => {
     studentDispatch({
-      type: 'addNewStudent',
+      type: "addNewStudent",
       payload: {
         parent: {
           ...values,
@@ -36,7 +36,7 @@ const ParentInfo = ({ setMode }) => {
     });
 
     options.setSubmitting(false);
-    setMode('medical-info');
+    setMode("medical-info");
   };
 
   return (
@@ -57,23 +57,25 @@ const ParentInfo = ({ setMode }) => {
       }) => {
         return (
           <Stack py={2} spacing={1}>
-            <div style={{ maxHeight: 350, overflowY: 'auto' }}>
+            <div style={{ maxHeight: 350, overflowY: "auto" }}>
               <Stack py={2} spacing={1}>
                 <Stack
-                  direction='row'
-                  justifyContent='flex-start'
-                  alignItems='center'
+                  direction="row"
+                  justifyContent="flex-start"
+                  alignItems="center"
                   spacing={2}
                 >
                   <Typography
-                    variant='body2'
-                    color='primary.main'
-                    sx={{ fontWeight: 'bold' }}
+                    variant="h5"
+                    color="primary.main"
+                    bgcolor="whitesmoke"
+                    p={1}
+                    sx={{ fontWeight: "bold" }}
                   >
                     Parent/Guardian Information
                   </Typography>
                   <Avatar
-                    sx={{ width: 30, height: 30, bgcolor: 'primary.main' }}
+                    sx={{ width: 30, height: 30, bgcolor: "primary.main" }}
                   >
                     1
                   </Avatar>
@@ -81,12 +83,12 @@ const ParentInfo = ({ setMode }) => {
 
                 <CustomFormControl>
                   <TextField
-                    label='Firstname'
-                    type='text'
+                    label="Firstname"
+                    type="text"
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values?.parent1?.firstname}
-                    onChange={handleChange('parent1.firstname')}
+                    onChange={handleChange("parent1.firstname")}
                     error={Boolean(
                       touched.parent1?.firstname && errors.parent1?.firstname
                     )}
@@ -95,11 +97,11 @@ const ParentInfo = ({ setMode }) => {
                     }
                   />
                   <TextField
-                    label='Surname'
+                    label="Surname"
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values?.parent1?.surname}
-                    onChange={handleChange('parent1.surname')}
+                    onChange={handleChange("parent1.surname")}
                     error={Boolean(
                       touched.parent1?.surname && errors.parent1?.surname
                     )}
@@ -110,12 +112,12 @@ const ParentInfo = ({ setMode }) => {
                 </CustomFormControl>
                 <CustomFormControl>
                   <TextField
-                    label='Gender'
+                    label="Gender"
                     select
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values?.parent1?.gender}
-                    onChange={handleChange('parent1.gender')}
+                    onChange={handleChange("parent1.gender")}
                     error={Boolean(
                       touched.parent1?.gender && errors.parent1?.gender
                     )}
@@ -123,28 +125,28 @@ const ParentInfo = ({ setMode }) => {
                       touched.parent1?.gender && errors.parent1?.gender
                     }
                   >
-                    <MenuItem value='male'>Male</MenuItem>
-                    <MenuItem value='female'>Female</MenuItem>
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
                   </TextField>
 
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    size='small'
+                    size="small"
                     options={RELATIONSHIP}
-                    loadingText='Please wait....'
-                    noOptionsText='No Relationship available'
-                    getOptionLabel={(option) => option || ''}
+                    loadingText="Please wait...."
+                    noOptionsText="No Relationship available"
+                    getOptionLabel={(option) => option || ""}
                     value={values?.parent1?.relationship}
                     onInputChange={(e, value) =>
-                      setFieldValue('parent1.relationship', value)
+                      setFieldValue("parent1.relationship", value)
                     }
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Relationship'
+                        label="Relationship"
                         fullWidth
-                        size='small'
+                        size="small"
                         error={Boolean(
                           touched.parent1?.relationship &&
                             errors.parent1?.relationship
@@ -159,26 +161,26 @@ const ParentInfo = ({ setMode }) => {
                 </CustomFormControl>
                 <CustomFormControl>
                   <TextField
-                    label='Email'
+                    label="Email"
                     fullWidth
-                    size='small'
+                    size="small"
                     row={3}
                     maxRows={3}
                     value={values?.parent1?.email}
-                    onChange={handleChange('parent1.email')}
+                    onChange={handleChange("parent1.email")}
                     error={Boolean(
                       touched.parent1?.email && errors.parent1?.email
                     )}
                     helperText={touched.parent1?.email && errors.parent1?.email}
                   />
                   <TextField
-                    label='Telephone No.'
-                    inputMode='tel'
-                    type='tel'
+                    label="Telephone No."
+                    inputMode="tel"
+                    type="tel"
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values?.parent1?.phonenumber}
-                    onChange={handleChange('parent1.phonenumber')}
+                    onChange={handleChange("parent1.phonenumber")}
                     error={Boolean(
                       touched.parent1?.phonenumber &&
                         errors.parent1?.phonenumber
@@ -190,14 +192,14 @@ const ParentInfo = ({ setMode }) => {
                   />
                 </CustomFormControl>
                 <TextField
-                  label='Address'
+                  label="Address"
                   fullWidth
-                  size='small'
+                  size="small"
                   row={3}
                   maxRows={3}
                   multiline
                   value={values?.parent1?.address}
-                  onChange={handleChange('parent1.address')}
+                  onChange={handleChange("parent1.address")}
                   error={Boolean(
                     touched.parent1?.address && errors.parent1?.address
                   )}
@@ -210,21 +212,21 @@ const ParentInfo = ({ setMode }) => {
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    size='small'
+                    size="small"
                     options={TOWNS}
-                    loadingText='Please wait....'
-                    noOptionsText='No Town available'
-                    getOptionLabel={(option) => option || ''}
+                    loadingText="Please wait...."
+                    noOptionsText="No Town available"
+                    getOptionLabel={(option) => option || ""}
                     value={values?.parent1?.residence}
                     onChange={(e, value) =>
-                      setFieldValue('parent1.residence', value)
+                      setFieldValue("parent1.residence", value)
                     }
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Residence'
+                        label="Residence"
                         fullWidth
-                        size='small'
+                        size="small"
                         error={Boolean(
                           touched.parent1?.residence &&
                             errors.parent1?.residence
@@ -240,21 +242,21 @@ const ParentInfo = ({ setMode }) => {
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    size='small'
-                    loadingText='Please wait....'
+                    size="small"
+                    loadingText="Please wait...."
                     options={NATIONALITY}
-                    noOptionsText='No Nationality available'
-                    getOptionLabel={(option) => option || ''}
+                    noOptionsText="No Nationality available"
+                    getOptionLabel={(option) => option || ""}
                     value={values?.parent1?.nationality}
                     onChange={(e, value) =>
-                      setFieldValue('parent1.nationality', value)
+                      setFieldValue("parent1.nationality", value)
                     }
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Nationality'
+                        label="Nationality"
                         fullWidth
-                        size='small'
+                        size="small"
                         error={Boolean(
                           touched.parent1?.nationality &&
                             errors.parent1?.nationality
@@ -271,20 +273,22 @@ const ParentInfo = ({ setMode }) => {
               {/* Parent 2  */}
               <Stack py={2} spacing={1}>
                 <Stack
-                  direction='row'
-                  justifyContent='flex-start'
-                  alignItems='center'
+                  direction="row"
+                  justifyContent="flex-start"
+                  alignItems="center"
                   spacing={2}
                 >
                   <Typography
-                    variant='body2'
-                    color='primary.main'
-                    sx={{ fontWeight: 'bold' }}
+                    variant="h5"
+                    color="primary.main"
+                    bgcolor="whitesmoke"
+                    p={1}
+                    sx={{ fontWeight: "bold" }}
                   >
                     Parent/Guardian Information
                   </Typography>
                   <Avatar
-                    sx={{ width: 30, height: 30, bgcolor: 'primary.main' }}
+                    sx={{ width: 30, height: 30, bgcolor: "primary.main" }}
                   >
                     2
                   </Avatar>
@@ -292,12 +296,12 @@ const ParentInfo = ({ setMode }) => {
 
                 <CustomFormControl>
                   <TextField
-                    label='Firstname'
-                    type='text'
+                    label="Firstname"
+                    type="text"
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values?.parent2?.firstname}
-                    onChange={handleChange('parent2.firstname')}
+                    onChange={handleChange("parent2.firstname")}
                     error={Boolean(
                       touched.parent2?.firstname && errors.parent2?.firstname
                     )}
@@ -306,11 +310,11 @@ const ParentInfo = ({ setMode }) => {
                     }
                   />
                   <TextField
-                    label='Surname'
+                    label="Surname"
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values?.parent2?.surname}
-                    onChange={handleChange('parent2.surname')}
+                    onChange={handleChange("parent2.surname")}
                     error={Boolean(
                       touched.parent2?.surname && errors.parent2?.surname
                     )}
@@ -321,12 +325,12 @@ const ParentInfo = ({ setMode }) => {
                 </CustomFormControl>
                 <CustomFormControl>
                   <TextField
-                    label='Gender'
+                    label="Gender"
                     select
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values?.parent2?.gender}
-                    onChange={handleChange('parent2.gender')}
+                    onChange={handleChange("parent2.gender")}
                     error={Boolean(
                       touched.parent2?.gender && errors.parent2?.gender
                     )}
@@ -334,28 +338,28 @@ const ParentInfo = ({ setMode }) => {
                       touched.parent2?.gender && errors.parent2?.gender
                     }
                   >
-                    <MenuItem value='male'>Male</MenuItem>
-                    <MenuItem value='female'>Female</MenuItem>
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
                   </TextField>
 
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    size='small'
+                    size="small"
                     options={RELATIONSHIP}
-                    loadingText='Please wait....'
-                    noOptionsText='No Relationship available'
-                    getOptionLabel={(option) => option || ''}
+                    loadingText="Please wait...."
+                    noOptionsText="No Relationship available"
+                    getOptionLabel={(option) => option || ""}
                     value={values?.parent2?.relationship}
                     onInputChange={(e, value) =>
-                      setFieldValue('parent2.relationship', value)
+                      setFieldValue("parent2.relationship", value)
                     }
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Relationship'
+                        label="Relationship"
                         fullWidth
-                        size='small'
+                        size="small"
                         error={Boolean(
                           touched.parent2?.relationship &&
                             errors.parent2?.relationship
@@ -370,26 +374,26 @@ const ParentInfo = ({ setMode }) => {
                 </CustomFormControl>
                 <CustomFormControl>
                   <TextField
-                    label='Email'
+                    label="Email"
                     fullWidth
-                    size='small'
+                    size="small"
                     row={3}
                     maxRows={3}
                     value={values?.parent2?.email}
-                    onChange={handleChange('parent2.email')}
+                    onChange={handleChange("parent2.email")}
                     error={Boolean(
                       touched.parent2?.email && errors.parent2?.email
                     )}
                     helperText={touched.parent2?.email && errors.parent2?.email}
                   />
                   <TextField
-                    label='Telephone No.'
-                    inputMode='tel'
-                    type='tel'
+                    label="Telephone No."
+                    inputMode="tel"
+                    type="tel"
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values?.parent2?.phonenumber}
-                    onChange={handleChange('parent2.phonenumber')}
+                    onChange={handleChange("parent2.phonenumber")}
                     error={Boolean(
                       touched.parent2?.phonenumber &&
                         errors.parent2?.phonenumber
@@ -401,14 +405,14 @@ const ParentInfo = ({ setMode }) => {
                   />
                 </CustomFormControl>
                 <TextField
-                  label='Address'
+                  label="Address"
                   fullWidth
-                  size='small'
+                  size="small"
                   row={3}
                   maxRows={3}
                   multiline
                   value={values?.parent2?.address}
-                  onChange={handleChange('parent2.address')}
+                  onChange={handleChange("parent2.address")}
                   error={Boolean(
                     touched.parent2?.address && errors.parent2?.address
                   )}
@@ -421,21 +425,21 @@ const ParentInfo = ({ setMode }) => {
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    size='small'
+                    size="small"
                     options={TOWNS}
-                    loadingText='Please wait....'
-                    noOptionsText='No Town available'
-                    getOptionLabel={(option) => option || ''}
+                    loadingText="Please wait...."
+                    noOptionsText="No Town available"
+                    getOptionLabel={(option) => option || ""}
                     value={values?.parent2?.residence}
                     onChange={(e, value) =>
-                      setFieldValue('parent2.residence', value)
+                      setFieldValue("parent2.residence", value)
                     }
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Residence'
+                        label="Residence"
                         fullWidth
-                        size='small'
+                        size="small"
                         error={Boolean(
                           touched.parent2?.residence &&
                             errors.parent2?.residence
@@ -451,21 +455,21 @@ const ParentInfo = ({ setMode }) => {
                   <Autocomplete
                     freeSolo
                     fullWidth
-                    size='small'
-                    loadingText='Please wait....'
+                    size="small"
+                    loadingText="Please wait...."
                     options={NATIONALITY}
-                    noOptionsText='No Nationality available'
-                    getOptionLabel={(option) => option || ''}
+                    noOptionsText="No Nationality available"
+                    getOptionLabel={(option) => option || ""}
                     value={values?.parent2?.nationality}
                     onChange={(e, value) =>
-                      setFieldValue('parent2.nationality', value)
+                      setFieldValue("parent2.nationality", value)
                     }
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Nationality'
+                        label="Nationality"
                         fullWidth
-                        size='small'
+                        size="small"
                         error={Boolean(
                           touched.parent2?.nationality &&
                             errors.parent2?.nationality
@@ -481,11 +485,11 @@ const ParentInfo = ({ setMode }) => {
               </Stack>
             </div>
 
-            <Stack direction='row' justifyContent='flex-end' spacing={2}>
+            <Stack direction="row" justifyContent="flex-end" spacing={2}>
               <LoadingButton
                 loading={isSubmitting}
-                variant='contained'
-                color='primary'
+                variant="contained"
+                color="primary"
                 onClick={handleSubmit}
               >
                 Save & Continue

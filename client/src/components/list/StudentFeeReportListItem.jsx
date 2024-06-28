@@ -1,32 +1,27 @@
-import React, { useContext, useState } from 'react';
-import List from '@mui/material/List';
-import ListSubheader from '@mui/material/ListSubheader';
-import PropTypes from 'prop-types';
-import { StudentContext } from '../../context/providers/StudentProvider';
-import StudentFeesHistory from '../../pages/fees/StudentFeesHistory';
-import { ListItemButton, ListItemText } from '@mui/material';
-import { v4 as uuid } from 'uuid';
+import React from "react";
+import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
+import PropTypes from "prop-types";
+import { ListItemButton, ListItemText } from "@mui/material";
+import { v4 as uuid } from "uuid";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
-const StudentFeeReportListItem = ({ item, studentId }) => {
-  const { studentDispatch } = useContext(StudentContext);
-
-  const [openFeesHistory, setOpenFeesHistory] = useState(false);
+const StudentFeeReportListItem = ({ item }) => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   //View Student Current fee info
-
   const handleViewFeesDetailsByTerm = (feeId, level) => {
-    studentDispatch({
-      type: 'viewStudentFeeHistory',
-      payload: {
-        open: true,
-        data: {
-          id: studentId,
-          level: level,
-          feeId,
+    navigate(
+      `/fee/payment/student?level_id=${level}&_id=${searchParams.get(
+        "_id"
+      )}&fid=${feeId}`,
+      {
+        state: {
+          prevPath: "/fee/history",
         },
-      },
-    });
-    setOpenFeesHistory(true);
+      }
+    );
   };
 
   return (
@@ -35,8 +30,8 @@ const StudentFeeReportListItem = ({ item, studentId }) => {
         subheader={
           <ListSubheader
             sx={{
-              bgcolor: 'primary.main',
-              color: 'secondary.main',
+              bgcolor: "primary.main",
+              color: "secondary.main",
             }}
           >
             {item[0]}
@@ -60,8 +55,8 @@ const StudentFeeReportListItem = ({ item, studentId }) => {
                   // }}
                   secondaryTypographyProps={{
                     fontSize: 13,
-                    color: 'primary.main',
-                    fontWeight: 'bold',
+                    color: "primary.main",
+                    fontWeight: "bold",
                   }}
                 />
               </ListItemButton>
@@ -70,7 +65,7 @@ const StudentFeeReportListItem = ({ item, studentId }) => {
         })}
       </List>
 
-      <StudentFeesHistory open={openFeesHistory} setOpen={setOpenFeesHistory} />
+      {/* <StudentFeesHistory open={openFeesHistory} setOpen={setOpenFeesHistory} /> */}
     </>
   );
 };

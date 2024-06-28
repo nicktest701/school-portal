@@ -10,7 +10,6 @@ import { getAllTeachers } from "../../api/teacherAPI";
 import { EMPTY_IMAGES } from "../../config/images";
 import teacher_icon from "../../assets/images/header/teacher_ico.svg";
 import CustomTitle from "../../components/custom/CustomTitle";
-import TeacherAssignCourse from "./TeacherAssignCourse";
 import { useNavigate } from "react-router-dom";
 
 const TeacherHome = () => {

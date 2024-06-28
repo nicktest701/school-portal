@@ -4,9 +4,10 @@ function MedicalAllergyItem({ title, value }) {
   return (
     <Stack
       direction='row'
-      justifyContent='flex-start'
+      justifyContent='space-between'
       alignItems='center'
       spacing={3}
+      pr={6}
     >
       <Typography textAlign='right' fontSize={11}>
         {title}

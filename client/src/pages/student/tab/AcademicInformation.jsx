@@ -1,21 +1,21 @@
-import React, { useContext, useState } from 'react';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Autocomplete from '@mui/material/Autocomplete';
-import LoadingButton from '@mui/lab/LoadingButton';
-import CustomFormControl from '../../../components/inputs/CustomFormControl';
-import { Formik } from 'formik';
-import { StudentContext } from '../../../context/providers/StudentProvider';
-import _ from 'lodash';
-import useLevel from '../../../components/hooks/useLevel';
-import ConfirmStudent from './ConfirmStudent';
-import { useDropzone } from 'react-dropzone';
-import { Add, AddToDrive, ArrowForward } from '@mui/icons-material';
-import { Avatar } from '@mui/material';
-import { TOWNS } from '../../../mockup/data/towns';
-import { studentCurrentLevelValidationSchema } from '../../../config/validationSchema';
+import React, { useContext, useState } from "react";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Autocomplete from "@mui/material/Autocomplete";
+import LoadingButton from "@mui/lab/LoadingButton";
+import CustomFormControl from "../../../components/inputs/CustomFormControl";
+import { Formik } from "formik";
+import { StudentContext } from "../../../context/providers/StudentProvider";
+import _ from "lodash";
+import useLevel from "../../../components/hooks/useLevel";
+import ConfirmStudent from "./ConfirmStudent";
+import { useDropzone } from "react-dropzone";
+import { Add, AddToDrive, ArrowForward } from "@mui/icons-material";
+import { Avatar } from "@mui/material";
+import { TOWNS } from "../../../mockup/data/towns";
+import { studentCurrentLevelValidationSchema } from "../../../config/validationSchema";
 
 const AcademicInformation = ({ setMode }) => {
   const {
@@ -35,8 +35,8 @@ const AcademicInformation = ({ setMode }) => {
     noKeyboard: true,
     maxFiles: 1,
     accept: {
-      'image/*': ['.jpeg', '.png', '.webp'],
-      'application/pdf': ['.pdf'],
+      "image/*": [".jpeg", ".png", ".webp"],
+      "application/pdf": [".pdf"],
     },
 
     multiple: false,
@@ -57,7 +57,7 @@ const AcademicInformation = ({ setMode }) => {
     values.previousSchool.report = report;
 
     studentDispatch({
-      type: 'addNewStudent',
+      type: "addNewStudent",
       payload: {
         academic: {
           ...values,
@@ -90,11 +90,11 @@ const AcademicInformation = ({ setMode }) => {
         }) => {
           return (
             <Stack py={2} spacing={1}>
-              <Stack direction='row' justifyContent='flex-end' spacing={2}>
+              <Stack direction="row" justifyContent="flex-end" spacing={2}>
                 <LoadingButton
                   loading={isSubmitting}
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   onClick={handleSubmit}
                   endIcon={<ArrowForward />}
                 >
@@ -102,32 +102,34 @@ const AcademicInformation = ({ setMode }) => {
                 </LoadingButton>
               </Stack>
               <Typography
-                variant='body2'
-                color='primary.main'
-                sx={{ fontWeight: 'bold' }}
+                variant="h5"
+                color="primary.main"
+                bgcolor="whitesmoke"
+                p={1}
+                sx={{ fontWeight: "bold" }}
               >
                 Academic Records
               </Typography>
               <CustomFormControl>
                 <Autocomplete
                   fullWidth
-                  size='small'
+                  size="small"
                   options={levelsOption}
-                  noOptionsText='No Level available'
-                  getOptionLabel={(option) => option.type || ''}
+                  noOptionsText="No Level available"
+                  getOptionLabel={(option) => option.type || ""}
                   isOptionEqualToValue={(option, value) =>
                     value._id === undefined ||
-                    value._id === '' ||
+                    value._id === "" ||
                     value._id === option._id
                   }
                   value={values.level}
-                  onChange={(e, value) => setFieldValue('level', value)}
+                  onChange={(e, value) => setFieldValue("level", value)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label='Current Level'
+                      label="Current Level"
                       fullWidth
-                      size='small'
+                      size="small"
                       error={Boolean(
                         touched?.level?.type && errors?.level?.type
                       )}
@@ -138,20 +140,20 @@ const AcademicInformation = ({ setMode }) => {
               </CustomFormControl>
 
               <Typography
-                variant='body2'
-                color='primary.main'
-                sx={{ fontWeight: 'bold' }}
+                variant="body2"
+                color="primary.main"
+                sx={{ fontWeight: "bold" }}
               >
                 Previous School Records
               </Typography>
               <CustomFormControl>
                 <TextField
-                  label='School Name'
-                  type='text'
+                  label="School Name"
+                  type="text"
                   fullWidth
-                  size='small'
+                  size="small"
                   value={values?.previousSchool?.name}
-                  onChange={handleChange('previousSchool.name')}
+                  onChange={handleChange("previousSchool.name")}
                   error={Boolean(
                     touched?.previousSchool?.name &&
                       errors?.previousSchool?.name
@@ -165,21 +167,21 @@ const AcademicInformation = ({ setMode }) => {
                 <Autocomplete
                   freeSolo
                   fullWidth
-                  size='small'
+                  size="small"
                   options={TOWNS}
-                  loadingText='Please wait....'
-                  noOptionsText='No Town available'
-                  getOptionLabel={(option) => option || ''}
+                  loadingText="Please wait...."
+                  noOptionsText="No Town available"
+                  getOptionLabel={(option) => option || ""}
                   value={values?.previousSchool?.location}
                   onInputChange={(e, value) =>
-                    setFieldValue('previousSchool.location', value)
+                    setFieldValue("previousSchool.location", value)
                   }
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label='Location'
+                      label="Location"
                       fullWidth
-                      size='small'
+                      size="small"
                       error={Boolean(
                         touched?.previousSchool?.location &&
                           errors?.previousSchool?.location
@@ -193,9 +195,9 @@ const AcademicInformation = ({ setMode }) => {
                 />
               </CustomFormControl>
               <Typography
-                variant='body2'
-                color='primary.main'
-                sx={{ fontWeight: 'bold' }}
+                variant="body2"
+                color="primary.main"
+                sx={{ fontWeight: "bold" }}
               >
                 A copy of the most recent school report
               </Typography>
@@ -203,17 +205,17 @@ const AcademicInformation = ({ setMode }) => {
               <Stack
                 padding={2}
                 spacing={1}
-                {...getRootProps({ className: 'dropzone' })}
-                style={{ border: '1px dashed black' }}
+                {...getRootProps({ className: "dropzone" })}
+                style={{ border: "1px dashed black" }}
               >
                 <Stack
                   spacing={2}
-                  justifyContent='center'
-                  alignItems='center'
+                  justifyContent="center"
+                  alignItems="center"
                   paddingY={1}
                 >
                   <Avatar
-                    variant='square'
+                    variant="square"
                     src={report}
                     sx={{ width: 120, height: 120 }}
                   >
@@ -222,11 +224,11 @@ const AcademicInformation = ({ setMode }) => {
 
                   <Stack>
                     <input {...getInputProps()} />
-                    <Typography textAlign='center' paragraph>
+                    <Typography textAlign="center" paragraph>
                       Drag & drop your report here
                     </Typography>
                     <Button
-                      variant='outlined'
+                      variant="outlined"
                       onClick={open}
                       startIcon={<AddToDrive />}
                     >
@@ -236,7 +238,7 @@ const AcademicInformation = ({ setMode }) => {
 
                   {!_.isEmpty(report) && (
                     <iframe
-                      style={{ width: '100%', height: '5in' }}
+                      style={{ width: "100%", height: "5in" }}
                       src={report}
                     ></iframe>
                   )}

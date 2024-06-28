@@ -11,7 +11,6 @@ import {
   Stack,
   TextField,
   Typography,
-  useTheme,
 } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -53,7 +52,6 @@ const LevelExamScoreInput = ({
   const {
     userState: { session },
   } = useContext(UserContext);
-  const { palette } = useTheme();
   const { levelId } = useParams();
   const queryClient = useQueryClient();
   // const [columns, setColumns] = useState([]);

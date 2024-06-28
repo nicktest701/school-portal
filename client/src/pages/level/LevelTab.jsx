@@ -43,7 +43,7 @@ const LevelTab = () => {
     enabled: !!session.sessionId && !!session?.termId,
     initialData: [],
     select: (levels) => {
-      const modifiedLevels = levels.map(
+      const modifiedLevels = levels?.map(
         ({ _id, level, students, subjects, teacher }) => {
           return {
             _id,
@@ -55,6 +55,7 @@ const LevelTab = () => {
           };
         }
       );
+    
       return modifiedLevels;
     },
   });

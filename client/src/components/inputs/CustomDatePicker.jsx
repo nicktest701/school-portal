@@ -1,5 +1,5 @@
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 function CustomDatePicker({
   label,
@@ -8,6 +8,7 @@ function CustomDatePicker({
   error,
   helperText,
   disableFuture,
+  style,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -15,18 +16,18 @@ function CustomDatePicker({
         label={label}
         value={date}
         onChange={(date) => setDate(date)}
-        format='Do MMMM YYYY'
+        format="Do MMMM YYYY"
         disableMaskedInput
         disableFuture={disableFuture}
         slotProps={{
           textField: {
             fullWidth: true,
-            size: 'small',
+            size: "small",
             error: error,
             helperText: helperText,
           },
         }}
-        sx={{ width: '100%' }}
+        sx={{ width: "100%", ...style }}
       />
     </LocalizationProvider>
   );

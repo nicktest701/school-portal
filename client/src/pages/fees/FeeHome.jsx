@@ -12,12 +12,14 @@ import { EMPTY_IMAGES } from '../../config/images';
 import teacher_icon from '../../assets/images/header/teacher_ico.svg';
 import moment from 'moment';
 import CustomTitle from '../../components/custom/CustomTitle';
+import { useNavigate } from 'react-router-dom';
 const FeeHome = () => {
   const {
     userState: {
       session: { sessionId, termId, from, to },
     },
   } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const feeSummary = useQuery({
     queryKey: ['current-fees-summary'],
@@ -31,6 +33,13 @@ const FeeHome = () => {
     queryFn: () => getAllRecentlyPaidFees({ session: sessionId, term: termId }),
     enabled: !!sessionId && !!termId,
   });
+
+
+
+
+  const handleMakePayment = () => {
+    navigate(`/fee/payment`);
+  };
 
   return (
     <>
@@ -91,9 +100,11 @@ const FeeHome = () => {
         ]}
         data={recentFees.data}
         actions={[]}
-        showAddButton={false}
+        showAddButton={true}
         addButtonImg={EMPTY_IMAGES.level}
         addButtonMessage=' No recent fee payment !'
+        addButtonText='Make New Payment'
+        onAddButtonClicked={handleMakePayment}
         handleRefresh={recentFees.refetch}
       />
     </>

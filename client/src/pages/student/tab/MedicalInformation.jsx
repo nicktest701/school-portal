@@ -62,9 +62,11 @@ const MedicalInformation = ({ setMode }) => {
               </LoadingButton>
             </Stack>
             <Typography
-              variant='body2'
-              color='primary.main'
-              sx={{ fontWeight: 'bold' }}
+           variant='h5'
+           color='primary.main'
+           bgcolor='whitesmoke'
+           p={1}
+           sx={{ fontWeight: 'bold' }}
             >
               Medical Records
             </Typography>

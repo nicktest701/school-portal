@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import _ from 'lodash'
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const user = JSON.parse(localStorage.getItem('@user'));
 axios.defaults.headers.common.Authorization = `Bearer ${user}`;
@@ -84,6 +84,20 @@ export const getStudent = async (id) => {
     throw error.response.data;
   }
 };
+export const getStudentByIndexNumber = async (id) => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `${BASE_URL}/students/index-number?id=${id}`,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
+
 
 export const getParentByStudentId = async (id) => {
   try {

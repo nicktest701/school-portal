@@ -40,7 +40,7 @@ const ExamsLevel = ({ type }) => {
   } = useContext(UserContext);
 
   const { levelId, level } = useParams();
-  const [_searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [viewLevelScoreInput, setViewLevelScoreInput] = useState(false);

@@ -1,9 +1,4 @@
-import {
-  CircleRounded,
-  Delete,
-  MenuRounded,
-  Edit,
-} from "@mui/icons-material";
+import { CircleRounded, Delete, MenuRounded, Edit } from "@mui/icons-material";
 
 import {
   Avatar,
@@ -17,6 +12,7 @@ import {
 } from "@mui/material";
 import { currencyFormatter } from "../../config/currencyFormatter";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 const session = JSON.parse(localStorage.getItem("@school_session"));
 
 export const SCHOOL_SESSION_COLUMN = (
@@ -142,9 +138,29 @@ export const SCHOOL_LEVELS = [
     type: "numeric",
     align: "center",
   },
+  // {
+  //   title: "Subjects",
+  //   field: "subjects",
+  //   // hidden: true,
+  // },
   {
-    field: "subjects",
-    hidden: true,
+    title: "Facilitator",
+    field: "teacher.fullName",
+    render: ({ teacher }) => {
+      return teacher?._id ? (
+        <Link
+          style={{
+            backgroundColor: "var(--primary)",
+            padding: "7px 12px",
+            color: "#fff",
+            borderRadius:'4px'
+          }}
+          to={`/teacher/${teacher?._id}`}
+        >
+          {teacher?.fullName}
+        </Link>
+      ) : null;
+    },
   },
 ];
 
@@ -908,7 +924,7 @@ export const EVENTS = (handleViewEvent, handleEditEvent, handleDeleteEvent) => [
             {/* <ArrowForwardIosRounded /> */}
           </Stack>
           <Stack justifyContent="flex-end" alignItems="center" direction="row">
-            <IconButton  onClick={() => handleEditEvent(data?._id)}>
+            <IconButton onClick={() => handleEditEvent(data?._id)}>
               <Edit />
             </IconButton>
             <IconButton onClick={() => handleDeleteEvent(data?._id)}>
@@ -926,7 +942,11 @@ export const EVENTS = (handleViewEvent, handleEditEvent, handleDeleteEvent) => [
     hidden: true,
   },
 ];
-export const NOTIFICATIONS = (handleViewNotification, handleEditNotification, handleDeleteNotification) => [
+export const NOTIFICATIONS = (
+  handleViewNotification,
+  handleEditNotification,
+  handleDeleteNotification
+) => [
   {
     field: "_id",
     title: "ID",
@@ -968,7 +988,7 @@ export const NOTIFICATIONS = (handleViewNotification, handleEditNotification, ha
             {/* <ArrowForwardIosRounded /> */}
           </Stack>
           <Stack justifyContent="flex-end" alignItems="center" direction="row">
-            <IconButton  onClick={() => handleEditNotification(data?._id)}>
+            <IconButton onClick={() => handleEditNotification(data?._id)}>
               <Edit />
             </IconButton>
             <IconButton onClick={() => handleDeleteNotification(data?._id)}>

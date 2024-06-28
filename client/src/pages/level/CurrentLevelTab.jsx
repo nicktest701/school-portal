@@ -58,6 +58,9 @@ const CurrentLevelTab = () => {
   //   });
   // };
 
+  const handleGotoNewStudent = () => {
+    navigate(`/student/new`);
+  };
   const handleOpenAttendance = () => {
     navigate(`/level/attendance/${id}/${type}`);
   };
@@ -86,7 +89,8 @@ const CurrentLevelTab = () => {
           img={EMPTY_IMAGES.student}
           message="😑 No Student available.Add your first student to this level"
           buttonText="New Student"
-          // onClick={handleGotoNewStudent}
+          onClick={handleGotoNewStudent}
+          showAddButton={true}
         />
       ) : (
         <CustomizedMaterialTable

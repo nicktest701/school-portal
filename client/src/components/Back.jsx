@@ -14,7 +14,7 @@ const Back = ({ to, color, bg }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        mb:1
+        my:1
       }}
     >
       <IconButton

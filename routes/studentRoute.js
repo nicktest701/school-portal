@@ -169,6 +169,25 @@ router.get(
   })
 );
 
+
+//@GET student by student index number
+router.get(
+  '/index-number',
+  AsyncHandler(async (req, res) => {
+    const { id } = req.query;
+
+    const student = await Student.findOne({
+      indexnumber: id
+    });
+
+    if (!_.isEmpty(student)) {
+      return res.status(400).json('Index Number already exist!');
+    }
+    res.sendStatus(204);
+  })
+);
+
+
 //@GET student by student id
 router.get(
   '/:id',
@@ -183,6 +202,8 @@ router.get(
     res.status(200).json(student);
   })
 );
+
+
 
 //@GET ALL student for search
 router.post(
@@ -224,20 +245,30 @@ router.post(
   AsyncHandler(async (req, res) => {
     const { personal, medical, academic, parent } = req.body;
 
+    const doesStudentExists = await Student.findOne({
+      indexnumber: personal?.indexnumber
+    });
+
+    if (!_.isEmpty(doesStudentExists)) {
+      return res.status(400).json('Index Number already exist!');
+    }
+
+
+
     //Add new Student
     const student = await Student.create({
-      profile: personal.profile,
-      indexnumber: personal.indexnumber,
-      firstname: personal.firstname,
-      surname: personal.surname,
-      othername: personal.othername,
-      dateofbirth: personal.dateofbirth,
-      gender: personal.gender,
-      email: personal.email,
-      phonenumber: personal.phonenumber,
-      address: personal.address,
-      residence: personal.residence,
-      nationality: personal.nationality,
+      profile: personal?.profile,
+      indexnumber: personal?.indexnumber,
+      firstname: personal?.firstname,
+      surname: personal?.surname,
+      othername: personal?.othername,
+      dateofbirth: personal?.dateofbirth,
+      gender: personal?.gender,
+      email: personal?.email,
+      phonenumber: personal?.phonenumber,
+      address: personal?.address,
+      residence: personal?.residence,
+      nationality: personal?.nationality,
       medical,
       academic,
     });

@@ -14,6 +14,7 @@ function GlobalSpinner() {
       }}
     >
       <div className="spinner2"></div>
+      {/* <p>Please Wait..</p> */}
     </div>
   );
 }

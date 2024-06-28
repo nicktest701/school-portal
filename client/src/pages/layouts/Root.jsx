@@ -22,6 +22,8 @@ import EditEvent from "../events/EditEvent";
 import TeacherAssignLevel from "../teacher/TeacherAssignLevel";
 import TeacherAssignCourse from "../teacher/TeacherAssignCourse";
 import AddCurrentSubjects from "../../components/modals/AddCurrentSubjects";
+import FeePaymentHistory from "../fees/FeePaymentHistory";
+import StudentFeesHistory from "../fees/StudentFeesHistory";
 
 const FeeNew = lazy(() => import("../fees/FeeNew"));
 const LevelExamScoreInput = lazy(() =>
@@ -304,11 +306,28 @@ const Root = () => {
             <Route
               element={
                 <Suspense fallback={<Loader />}>
+                  <FeePaymentHistory />
+                </Suspense>
+              }
+              path="payment/history"
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <StudentFeesHistory />
+                </Suspense>
+              }
+              path="payment/student"
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
                   <LevelFeeInformation />
                 </Suspense>
               }
               path="level"
             />
+
             <Route
               element={
                 <Suspense fallback={<Loader />}>
@@ -317,6 +336,7 @@ const Root = () => {
               }
               path="history"
             />
+            
             <Route
               element={
                 <Suspense fallback={<Loader />}>

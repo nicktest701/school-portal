@@ -1,49 +1,48 @@
-import Check from '@mui/icons-material/Check';
-import HistoryRounded from '@mui/icons-material/HistoryRounded';
-import MonetizationOnRounded from '@mui/icons-material/MonetizationOnRounded';
-import LoadingButton from '@mui/lab/LoadingButton';
-import Autocomplete from '@mui/material/Autocomplete';
-import Alert from '@mui/material/Alert';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import InputAdornment from '@mui/material/InputAdornment';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import React, { useContext, useMemo, useState } from 'react';
-import Swal from 'sweetalert2';
-import { useFormik } from 'formik';
-import _ from 'lodash';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Check from "@mui/icons-material/Check";
+import HistoryRounded from "@mui/icons-material/HistoryRounded";
+import MonetizationOnRounded from "@mui/icons-material/MonetizationOnRounded";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Autocomplete from "@mui/material/Autocomplete";
+import Alert from "@mui/material/Alert";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import InputAdornment from "@mui/material/InputAdornment";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import React, { useContext, useMemo, useState } from "react";
+import Swal from "sweetalert2";
+import { useFormik } from "formik";
+import _ from "lodash";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getAllFeesByCurrentLevel } from '../../api/feeAPI';
+import { getAllFeesByCurrentLevel } from "../../api/feeAPI";
 import {
   getCurrentFeeForStudent,
   postCurrentFee,
-} from '../../api/currentFeeAPI';
-import { currencyFormatter } from '../../config/currencyFormatter';
-import { StudentContext } from '../../context/providers/StudentProvider';
-import StudentFeesHistory from './StudentFeesHistory';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import FeePaymentHistory from './FeePaymentHistory';
-import { UserContext } from '../../context/providers/UserProvider';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import CustomTitle from '../../components/custom/CustomTitle';
-import { EMPTY_IMAGES } from '../../config/images';
-import { MonetizationOn, Person2Sharp } from '@mui/icons-material';
-import useLevelById from '../../components/hooks/useLevelById';
+} from "../../api/currentFeeAPI";
+import { currencyFormatter } from "../../config/currencyFormatter"; 
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { UserContext } from "../../context/providers/UserProvider";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import CustomTitle from "../../components/custom/CustomTitle";
+import { EMPTY_IMAGES } from "../../config/images";
+import { MonetizationOn, Person2Sharp } from "@mui/icons-material";
+import useLevelById from "../../components/hooks/useLevelById";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
+} from "../../context/actions/globalAlertActions";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const FeeMakePayment = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("sm"));
   const [searchParams, setSearchParams] = useSearchParams();
 
   //Get Session id
@@ -52,22 +51,17 @@ const FeeMakePayment = () => {
     userState: { session },
   } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const { studentDispatch } = useContext(StudentContext);
   const queryClient = useQueryClient();
-
-  //States
-  const [msg, setMsg] = useState({ severity: '', text: '' });
-  const [openFeesHistory, setOpenFeesHistory] = useState(false);
-  const [openStudentFeesHistory, setOpenStudentFeesHistory] = useState(false);
+  const [msg, setMsg] = useState({ severity: "", text: "" });
   const [studentInfo, setStudentInfo] = useState({
-    _id: '',
-    fullName: '',
-    profile: '',
+    _id: "",
+    fullName: "",
+    profile: "",
   });
   const [currentLevel, setCurrentLevel] = useState({
-    levelId: '',
-    levelType: '',
-    feesId: '',
+    levelId: "",
+    levelType: "",
+    feesId: "",
     fees: 0,
   });
 
@@ -79,7 +73,7 @@ const FeeMakePayment = () => {
   const [currentAmount, setCurrentAmount] = useState(Number(0));
 
   const levelOptions = useQuery({
-    queryKey: ['all-level-fees', session.sessionId, session.termId],
+    queryKey: ["all-level-fees", session.sessionId, session.termId],
     queryFn: () =>
       getAllFeesByCurrentLevel({
         session: session.sessionId,
@@ -92,16 +86,16 @@ const FeeMakePayment = () => {
 
   ///Get Student fees info
   useQuery(
-    ['student-fees', studentInfo?._id, searchParams.get('level_id')],
+    ["student-fees", studentInfo?._id, searchParams.get("level_id")],
     () =>
       getCurrentFeeForStudent({
         session: session.sessionId,
         term: session.termId,
         student: studentInfo?._id,
-        level: searchParams.get('level_id'),
+        level: searchParams.get("level_id"),
       }),
     {
-      enabled: !!studentInfo?._id && !!searchParams.get('level_id'),
+      enabled: !!studentInfo?._id && !!searchParams.get("level_id"),
       onSuccess: (data) => {
         setTotalAmountPaid(data?.totalAmountPaid);
         setTotalArreas(data?.totalArreas);
@@ -156,7 +150,7 @@ const FeeMakePayment = () => {
   });
 
   function onSubmit(values, options) {
-    setMsg({ severity: 'info', text: '' });
+    setMsg({ severity: "info", text: "" });
     const payment = {
       session: session.sessionId,
       term: session.termId,
@@ -166,22 +160,22 @@ const FeeMakePayment = () => {
       payment: [feeCalculation],
     };
     Swal.fire({
-      title: 'Making Payment',
-      text: 'Do you want to proceed with the payment?',
+      title: "Making Payment",
+      text: "Do you want to proceed with the payment?",
       showCancelButton: true,
     }).then(({ isConfirmed, isDenied, isDismissed }) => {
       if (isConfirmed) {
         mutateAsync(payment, {
           onSettled: () => {
-            queryClient.invalidateQueries(['student-fees']);
-            queryClient.invalidateQueries(['current-fees-summary']);
+            queryClient.invalidateQueries(["student-fees"]);
+            queryClient.invalidateQueries(["current-fees-summary"]);
             options.setSubmitting(false);
           },
           onSuccess: async () => {
             // setMsg({ severity: 'info', text: 'Payment made successfully!!!' });
-            schoolSessionDispatch(alertSuccess('Payment Done!'));
+            schoolSessionDispatch(alertSuccess("Payment Done!"));
 
-            navigate('/fee/print', {
+            navigate("/fee/print", {
               state: {
                 feePrintData: {
                   fullName: studentInfo.fullName,
@@ -192,12 +186,12 @@ const FeeMakePayment = () => {
             });
           },
           onError: () => {
-            schoolSessionDispatch(alertError('An unknown error has occurred!'));
+            schoolSessionDispatch(alertError("An unknown error has occurred!"));
           },
         });
       }
       if (isDenied || isDismissed) {
-        setMsg({ severity: 'info', text: '' });
+        setMsg({ severity: "info", text: "" });
         options.setSubmitting(false);
       }
     });
@@ -212,37 +206,50 @@ const FeeMakePayment = () => {
 
   //View Student Current fee info
   const handleViewStudentFeeHistory = () => {
-    studentDispatch({
-      type: 'viewStudentFeeHistory',
-      payload: {
-        open: true,
-        data: {
-          id: studentInfo?._id,
-          level: searchParams.get('level_id'),
-          // feeId: currentLevel?.feesId,
+    navigate(
+      `/fee/payment/student?level_id=${searchParams.get("level_id")}&_id=${
+        studentInfo?._id
+      }`,
+      {
+        state: {
+          prevPath: `/fee/payment?level_id=${searchParams.get(
+            "level_id"
+          )}&level_name=${searchParams.get("level_name")}`,
         },
-      },
-    });
-    setOpenStudentFeesHistory(true);
+      }
+    );
+    // studentDispatch({
+    //   type: "viewStudentFeeHistory",
+    //   payload: {
+    //     open: true,
+    //     data: {
+    //       id: studentInfo?._id,
+    //       level: searchParams.get("level_id"),
+    //       // feeId: currentLevel?.feesId,
+    //     },
+    //   },
+    // });
+    // setOpenStudentFeesHistory(true);
   };
 
   //View Fees History
-  const handleOpenPaymentHistory = () => setOpenFeesHistory(true);
+  const handleOpenPaymentHistory = () => navigate("/fee/payment/history");
 
   return (
     <>
       <CustomTitle
-        title='Fees Payment'
-        subtitle='Access,manage and control payment of school fees'
+        title="Fees Payment"
+        subtitle="Access,manage and control payment of school fees"
         img={EMPTY_IMAGES.assessment}
-        color='primary.main'
+        color="primary.main"
       />
 
       <Stack paddingY={4} spacing={2}>
         <Stack
-          direction={{ xs: 'column-reverse', sm: 'row' }}
-          justifyContent={{ xs: 'center', sm: 'space-between' }}
-          alignItems='center'
+          direction="row"
+          justifyContent={{ xs: "center", sm: "space-between" }}
+          alignItems="center"
+          gap={2}
         >
           <Autocomplete
             sx={{ width: 250 }}
@@ -250,20 +257,20 @@ const FeeMakePayment = () => {
             options={levelOptions?.data ? levelOptions.data : []}
             loading={levelOptions?.isLoading}
             disableClearable
-            closeText=' '
-            noOptionsText='No Level Available'
+            closeText=" "
+            noOptionsText="No Level Available"
             isOptionEqualToValue={(option, value) =>
               value.levelId === undefined ||
-              value.levelId === '' ||
+              value.levelId === "" ||
               option.levelId === value.levelId
             }
-            getOptionLabel={(option) => option.levelType || ''}
+            getOptionLabel={(option) => option.levelType || ""}
             value={currentLevel}
             onChange={(e, value) => {
               setCurrentLevel(value);
               setSearchParams((params) => {
-                params.set('level_id', value?.levelId);
-                params.set('level_name', value?.levelType);
+                params.set("level_id", value?.levelId);
+                params.set("level_name", value?.levelType);
                 return params;
               });
             }}
@@ -275,15 +282,15 @@ const FeeMakePayment = () => {
               });
             }}
             renderInput={(params) => (
-              <TextField {...params} label='Select Level' size='small' />
+              <TextField {...params} label="Select Level" size="small" />
             )}
           />
           <Button
             startIcon={<HistoryRounded />}
-            variant='contained'
+            variant="contained"
             onClick={handleOpenPaymentHistory}
           >
-            Payment History
+            {matches ? "" : "   Payment History"}
           </Button>
         </Stack>
 
@@ -293,125 +300,130 @@ const FeeMakePayment = () => {
           options={students ? students : []}
           loading={levelLoading}
           disableClearable
-          closeText=' '
-          noOptionsText='No Student found'
+          closeText=" "
+          noOptionsText="No Student found"
           isOptionEqualToValue={(option, value) =>
             value?._id === undefined ||
-            value?._id === '' ||
+            value?._id === "" ||
             option?._id === value?._id
           }
-          getOptionLabel={(option) => option?.fullName || ''}
+          getOptionLabel={(option) => option?.fullName || ""}
           value={studentInfo}
           onChange={(e, value) => setStudentInfo(value)}
           renderInput={(params) => (
-            <TextField {...params} placeholder='Search for student' />
+            <TextField {...params} placeholder="Search for student" />
           )}
         />
       </Stack>
 
-      <Grid container spacing={4} paddingY={2}>
+      <Grid container spacing={4} paddingY={1} bgcolor="#fff" mt={1}>
         <Grid item xs={12} md={6} paddingY={6}>
-          <div style={{ display: 'flex', gap: '4px', paddingBottom: '4px' }}>
-            <Person2Sharp color='secondary' />
-            <Typography variant='h6'>Personal Details</Typography>
+          <div style={{ display: "flex", gap: "4px", paddingBottom: "4px" }}>
+            <Person2Sharp color="secondary" />
+            <Typography variant="h6">Personal Details</Typography>
           </div>
           <Divider />
 
-          <Stack
-            spacing={1}
-            justifyContent='center'
-            alignItems='center'
-            paddingY={2}
-          >
-            <Avatar
-              src={
-                studentInfo?.profile === undefined ||
-                studentInfo?.profile === ''
-                  ? null
-                  : studentInfo?.profile
-                // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                //     studentInfo?.profile
-                //   }`
-              }
-              sx={{ width: 80, height: 80 }}
-            />
-          </Stack>
-          <Stack spacing={2} paddingY={2}>
-            <TextField
-              size='small'
-              label="Student's Name"
-              InputProps={{
-                readOnly: true,
-              }}
-              value={studentInfo?.fullName || ''}
-            />
-
-            <TextField
-              size='small'
-              // label='Level'
-              value={currentLevel?.levelType || searchParams.get('level_name')}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </Stack>
-          <Stack spacing={2} paddingY={2}>
-            <TextField
-              type='number'
-              inputMode='numeric'
-              label='Amount'
-              size='small'
-              placeholder='Enter Amount here'
-              value={currentAmount}
-              onChange={(e) => setCurrentAmount(e.target.valueAsNumber)}
-              error={formik.errors.amount}
-              helperText={formik.touched.amount && formik.errors.amount}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>GHS</InputAdornment>
-                ),
-                endAdornment: <InputAdornment position='end'>p</InputAdornment>,
-              }}
-            />
-
-            {/* <Button>Cancel</Button> */}
-            <LoadingButton
-              disabled={_.isEmpty(studentInfo?._id)}
-              size='large'
-              variant='contained'
-              startIcon={<MonetizationOnRounded />}
-              loading={isLoading}
-              onClick={formik.handleSubmit}
+          <Paper elevation={1} sx={{ marginTop: 2, p: 1 }}>
+            <Stack
+              spacing={1}
+              justifyContent="center"
+              alignItems="center"
+              paddingY={2}
             >
-              Make Payment
-            </LoadingButton>
-          </Stack>
+              <Avatar
+                src={
+                  studentInfo?.profile === undefined ||
+                  studentInfo?.profile === ""
+                    ? null
+                    : studentInfo?.profile
+                  // : `${import.meta.env.VITE_BASE_URL}/images/students/${
+                  //     studentInfo?.profile
+                  //   }`
+                }
+                sx={{ width: 80, height: 80 }}
+              />
+            </Stack>
+            <Stack spacing={2} paddingY={2}>
+              <TextField
+                size="small"
+                label="Student's Name"
+                InputProps={{
+                  readOnly: true,
+                }}
+                value={studentInfo?.fullName || ""}
+              />
+
+              <TextField
+                size="small"
+                // label='Level'
+                value={
+                  currentLevel?.levelType || searchParams.get("level_name")
+                }
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+
+              <TextField
+                type="number"
+                inputMode="numeric"
+                label="Amount"
+                size="small"
+                placeholder="Enter Amount here"
+                value={currentAmount}
+                onChange={(e) => setCurrentAmount(e.target.valueAsNumber)}
+                error={formik.errors.amount}
+                helperText={formik.touched.amount && formik.errors.amount}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">GHS</InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">p</InputAdornment>
+                  ),
+                }}
+              />
+
+              {/* <Button>Cancel</Button> */}
+              <LoadingButton
+                disabled={_.isEmpty(studentInfo?._id)}
+                size="large"
+                variant="contained"
+                startIcon={<MonetizationOnRounded />}
+                loading={isLoading}
+                onClick={formik.handleSubmit}
+              >
+                Make Payment
+              </LoadingButton>
+            </Stack>
+          </Paper>
         </Grid>
 
         <Grid item xs={12} md={6} paddingY={6}>
-          <div style={{ display: 'flex', gap: '4px', paddingBottom: '4px' }}>
-            <MonetizationOn color='secondary' />
-            <Typography variant='h6'>Fees Details</Typography>
+          <div style={{ display: "flex", gap: "4px", paddingBottom: "4px" }}>
+            <MonetizationOn color="secondary" />
+            <Typography variant="h6">Fees Details</Typography>
           </div>
           <Divider />
           <Paper elevation={1} sx={{ marginTop: 2 }}>
             <Stack spacing={2} padding={2}>
               <Button
-                variant='outlined'
-                size='small'
+                variant="outlined"
+                size="small"
                 onClick={handleViewStudentFeeHistory}
                 disabled={_.isEmpty(studentInfo?._id)}
               >
                 Payment Details
               </Button>
-              <Stack direction='row' justifyContent='space-between'>
-                <Typography fontWeight='bold'>Fees</Typography>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography fontWeight="bold">Fees</Typography>
                 {!_.isEmpty(studentInfo?._id) && totalOutStanding === 0 ? (
                   <Chip
-                    label='Full Payment'
-                    color='success'
-                    size='medium'
-                    sx={{ color: 'white' }}
+                    label="Full Payment"
+                    color="success"
+                    size="medium"
+                    sx={{ color: "white" }}
                     icon={<Check />}
                   />
                 ) : null}
@@ -420,68 +432,68 @@ const FeeMakePayment = () => {
                 <Alert severity={msg.severity}>
                   {msg.text}
 
-                  {msg.text.startsWith('No') && (
-                    <Link to='/fee/new'>Add New Fee</Link>
+                  {msg.text.startsWith("No") && (
+                    <Link to="/fee/new">Add New Fee</Link>
                   )}
                 </Alert>
               )}
               <Stack
-                direction='row'
-                justifyContent='space-between'
-                alignItems='center'
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
-                <Typography variant='body2'>Fees For Term</Typography>
-                <Typography variant='body2'>
+                <Typography variant="body2">Fees For Term</Typography>
+                <Typography variant="body2">
                   {_.isEmpty(studentInfo?._id)
-                    ? 'GHS 0.00'
+                    ? "GHS 0.00"
                     : currencyFormatter(currentLevel?.fees || 0)}
                 </Typography>
               </Stack>
               <Stack
-                direction='row'
-                justifyContent='space-between'
-                alignItems='center'
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
-                <Typography variant='body2'>Arreas </Typography>
-                <Typography variant='body2'>
+                <Typography variant="body2">Arreas </Typography>
+                <Typography variant="body2">
                   {currencyFormatter(totalArreas)}
                 </Typography>
               </Stack>
               <Divider flexItem />
               <Stack
-                direction='row'
-                justifyContent='space-between'
-                alignItems='center'
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
-                <Typography fontWeight='bold'>Total </Typography>
-                <Typography variant='body2'>
+                <Typography fontWeight="bold">Total </Typography>
+                <Typography variant="body2">
                   {_.isEmpty(studentInfo?._id)
-                    ? 'GHS 0.00'
+                    ? "GHS 0.00"
                     : currencyFormatter(totalFeesToBePaid)}
                 </Typography>
               </Stack>
               <Stack
-                direction='row'
-                justifyContent='space-between'
-                alignItems='center'
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
-                <Typography fontWeight='bold'>Fees Paid </Typography>
-                <Typography variant='body2'>
+                <Typography fontWeight="bold">Fees Paid </Typography>
+                <Typography variant="body2">
                   {_.isEmpty(studentInfo?._id)
-                    ? 'GHS 0.00'
+                    ? "GHS 0.00"
                     : currencyFormatter(currentFeesPaid)}
                 </Typography>
               </Stack>
               <Divider flexItem />
               <Stack
-                direction='row'
-                justifyContent='space-between'
-                alignItems='center'
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
-                <Typography fontWeight='bold'>Outstanding Fees </Typography>
-                <Typography variant='body2'>
+                <Typography fontWeight="bold">Outstanding Fees </Typography>
+                <Typography variant="body2">
                   {_.isEmpty(studentInfo?._id)
-                    ? 'GHS 0.00'
+                    ? "GHS 0.00"
                     : currencyFormatter(totalOutStanding)}
                 </Typography>
               </Stack>
@@ -490,13 +502,6 @@ const FeeMakePayment = () => {
         </Grid>
       </Grid>
 
-      {/*View  Student fee History */}
-      <FeePaymentHistory open={openFeesHistory} setOpen={setOpenFeesHistory} />
-
-      <StudentFeesHistory
-        open={openStudentFeesHistory}
-        setOpen={setOpenStudentFeesHistory}
-      />
     </>
   );
 };

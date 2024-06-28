@@ -186,9 +186,9 @@ const Session = () => {
           showRowShadow={false}
           handleEdit={handlEditSession}
           handleDelete={handleDeleteSession}
-          showAddButton={true}
           addButtonImg={EMPTY_IMAGES.session}
           addButtonMessage="😑 No School Session available!.Create a new one!"
+          showAddButton={true}
           addButtonText="New Session"
           onAddButtonClicked={handleOpenSession}
           handleRefresh={sessions.refetch}

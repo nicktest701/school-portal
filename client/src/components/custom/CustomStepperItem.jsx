@@ -1,31 +1,31 @@
-import { CheckRounded } from '@mui/icons-material';
-import { Avatar, LinearProgress, Stack } from '@mui/material';
-import React from 'react';
+import { CheckRounded } from "@mui/icons-material";
+import { Avatar, LinearProgress, Stack, Typography } from "@mui/material";
+import React from "react";
 
 function CustomStepperItem({ initValue, title, isCompleted, showProgress }) {
   return (
     <>
-      <Stack justifyContent='center' alignItems='çenter'>
+      <Stack justifyContent="center" alignItems="çenter">
         <Avatar
           sx={{
-            alignSelf: 'center',
+            alignSelf: "center",
             mb: 1,
-            bgcolor: isCompleted ? 'success.main' : null,
+            bgcolor: isCompleted ? "success.main" : null,
           }}
         >
           {isCompleted ? <CheckRounded /> : initValue}
         </Avatar>
-        <small>{title}</small>
+        <Typography variant='caption' textAlign='center'>{title}</Typography>
       </Stack>
       {showProgress && (
         <LinearProgress
-          variant='determinate'
+          variant="determinate"
           sx={{
             width: 80,
             borderRadius: 1,
-            bgcolor: isCompleted ? 'success.main' : null,
+            bgcolor: isCompleted ? "success.main" : null,
           }}
-          color={isCompleted ? 'success' : 'primary'}
+          color={isCompleted ? "success" : "primary"}
           value={isCompleted ? 100 : 0}
         />
       )}

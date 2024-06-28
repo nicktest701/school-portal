@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Stack, Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { STUDENTS_COLUMN } from '../../mockup/columns/studentColumns';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';

@@ -42,7 +42,7 @@ const GlobalAlert = () => {
         // onClose={handleClose}
         sx={{
           // width: "100%",
-          bgcolor: "primary.main",
+          bgcolor: "#fff",
           color: alertData?.severity === "info" ? "success.main" : "error.main",
           borderBottom: `2px solid ${color}`,
           py: 1,

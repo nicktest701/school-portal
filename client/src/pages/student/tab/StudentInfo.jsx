@@ -126,6 +126,7 @@ const StudentInfo = () => {
           )}
 
           <ButtonGroup
+            variant="contained"
             size="small"
             sx={{
               display: "flex",
@@ -133,7 +134,7 @@ const StudentInfo = () => {
               py: 2,
             }}
           >
-            <Button>
+            <Button sx={{ bgcolor: "var(--secondary)" }}>
               <FormLabel
                 htmlFor="studentFile"
                 title="Import students"
@@ -148,8 +149,10 @@ const StudentInfo = () => {
                   cursor: "pointer",
                 }}
               >
-                <NoteRounded />
-                <Typography variant="caption">From file</Typography>
+                <NoteRounded htmlColor="#fff" />
+                <Typography variant="caption" color="#fff">
+                  From file
+                </Typography>
 
                 <Input
                   type="file"
@@ -176,7 +179,9 @@ const StudentInfo = () => {
           </ButtonGroup>
         </Box>
 
-        <Container sx={{ py: 2, border: "1px solid lightgray" }}>
+        <Container
+          sx={{ py: 4, mb: 4, border: "1px solid lightgray", bgcolor: "#fff" }}
+        >
           {mode === "personal-info" && (
             <PersonalInformation mode={mode} setMode={setMode} />
           )}
