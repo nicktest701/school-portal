@@ -1,11 +1,14 @@
-import React, {
-  Suspense,
-  lazy,
-  useCallback,
-  useContext,
-  useState,
-} from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
+import React, { useCallback, useContext } from "react";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Container,
+  Divider,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
@@ -14,36 +17,32 @@ import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
 import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
 import { useQuery } from "@tanstack/react-query";
 import * as XLSX from "xlsx";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { STUDENTS_EXAMS_COLUMN } from "../../mockup/columns/studentColumns";
 import ExamsHomeCard from "../../components/cards/ExamsHomeCard";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import ExamsScore from "./ExamsScore";
 import { getExamsDetails } from "../../api/ExaminationAPI";
-import { BookSharp, NoteOutlined, List } from "@mui/icons-material";
+import {
+  BookSharp,
+  NoteOutlined,
+  List,
+  ChevronRight,
+} from "@mui/icons-material";
 
 import student_icon from "../../assets/images/header/student_ico.svg";
 import { EMPTY_IMAGES } from "../../config/images";
 import CustomTitle from "../../components/custom/CustomTitle";
 import exams_icon from "../../assets/images/header/exams_ico.svg";
 import { UserContext } from "../../context/providers/UserProvider";
-import Loader from "../../config/Loader";
 import Back from "../../components/Back";
-import { getSubjectsForLevel } from "../../api/levelAPI";
-
-const LevelExamScoreInput = lazy(() => import("./LevelExamScoreInput"));
 
 const ExamsLevel = ({ type }) => {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
   const {
     userState: { session },
   } = useContext(UserContext);
-
   const { levelId, level } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const [viewLevelScoreInput, setViewLevelScoreInput] = useState(false);
 
   //GET All Details about exams
 
@@ -58,37 +57,35 @@ const ExamsLevel = ({ type }) => {
     enabled: !!levelId && !!session.sessionId && !!session.termId,
   });
 
-  const levelOptions = useQuery({
-    queryKey: ["subjects", levelId],
-    queryFn: () => getSubjectsForLevel(levelId),
-    enabled: !!levelId,
-    select: ({ subjects, grades }) => {
-      return {
-        subjects,
-        grades,
-      };
-    },
-  });
-
   const handleViewExamsDetails = (rowData) => {
-    setSearchParams((params) => {
-      params.set("exams_id", rowData?._id);
-      params.set("student_id", rowData?.studentId);
+    // setSearchParams((params) => {
+    //   params.set("exams_id", rowData?._id);
+    //   params.set("student_id", rowData?.studentId);
 
-      return params;
-    });
-    schoolSessionDispatch({
-      type: "openAddExamsScore",
-      payload: {
-        open: true,
-        data: {
-          levelId,
-          studentId: rowData.studentId,
-          sessionId: session.sessionId,
-          termId: session.termId,
+    //   return params;
+
+    // });
+    // schoolSessionDispatch({
+    //   type: "openAddExamsScore",
+    //   payload: {
+    //     open: true,
+    //     data: {
+    //       levelId,
+    //       studentId: rowData.studentId,
+    //       sessionId: session.sessionId,
+    //       termId: session.termId,
+    //     },
+    //   },
+    // });
+
+    navigate(
+      `/examination/level/${levelId}/student?eid=${rowData?._id}&sid=${rowData?.studentId}`,
+      {
+        state: {
+          prevPath: `/examination/level/${levelId}/${level}`,
         },
-      },
-    });
+      }
+    );
   };
 
   const column = [
@@ -96,25 +93,24 @@ const ExamsLevel = ({ type }) => {
 
     {
       field: null,
-      title: "Exams Details",
-      render: (rowData) => {
-        return (
-          <Button
-            variant="outlined"
-            onClick={() => handleViewExamsDetails(rowData)}
-          >
-            View Details
-          </Button>
-        );
-      },
+      title: "",
+      width: "30%",
+      render: () => <ChevronRight sx={{ width: 30, height: 30 }} />,
     },
   ];
 
   const iconStyle = { width: 28, height: 28 };
 
+  const handleImportResults = () => {
+    navigate(`/examination/level/${levelId}/${level}/upload`, {
+      state: {
+        prevPath: `/examination/level/${levelId}/${level}`,
+      },
+    });
+  };
+
   //Generate reports for whole level
   const handleGenerateReports = () => {
-    // setViewReport(true);
     navigate(`/${type}/reports/${levelId}`);
   };
 
@@ -151,10 +147,6 @@ const ExamsLevel = ({ type }) => {
     });
   }, [examDetails?.data?.students]);
 
-  const handleViewLevelScoreInput = () => {
-    setViewLevelScoreInput(true);
-  };
-
   return (
     <>
       <Back
@@ -170,7 +162,7 @@ const ExamsLevel = ({ type }) => {
           alignItems: "center",
           gap: 2,
           bgcolor: "#fff",
-          my:2
+          my: 2,
         }}
       >
         <CustomTitle
@@ -189,17 +181,21 @@ const ExamsLevel = ({ type }) => {
         </Typography>
       </Container>
 
+      <Typography variant="h5" py={2}>
+        Exams Summary
+      </Typography>
+      <Divider />
       <Box
         sx={{
           width: "100%",
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
           gap: 2,
-          py: 4,
+          py: 6,
         }}
       >
         <ExamsHomeCard
-          title="Total Student"
+          title="Students"
           value={examDetails.data?.noOfStudents}
           icon={<PersonOutlineOutlinedIcon sx={iconStyle} />}
           color="info"
@@ -243,43 +239,27 @@ const ExamsLevel = ({ type }) => {
         columns={column}
         search={true}
         data={examDetails?.data?.students}
-        actions={[
-          {
-            icon: () => <NoteOutlined color="info" />,
-            position: "toolbar",
-            tooltip: "Download Assessment Sheet",
-            onClick: downloadSheet,
-            isFreeAction: true,
-          },
-          {
-            icon: () => <BookSharp color="warning" />,
-            position: "toolbar",
-            tooltip: "Import Results",
-            onClick: handleViewLevelScoreInput,
-            isFreeAction: true,
-          },
-          {
-            icon: () => <List color="error" />,
-            position: "toolbar",
-            tooltip: "View Students Report",
-            onClick: handleGenerateReports,
-            isFreeAction: true,
-          },
-        ]}
+        autoCompleteComponent={
+          <ButtonGroup>
+            <Button startIcon={<NoteOutlined />} onClick={downloadSheet}>
+              {matches ? " Download Assessment Sheet" : ""}
+            </Button>
+
+            <Button startIcon={<BookSharp />} onClick={handleImportResults}>
+              {matches ? "Import Results" : ""}
+            </Button>
+
+            <Button startIcon={<List />} onClick={handleGenerateReports}>
+              {matches ? " View Students Report" : ""}
+            </Button>
+          </ButtonGroup>
+        }
+        actions={[]}
         handleRefresh={examDetails.refetch}
         addButtonImg={EMPTY_IMAGES.student}
         addButtonMessage="😑 No Students results available !!!!"
-        // onRowClick={(rowData) => openExamsScore(rowData)}
+        onRowClick={(rowData) => handleViewExamsDetails(rowData)}
       />
-      <ExamsScore />
-      <Suspense fallback={<Loader />}>
-        <LevelExamScoreInput
-          open={viewLevelScoreInput}
-          setOpen={setViewLevelScoreInput}
-          grades={levelOptions?.data?.grades}
-          defaultSubject=""
-        />
-      </Suspense>
     </>
   );
 };

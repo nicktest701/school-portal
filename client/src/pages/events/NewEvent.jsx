@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {
@@ -29,6 +29,28 @@ import { eventValidationSchema } from "../../config/validationSchema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postEvent } from "../../api/eventAPI";
 import Back from "../../components/Back";
+import TextEditor from "../../components/custom/TextEditor";
+
+const toolbarOptions = [
+  ["bold", "italic", "underline", "strike"], // toggled buttons
+  ["blockquote", "code-block"],
+  ["link", "image", "video", "formula"],
+
+  // [{ header: 1 }, { header: 2 }], // custom button values
+  [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+  [{ script: "sub" }, { script: "super" }], // superscript/subscript
+  [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+  [{ direction: "rtl" }], // text direction
+
+  // [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+  [{ font: [] }],
+  [{ align: [] }],
+
+  ["clean"], // remove formatting button
+];
 
 function NewEvent() {
   const queryClient = useQueryClient();
@@ -61,6 +83,7 @@ function NewEvent() {
       }
     },
   });
+  useEffect(() => {}, [description]);
 
   const initialValues = {
     type,
@@ -80,8 +103,7 @@ function NewEvent() {
       },
       onSuccess: () => {
         schoolSessionDispatch(alertSuccess("Event Created"));
-        navigate('/events')
-
+        navigate("/events");
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));
@@ -91,7 +113,7 @@ function NewEvent() {
 
   return (
     <Container>
-         <Back to='/events' color="primary.main" />
+      <Back to="/events" color="primary.main" />
       <CustomTitle
         title="New Events"
         subtitle=" Send single and bulk SMS to students and parents"
@@ -141,46 +163,13 @@ function NewEvent() {
                 error={Boolean(touched.title && errors.title)}
                 helperText={touched.title && errors.title}
               />
-              <div
-                style={{
-                  marginBottom: "32px",
-                }}
-              >
-                <FormLabel
-                  style={{
-                    color:
-                      touched.description && errors.description
-                        ? "#B72136"
-                        : "var(--primary)",
-                  }}
-                >
-                  Event Description
-                </FormLabel>
-                <ReactQuill
-                  theme="snow"
-                  value={description}
-                  onChange={(value) => setDescription(value)}
-                  placeholder="Description here"
-                  style={{
-                    borderRadius: 2,
-                    // height: "250px",
-                    border:
-                      touched.description && errors.description
-                        ? "1px solid #B72136"
-                        : "none",
-                  }}
-                />
-                {touched.description && errors.description && (
-                  <FormHelperText
-                    sx={{
-                      color: "#B72136",
-                    }}
-                  >
-                    {errors.description}
-                  </FormHelperText>
-                )}
-              </div>
-
+              <TextEditor
+                label="Description"
+                value={description}
+                setValue={setDescription}
+                touched={touched?.description}
+                errors={errors?.description}
+              />
               <div>
                 <FormLabel
                   style={{
@@ -211,8 +200,8 @@ function NewEvent() {
                     //   _.isEmpty(profile) ? null : URL.createObjectURL(profile)
                     // }
                     sx={{
-                      width: { xs: 120, md: 480 },
-                      height: { xs: 120, md: 480 },
+                      width: { xs: profile === null ? 120 : "100%" },
+                      height: { xs: profile === null ? 120 : "100%" },
 
                       objectFit: "contain",
                       alignSelf: "center",

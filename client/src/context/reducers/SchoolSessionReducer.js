@@ -43,17 +43,6 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         feePrintData: payload,
       };
 
-    case 'openAddExamsScore':
-      return {
-        ...state,
-        examsScore: payload,
-      };
-
-    case 'openViewExamsRecord':
-      return {
-        ...state,
-        examsRecord: payload,
-      };
     case 'openViewReport':
       return {
         ...state,
@@ -137,24 +126,6 @@ const SchoolSessionReducer = (state, { type, payload }) => {
           columns: [],
           data: [],
           type: '',
-        },
-      };
-
-    case 'viewUser':
-      return {
-        ...state,
-        userViewData: {
-          open: payload.open,
-          data: payload.data,
-        },
-      };
-
-    case 'editUser':
-      return {
-        ...state,
-        userEditData: {
-          open: payload.open,
-          data: payload.data,
         },
       };
 

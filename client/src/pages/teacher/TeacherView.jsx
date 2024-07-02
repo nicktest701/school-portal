@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import Swal from "sweetalert2";
 import React, { useContext } from "react";
-import { TeacherContext } from "../../context/providers/TeacherProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { deleteTeacher, getTeacher } from "../../api/teacherAPI";
@@ -29,6 +28,7 @@ import {
 import TeacherProfile from "./TeacherProfile";
 import CustomTitle from "../../components/custom/CustomTitle";
 import Back from "../../components/Back";
+import LoadingSpinner from "../../components/spinners/LoadingSpinner";
 // import Back from "../../components/Back";
 
 const TeacherView = () => {
@@ -36,7 +36,6 @@ const TeacherView = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { teacherDispatch } = useContext(TeacherContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const teacher = useQuery({
@@ -51,23 +50,11 @@ const TeacherView = () => {
   //EDIT Teacher Info
   const editTeacherInfo = () => {
     navigate(`/teacher/${id}/edit`);
-    handleClose();
-  };
-
-  //CLOSE view Teacher Info
-  const handleClose = () => {
-    teacherDispatch({
-      type: "viewTeacher",
-      payload: {
-        open: false,
-        data: {},
-      },
-    });
   };
 
   //DELETE Teacher Info
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isLoading } = useMutation({
     mutationFn: deleteTeacher,
   });
 
@@ -83,7 +70,6 @@ const TeacherView = () => {
           onSuccess: (data) => {
             queryClient.invalidateQueries(["teachers"]);
             schoolSessionDispatch(alertSuccess(data));
-            handleClose();
           },
           onError: (error) => {
             schoolSessionDispatch(alertError(error));
@@ -212,6 +198,7 @@ const TeacherView = () => {
           </Box>
         </Box>
       </Container>
+      {isLoading && <LoadingSpinner value="Removing Facilitator Information" />}
     </>
   );
 };

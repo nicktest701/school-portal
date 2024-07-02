@@ -47,11 +47,6 @@ const SchoolSessionProvider = ({ children }) => {
       id: '',
     },
 
-    //exams score
-    examsScore: {
-      open: false,
-      data: {},
-    },
 
     //View  Exams Report
     viewReport: {
@@ -85,17 +80,6 @@ const SchoolSessionProvider = ({ children }) => {
       type: '',
     },
 
-    //User Information
-    userViewData: {
-      open: false,
-      data: {},
-    },
-
-    userEditData: {
-      open: false,
-      data: {},
-    },
-
     ///fee details to be print
     feePrintData: {},
 
@@ -121,6 +105,7 @@ const SchoolSessionProvider = ({ children }) => {
         isCore: '',
       },
     },
+    
     viewGrades: {
       open: false,
       ratings: [],

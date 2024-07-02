@@ -14,7 +14,7 @@ function DashboardSwiperContent({ id, title, content, img }) {
       <div className="swiper-content">
         <Typography
           paddingBottom={2}
-          variant="h4"
+          variant="h3"
           // sx={{ fontSize: { xs: 36, md: 48, lg: 60 } }}
         >
           {title}
@@ -27,6 +27,7 @@ function DashboardSwiperContent({ id, title, content, img }) {
             variant="contained"
             color="secondary"
             onClick={handleViewEvent}
+            size='small'
           >
             Read More...
           </Button>

@@ -17,7 +17,7 @@ const LevelDashboard = () => {
     <>
       <CustomTitle
         title="School Levels & Subjects"
-        subtitle="Add and Track new Classes and Subjects"
+        subtitle="Organize and manage different educational levels to streamline curriculum and student progress tracking."
         img={level_icon}
         color="primary.main"
       />

@@ -37,18 +37,18 @@ const sendMail = async (body, emailList) => {
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
       <style>
 
       html{
-        font-family:'Open Sans',sans-serif !important;
+        font-family:'Inter',sans-serif !important;
         font-size:15px;
       } 
       </style>
   </head>
-      <body style='font-family:"Open Sans",sans-serif;background-color:whitesmoke;padding:20px;color:#333;'>
+      <body style='font-family:"Inter",sans-serif;background-color:whitesmoke;padding:20px;color:#333;'>
      <h3 style="text-decoration:underline;font-weight:bold;">${body?.title}</h3>
-      <p>${body?.message}</p>
+      <div>${body?.message}</div>
       </body>
       </html>
       

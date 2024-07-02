@@ -1,14 +1,13 @@
-import axios from 'axios';
 
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
+import api from './customAxios';
+
 
 //Get all Students
 export const getAllTerms = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/terms`,
+      url: `/terms`,
       params: {
         session,
       },
@@ -24,9 +23,9 @@ export const getAllTerms = async (session) => {
 
 export const getTerm = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/terms`,
+      url: `/terms`,
       params: {
         id,
       },
@@ -42,9 +41,9 @@ export const getTerm = async (id) => {
 
 export const postTerm = async (newTerm) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/terms`,
+      url: `/terms`,
       data: newTerm,
     });
 
@@ -58,9 +57,9 @@ export const postTerm = async (newTerm) => {
 
 export const putTerm = async (updatedSession) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/terms`,
+      url: `/terms`,
       data: updatedSession,
     });
 
@@ -74,9 +73,9 @@ export const putTerm = async (updatedSession) => {
 
 export const disableSessionAccount = async ({ _id, active }) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/terms/account`,
+      url: `/terms/account`,
       data: {
         id: _id,
         active,
@@ -91,9 +90,9 @@ export const disableSessionAccount = async ({ _id, active }) => {
 };
 export const deleteManyTerms = async (terms) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/terms/remove`,
+      url: `/terms/remove`,
       data: terms
     });
 
@@ -106,9 +105,9 @@ export const deleteManyTerms = async (terms) => {
 
 export const deleteTerm = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/terms/${id}`,
+      url: `/terms/${id}`,
     });
 
     return res.data;

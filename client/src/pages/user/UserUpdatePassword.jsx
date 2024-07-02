@@ -1,36 +1,33 @@
-import { useContext } from 'react';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import LoadingButton from '@mui/lab/LoadingButton';
-import Swal from 'sweetalert2';
-import { Formik } from 'formik';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { userResetPasswordValidationSchema } from '../../config/validationSchema';
+import { useContext } from "react";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Swal from "sweetalert2";
+import { Formik } from "formik";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { userResetPasswordValidationSchema } from "../../config/validationSchema";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { PasswordRounded } from '@mui/icons-material';
-import { updateUserPassword } from '../../api/userAPI';
+} from "../../context/actions/globalAlertActions";
+import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
+import { PasswordRounded } from "@mui/icons-material";
+import { updateUserPassword } from "../../api/userAPI";
+import { useParams } from "react-router-dom";
 
 function UserUpdatePassword({ open, setOpen }) {
+  const { id } = useParams();
   const queryClient = useQueryClient();
-  const {
-    schoolSessionState: { userViewData },
-    schoolSessionDispatch,
-  } = useContext(SchoolSessionContext);
-
-  const user = userViewData?.data;
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const iniitalValues = {
-    id: user?._id,
-    password: '',
-    confirmPassword: '',
+    id,
+    password: "",
+    confirmPassword: "",
   };
 
   const { mutateAsync, isLoading } = useMutation({
@@ -39,23 +36,22 @@ function UserUpdatePassword({ open, setOpen }) {
 
   const onSubmit = (values, options) => {
     delete values.confirmPassword;
-  
+
     Swal.fire({
-      title: 'Updating Password',
-      text: 'Do you wish to proceed?',
+      title: "Updating Password",
+      text: "Do you wish to proceed?",
       showCancelButton: true,
       allowOutsideClick: false,
     }).then(({ isConfirmed, isDenied, isDismissed }) => {
       if (isConfirmed) {
-        // console.log(values);
         mutateAsync(values, {
           onSuccess: (data) => {
-            queryClient.invalidateQueries(['users']);
+            queryClient.invalidateQueries(["user", id]);
             schoolSessionDispatch(alertSuccess(data));
             options.setSubmitting(false);
             handleClose();
             schoolSessionDispatch({
-              type: 'viewUser',
+              type: "viewUser",
               payload: {
                 open: false,
                 data: {},
@@ -77,8 +73,8 @@ function UserUpdatePassword({ open, setOpen }) {
   const handleClose = () => setOpen(false);
 
   return (
-    <Dialog open={open} maxWidth='xs' fullWidth>
-      <CustomDialogTitle title='Password Reset' onClose={handleClose} />
+    <Dialog open={open} maxWidth="xs" fullWidth>
+      <CustomDialogTitle title="Password Reset" onClose={handleClose} />
       <Formik
         initialValues={iniitalValues}
         onSubmit={onSubmit}
@@ -91,23 +87,23 @@ function UserUpdatePassword({ open, setOpen }) {
               <DialogContent>
                 <Stack padding={2} spacing={1}>
                   <TextField
-                    type='password'
-                    label='Password'
+                    type="password"
+                    label="Password"
                     fullWidth
-                    size='small'
-                    autoComplete='no'
+                    size="small"
+                    autoComplete="no"
                     value={values.password}
-                    onChange={handleChange('password')}
+                    onChange={handleChange("password")}
                     error={Boolean(touched.password && errors.password)}
                     helperText={touched.password && errors.password}
                   />
                   <TextField
-                    type='password'
-                    label='Confirm Password'
+                    type="password"
+                    label="Confirm Password"
                     fullWidth
-                    size='small'
+                    size="small"
                     value={values.confirmPassword}
-                    onChange={handleChange('confirmPassword')}
+                    onChange={handleChange("confirmPassword")}
                     error={Boolean(
                       touched.confirmPassword && errors.confirmPassword
                     )}
@@ -120,8 +116,8 @@ function UserUpdatePassword({ open, setOpen }) {
               <DialogActions>
                 <LoadingButton
                   loading={isLoading}
-                  variant='contained'
-                  color='primary'
+                  variant="contained"
+                  color="primary"
                   onClick={handleSubmit}
                   startIcon={<PasswordRounded />}
                 >

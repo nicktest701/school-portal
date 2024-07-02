@@ -1,14 +1,12 @@
-import axios from 'axios';
+import api from './customAxios';
 
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
 //Get all Students
 export const getAllEvents = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/events`,
+      url: `/events`,
     });
 
     return res.data;
@@ -19,9 +17,9 @@ export const getAllEvents = async () => {
 
 export const getEvent = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/events/${id}`,
+      url: `/events/${id}`,
 
     });
 
@@ -33,9 +31,9 @@ export const getEvent = async (id) => {
 
 export const postEvent = async (newEvent) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/events`,
+      url: `/events`,
       data: newEvent,
     });
 
@@ -49,9 +47,9 @@ export const postEvent = async (newEvent) => {
 
 export const putEvent = async (event) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/events`,
+      url: `/events`,
       data: event,
     });
 
@@ -63,9 +61,9 @@ export const putEvent = async (event) => {
 
 export const deleteEvent = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/events/${id}`,
+      url: `/events/${id}`,
     });
 
     return res.data;
@@ -75,9 +73,9 @@ export const deleteEvent = async (id) => {
 };
 export const deleteEvents = async (events) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/events/remove`,
+      url: `/events/remove`,
       data: events
     });
 

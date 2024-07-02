@@ -1,15 +1,12 @@
-import axios from 'axios';
+import api from './customAxios';
 
-const URL = import.meta.env.VITE_BASE_URL;
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
 //Get all Students
 export const getAllExams = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${URL}/examinations`,
+      url: `/examinations`,
       params: {
         sessionId: id,
       },
@@ -17,7 +14,7 @@ export const getAllExams = async (id) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -25,30 +22,30 @@ export const getAllExams = async (id) => {
 //Get all level exams details
 export const getExamsDetails = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${URL}/examinations/details`,
+      url: `/examinations/details`,
       params: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 //Get all level exams details
 export const getSubjectScore = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${URL}/examinations/subject`,
+      url: `/examinations/subject`,
       params: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -56,15 +53,15 @@ export const getSubjectScore = async (session) => {
 //GENERATE REPORTS
 export const generateReports = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${URL}/examinations/reports`,
+      url: `/examinations/reports`,
       params: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -72,15 +69,15 @@ export const generateReports = async (session) => {
 //GENERATE REPORTS
 export const publishReports = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${URL}/examinations/publish`,
+      url: `/examinations/publish`,
       params: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -88,15 +85,15 @@ export const publishReports = async (session) => {
 //GENERATE REPORTS
 export const publishStudentReport = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${URL}/examinations/publish/student`,
+      url: `/examinations/publish/student`,
       data: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -104,9 +101,9 @@ export const publishStudentReport = async (session) => {
 //Get all Students
 export const getStudentAcademics = async (session, student, level) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${URL}/examinations/student/academics`,
+      url: `/examinations/student/academics`,
       data: {
         student,
         session: session.sessionId,
@@ -117,7 +114,7 @@ export const getStudentAcademics = async (session, student, level) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -125,9 +122,9 @@ export const getStudentAcademics = async (session, student, level) => {
 //Get Exams by exams id
 export const getExams = async (examsId) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${URL}/examinations/student`,
+      url: `/examinations/student`,
       params: {
         examsId,
       },
@@ -135,22 +132,22 @@ export const getExams = async (examsId) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 //Get Exams by exams id
 export const getCurrentExams = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${URL}/examinations/student/current`,
+      url: `/examinations/student/current`,
       data: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -158,30 +155,30 @@ export const getCurrentExams = async (session) => {
 //Add new Exams
 export const postExamsRemarks = async (comments) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${URL}/examinations/comments`,
+      url: `/examinations/comments`,
       data: comments,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 //Add new Exams
 export const postExams = async (newExam) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${URL}/examinations`,
+      url: `/examinations`,
       data: newExam,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -189,15 +186,15 @@ export const postExams = async (newExam) => {
 //Add new Exams
 export const postBulkExams = async (newExam) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${URL}/examinations/bulk`,
+      url: `/examinations/bulk`,
       data: newExam,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -205,39 +202,39 @@ export const postBulkExams = async (newExam) => {
 //Update Exams scores
 export const updateExams = async (updatedScores) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${URL}/examinations/update`,
+      url: `/examinations/update`,
       data: updatedScores,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const putExams = async (updatedExam) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${URL}/examinations`,
+      url: `/examinations`,
       data: updatedExam,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const deleteExams = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${URL}/examinations`,
+      url: `/examinations`,
       params: {
         _id: id,
       },
@@ -245,7 +242,7 @@ export const deleteExams = async (id) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };

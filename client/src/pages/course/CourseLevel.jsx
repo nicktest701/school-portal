@@ -65,6 +65,7 @@ function CourseLevel() {
         isLoading={levelLoading}
         columns={columns}
         data={classLevel}
+        search
         actions={[]}
         showRowShadow={false}
         addButtonImg={EMPTY_IMAGES.session}

@@ -33,7 +33,7 @@ const GlobalAlert = () => {
       <Alert
         icon={
           alertData?.severity === "info" ? (
-            <CheckCircleRounded color="success" />
+            <CheckCircleRounded htmlColor="green" />
           ) : (
             <ErrorRounded color="error" />
           )
@@ -43,7 +43,7 @@ const GlobalAlert = () => {
         sx={{
           // width: "100%",
           bgcolor: "#fff",
-          color: alertData?.severity === "info" ? "success.main" : "error.main",
+          color: alertData?.severity === "info" ? "success.darker" : "error.darker",
           borderBottom: `2px solid ${color}`,
           py: 1,
         }}

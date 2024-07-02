@@ -9,7 +9,7 @@ const Settings = () => {
     <Container>
       <CustomTitle
         title='Settings'
-        subtitle='Manage system preferences and settings to your convenience'
+        subtitle="Customize and configure system settings to tailor the platform to your school's specific needs."
         img={settings_icon}
         backColor='#012e54'
       />

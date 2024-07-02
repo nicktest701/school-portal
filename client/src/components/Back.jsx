@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ArrowBackRounded,  } from '@mui/icons-material';
-import { Container, IconButton } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Back = ({ to, color, bg }) => {
   const navigate = useNavigate();
   const goBack = () => navigate(to || -1);
   return (
-    <Container
+    <Box
       sx={{
         backgroundColor: 'transparent',
         display: 'flex',
@@ -23,7 +23,7 @@ const Back = ({ to, color, bg }) => {
       >
         <ArrowBackRounded sx={{ color: color || '#fff' }} />
       </IconButton>
-    </Container>
+    </Box>
   );
 };
 

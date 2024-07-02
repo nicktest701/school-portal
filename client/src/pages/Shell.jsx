@@ -21,20 +21,34 @@ import { ArrowDropDown, Menu, NotificationsSharp } from "@mui/icons-material";
 import HorizontalSidebar from "./layouts/HorizontalSidebar";
 import ViewUserProfile from "../components/dialog/ViewUserProfile";
 import Content from "./layouts/Content";
-import NotificationDropdown from "../components/dropdowns/NotificationDropdown";
 import CustomDropdown from "../components/dropdowns/CustomDropdown";
+import NotificationDrawer from "../components/dropdowns/NotificationDrawer";
+import { getItem } from "../config/helper";
+import { getAllNotifications } from "../api/notificationAPI";
+import { useQuery } from "@tanstack/react-query";
 
 const Shell = () => {
   const [openMiniBar, setOpenMiniBar] = useState(false);
+  const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
-  const { user, logOutUser, session } = useContext(UserContext);
-  const [showNotificationDropdown, setShowNotificationDropdown] =
-    useState(false);
+  const { user,  session } = useContext(UserContext);
 
   const {
     schoolSessionState: { generalAlert },
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
+
+  const notifications = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => getAllNotifications(),
+    initialData: [],
+    select: (notifications) => {
+      const removedNotifications = getItem("d_no");
+      return notifications?.filter((notification) => {
+        return !removedNotifications?.includes(notification?._id);
+      });
+    },
+  });
 
   const closeGeneralAlert = () => {
     schoolSessionDispatch({
@@ -47,15 +61,9 @@ const Shell = () => {
   };
 
   const handleOpenBar = () => setOpenMiniBar(true);
+  const handleOpenNotificationDrawer = () => setOpenNotificationDrawer(true);
 
-  //OPEN user profile
-  // const handleOpenUserProfile = () => setOpenUserProfile(true);
-
-  const toggleNotification = () => {
-    setShowNotificationDropdown(!showNotificationDropdown);
-  };
-
-  if (_.isEmpty(session?.sessionId) || _.isEmpty(user?.id)) {
+  if (_.isEmpty(session?.sessionId) || !user?.id) {
     return <Navigate to="/login" />;
   }
 
@@ -79,11 +87,7 @@ const Shell = () => {
       )}
       <QuickMessage />
 
-      <HorizontalSidebar
-        open={openMiniBar}
-        setOpen={setOpenMiniBar}
-        onLogOut={logOutUser}
-      />
+      <HorizontalSidebar open={openMiniBar} setOpen={setOpenMiniBar} />
 
       <Box
         sx={{
@@ -91,8 +95,11 @@ const Shell = () => {
           alignItems: "start",
         }}
       >
-        <Sidebar onLogOut={logOutUser} />
-
+        <Sidebar />
+        <NotificationDrawer
+          open={openNotificationDrawer}
+          setOpen={setOpenNotificationDrawer}
+        />
         <div style={{ overflowX: "clip", flex: 1, width: "100%" }}>
           <AppBar
             position="sticky"
@@ -127,14 +134,13 @@ const Shell = () => {
               </Box>
 
               <div style={{ position: "relative" }}>
-                <IconButton onClick={toggleNotification}>
-                  <Badge badgeContent={2} color="error">
+                <IconButton onClick={handleOpenNotificationDrawer}>
+                  <Badge
+                    badgeContent={notifications?.data?.length}
+                    color="error"
+                  >
                     <NotificationsSharp />
                   </Badge>
-                  <NotificationDropdown
-                    display={showNotificationDropdown}
-                    setClose={setShowNotificationDropdown}
-                  />
                 </IconButton>
               </div>
               {/* <Button
@@ -170,7 +176,7 @@ const Shell = () => {
                   <Link to="/profile">Profile</Link>
                 </li>
                 <li>
-                <Link to="/profile">Log Out</Link>
+                  <Link to="/profile">Log Out</Link>
                 </li>
               </CustomDropdown>
             </Box>

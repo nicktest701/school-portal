@@ -7,7 +7,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import React from "react";
 import { EMPTY_IMAGES } from "../../config/images";
 import { getEvent } from "../../api/eventAPI";
@@ -16,7 +16,7 @@ import moment from "moment";
 
 function ViewEvent() {
   const queryClient = useQueryClient();
-
+  const [searchParams] = useSearchParams();
   const { id } = useParams();
   // const [loaded, setLoaded] = useState(false);
 
@@ -50,40 +50,53 @@ function ViewEvent() {
       <Box
         // className={loaded ? "loaded" : ""}
         sx={{
-          background: `linear-gradient(to bottom,rgba(1, 46, 84,0.95),rgba(1, 46, 84,0.7)),url(${
+          background: `linear-gradient(to bottom,rgba(1, 46, 84,0.95),rgba(1, 46, 84,0.9)),url(${
             event?.data?.album || EMPTY_IMAGES?.level
           })`,
           //   backgroundSize: "cover",
           //   backgroundPosition: "center",
           width: "100%",
-          height: "50svh",
+          height: 150,
           p: 4,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "flex-start",
-          gap: 2,
+          mb: 8,
         }}
       >
-        <Back to={-1} color="secondary.main" />
-        <Box>
-          <Typography variant="h2" color="#fff" paragraph>
-            {event?.data?.title}
-          </Typography>
-        </Box>
-        <Stack direction="row" spacing={2}>
+        <Typography variant="h3" color="#fff" paragraph>
+          {event?.data?.title}
+        </Typography>
+
+        <Box
+          spacing={2}
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
+          gap={2}
+          pr={8}
+          width="100%"
+        >
+          <div style={{ flexGrow: 1 }}>
+            <Back to={searchParams.get("redirect_to") || "/"} color="#fff" />
+          </div>
+
           <Avatar />
           <ListItemText
             primary="Hello"
-            secondary={`Created on - ${moment(event?.data?.createdAt)?.format("LLL")}`}
+            secondary={`${moment(event?.data?.createdAt)?.format(
+              "LLL"
+            )}`}
             primaryTypographyProps={{
               color: "#fff",
             }}
             secondaryTypographyProps={{
               color: "#fff",
+              whiteSpace: "nowrap",
             }}
           />
-        </Stack>
+        </Box>
       </Box>
       <div
         style={{ padding: "16px" }}

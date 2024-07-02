@@ -1,24 +1,24 @@
-import axios from 'axios';
+import api from './customAxios';
 
 //Get all Students
 export const getAllCourses = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/courses`,
+      url: `/courses`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const getCourse = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/courses`,
+      url: `/courses`,
       params: {
         id,
       },
@@ -26,15 +26,15 @@ export const getCourse = async (id) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const getCourseDashboardInfo = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/courses/dashboard`,
+      url: `/courses/dashboard`,
       params: {
         ...session,
       },
@@ -42,15 +42,15 @@ export const getCourseDashboardInfo = async (session) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const getCourseByTeacher = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/courses/teacher`,
+      url: `/courses/teacher`,
       params: {
         ...session,
       },
@@ -58,47 +58,47 @@ export const getCourseByTeacher = async (session) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const postCourse = async (newCourse) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/courses`,
+      url: `/courses`,
       data: newCourse,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const putCourse = async (updatedCourse) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/courses`,
+      url: `/courses`,
       data: updatedCourse,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const deleteCourse = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/courses/${id}`,
+      url: `/courses/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };

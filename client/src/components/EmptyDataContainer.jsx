@@ -16,7 +16,12 @@ const EmptyDataContainer = ({
   return (
     <Container
       className="hide-on-pint"
-      sx={{ backgroundColor: "#fff", height: "70svh" }}
+      sx={{
+        backgroundColor: "#fff",
+        height: "70svh",
+        display: "grid",
+        placeItems: "center",
+      }}
     >
       <Stack
         justifyContent="center"

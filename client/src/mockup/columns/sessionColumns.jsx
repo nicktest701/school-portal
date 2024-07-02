@@ -1,4 +1,10 @@
-import { CircleRounded, Delete, MenuRounded, Edit } from "@mui/icons-material";
+import {
+  CircleRounded,
+  Delete,
+  MenuRounded,
+  Edit,
+  ArrowForwardRounded,
+} from "@mui/icons-material";
 
 import {
   Avatar,
@@ -153,7 +159,7 @@ export const SCHOOL_LEVELS = [
             backgroundColor: "var(--primary)",
             padding: "7px 12px",
             color: "#fff",
-            borderRadius:'4px'
+            borderRadius: "4px",
           }}
           to={`/teacher/${teacher?._id}`}
         >
@@ -615,22 +621,30 @@ export const MESSAGE_COLUMNS = [
     title: "Message",
     render: ({ body }) => {
       return (
-        <ListItemText
-          primary={body.title}
-          primaryTypographyProps={{
-            fontSize: 13,
-            color: "primary.main",
-            fontWeight: "bold",
-          }}
-          secondary={body.message}
-          secondaryTypographyProps={{
-            fontSize: 12,
-            textOverflow: `ellipsis`,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            maxWidth: 150,
-          }}
-        />
+        <>
+          <ListItemText
+            primary={body.title}
+            primaryTypographyProps={{
+              fontSize: 13,
+              color: "primary.main",
+              fontWeight: "bold",
+            }}
+            // secondary={body.message}
+            secondaryTypographyProps={{
+              fontSize: 12,
+              textOverflow: `ellipsis`,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              maxWidth: 150,
+            }}
+          />
+          <div
+            style={{ height: 120, overflow: "hidden" }}
+            dangerouslySetInnerHTML={{
+              __html: body.message,
+            }}
+          ></div>
+        </>
       );
     },
   },
@@ -640,11 +654,10 @@ export const MESSAGE_COLUMNS = [
     export: true,
     render: ({ active }) => (
       <Button
-        color={active ? "success" : "error"}
         sx={{
-          bgcolor: active ? "success.lighter" : "error.lighter",
+          bgcolor: active ? "success.darker" : "error.darker",
+          color: "#fff",
         }}
-        size="small"
       >
         {active ? "Delivered" : "Not Delivered"}
       </Button>
@@ -667,6 +680,14 @@ export const EXAMS_COLUMNS = [
   {
     field: "noOfStudents",
     title: "Students",
+  },
+
+  {
+    field: "noOfStudents",
+    title: "More",
+    render: (rowData) => {
+      return <Button endIcon={<ArrowForwardRounded />}>View Details</Button>;
+    },
   },
 ];
 

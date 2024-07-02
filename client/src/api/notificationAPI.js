@@ -1,14 +1,12 @@
-import axios from 'axios';
 
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
+import api from './customAxios';
 
 //Get all Students
 export const getAllNotifications = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/notifications`,
+      url: `/notifications`,
     });
 
     return res.data;
@@ -19,9 +17,9 @@ export const getAllNotifications = async () => {
 
 export const getNotification = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/notifications/${id}`,
+      url: `/notifications/${id}`,
 
     });
 
@@ -33,9 +31,9 @@ export const getNotification = async (id) => {
 
 export const postNotification = async (newNotification) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/notifications`,
+      url: `/notifications`,
       data: newNotification,
     });
 
@@ -49,9 +47,9 @@ export const postNotification = async (newNotification) => {
 
 export const putNotification = async (notification) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/notifications`,
+      url: `/notifications`,
       data: notification,
     });
 
@@ -63,9 +61,9 @@ export const putNotification = async (notification) => {
 
 export const deleteNotification = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/notifications/${id}`,
+      url: `/notifications/${id}`,
     });
 
     return res.data;
@@ -75,9 +73,9 @@ export const deleteNotification = async (id) => {
 };
 export const deleteNotifications = async (notifications) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/notifications/remove`,
+      url: `/notifications/remove`,
       data: notifications
     });
 

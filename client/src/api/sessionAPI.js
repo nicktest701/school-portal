@@ -1,28 +1,25 @@
-import axios from 'axios';
+import api from './customAxios';
 
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
- 
 
 //Get all Students
 export const getAllSessions = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/sessions`,
+      url: `${import.meta.env.VITE_BASE_URL}/sessions`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const getSession = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/sessions`,
+      url: `${import.meta.env.VITE_BASE_URL}/sessions`,
       params: {
         id,
       },
@@ -30,48 +27,48 @@ export const getSession = async (id) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const postSession = async (newSession) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url:  `${import.meta.env.VITE_BASE_URL}/sessions`,
+      url: `${import.meta.env.VITE_BASE_URL}/sessions`,
       data: newSession,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const putSession = async (updatedSession) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url:  `${import.meta.env.VITE_BASE_URL}/sessions`,
+      url: `${import.meta.env.VITE_BASE_URL}/sessions`,
       data: updatedSession,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const deleteSession = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url:  `${import.meta.env.VITE_BASE_URL}/sessions/${id}`,
+      url: `${import.meta.env.VITE_BASE_URL}/sessions/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
@@ -83,9 +80,9 @@ export const uploadProfileImage = async ({ _id, profile, type }) => {
   formData.append('school', '456-456');
 
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url:  `${import.meta.env.VITE_BASE_URL}/${type}/profile`,
+      url: `${import.meta.env.VITE_BASE_URL}/${type}/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -94,8 +91,8 @@ export const uploadProfileImage = async ({ _id, profile, type }) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
-    throw new Error(error.response.data || 'Error Updating profile');
+    return error.response.data
+
   }
 };
 

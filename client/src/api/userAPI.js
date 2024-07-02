@@ -1,14 +1,13 @@
 import axios from 'axios';
-
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
+import api from './customAxios';
+import { saveToken } from '../config/sessionHandler';
 
 //Get all Users
 export const getAllUsers = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/users`,
+      url: `/users`,
     });
 
     return res.data;
@@ -24,6 +23,8 @@ export const getUserAuth = async (userInfo) => {
       url: `${import.meta.env.VITE_BASE_URL}/users/auth`,
       data: userInfo,
     });
+
+    saveToken(res.data?.token)
 
     return res.data;
   } catch (error) {
@@ -43,6 +44,7 @@ export const verifyUser = async () => {
       },
     });
 
+    saveToken(res.data?.token)
     return res.data;
   } catch (error) {
 
@@ -50,16 +52,17 @@ export const verifyUser = async () => {
   }
 };
 
+
 export const getUser = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/users/${id}`,
+      url: `/users/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
@@ -80,9 +83,9 @@ export const postUser = async (user) => {
   formData.append('password', user.password);
 
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/users`,
+      url: `/users`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -91,7 +94,7 @@ export const postUser = async (user) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
@@ -102,9 +105,9 @@ export const updateUserProfileImage = async ({ _id, profile }) => {
   formData.append('_id', _id);
 
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/users/profile`,
+      url: `/users/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -113,37 +116,81 @@ export const updateUserProfileImage = async ({ _id, profile }) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
-    throw new Error(error.response.data || 'Error Updating profile');
+    return error.response.data
+
   }
 };
 
 export const updateUserPassword = async (passwordInfo) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/users/reset-password`,
+      url: `/users/reset-password`,
       data: passwordInfo,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 export const putUser = async (updatedUser) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/users`,
+      url: `/users`,
       data: updatedUser,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
+
+export const logOut = async () => {
+  try {
+    const res = await api({
+      method: 'PUT',
+      url: `/users/logout`,
+
+    });
+
+    return res.data;
+  } catch (error) {
+    return error.response.data
+  }
+};
+
+export const enableOrDisableAccount = async (info) => {
+  try {
+    const res = await api({
+      method: 'PUT',
+      url: `/users/account`,
+      data: info,
+    });
+
+    return res.data;
+  } catch (error) {
+    return error.response.data
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    const res = await api({
+      method: 'DELETE',
+      url: `/users/${id}`,
+    });
+
+    return res.data;
+  } catch (error) {
+    return error.response.data
+  }
+};
+
+
+
 
 export const getSchoolInfo = async () => {
   try {
@@ -157,11 +204,12 @@ export const getSchoolInfo = async () => {
     console.log(error.response.data);
   }
 };
+
 export const putSchoolInfo = async (schoolInfo) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/users/school`,
+      url: `/users/school`,
       data: schoolInfo,
     });
 
@@ -177,9 +225,9 @@ export const updateSchoolLogo = async (badge) => {
   formData.append('badge', badge);
 
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/users/school/profile`,
+      url: `/users/school/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -188,34 +236,8 @@ export const updateSchoolLogo = async (badge) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
-    throw new Error(error.response.data || 'Error Updating profile');
+    return error.response.data
+
   }
 };
 
-export const deleteUser = async (id) => {
-  try {
-    const res = await axios({
-      method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/users/${id}`,
-    });
-
-    return res.data;
-  } catch (error) {
-    //console.log(error.response.data);
-  }
-};
-
-export const enableOrDisableAccount = async (info) => {
-  try {
-    const res = await axios({
-      method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/users/account`,
-      data: info,
-    });
-
-    return res.data;
-  } catch (error) {
-    //console.log(error.response.data);
-  }
-};

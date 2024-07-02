@@ -1,19 +1,18 @@
-import React from 'react';
-import Scrollbars from 'react-custom-scrollbars';
-import { Chart, registerables } from 'chart.js';
-import StudentProvider from './context/providers/StudentProvider';
+import React from "react";
+import Scrollbars from "react-custom-scrollbars";
+import { Chart, registerables } from "chart.js";
+import StudentProvider from "./context/providers/StudentProvider";
 import {
   QueryClient,
   QueryClientProvider,
   useQueryErrorResetBoundary,
-} from '@tanstack/react-query';
-import { ErrorBoundary } from 'react-error-boundary';
-import ThemeProvider from './theme';
-import Root from './pages/layouts/Root';
-import SchoolSessionProvider from './context/providers/SchoolSessionProvider';
-import UserProvider from './context/providers/UserProvider';
-import TeacherProvider from './context/providers/TeacherProvider';
-import Error from './pages/Error';
+} from "@tanstack/react-query";
+import { ErrorBoundary } from "react-error-boundary";
+import ThemeProvider from "./theme";
+import Root from "./pages/layouts/Root";
+import SchoolSessionProvider from "./context/providers/SchoolSessionProvider";
+import UserProvider from "./context/providers/UserProvider";
+import Error from "./pages/Error";
 
 Chart.register(...registerables);
 
@@ -21,10 +20,10 @@ function App() {
   const queryClient = new QueryClient({
     defaultOptions: {
       mutations: {
-        networkMode: 'offlineFirst',
+        networkMode: "offlineFirst",
       },
       queries: {
-        networkMode: 'offlineFirst',
+        networkMode: "offlineFirst",
       },
     },
   });
@@ -32,21 +31,19 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-        <UserProvider>
-      <ErrorBoundary FallbackComponent={Error} onReset={reset}>
+      <UserProvider>
+        <ErrorBoundary FallbackComponent={Error} onReset={reset}>
           <ThemeProvider>
             <SchoolSessionProvider>
-              <TeacherProvider>
-                <StudentProvider>
-                  <Scrollbars>
-                    <Root />
-                  </Scrollbars>
-                </StudentProvider>
-              </TeacherProvider>
+              <StudentProvider>
+                <Scrollbars>
+                  <Root />
+                </Scrollbars>
+              </StudentProvider>
             </SchoolSessionProvider>
           </ThemeProvider>
-      </ErrorBoundary>
-        </UserProvider>
+        </ErrorBoundary>
+      </UserProvider>
     </QueryClientProvider>
   );
 }

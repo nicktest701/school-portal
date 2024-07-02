@@ -84,8 +84,8 @@ const TeacherAssignCourse = () => {
     <Container>
       <Back to={`/teacher/${id}`} color="primary.main" />
       <CustomTitle
-        title="Assign New Course"
-        subtitle="Assign a selected course to a teacher"
+        title="Course Allocation Management"
+        subtitle=" Assign courses to teachers, ensuring that everyone is aware of their responsibilities and schedules."
         color="primary.main"
       />
 

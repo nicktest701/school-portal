@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
-// import screenfull from 'screenfull';
+
 import Loader from "../../config/Loader";
 import Shell from "../Shell";
 import Login from "../Login";
@@ -24,6 +24,12 @@ import TeacherAssignCourse from "../teacher/TeacherAssignCourse";
 import AddCurrentSubjects from "../../components/modals/AddCurrentSubjects";
 import FeePaymentHistory from "../fees/FeePaymentHistory";
 import StudentFeesHistory from "../fees/StudentFeesHistory";
+import ExamsScore from "../examination/ExamsScore";
+import UserAdd from "../user/UserAdd";
+import User from "../user";
+import UserView from "../user/UserView";
+import UserEdit from "../user/UserEdit";
+import AttendanceHistory from "../level/AttendanceHistory";
 
 const FeeNew = lazy(() => import("../fees/FeeNew"));
 const LevelExamScoreInput = lazy(() =>
@@ -140,6 +146,15 @@ const Root = () => {
                 </Suspense>
               }
             />
+            <Route
+              path="attendance/:id/:type/history"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <AttendanceHistory />
+                </Suspense>
+              }
+            />
+
             {/* <Route
           element={
             <Suspense fallback={<Loader />}>
@@ -336,7 +351,7 @@ const Root = () => {
               }
               path="history"
             />
-            
+
             <Route
               element={
                 <Suspense fallback={<Loader />}>
@@ -380,7 +395,7 @@ const Root = () => {
               }
             />
             <Route
-              path="assign/students"
+              path="assign/:levelId/:level"
               element={
                 <Suspense fallback={<Loader />}>
                   <AssignedCoursesResults />
@@ -420,6 +435,14 @@ const Root = () => {
                 </Suspense>
               }
             />
+            <Route
+              path="attendance/:id/:type/history"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <AttendanceHistory />
+                </Suspense>
+              }
+            />
           </Route>
 
           {/* Examination */}
@@ -443,6 +466,23 @@ const Root = () => {
             <Route
               path="level/:levelId/:level"
               element={<ExamsLevel type="examination" />}
+            />
+
+            <Route
+              path="level/:levelId/:level/upload"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <LevelExamScoreInput defaultSubject="" />
+                </Suspense>
+              }
+            />
+            <Route
+              path="level/:levelId/student"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <ExamsScore />
+                </Suspense>
+              }
             />
             <Route
               path="reports/:levelId"
@@ -561,11 +601,44 @@ const Root = () => {
           <Route
             element={
               <Suspense fallback={<Loader />}>
-                <UserHome />
+                <User />
               </Suspense>
             }
             path="/users"
-          ></Route>
+          >
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <UserHome />
+                </Suspense>
+              }
+              index
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <UserAdd />
+                </Suspense>
+              }
+              path="new"
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <UserView />
+                </Suspense>
+              }
+              path=":id"
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <UserEdit />
+                </Suspense>
+              }
+              path=":id/edit"
+            />
+          </Route>
 
           <Route
             element={

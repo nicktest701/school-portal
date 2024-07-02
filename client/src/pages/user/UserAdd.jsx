@@ -1,8 +1,7 @@
 import { LoadingButton } from "@mui/lab";
-import { DialogContent } from "@mui/material";
+import { Box } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
-import Dialog from "@mui/material/Dialog";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -12,7 +11,6 @@ import { Formik } from "formik";
 import moment from "moment";
 import React, { useContext, useState } from "react";
 import { postUser } from "../../api/userAPI";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import CustomDatePicker from "../../components/inputs/CustomDatePicker";
 import CustomFormControl from "../../components/inputs/CustomFormControl";
 import CustomImageChooser from "../../components/inputs/CustomImageChooser";
@@ -25,8 +23,11 @@ import {
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import { NATIONALITY } from "../../mockup/data/nationality";
 import { TOWNS } from "../../mockup/data/towns";
+import CustomTitle from "../../components/custom/CustomTitle";
+import { SchoolRounded } from "@mui/icons-material";
+import Back from "../../components/Back";
 
-function UserAdd({ open, setOpen }) {
+function UserAdd() {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
 
@@ -39,6 +40,7 @@ function UserAdd({ open, setOpen }) {
   const { mutateAsync } = useMutation(postUser);
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format("L");
+    values.fullname=`${values?.firstname} ${values?.lastname}`
     // //console.log(values);
 
     mutateAsync(values, {
@@ -50,7 +52,6 @@ function UserAdd({ open, setOpen }) {
         schoolSessionDispatch(alertSuccess(data));
         options.resetForm();
         setProfieImg(null);
-        setOpen(false);
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));
@@ -59,8 +60,15 @@ function UserAdd({ open, setOpen }) {
   };
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="md">
-      <CustomDialogTitle title="New User" onClose={() => setOpen(false)} />
+    <>
+      <Back color="#012e54" />
+      <CustomTitle
+        title="New User"
+        subtitle="Track,manage and control courses assigned to you"
+        icon={<SchoolRounded color="primary" sx={{ width: 50, height: 50 }} />}
+        color="primary.main"
+      />
+
       <Formik
         initialValues={initValues}
         onSubmit={onSubmit}
@@ -82,8 +90,8 @@ function UserAdd({ open, setOpen }) {
           };
 
           return (
-            <DialogContent>
-              <Stack padding={2} spacing={1}>
+            <Box bgcolor="#fff" p={2}>
+              <Stack padding={2} spacing={2}>
                 <Stack sx={{ position: "relative" }}>
                   <Avatar
                     src={profileImg}
@@ -100,16 +108,29 @@ function UserAdd({ open, setOpen }) {
                 </Typography>
                 <CustomFormControl>
                   <TextField
-                    label="Fullname"
+                    label="Firstname"
                     type="text"
                     fullWidth
                     size="small"
-                    value={values.fullname}
-                    onChange={handleChange("fullname")}
-                    error={Boolean(touched.fullname && errors.fullname)}
-                    helperText={touched.fullname && errors.fullname}
+                    value={values.firstname}
+                    onChange={handleChange("firstname")}
+                    error={Boolean(touched.firstname && errors.firstname)}
+                    helperText={touched.firstname && errors.firstname}
                   />
                   <TextField
+                    label="Lastname"
+                    type="text"
+                    fullWidth
+                    size="small"
+                    value={values.lastname}
+                    onChange={handleChange("lastname")}
+                    error={Boolean(touched.lastname && errors.lastname)}
+                    helperText={touched.lastname && errors.lastname}
+                  />
+        
+                 
+                </CustomFormControl>
+                <TextField
                     label="Username"
                     type="text"
                     fullWidth
@@ -119,7 +140,6 @@ function UserAdd({ open, setOpen }) {
                     error={Boolean(touched.username && errors.username)}
                     helperText={touched.username && errors.username}
                   />
-                </CustomFormControl>
                 <CustomFormControl>
                   <CustomDatePicker
                     label="Date of Birth"
@@ -143,23 +163,23 @@ function UserAdd({ open, setOpen }) {
                     <MenuItem value="male">male</MenuItem>
                     <MenuItem value="female">female</MenuItem>
                   </TextField>
-                  <TextField
-                    label="Role"
-                    select
-                    fullWidth
-                    size="small"
-                    value={values.role}
-                    onChange={handleChange("role")}
-                    error={Boolean(touched.role && errors.role)}
-                    helperText={touched.role && errors.role}
-                  >
-                    <MenuItem value="administrator">Administrator</MenuItem>
-                    <MenuItem value="director">Director</MenuItem>
-                    <MenuItem value="secretary">Secretary</MenuItem>
-                    <MenuItem value="coordinator">Exams Coordinator</MenuItem>
-                    {/* <MenuItem value="teacher">Teacher</MenuItem> */}
-                  </TextField>
                 </CustomFormControl>
+                <TextField
+                  label="Role"
+                  select
+                  fullWidth
+                  size="small"
+                  value={values.role}
+                  onChange={handleChange("role")}
+                  error={Boolean(touched.role && errors.role)}
+                  helperText={touched.role && errors.role}
+                >
+                  <MenuItem value="administrator">Administrator</MenuItem>
+                  <MenuItem value="director">Director</MenuItem>
+                  <MenuItem value="secretary">Secretary</MenuItem>
+                  <MenuItem value="coordinator">Exams Coordinator</MenuItem>
+                  {/* <MenuItem value="teacher">Teacher</MenuItem> */}
+                </TextField>
                 <CustomFormControl>
                   <TextField
                     label="Email"
@@ -281,15 +301,15 @@ function UserAdd({ open, setOpen }) {
                     sx={{ minWidth: { xs: 100, sm: 150 } }}
                     onClick={handleSubmit}
                   >
-                    Save
+                    Save User
                   </LoadingButton>
                 </Stack>
               </Stack>
-            </DialogContent>
+            </Box>
           );
         }}
       </Formik>
-    </Dialog>
+    </>
   );
 }
 

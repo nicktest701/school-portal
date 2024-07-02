@@ -25,7 +25,7 @@ function CustomTableTitle({ icon, title, subtitle }) {
       <ListItemText
         primary={title}
         primaryTypographyProps={{
-          fontSize: { xs: 20, sm: 24 },
+          fontSize: { xs: 18, sm: 20 },
           fontWeight: "bold",
         }}
         secondary={subtitle}

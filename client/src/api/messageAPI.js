@@ -1,27 +1,26 @@
-import axios from 'axios';
 
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
+import api from './customAxios';
+
 
 //Get all Students
 export const getAllMessages = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/messages`,
+      url:  `/messages`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const getMessage = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url:  `${import.meta.env.VITE_BASE_URL}/messages`,
+      url:  `/messages`,
       params: {
         id,
       },
@@ -29,29 +28,29 @@ export const getMessage = async (id) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const postMessage = async (newMessage) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url:  `${import.meta.env.VITE_BASE_URL}/messages/${newMessage.rate}`,
+      url:  `/messages/${newMessage.rate}`,
       data: newMessage,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const resendMessage = async (messageInfo) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url:  `${import.meta.env.VITE_BASE_URL}/messages/resend`,
+      url:  `/messages/resend`,
       data: messageInfo,
     });
 
@@ -63,27 +62,27 @@ export const resendMessage = async (messageInfo) => {
 
 export const putMessage = async (updatedMessage) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url:  `${import.meta.env.VITE_BASE_URL}/messages`,
+      url:  `/messages`,
       data: updatedMessage,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const deleteMessage = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url:  `${import.meta.env.VITE_BASE_URL}/messages/${id}`,
+      url:  `/messages/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };

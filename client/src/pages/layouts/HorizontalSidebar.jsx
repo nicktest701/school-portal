@@ -6,8 +6,9 @@ import PropTypes from "prop-types";
 import MiniDrawerItem from "../../components/MiniDrawerItem";
 import { UserContext } from "../../context/providers/UserProvider";
 
-const HorizontalSidebar = ({ open, setOpen, onLogOut }) => {
-  const { user } = useContext(UserContext);
+const HorizontalSidebar = ({ open, setOpen, }) => {
+  const { user, logOutUser } = useContext(UserContext);
+
   const handleClose = () => setOpen(false);
 
   return (
@@ -108,7 +109,7 @@ const HorizontalSidebar = ({ open, setOpen, onLogOut }) => {
           to="/notifications"
         />
         <MiniDrawerItem title="About" to="/about" handleClose={handleClose} />
-        <a className="mini-drawer-link" onClick={onLogOut}>
+        <a className="mini-drawer-link" onClick={logOutUser}>
           Log Out
         </a>
         <small style={{ alignSelf: "center" }}>Frebby Tech Consults</small>

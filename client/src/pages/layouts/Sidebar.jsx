@@ -4,6 +4,7 @@ import {
   Avatar,
   Box,
   Button,
+  Divider,
   IconButton,
   Stack,
   Typography,
@@ -27,15 +28,14 @@ import {
   NotificationsSharp,
   NumbersSharp,
   SchoolRounded,
-  Event
+  Event,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { UserContext } from "../../context/providers/UserProvider";
 
-const Sidebar = ({ onLogOut }) => {
+const Sidebar = () => {
   const school_info = JSON.parse(localStorage.getItem("@school_info"));
-
-  const { user } = useContext(UserContext);
+  const { user, logOutUser } = useContext(UserContext);
 
   return (
     <Box
@@ -43,14 +43,14 @@ const Sidebar = ({ onLogOut }) => {
         position: "sticky",
         top: 0,
         pt: 2,
-        width: { xs: 0, sm: 80, md: 220 },
+        width: { xs: 0, sm: 80, md: 250 },
         height: "100dvh",
         display: { xs: "none", sm: "block" },
         transition: "all 0.4s ease-in-out",
         bgcolor: "primary.main",
       }}
     >
-      <Stack alignItems={{ xs: "left", sm: "center" }} pb={4} spacing={2}>
+      <Stack alignItems={{ xs: "left", sm: "center" }} pb={2} spacing={2}>
         {school_info?.badge ? (
           <Avatar
             alt="school logo"
@@ -69,14 +69,15 @@ const Sidebar = ({ onLogOut }) => {
 
         <Typography
           textAlign="center"
-          variant="caption"
+          variant="body2"
           display={{ xs: "none", md: "block" }}
           color="white"
+          textTransform="uppercase"
         >
           {school_info?.name}
         </Typography>
       </Stack>
-      {/* <Divider /> */}
+      <Divider />
       <Stack
         className="sidebar"
         padding={1}
@@ -161,17 +162,12 @@ const Sidebar = ({ onLogOut }) => {
           </>
         )}
         <DrawerItem
-         title="Profile"
+          title="Profile"
           icon={<PeopleAltRoundedIcon />}
-        to="/profile"
-         />
-
-
-        <DrawerItem
-          title="Events"
-          icon={<Event />}
-          to="/events"
+          to="/profile"
         />
+
+        <DrawerItem title="Events" icon={<Event />} to="/events" />
 
         <DrawerItem
           title="Notifications & Activites"
@@ -185,13 +181,13 @@ const Sidebar = ({ onLogOut }) => {
           color="secondary"
           startIcon={<ExitToAppSharp />}
           sx={{ display: { xs: "none", md: "flex" }, pl: 2 }}
-          onClick={onLogOut}
+          onClick={logOutUser}
         >
           Log out
         </Button>
         <IconButton
           sx={{ display: { xs: "inline-flex", md: "none" }, pl: "12px" }}
-          onClick={onLogOut}
+          onClick={logOutUser}
         >
           <ExitToAppSharp />
         </IconButton>

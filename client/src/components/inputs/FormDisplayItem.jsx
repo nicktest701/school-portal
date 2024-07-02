@@ -8,7 +8,8 @@ function FormDisplayItem({ label, value }) {
       fullWidth
       inputProps={{
         style: {
-          backgroundColor: "#D9DEEF",
+          backgroundColor: "whitesmoke",
+          // backgroundColor: "#D9DEEF",
           color: "var(--primary)",
           fontWeight: "bold",
           textTransform: "capitalize",

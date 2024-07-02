@@ -120,6 +120,8 @@ export const userResetPasswordValidationSchema = object().shape({
     .oneOf([ref('password'), null], 'Passwords do not match'),
 });
 export const updateProfileValidationSchema = object().shape({
+  firstname: string().required('Required*'),
+  lastname: string().required('Required*'),
   fullname: string().required('Required*'),
   username: string().required('Required*'),
   email: string().email('Invalid email address!!!'),

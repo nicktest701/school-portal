@@ -22,7 +22,7 @@ const Storage = multer.diskStorage({
 });
 const upload = multer({ storage: Storage });
 
-//@PGET all users
+//@GET all users
 router.get(
   "/",
   verifyJWT,
@@ -57,14 +57,13 @@ router.get(
   })
 );
 
-//@PGET all users
+//@GET all users
 router.get(
   "/verify",
   verifyJWT,
   asyncHandler(async (req, res) => {
-    const { id } = req.session.user;
+    const user = req.session.user;
 
-    const user = await User.findById(id).select("-password");
 
     // const info = await knex("school_user_info").where("userId", id).select("*");
 
@@ -101,9 +100,11 @@ router.get(
     //   schoolUpdatedAt: info[0]?.schoolUpdatedAt,
     // };
 
-    loggedInUser = {
+    const loggedInUser = {
       id: user._id,
       profile: user.profile,
+      firstname: user.firstname,
+      lastname: user.lastname,
       fullname: user.fullname,
       username: user.username,
       email: user.email,
@@ -111,9 +112,63 @@ router.get(
       role: user.role,
       active: user.active,
     };
-    res.json(loggedInUser);
+
+    const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
+
+
+    res.json(token);
   })
 );
+
+// GET School Information
+router.get(
+  "/school",
+  asyncHandler(async (req, res) => {
+    const school = await School.findOne();
+    // console.log(school)
+
+    res.status(200).json(school);
+  })
+);
+
+//@GET all users
+router.get(
+  "/:id",
+  verifyJWT,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const user = await User.findById(id).select("-password");
+
+    // const info = await knex("users").where("userId", id).select("*");
+
+    // const result = {
+    //   userId: info[0]?.userId,
+    //   profile: info[0]?.profile,
+    //   firstname: info[0]?.firstname,
+    //   lastname: info[0]?.lastname,
+    //   fullName: info[0]?.name,
+    //   username: info[0]?.username,
+    //   dateofbirth: info[0]?.dateofbirth,
+    //   gender: info[0]?.gender,
+    //   userEmail: info[0]?.userEmail,
+    //   role: info[0]?.role,
+    //   userPhonenumber: info[0]?.userPhonenumber,
+    //   userAddress: info[0]?.userAddress,
+    //   userResidence: info[0]?.userResidence,
+    //   nationality: info[0]?.nationality,
+    //   userActive: info[0]?.userActive,
+    //   userCreatedAt: info[0]?.userCreatedAt,
+    //   userUpdatedAt: info[0]?.userUpdatedAt,
+    // }
+
+    res.status(200).json(user);
+  })
+);
+
+
 
 //@GET user by username
 router.post(
@@ -144,6 +199,8 @@ router.post(
     loggedInUser = {
       id: user[0]._id,
       profile: user[0].profile,
+      firstname: user[0].firstname,
+      lastname: user[0].lastname,
       fullname: user[0].fullname,
       username: user[0].username,
       email: user[0].email,
@@ -152,15 +209,17 @@ router.post(
       active: user[0].active,
     };
 
-    req.session.user = loggedInUser;
+    // req.session.user = loggedInUser;
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
       expiresIn: "24h",
     });
 
-    loggedInUser.token = token;
+    // loggedInUser.token = token;
 
-    res.status(200).json(loggedInUser);
+    res.status(200).json({
+      token
+    });
   })
 );
 
@@ -248,6 +307,7 @@ router.put(
   upload.single("profile"),
   asyncHandler(async (req, res) => {
     const { _id } = req.body;
+    console.log(req.body)
     const updatedUser = await User.findByIdAndUpdate(_id, {
       $set: {
         profile: req.file?.filename,
@@ -272,7 +332,7 @@ router.put(
       },
     });
 
-     // const updatedUser = await knex("teachers")
+    // const updatedUser = await knex("teachers")
     //   .where({ _id })
     //   .update({
     //     profile: req.file ? req.file.filename : knex.raw("profile"),
@@ -335,9 +395,9 @@ router.put(
       password: hashedPassword,
     });
 
-  //   const updatedUser = await knex('users')
-  // .where({ id: id })
-  // .update({ password: hashedPassword });
+    //   const updatedUser = await knex('users')
+    // .where({ id: id })
+    // .update({ password: hashedPassword });
 
 
     if (_.isEmpty(updatedUser)) {
@@ -369,7 +429,7 @@ router.put(
     // const updatedUser = await knex('users')
     // .where({ _id: id })
     // .update({ password: hashedPassword });
-  
+
 
 
     if (_.isEmpty(updatedUser)) {
@@ -377,6 +437,18 @@ router.put(
     }
 
     res.status(200).json("Password updated !!!");
+  })
+);
+
+
+router.put(
+  "/logout",
+  verifyJWT,
+  asyncHandler(async (req, res) => {
+
+    req.session.user = null
+    delete req.session
+    res.sendStatus(204)
   })
 );
 
@@ -398,9 +470,9 @@ router.patch(
       password: hashedPassword,
     });
 
-  //   const updatedUser = await knex('users')
-  // .where({ id: id })
-  // .update({ password: hashedPassword });
+    //   const updatedUser = await knex('users')
+    // .where({ id: id })
+    // .update({ password: hashedPassword });
 
 
     if (_.isEmpty(updatedUser)) {
@@ -419,9 +491,9 @@ router.patch(
       new: true,
     });
 
-  //   const updatedUser = await knex('users')
-  // .where('id', req.body.id)
-  // .update(req.body)
+    //   const updatedUser = await knex('users')
+    // .where('id', req.body.id)
+    // .update(req.body)
 
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info");
@@ -440,15 +512,15 @@ router.put(
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { $set: { active } },
+      { $set: { active: Boolean(active) } },
       {
         new: true,
       }
     );
 
-  //   const updatedUser = await knex('users')
-  // .where({ id: id })
-  // .update({ active: active }, ['*']);
+    //   const updatedUser = await knex('users')
+    // .where({ id: id })
+    // .update({ active: active }, ['*']);
 
 
     if (_.isEmpty(updatedUser)) {
@@ -457,8 +529,8 @@ router.put(
 
     res.json(
       updatedUser.active === true
-        ? "User account enabled"
-        : "User account disabled"
+        ? "User account enabled!"
+        : "User account disabled!"
     );
   })
 );
@@ -491,19 +563,6 @@ router.delete(
 
 
 
-
-
-
-// GET School Information
-router.get(
-  "/school",
-  asyncHandler(async (req, res) => {
-    const school = await School.findOne();
-
-    res.status(200).json(school);
-  })
-);
-
 // EDIT School Information
 router.put(
   "/school",
@@ -528,7 +587,7 @@ router.put(
         .status(403)
         .json('Couldn"t save school information.Please try again later.!!');
     }
-    res.status(200).json("School Information has been saved successfully !!!");
+    res.status(200).json("School Information Updated!!!");
   })
 );
 

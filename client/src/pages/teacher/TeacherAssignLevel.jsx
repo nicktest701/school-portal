@@ -77,7 +77,7 @@ const TeacherAssignLevel = () => {
       <Back to={`/teacher/${id}`} color="primary.main" />
       <CustomTitle
         title="Assign New Level"
-        subtitle="Assign management of a level to teacher"
+        subtitle="Allocate classrooms to teachers to facilitate organized and efficient learning environments."
         color="primary.main"
       />
 

@@ -43,7 +43,7 @@ const Login = () => {
     setMsg("");
     mutateAsync(values, {
       onSuccess: (data) => {
-        logInUser(data);
+        logInUser(data?.token);
         navigate("/school-session", { replace: true });
       },
       onError: (error) => {

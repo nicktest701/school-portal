@@ -1,13 +1,14 @@
-import axios from 'axios';
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
+import api from './customAxios';
+
+
+
 
 //Get all Students
 export const getSubjects = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/subjects`,
+      url: `/subjects`,
     });
 
     return res.data;
@@ -18,9 +19,9 @@ export const getSubjects = async () => {
 
 export const getSubject = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/subjects`,
+      url: `/subjects`,
       params: {
         id,
       },
@@ -34,9 +35,9 @@ export const getSubject = async (id) => {
 
 export const postSubjects = async (newSubject) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/subjects`,
+      url: `/subjects`,
       data: newSubject,
     });
 
@@ -48,9 +49,9 @@ export const postSubjects = async (newSubject) => {
 
 export const putSubject = async (updatedSubject) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/subjects`,
+      url: `/subjects`,
       data: updatedSubject,
     });
 
@@ -63,9 +64,9 @@ export const putSubject = async (updatedSubject) => {
 export const deleteSubject = async (id) => {
   // console.log(id)
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/subjects/${id}`,
+      url: `/subjects/${id}`,
     });
 
     return res.data;

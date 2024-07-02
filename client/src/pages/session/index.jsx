@@ -164,7 +164,7 @@ const Session = () => {
     <Container>
       <CustomTitle
         title="School Session"
-        subtitle="  Track,manage and control academic and class activities"
+        subtitle="Create, update, and oversee academic sessions to ensure smooth academic operations"
         img={session_icon}
         color="primary.main"
       />

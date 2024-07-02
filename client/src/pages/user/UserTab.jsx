@@ -1,54 +1,48 @@
-import { useQuery } from '@tanstack/react-query';
-import { useContext, useState } from 'react';
-import { getAllUsers } from '../../api/userAPI';
-import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { USERS_COLUMNS } from '../../mockup/columns/sessionColumns';
-import UserAdd from './UserAdd';
-import UserEdit from './UserEdit';
-import UserView from './UserView';
-import users_icon from '../../assets/images/header/users_ico.svg';
-import { EMPTY_IMAGES } from '../../config/images';
+import { useQuery } from "@tanstack/react-query";
+import { getAllUsers } from "../../api/userAPI";
+import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import { USERS_COLUMNS } from "../../mockup/columns/sessionColumns";
+import users_icon from "../../assets/images/header/users_ico.svg";
+import { EMPTY_IMAGES } from "../../config/images";
+import { useNavigate } from "react-router-dom";
 function UserTab() {
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
-  const [openAddUser, setOpenAddUser] = useState(false);
-
-  const handleOpenViewUser = (rowData) => {
-    schoolSessionDispatch({
-      type: 'viewUser',
-      payload: { open: true, data: rowData },
-    });
-  };
+  const navigate = useNavigate();
 
   const users = useQuery({
-    queryKey: ['users'],
+    queryKey: ["users"],
     queryFn: () => getAllUsers(),
+    initialData: [],
   });
 
+  const handleAddNewUser = () => {
+    navigate("/users/new");
+  };
+
+  const handleViewUser = (rowData) => {
+    navigate(`/users/${rowData?._id}`);
+  };
 
   return (
     <>
       <CustomizedMaterialTable
         isLoading={users.isLoading}
-        title='Users'
+        title="Users"
         icon={users_icon}
         search={true}
         columns={USERS_COLUMNS}
         data={users.data}
         actions={[]}
         showAddButton={true}
-        addButtonText='New User'
+        addButtonText="New User"
         addButtonImg={EMPTY_IMAGES.sms}
-        addButtonMessage='No Users available !'
-        onAddButtonClicked={() => setOpenAddUser(true)}
-        onRowClick={handleOpenViewUser}
+        addButtonMessage="No Users available !"
+        onAddButtonClicked={handleAddNewUser}
+        onRowClick={handleViewUser}
         showRowShadow={true}
         handleRefresh={users?.refetch}
       />
-      <UserView />
-      <UserAdd open={openAddUser} setOpen={setOpenAddUser} />
-      <UserEdit />
+
+   
     </>
   );
 }

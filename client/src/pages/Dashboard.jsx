@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import Calendar from "react-calendar";
-import { Box, Stack, Typography, Avatar } from "@mui/material";
+import { Box, Stack, Typography, Avatar, Container } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { generateNewCurrentLevelDetailsFromLevels } from "../api/levelAPI";
 import DashboardSwiper from "../components/swiper/DashboardSwiper";
@@ -13,6 +13,7 @@ import DashboardCardsContainer from "../components/cards/DashboardCardsContainer
 import CustomCard from "../components/cards/CustomCard";
 import { EMPTY_IMAGES } from "../config/images";
 import CustomEvent from "../components/calendar/CustomEvent";
+import CustomTitle from "../components/custom/CustomTitle";
 
 const Dashboard = () => {
   const {
@@ -49,7 +50,7 @@ const Dashboard = () => {
           px: 2,
         }}
       >
-        <Box>
+        <Container>
           <Box
             sx={{
               width: "100%",
@@ -61,7 +62,7 @@ const Dashboard = () => {
           >
             <Box>
               <Typography variant="h4" textAlign="right">
-                Welcome,
+                Welcome,{user?.fullname?.split(" ")[0]}!
               </Typography>
               <Typography>Your current dashboard for today!</Typography>
             </Box>
@@ -73,26 +74,20 @@ const Dashboard = () => {
             />
           </Box>
 
-          <Typography variant="h2" paragraph>
+          <CustomTitle
+            title="Dashboard"
+            subtitle=" Access key metrics, recent updates, and important notifications to stay informed about school activities at a glance."
+            color="text.main"
+            bgColor="transparent"
+            backColor="#012e54"
+            titleVariant="h2"
+          />
+
+          {/* <Typography variant="h2" paragraph>
             Dashboard
-          </Typography>
+          </Typography> */}
           <DashboardCardsContainer />
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Stack spacing={1}>
-              <Typography variant="h5" textTransform="capitalize">
-                Welcome, {user?.fullname?.split(" ")[0]}!
-              </Typography>
-              <Typography variant="body2">
-                {new Date().toDateString()}
-              </Typography>
-            </Stack>
-          </Box>
+
           <Typography
             variant="h6"
             sx={{ textAlign: "right", color: "primary.main" }}
@@ -115,7 +110,7 @@ const Dashboard = () => {
               <CustomEvent />
             </div>
           </Box>
-        </Box>
+        </Container>
 
         <Box
           sx={{
@@ -124,10 +119,10 @@ const Dashboard = () => {
             transition: "all 0.4s ease-in-out",
             position: "sticky",
             top: 0,
-            height:'100svh'
+            height: "100svh",
           }}
         >
-          <Stack spacing={3} height='100%'>
+          <Stack spacing={3} height="100%">
             <CustomCard title="Calendar">
               <Calendar onChange={onChange} value={value} />
             </CustomCard>

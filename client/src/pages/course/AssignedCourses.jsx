@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
-import CustomTitle from '../../components/custom/CustomTitle';
-import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import { Button } from '@mui/material';
-import { EMPTY_IMAGES } from '../../config/images';
-import { SchoolRounded } from '@mui/icons-material';
-import { ASSIGNED_COURSE_COLUMNS } from '../../mockup/columns/sessionColumns';
-import { UserContext } from '../../context/providers/UserProvider';
-import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { getCourseByTeacher } from '../../api/courseAPI';
+import React, { useContext } from "react";
+import CustomTitle from "../../components/custom/CustomTitle";
+import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import { Button } from "@mui/material";
+import { EMPTY_IMAGES } from "../../config/images";
+import { SchoolRounded } from "@mui/icons-material";
+import { ASSIGNED_COURSE_COLUMNS } from "../../mockup/columns/sessionColumns";
+import { UserContext } from "../../context/providers/UserProvider";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getCourseByTeacher } from "../../api/courseAPI";
 
 function AssignCourses() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function AssignCourses() {
   } = useContext(UserContext);
 
   const courses = useQuery({
-    queryKey: ['courses', user?.id],
+    queryKey: ["courses", user?.id],
     queryFn: () =>
       getCourseByTeacher({
         teacher: user?.id,
@@ -27,27 +27,29 @@ function AssignCourses() {
       }),
   });
 
-  const viewStudents = (id, subject, type) =>
-    navigate(`/course/assign/students`, {
+  const viewStudents = ({ _id, levelId, subject, level }) =>
+    navigate(`/course/assign/${levelId}/${level}?sub=${subject}`, {
       state: {
-        id,
+        id: _id,
         subject,
-        type,
+        type: level,
+        levelId,
       },
     });
+  // console.log(courses.data);
 
   const columns = [
     ...ASSIGNED_COURSE_COLUMNS,
     {
       field: null,
-      title: 'Action',
-      render: ({ levelId, level, subject }) => (
+      title: "Action",
+      render: (rowData) => (
         <Button
-          variant='outlined'
-          color='info'
-          onClick={() => viewStudents(levelId, subject, level)}
+          variant="outlined"
+          color="info"
+          onClick={() => viewStudents(rowData)}
         >
-          View Results
+          Manage Results
         </Button>
       ),
     },
@@ -55,21 +57,21 @@ function AssignCourses() {
   return (
     <>
       <CustomTitle
-        title='Assigned Courses'
-        subtitle='Track,manage and control courses assigned to you'
-        icon={<SchoolRounded color='primary' />}
-        color='primary.main'
+        title="Assigned Courses"
+        subtitle="Track,manage and control courses assigned to you"
+        icon={<SchoolRounded color="primary" />}
+        color="primary.main"
       />
 
       <CustomizedMaterialTable
-        title='Courses'
+        title="Courses"
         isLoading={courses.isLoading}
         columns={columns}
         data={courses.data}
         actions={[]}
         showRowShadow={false}
         addButtonImg={EMPTY_IMAGES.session}
-        addButtonMessage='😑 No course has been assign!'
+        addButtonMessage="😑 No course has been assign!"
         handleRefresh={courses.refetch}
         options={{
           selection: false,

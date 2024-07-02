@@ -1,22 +1,21 @@
-import axios from 'axios';
-import _ from 'lodash'
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
+import api from './customAxios';
+
+
+
 
 //Get all Students details
 export const getAllStudentsDetails = async (session) => {
   // console.log(session);
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${BASE_URL}/students/details`,
+      url: `/students/details`,
       params: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -24,14 +23,14 @@ export const getAllStudentsDetails = async (session) => {
 //Get all Students
 export const getAllStudents = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${BASE_URL}/students`,
+      url: `/students`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -39,9 +38,9 @@ export const getAllStudents = async () => {
 //Get all Students
 export const getAllStudentsByCurrentLevel = async (currentLevelId) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${BASE_URL}/students/current`,
+      url: `/students/current`,
       params: {
         currentLevelId,
       },
@@ -49,7 +48,7 @@ export const getAllStudentsByCurrentLevel = async (currentLevelId) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -58,42 +57,42 @@ export const getAllStudentsByCurrentLevel = async (currentLevelId) => {
 
 export const getAllStudentsForSearch = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${BASE_URL}/levels/students`,
+      url: `/levels/students`,
       data: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const getStudent = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${BASE_URL}/students/${id}`,
+      url: `/students/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 export const getStudentByIndexNumber = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${BASE_URL}/students/index-number?id=${id}`,
+      url: `/students/index-number?id=${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -101,9 +100,9 @@ export const getStudentByIndexNumber = async (id) => {
 
 export const getParentByStudentId = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${BASE_URL}/students/parent`,
+      url: `/students/parent`,
       params: {
         id,
       },
@@ -111,7 +110,7 @@ export const getParentByStudentId = async (id) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    throw error.response.data;
   }
 };
 
@@ -145,9 +144,9 @@ export const postStudent = async ({ student, parent }) => {
   formData.append('parentNationality', parent.nationality);
 
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${BASE_URL}/students`,
+      url: `/students`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -156,89 +155,89 @@ export const postStudent = async ({ student, parent }) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const postNewStudent = async (data) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${BASE_URL}/students`,
+      url: `/students`,
       data,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 export const postManyStudents = async (data) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${BASE_URL}/students/many`,
+      url: `/students/many`,
       data,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const putStudent = async (updatedStudent) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${BASE_URL}/students`,
+      url: `/students`,
       data: updatedStudent,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const updateStudentMedicalHistory = async (updatedStudent) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${BASE_URL}/students/medical`,
+      url: `/students/medical`,
       data: updatedStudent,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const deleteStudent = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${BASE_URL}/students/${id}`,
+      url: `/students/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const disableStudentAccount = async ({ id, active }) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${BASE_URL}/students/disable`,
+      url: `/students/disable`,
       params: {
         id,
         active,
@@ -247,7 +246,7 @@ export const disableStudentAccount = async ({ id, active }) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };

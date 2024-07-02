@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 
-import { FormLabel, Input, Typography } from "@mui/material";
+import { Divider, FormLabel, Input, Typography } from "@mui/material";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "../../config/tableIcons";
 import { Add, Delete, Refresh } from "@mui/icons-material";
@@ -14,6 +14,7 @@ import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvi
 import { alertError } from "../../context/actions/globalAlertActions";
 import CustomTableTitle from "../custom/CustomTableTitle";
 import EmptyDataContainer from "../EmptyDataContainer";
+import LoadingSpinner from "../spinners/LoadingSpinner";
 
 function CustomizedMaterialTable({
   title,
@@ -90,11 +91,11 @@ function CustomizedMaterialTable({
         data={data === undefined ? [] : data}
         options={{
           draggable: true,
+
           search: search || false,
           showTitle: false,
           searchFieldVariant: "outlined",
           searchFieldAlignment: "left",
-
           // searchFieldStyle: { width: '20vw' },
           searchFieldStyle: {
             display: { xs: "none", sm: "block" },
@@ -170,7 +171,7 @@ function CustomizedMaterialTable({
         onSelectionChange={onSelectionChange}
         components={{
           Toolbar: (props) => {
-            return data === undefined || data.length === 0 ? null : (
+            return data === undefined || data?.length === 0 ? null : (
               <>
                 <Box
                   sx={{
@@ -180,11 +181,13 @@ function CustomizedMaterialTable({
                     p: 2,
                   }}
                 >
-                  <CustomTableTitle
-                    title={title}
-                    subtitle={subtitle}
-                    // icon={icon}
-                  />
+                  {title && (
+                    <CustomTableTitle
+                      title={title}
+                      subtitle={subtitle}
+                      // icon={icon}
+                    />
+                  )}
                   {showAddButton && (
                     <Button
                       variant="contained"
@@ -196,8 +199,9 @@ function CustomizedMaterialTable({
                     </Button>
                   )}
                 </Box>
+                <Divider />
                 <Box
-                  sx={{ px: 2, display: "flex", justifyContent: "flex-end" }}
+                  sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}
                 >
                   {autoCompleteComponent}
                 </Box>
@@ -260,17 +264,22 @@ function CustomizedMaterialTable({
             emptyDataSourceMessage: isLoading ? (
               <Typography>Please Wait...</Typography>
             ) : (
-              <EmptyDataContainer
-                img={addButtonImg}
-                message={addButtonMessage}
-                buttonText={addButtonText}
-                onClick={onAddButtonClicked}
-                showAddButton={showAddButton}
-              />
+              <>
+                {data && data?.length == 0 && (
+                  <EmptyDataContainer
+                    img={addButtonImg}
+                    message={addButtonMessage}
+                    buttonText={addButtonText}
+                    onClick={onAddButtonClicked}
+                    showAddButton={showAddButton}
+                  />
+                )}
+              </>
             ),
           },
         }}
       />
+      {isLoading && <LoadingSpinner />}
     </Box>
     // </AnimatedContainer>
   );

@@ -1,5 +1,6 @@
-import React from 'react';
+import React from "react";
 import {
+  Container,
   Dialog,
   DialogContent,
   List,
@@ -7,34 +8,32 @@ import {
   ListItemButton,
   ListItemText,
   Typography,
-} from '@mui/material';
-import { PropTypes } from 'prop-types';
-import { useParams } from 'react-router-dom';
-import Transition from '../../components/animations/Transition';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { useQuery } from '@tanstack/react-query';
-import { getAttendanceHistory } from '../../api/attendanceAPI';
-import moment from 'moment';
+} from "@mui/material";
+import { PropTypes } from "prop-types";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getAttendanceHistory } from "../../api/attendanceAPI";
+import moment from "moment";
+import Back from "../../components/Back";
+import CustomTitle from "../../components/custom/CustomTitle";
+import LoadingSpinner from "../../components/spinners/LoadingSpinner";
 
-function AttendanceHistory({ open, setOpen }) {
-  const { id } = useParams();
+function AttendanceHistory() {
+  const { id, type } = useParams();
 
   const attendanceHistory = useQuery({
-    queryKey: ['attendance-history'],
+    queryKey: ["attendance-history"],
     queryFn: () => getAttendanceHistory(id),
     enabled: !!id,
   });
 
   return (
-    <Dialog
-      open={open}
-      fullWidth
-      maxWidth='md'
-      TransitionComponent={Transition}
-    >
-      <CustomDialogTitle
-        title='Attendance History'
-        onClose={() => setOpen(false)}
+    <Container>
+      <Back to={`/level/attendance/${id}/${type}`} color="primary.main" />
+      <CustomTitle
+        title="Attendance History"
+        subtitle="Review past attendance records to analyze trends, identify issues, and ensure comprehensive tracking of student and staff presence."
+        color="primary.main"
       />
       <DialogContent>
         {attendanceHistory.isLoading && <Typography>Loading....</Typography>}
@@ -43,25 +42,25 @@ function AttendanceHistory({ open, setOpen }) {
           primary={`Attendance - ${attendanceHistory?.data?.length} days`}
           primaryTypographyProps={{
             fontSize: 20,
-            fontWeight: 'bold',
-            textAlign: 'right',
+            fontWeight: "bold",
+            textAlign: "right",
           }}
         />
         <List sx={{ maxHeight: 600 }}>
           <ListItem>
-            <ListItemText primary='Date' />
-            <ListItemText primary='Present' />
-            <ListItemText primary='Absent' />
+            <ListItemText primary="Date" />
+            <ListItemText primary="Present" />
+            <ListItemText primary="Absent" />
           </ListItem>
           {attendanceHistory.data &&
             attendanceHistory.data.map((attendance) => (
               <ListItemButton key={attendance.date} divider>
                 <ListItemText
-                  primary={moment(attendance.date).format('Do MMMM,YYYY')}
-                  secondary={moment(attendance.date).format('dddd')}
+                  primary={moment(attendance.date).format("Do MMMM,YYYY")}
+                  secondary={moment(attendance.date).format("dddd")}
                   secondaryTypographyProps={{
-                    color: 'primary.main',
-                    fontWeight: 'bold',
+                    color: "primary.main",
+                    fontWeight: "bold",
                   }}
                 />
                 <ListItemText
@@ -80,7 +79,10 @@ function AttendanceHistory({ open, setOpen }) {
             ))}
         </List>
       </DialogContent>
-    </Dialog>
+      {attendanceHistory.isLoading && (
+        <LoadingSpinner value="Loading Attendance History" />
+      )}
+    </Container>
   );
 }
 AttendanceHistory.propTypes = {

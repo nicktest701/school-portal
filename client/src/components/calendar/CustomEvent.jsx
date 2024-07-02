@@ -3,7 +3,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import CalendarEvent from "./CalendarEvent";
-import { Container } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getAllEvents } from "../../api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
@@ -37,7 +37,7 @@ function CustomEvent() {
   };
 
   return (
-    <Container
+    <Box
       sx={{
         bgcolor: "#fff",
         borderRadius: 2,
@@ -71,7 +71,7 @@ function CustomEvent() {
         }}
         loading={events.isLoading}
       />
-    </Container>
+    </Box>
   );
 }
 

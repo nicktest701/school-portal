@@ -49,6 +49,7 @@ const UpdateUserProfile = () => {
       options.setSubmitting(false);
       return;
     }
+    values.fullname = `${values?.firstname} ${values?.lastname}`;
     delete values.profile;
     delete values.confirmPassword;
 
@@ -125,12 +126,13 @@ const UpdateUserProfile = () => {
                   justifyContent="center"
                   columnGap={3}
                 >
-                  <Stack sx={{ position: "relative", height: 100 }}>
-                    <Avatar
-                      srcSet={profileImage}
-                      sx={{ width: 100, height: 100, alignSelf: "center" }}
-                    />
-                    <CustomImageChooser handleImageUpload={uploadProfile} />
+                  <Stack>
+                    <CustomImageChooser handleImageUpload={uploadProfile}>
+                      <Avatar
+                        srcSet={profileImage}
+                        sx={{ width: 100, height: 100, alignSelf: "center" }}
+                      />
+                    </CustomImageChooser>
                   </Stack>
 
                   <Stack padding={2} spacing={2}>
@@ -143,14 +145,24 @@ const UpdateUserProfile = () => {
                     </Typography>
 
                     <TextField
-                      label="Fullname"
+                      label="Firstname"
                       type="text"
                       fullWidth
                       size="small"
-                      value={values.fullname || ""}
-                      onChange={handleChange("fullname")}
-                      error={Boolean(touched.fullname && errors.fullname)}
-                      helperText={touched.fullname && errors.fullname}
+                      value={values.firstname || ""}
+                      onChange={handleChange("firstname")}
+                      error={Boolean(touched.firstname && errors.firstname)}
+                      helperText={touched.firstname && errors.firstname}
+                    />
+                    <TextField
+                      label="Lastname"
+                      type="text"
+                      fullWidth
+                      size="small"
+                      value={values.lastname || ""}
+                      onChange={handleChange("lastname")}
+                      error={Boolean(touched.lastname && errors.lastname)}
+                      helperText={touched.lastname && errors.lastname}
                     />
 
                     <TextField

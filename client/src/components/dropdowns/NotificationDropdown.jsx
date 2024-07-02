@@ -64,7 +64,7 @@ const NotificationDropdown = ({ display, setClose }) => {
         <IconButton onClick={handleClose}>
           <Close />
         </IconButton>
-        {/* <Typography display='block'>Manage all unread messages</Typography> */}
+     
       </Stack>
       <Stack bgcolor='white' sx={{ position: 'relative' }}>
         {[].length === 0 ? (

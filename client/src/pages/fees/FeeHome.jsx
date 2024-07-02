@@ -45,7 +45,7 @@ const FeeHome = () => {
     <>
       <CustomTitle
         title='Fees Payment'
-        subtitle='Access,manage and control payment of school fees'
+        subtitle='Track and manage school fee payments and financial records efficiently to maintain fiscal responsibility.'
         img={teacher_icon}
         color='primary.main'
       />

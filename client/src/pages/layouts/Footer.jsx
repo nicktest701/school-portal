@@ -13,11 +13,11 @@ const Footer = () => {
       }}
     >
       <Typography variant='body2' color='#fff'>
-        Copyright &copy; {new Date().getFullYear()} | FrebbyTech Consults
+        Copyright &copy; {new Date().getFullYear()} | FrebbyTech Consults 
       </Typography>
-      {/* <Typography variant='caption' color='#fff'>
-        +233543772591
-      </Typography> */}
+      <Typography variant='body2' color='#fff'>
+      For more information contact: +233543772591,+233560372844
+      </Typography>
     </footer>
   );
 };

@@ -129,14 +129,15 @@ const TeacherEdit = () => {
         }) => {
           return (
             <>
-              <Box>
+              <Box sx={{ bgcolor: "#fff" }}>
                 <Stack padding={2} spacing={1}>
-                  <Stack sx={{ position: "relative" }}>
-                    <Avatar
-                      srcSet={profileImage}
-                      sx={{ width: 100, height: 100, alignSelf: "center" }}
-                    />
-                    <CustomImageChooser handleImageUpload={uploadProfile} />
+                  <Stack alignSelf="center">
+                    <CustomImageChooser handleImageUpload={uploadProfile}>
+                      <Avatar
+                        srcSet={profileImage}
+                        sx={{ width: 120, height: 120, alignSelf: "center" }}
+                      />
+                    </CustomImageChooser>
                   </Stack>
                   <Typography
                     variant="body2"
@@ -291,20 +292,20 @@ const TeacherEdit = () => {
                       )}
                     />
                   </CustomFormControl>
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <LoadingButton
+                      loading={isLoading}
+                      variant="contained"
+                      color="primary"
+                      sx={{ minWidth: { xs: 100, sm: 150 } }}
+                      onClick={handleSubmit}
+                    >
+                      Save Changes
+                    </LoadingButton>
+                  </DialogActions>
                 </Stack>
               </Box>
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <LoadingButton
-                  loading={isLoading}
-                  variant="contained"
-                  color="primary"
-                  sx={{ minWidth: { xs: 100, sm: 150 } }}
-                  onClick={handleSubmit}
-                >
-                  Save Changes
-                </LoadingButton>
-              </DialogActions>
             </>
           );
         }}

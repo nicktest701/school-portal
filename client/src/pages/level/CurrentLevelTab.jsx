@@ -11,7 +11,9 @@ import SummarizeRoundedIcon from "@mui/icons-material/SummarizeRounded";
 import { useState } from "react";
 
 import AttendanceHistory from "./AttendanceHistory";
-import { History } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
+import { Button } from "@mui/material";
+import LoadingSpinner from "../../components/spinners/LoadingSpinner";
 
 const CurrentLevelTab = () => {
   const { id, type } = useParams();
@@ -65,22 +67,26 @@ const CurrentLevelTab = () => {
     navigate(`/level/attendance/${id}/${type}`);
   };
 
-  const attendanceAction = [
-    {
-      icon: () => <SummarizeRoundedIcon />,
-      position: "toolbar",
-      tooltip: "New Attendance",
-      onClick: handleOpenAttendance,
-      isFreeAction: true,
-    },
-    {
-      icon: () => <History />,
-      position: "toolbar",
-      tooltip: "Attendance History",
-      onClick: () => setOpenAttendanceHistory(true),
-      isFreeAction: true,
-    },
-  ];
+  // const attendanceAction = [
+  //   {
+  //     icon: () => <SummarizeRoundedIcon />,
+  //     position: "toolbar",
+  //     tooltip: "New Attendance",
+  //     onClick: handleOpenAttendance,
+  //     isFreeAction: true,
+  //   },
+  //   {
+  //     icon: () => <History />,
+  //     position: "toolbar",
+  //     tooltip: "Attendance History",
+  //     onClick: () => setOpenAttendanceHistory(true),
+  //     isFreeAction: true,
+  //   },
+  // ];
+
+  if (levelLoading) {
+    return <LoadingSpinner value="Loading Student Information" />;
+  }
 
   return (
     <>
@@ -101,19 +107,21 @@ const CurrentLevelTab = () => {
           exportFileName={type || ""}
           columns={STUDENTS_COLUMN}
           data={students}
-          actions={[...attendanceAction]}
-          // showImportButton={true}
-          // importButtonText="Import Students"
+          actions={[]}
+          // actions={[...attendanceAction]}
+          autoCompleteComponent={
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={handleOpenAttendance}
+            >
+              Make New Attendance
+            </Button>
+          }
           icon={student_icon}
-          // onRowClick={handleGotoStudentProfile}
         />
       )}
 
-      {/* <NewAttendance
-        open={openAttendance}
-        setOpen={setOpenAttendance}
-        student={students}
-      /> */}
       <AttendanceHistory
         open={openAttendanceHistory}
         setOpen={setOpenAttendanceHistory}

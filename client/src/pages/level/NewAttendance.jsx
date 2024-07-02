@@ -1,43 +1,44 @@
-import React, { useContext, useMemo, useState } from 'react';
-import moment from 'moment';
-import _ from 'lodash';
-import { LoadingButton } from '@mui/lab';
+import React, { useContext, useMemo, useState } from "react";
+import moment from "moment";
+import _ from "lodash";
+import { LoadingButton } from "@mui/lab";
 import {
   Box,
+  Button,
   Chip,
   CircularProgress,
-  Container,
   DialogActions,
-  DialogContent,
   Divider,
   FormControlLabel,
   Radio,
   RadioGroup,
   Typography,
-} from '@mui/material';
-import CustomDatePicker from '../../components/inputs/CustomDatePicker';
-import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import PropTypes from 'prop-types';
-import { useParams } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+} from "@mui/material";
+import CustomDatePicker from "../../components/inputs/CustomDatePicker";
+import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import PropTypes from "prop-types";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getAttendance,
   postAttendance,
   postStudentAttendance,
-} from '../../api/attendanceAPI';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+} from "../../api/attendanceAPI";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import student_icon from '../../assets/images/header/student_ico.svg';
-import { SchoolRounded, SaveAsRounded } from '@mui/icons-material';
-import SaveAltRounded from '@mui/icons-material/SaveAltRounded';
-import Back from '../../components/Back';
-import CustomTitle from '../../components/custom/CustomTitle';
+} from "../../context/actions/globalAlertActions";
+import student_icon from "../../assets/images/header/student_ico.svg";
+import { SchoolRounded, SaveAsRounded } from "@mui/icons-material";
+import SaveAltRounded from "@mui/icons-material/SaveAltRounded";
+import Back from "../../components/Back";
+import CustomTitle from "../../components/custom/CustomTitle";
+import LoadingSpinner from "../../components/spinners/LoadingSpinner";
 
 function NewAttendance({ to }) {
   const { id, type } = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
@@ -46,8 +47,8 @@ function NewAttendance({ to }) {
 
   //GET attendance by level id and date
   const attendance = useQuery({
-    queryKey: ['attendance', id, date],
-    queryFn: () => getAttendance(id, date.format('L')),
+    queryKey: ["attendance", id, date],
+    queryFn: () => getAttendance(id, date.format("L")),
     enabled: !!id && !!date,
     onSuccess: (attendance) => {
       setAllStudents(attendance?.status);
@@ -56,7 +57,7 @@ function NewAttendance({ to }) {
 
   const completed = useMemo(() => {
     const markedStudents = _.filter(allstudents, ({ status }) =>
-      ['Present', 'Absent'].includes(status)
+      ["Present", "Absent"].includes(status)
     )?.length;
     const percent = parseInt(
       Number(markedStudents / allstudents?.length) * 100
@@ -72,7 +73,7 @@ function NewAttendance({ to }) {
     rowData.status = value;
 
     const updatedStudents = _.values(
-      _.merge(_.keyBy([...allstudents, rowData], '_id'))
+      _.merge(_.keyBy([...allstudents, rowData], "_id"))
     );
     setAllStudents(updatedStudents);
   };
@@ -86,13 +87,13 @@ function NewAttendance({ to }) {
   const handleSaveAttendance = () => {
     const newAttendance = {
       level: id,
-      date: date.format('L'),
+      date: date.format("L"),
       status: allstudents,
     };
 
     postAttendanceAsync(newAttendance, {
       onSettled: () => {
-        queryClient.invalidateQueries(['attendance-history']);
+        queryClient.invalidateQueries(["attendance-history"]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -111,13 +112,13 @@ function NewAttendance({ to }) {
   const handleSaveStudentAttendance = (data) => {
     const newAttendance = {
       level: id,
-      date: date.format('L'),
+      date: date.format("L"),
       status: data,
     };
 
     postStudentAttendanceAsync(newAttendance, {
       onSettled: () => {
-        queryClient.invalidateQueries(['attendance-history']);
+        queryClient.invalidateQueries(["attendance-history"]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -128,130 +129,138 @@ function NewAttendance({ to }) {
     });
   };
 
+  const navigateToAttendanceHistory = () => {
+    navigate(`/level/attendance/${id}/${type}/history`);
+  };
+
   return (
     <>
       <Back
-        to={to === '/course' ? '/course/level' : `${to}/${id}/${type}`}
-        color='primary.main'
+        to={to === "/course" ? "/course/level" : `${to}/${id}/${type}`}
+        color="primary.main"
       />
 
       <CustomTitle
-        title='New Attendance'
-        subtitle='Mark new attendance'
-        icon={<SchoolRounded color='inherit' sx={{ width: 50, height: 50 }} />}
-        color='primary.main'
+        title="Track Attendance Records"
+        subtitle=" Monitor and manage student and staff attendance to ensure accurate record-keeping and identify patterns or issues promptly."
+        icon={<SchoolRounded color="inherit" sx={{ width: 50, height: 50 }} />}
+        color="primary.main"
       />
 
-      <DialogActions sx={{ padding: 2 }}>
-        <LoadingButton
-          variant='contained'
-          startIcon={<SaveAsRounded />}
-          onClick={handleSaveAttendance}
-          loading={isPostingAttendance}
-        >
-          {isPostingAttendance ? 'Saving' : 'Save Attendance'}
-        </LoadingButton>
-      </DialogActions>
-      <DialogContent sx={{ padding: 2 }}>
-        <Container>
-          <Box display='flex' justifyContent='flex-start' width={280}>
-            <CustomDatePicker
-              label='Date of Attendance'
-              date={date}
-              setDate={setDate}
-              disableFuture={true}
-            />
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', pt: 3 }}>
-            <CircularProgress
-              variant='determinate'
-              value={completed.percent}
-              size={80}
-              color='secondary'
-            />
-            <Typography variant='h5' textAlign='center'>
-              {completed.done}/{allstudents?.length}
-              <small style={{ marginLeft: '4px' }}>completed</small>
-            </Typography>
-            {/* <Typography>completed</Typography> */}
-          </Box>
-          <Divider textAlign='center' sx={{ py: 4 }}>
-            <Chip label='Details' color='secondary' />
-          </Divider>
+      <Box sx={{ bgcolor: "#fff", p: 2 }}>
+        <DialogActions sx={{ padding: 2 }}>
+          <LoadingButton
+            variant="contained"
+            startIcon={<SaveAsRounded />}
+            onClick={handleSaveAttendance}
+            loading={isPostingAttendance}
+          >
+            {isPostingAttendance ? "Saving" : "Save Attendance"}
+          </LoadingButton>
+        </DialogActions>
 
-          <CustomizedMaterialTable
-            search={true}
-            isLoading={attendance.isLoading}
-            icon={student_icon}
-            title={`Attendance for ${type}`}
-            exportFileName={`Attendance for ${type} on ${date.format(
-              'dddd,Do MMMM YYYY'
-            )}`}
-            columns={[
-              {
-                field: '_id',
-                title: 'ID',
-                hidden: true,
-              },
-              {
-                field: 'fullName',
-                title: 'FullName',
-                export: true,
-              },
-              {
-                field: 'status',
-                title: 'Status',
-                render: (rowData) => (
-                  <RadioGroup
-                    row
-                    aria-labelledby='attendance-status'
-                    name='status'
-                    value={rowData?.status}
-                    onChange={(e) =>
-                      handleCheckAttendance(e.target.value, rowData)
-                    }
-                  >
-                    <FormControlLabel
-                      value='Present'
-                      control={<Radio size='small' />}
-                      label='Present'
-                    />
-                    <FormControlLabel
-                      value='Absent'
-                      control={<Radio size='small' />}
-                      label='Absent'
-                    />
-                  </RadioGroup>
-                ),
-
-                export: true,
-              },
-              {
-                field: null,
-                title: 'Action',
-                render: (rowData) => (
-                  <LoadingButton
-                    size='small'
-                    startIcon={<SaveAltRounded color='secondary' />}
-                    onClick={() => handleSaveStudentAttendance(rowData)}
-                    loading={isLoading}
-                  >
-                    Save
-                  </LoadingButton>
-                ),
-              },
-            ]}
-            data={allstudents}
-            actions={[]}
-            showRowShadow
-            options={{
-              pageSize: 10,
-              selection: false,
-            }}
-            handleRefresh={attendance.refetch}
+        <Box display="flex" justifyContent="flex-start" width={280}>
+          <CustomDatePicker
+            label="Date of Attendance"
+            date={date}
+            setDate={setDate}
+            disableFuture={true}
           />
-        </Container>
-      </DialogContent>
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center", pt: 3 }}>
+          <CircularProgress
+            variant="determinate"
+            value={completed.percent}
+            size={80}
+            color={completed.percent ? "success" : "secondary"}
+          />
+          <Typography variant="h5" textAlign="center">
+            {completed.done}/{allstudents?.length}
+            <small style={{ marginLeft: "4px" }}>completed</small>
+          </Typography>
+          {/* <Typography>completed</Typography> */}
+        </Box>
+      </Box>
+      <Divider textAlign="center" sx={{ py: 4 }}>
+        <Chip label="Details" color="secondary" />
+      </Divider>
+
+      <CustomizedMaterialTable
+        search={true}
+        isLoading={attendance.isLoading}
+        icon={student_icon}
+        title={`Attendance for ${type}`}
+        exportFileName={`Attendance for ${type} on ${date.format(
+          "dddd,Do MMMM YYYY"
+        )}`}
+        columns={[
+          {
+            field: "_id",
+            title: "ID",
+            hidden: true,
+          },
+          {
+            field: "fullName",
+            title: "FullName",
+            export: true,
+          },
+          {
+            field: "status",
+            title: "Status",
+            render: (rowData) => (
+              <RadioGroup
+                row
+                aria-labelledby="attendance-status"
+                name="status"
+                value={rowData?.status}
+                onChange={(e) => handleCheckAttendance(e.target.value, rowData)}
+              >
+                <FormControlLabel
+                  value="Present"
+                  control={<Radio size="small" />}
+                  label="Present"
+                />
+                <FormControlLabel
+                  value="Absent"
+                  control={<Radio size="small" />}
+                  label="Absent"
+                />
+              </RadioGroup>
+            ),
+
+            export: true,
+          },
+          {
+            field: null,
+            title: "Action",
+            render: (rowData) => (
+              <LoadingButton
+                size="small"
+                startIcon={<SaveAltRounded color="secondary" />}
+                onClick={() => handleSaveStudentAttendance(rowData)}
+                loading={isLoading}
+              >
+                Save
+              </LoadingButton>
+            ),
+          },
+        ]}
+        data={allstudents}
+        actions={[]}
+        autoCompleteComponent={
+          <Button variant="contained" onClick={navigateToAttendanceHistory}>
+            View Attendance History
+          </Button>
+        }
+        options={{
+          pageSize: 10,
+          selection: false,
+        }}
+        handleRefresh={attendance.refetch}
+      />
+      {(isLoading || isPostingAttendance) && (
+        <LoadingSpinner value="Saving Attendance. Please Wait..." />
+      )}
     </>
   );
 }

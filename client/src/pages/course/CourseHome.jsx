@@ -1,22 +1,24 @@
 import {
   Avatar,
   Box,
+  Divider,
   Grid,
   ListItemText,
   Stack,
   Typography,
-} from '@mui/material';
-import React, { useContext } from 'react';
-import { UserContext } from '../../context/providers/UserProvider';
-import CourseStudentCard from './CourseStudentCard';
-import CustomCard from '../../components/cards/CustomCard';
-import Circle from '../../components/custom/Circle';
-import RadarChart from '../../components/charts/RadarChart';
-import LineChart from '../../components/charts/LineChart';
-import BarCharts from '../../components/charts/BarCharts';
-import { useQuery } from '@tanstack/react-query';
-import { getCourseDashboardInfo } from '../../api/courseAPI';
-import CourseAttendanceCard from './CourseAttendanceCard';
+} from "@mui/material";
+import React, { useContext } from "react";
+import { UserContext } from "../../context/providers/UserProvider";
+import CourseStudentCard from "./CourseStudentCard";
+import CustomCard from "../../components/cards/CustomCard";
+import Circle from "../../components/custom/Circle";
+import RadarChart from "../../components/charts/RadarChart";
+import LineChart from "../../components/charts/LineChart";
+import BarCharts from "../../components/charts/BarCharts";
+import { useQuery } from "@tanstack/react-query";
+import { getCourseDashboardInfo } from "../../api/courseAPI";
+import CourseAttendanceCard from "./CourseAttendanceCard";
+import CustomTitle from "../../components/custom/CustomTitle";
 
 function CourseHome() {
   const {
@@ -25,7 +27,7 @@ function CourseHome() {
   } = useContext(UserContext);
 
   const dashboardInfo = useQuery({
-    queryKey: ['course-dashboard-info'],
+    queryKey: ["course-dashboard-info"],
     queryFn: () =>
       getCourseDashboardInfo({
         session: session?.sessionId,
@@ -55,21 +57,14 @@ function CourseHome() {
 
   return (
     <>
-      <Stack
-        direction='row'
-        justifyContent='space-between'
-        alignItems='center'
-        p={2}
-        bgcolor='primary.main'
-      >
-        <Stack
-          direction='row'
-          justifyContent='space-between'
-          alignItems='center'
-          spacing={2}
-        >
+      <CustomTitle
+        title={user?.fullname?.toUpperCase()}
+        subtitle="We hope your having a great day!"
+        color="white"
+        bgColor="primary.main"
+        icon={
           <Avatar
-            loading='lazy'
+            loading="lazy"
             srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
               user?.profile
             }`}
@@ -78,68 +73,69 @@ function CourseHome() {
               height: 80,
             }}
           />
-          <ListItemText
-            primary={user?.fullname}
-            primaryTypographyProps={{
-              textTransform: 'capitalize',
-              color: '#fff',
-              fontSize: 16,
-            }}
-            secondary='We hope your having a great day!'
-            secondaryTypographyProps={{ color: 'secondary.main' }}
-          />
-        </Stack>
-      </Stack>
+        }
+      />
+
       {/* student cards  */}
       {/* <Typography>Students</Typography>
         <Divider /> */}
+      <Typography variant="h5" py={2}>
+        Summary
+      </Typography>
+      <Divider />
       <CourseStudentCard data={dashboardInfo?.data} />
 
-      <Typography paragraph>Overview</Typography>
+      <Typography variant="h5" py={2}>
+        Student Overview
+      </Typography>
+      <Divider />
 
       <Grid container spacing={3} py={2}>
         <Grid item lg={4} md={4} xs={12}>
           {/* student by gender */}
-          <CustomCard title='Students by Gender'>
+          <CustomCard title="Students by Gender">
             <Box
               sx={{
-                position: 'relative',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                position: "relative",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 height: 200,
               }}
             >
               <Circle
-                color='primary.main'
-                label='Males'
+                color="primary.main"
+                label="Males"
                 value={dashboardInfo?.data?.groupedStudents?.male?.length ?? 0}
                 m={0}
               />
               <Circle
-                color='secondary.main'
-                label='Females'
+                color="secondary.main"
+                label="Females"
                 value={
                   dashboardInfo?.data?.groupedStudents?.female?.length ?? 0
                 }
-                m='-12px'
+                m="-12px"
               />
             </Box>
           </CustomCard>
         </Grid>
         <Grid item lg={8} md={8} xs={12}>
-          <CustomCard title='Students in levels'>
+          <CustomCard title="Students in levels">
             <BarCharts labels={labels} data={values} />
           </CustomCard>
         </Grid>
       </Grid>
 
-      <Typography>Attendance</Typography>
+      <Typography variant="h5" py={2}>
+        Level Attendance
+      </Typography>
+      <Divider />
       <CourseAttendanceCard data={dashboardInfo?.data} />
 
       <Grid container spacing={3}>
         <Grid item lg={8} sm={6} xs={12}>
-          <CustomCard title='Total Weekly Attendance'>
+          <CustomCard title="Total Weekly Attendance">
             <LineChart
               labels={attendancelabels}
               values={presentData}
@@ -148,7 +144,7 @@ function CourseHome() {
           </CustomCard>
         </Grid>
         <Grid item lg={4} sm={6} xs={12}>
-          <CustomCard title='Weekly Absent'>
+          <CustomCard title="Weekly Absent">
             <RadarChart labels={attendancelabels} values={absentData} />
           </CustomCard>
         </Grid>

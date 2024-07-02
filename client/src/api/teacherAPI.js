@@ -1,14 +1,12 @@
-import axios from 'axios';
+import api from './customAxios';
 
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
 //Get all Teachers
 export const getAllTeachers = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/teachers`,
+      url: `/teachers`,
     });
 
     return res.data;
@@ -19,9 +17,9 @@ export const getAllTeachers = async () => {
 
 export const getTeacher = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/teachers/${id}`,
+      url: `/teachers/${id}`,
     });
 
     return res.data;
@@ -46,9 +44,9 @@ export const postTeacher = async (teacher) => {
   formData.append('nationality', teacher.nationality);
 
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/teachers`,
+      url: `/teachers`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -68,9 +66,9 @@ export const updateTeacherProfileImage = async ({ _id, profile }) => {
   formData.append('_id', _id);
 
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/teachers/profile`,
+      url: `/teachers/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -86,9 +84,9 @@ export const updateTeacherProfileImage = async ({ _id, profile }) => {
 
 export const putTeacher = async (updatedTeacher) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/teachers`,
+      url: `/teachers`,
       data: updatedTeacher,
     });
 
@@ -100,9 +98,9 @@ export const putTeacher = async (updatedTeacher) => {
 
 export const deleteTeacher = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/teachers/${id}`,
+      url: `/teachers/${id}`,
     });
 
     return res.data;

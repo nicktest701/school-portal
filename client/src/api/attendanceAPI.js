@@ -1,24 +1,25 @@
-import axios from 'axios';
+
+import api from './customAxios';
 
 //Get all Students
 export const getAllAttendances = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/attendances`,
+      url: `/attendances`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const getAttendance = async (id, date) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/attendances/${id}`,
+      url: `/attendances/${id}`,
       params: {
         date,
       },
@@ -26,74 +27,74 @@ export const getAttendance = async (id, date) => {
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const postAttendance = async (newAttendance) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/attendances`,
+      url: `/attendances`,
       data: newAttendance,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const postStudentAttendance = async (newAttendance) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/attendances/student`,
+      url: `/attendances/student`,
       data: newAttendance,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const putAttendance = async (updatedAttendance) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/attendances`,
+      url: `/attendances`,
       data: updatedAttendance,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const deleteAttendance = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/attendances/${id}`,
+      url: `/attendances/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };
 
 export const getAttendanceHistory = async (levelId) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/attendances/history/${levelId}`,
+      url: `/attendances/history/${levelId}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+    return error.response.data
   }
 };

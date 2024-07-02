@@ -5,50 +5,64 @@ import {
   Edit,
   MessageRounded,
   PasswordRounded,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
 import {
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   Chip,
-  Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Divider,
   Stack,
-} from '@mui/material';
+} from "@mui/material";
 
-import Swal from 'sweetalert2';
-import React, { useContext, useEffect, useState } from 'react';
-import ProfileItem from '../../components/typo/ProfileItem';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteUser, enableOrDisableAccount } from '../../api/userAPI';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import Swal from "sweetalert2";
+import React, { useContext, useEffect, useState } from "react";
+import ProfileItem from "../../components/typo/ProfileItem";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteUser, enableOrDisableAccount, getUser } from "../../api/userAPI";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import moment from 'moment';
-import UserUpdatePassword from './UserUpdatePassword';
+} from "../../context/actions/globalAlertActions";
+import moment from "moment";
+import UserUpdatePassword from "./UserUpdatePassword";
+import Back from "../../components/Back";
+import CustomTitle from "../../components/custom/CustomTitle";
+import { useNavigate, useParams } from "react-router-dom";
 
 const UserView = () => {
   const queryClient = useQueryClient();
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState(null);
   const [openUpdatePassword, setOpenUpdatePassword] = useState(null);
 
   const {
-    schoolSessionState: { userViewData },
+    // schoolSessionState: { userViewData },
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
-  const user = userViewData?.data;
+  const user = useQuery({
+    queryKey: ["user", id],
+    queryFn: () => getUser(id),
+    initialData: queryClient
+      .getQueryData(["users"])
+      ?.find((user) => user?._id === id),
+  });
 
   useEffect(() => {
     setProfileImage(
-      `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`
+      `${import.meta.env.VITE_BASE_URL}/images/users/${user?.data?.profile}`
     );
-  }, [user]);
+  }, [user?.data]);
+
+  const handleEditUser = () => {
+    navigate(`/users/${id}/edit`);
+  };
 
   //DISABLE User Account
 
@@ -58,21 +72,22 @@ const UserView = () => {
 
   const disableUserAccount = () => {
     Swal.fire({
-      title: user?.active
-        ? 'Do you want to disable this account?'
-        : 'Do you want to enable this account?',
-      text: user?.active ? 'Disabling Account' : 'Enabling Account',
+      title: user?.data?.active
+        ? "Do you want to disable this account?"
+        : "Do you want to enable this account?",
+      text: user?.data?.active ? "Disabling Account" : "Enabling Account",
       showCancelButton: true,
     }).then((data) => {
       if (data.isConfirmed) {
         const info = {
-          id: user?._id,
-          active: user.active ? false : true,
+          id: user?.data?._id,
+          active: user?.data?.active ? 0 : 1,
         };
 
         mutateAsync(info, {
           onSuccess: (data) => {
-            queryClient.invalidateQueries(['users']);
+            queryClient.invalidateQueries(["users"]);
+            queryClient.invalidateQueries(["user", id]);
             schoolSessionDispatch(alertSuccess(data));
             handleClose();
           },
@@ -96,21 +111,21 @@ const UserView = () => {
   //   handleClose();
   // };
   //EDIT User Info
-  const editUserInfo = () => {
-    schoolSessionDispatch({
-      type: 'editUser',
-      payload: {
-        open: true,
-        data: user,
-      },
-    });
-    handleClose();
-  };
+  // const editUserInfo = () => {
+  //   schoolSessionDispatch({
+  //     type: "editUser",
+  //     payload: {
+  //       open: true,
+  //       data: user,
+  //     },
+  //   });
+  //   handleClose();
+  // };
 
   //CLOSE view User Info
   const handleClose = () => {
     schoolSessionDispatch({
-      type: 'viewUser',
+      type: "viewUser",
       payload: {
         open: false,
         data: {},
@@ -120,20 +135,22 @@ const UserView = () => {
 
   //DELETE User Info
 
-  const { mutateAsync: deleteMutate } = useMutation({
-    mutationFn: deleteUser,
-  });
+  const { mutateAsync: deleteMutate, isLoading: deleteIsLoading } = useMutation(
+    {
+      mutationFn: deleteUser,
+    }
+  );
 
   const handleDelete = () => {
     Swal.fire({
-      title: 'Deleting User',
-      text: 'Do you want to delete?',
+      title: "Deleting User",
+      text: "Do you want to delete?",
       showCancelButton: true,
     }).then((data) => {
       if (data.isConfirmed) {
-        deleteMutate(user?._id, {
+        deleteMutate(user?.data?._id, {
           onSuccess: (data) => {
-            queryClient.invalidateQueries(['users']);
+            queryClient.invalidateQueries(["users"]);
             schoolSessionDispatch(alertSuccess(data));
             handleClose();
           },
@@ -155,12 +172,12 @@ const UserView = () => {
   //CLOSE
   const openQuickMessage = () => {
     schoolSessionDispatch({
-      type: 'sendQuickMessage',
+      type: "sendQuickMessage",
       payload: {
         open: true,
         data: {
-          email: user?.email,
-          phonenumber: user?.phonenumber,
+          email: user?.data?.email,
+          phonenumber: user?.data?.phonenumber,
         },
       },
     });
@@ -168,105 +185,104 @@ const UserView = () => {
 
   return (
     <>
-      <Dialog
-        open={userViewData.open}
-        maxWidth='sm'
-        fullWidth
-        // onClose={handleClose}
-      >
-        <DialogTitle>User Information</DialogTitle>
-        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box>
+      <>
+        <Back color="#012e54" />
+        <CustomTitle
+          title="User Information"
+          subtitle="Track,manage and control courses assigned to you"
+          color="primary.main"
+        />
+
+        <Box>
+          <Stack width="100%" justifyContent="flex-end" alignItems="flex-end">
+            <ButtonGroup>
+              <Button
+                endIcon={<PasswordRounded />}
+                onClick={handleOpenUpdatePassword}
+              >
+                Update Password
+              </Button>
+              <Button endIcon={<Edit />} onClick={handleEditUser}>
+                Edit
+              </Button>
+            </ButtonGroup>
+          </Stack>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            width="100%"
+            paddingY={2}
+            gap={4}
+          >
             <Box
-              display='flex'
-              flexDirection='column'
-              justifyContent='center'
-              alignItems='center'
-              width='100%'
-              paddingY={1}
-              gap={1}
+              sx={{
+                p: 1,
+                border: "1px solid lightgray",
+                borderRadius: "50%",
+              }}
             >
-              <Avatar srcSet={profileImage} sx={{ width: 80, height: 80 }} />
-              <Button
-                size='small'
-                startIcon={<MessageRounded />}
-                onClick={openQuickMessage}
-              >
-                Send Message
-              </Button>
-              <Stack direction='row' spacing={2} flexWrap='wrap'>
-                <Button
-                  // color='error'
-                  size='small'
-                  endIcon={<PasswordRounded />}
-                  onClick={handleOpenUpdatePassword}
-                >
-                  Update Password
-                </Button>
-                <Button size='small' endIcon={<Edit />} onClick={editUserInfo}>
-                  Edit
-                </Button>
-              </Stack>
+              <Avatar srcSet={profileImage} sx={{ width: 100, height: 100 }} />
             </Box>
-
-            <Divider flexItem>
-              <Chip label='Personal Information' color='primary' />
-            </Divider>
-
-            <ProfileItem label='Name' text={`${user?.fullname}`} />
-            <ProfileItem label='Username' text={`${user?.username}`} />
-            <ProfileItem label='Role' text={user?.role} />
-            <ProfileItem
-              label='Date Of Birth'
-              tex
-              text={moment(new Date(user?.dateofbirth)).format(
-                'Do MMMM, YYYY.'
-              )}
-            />
-            <ProfileItem label='Gender' text={user?.gender} />
-            <ProfileItem label='Email Address' text={user?.email} />
-            <ProfileItem label='Telephone No.' text={user?.phonenumber} />
-            <ProfileItem label='Address' text={user?.address} />
-            <ProfileItem label='Residence' text={user?.residence} />
-
-            <ProfileItem label='Nationality' text={user?.nationality} />
-            <Divider flexItem>
-              <Chip label='Account Status' color='primary' />
-            </Divider>
-            <ProfileItem
-              label='Account'
-              text={user?.active ? 'Active' : 'Disabled'}
-            />
-
-            <Stack
-              direction='row'
-              spacing={2}
-              flexWrap='wrap'
-              justifyContent='flex-end'
-            >
-              <Button
-                size='small'
-                color={user?.active ? 'error' : 'primary'}
-                endIcon={user?.active ? <DisabledByDefault /> : <CheckCircle />}
-                onClick={disableUserAccount}
-              >
-                {user?.active ? 'Disable Account' : 'Enable Account'}
-              </Button>
-              <Button
-                color='error'
-                size='small'
-                endIcon={<DeleteRounded />}
-                onClick={handleDelete}
-              >
-                Delete
-              </Button>
-            </Stack>
+            <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
+              Send Message
+            </Button>
           </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
+
+          <Divider flexItem>
+            <Chip label="Personal Information" color="primary" />
+          </Divider>
+
+          <ProfileItem label="Name" text={`${user?.data?.fullname}`} />
+          <ProfileItem label="Username" text={`${user?.data?.username}`} />
+          <ProfileItem label="Role" text={user?.data?.role} />
+          <ProfileItem
+            label="Date Of Birth"
+            tex
+            text={moment(new Date(user?.data?.dateofbirth)).format(
+              "Do MMMM, YYYY."
+            )}
+          />
+          <ProfileItem label="Gender" text={user?.data?.gender} />
+          <ProfileItem label="Email Address" text={user?.data?.email} />
+          <ProfileItem label="Telephone No." text={user?.data?.phonenumber} />
+          <ProfileItem label="Address" text={user?.data?.address} />
+          <ProfileItem label="Residence" text={user?.data?.residence} />
+
+          <ProfileItem label="Nationality" text={user?.data?.nationality} />
+          <Divider flexItem>
+            <Chip label="Account Status" color="primary" />
+          </Divider>
+
+          <ProfileItem
+            label="Account"
+            text={user?.data?.active ? "Active" : "Disabled"}
+            valueStyle={{
+              color: user?.data?.active ? "green" : "red",
+            }}
+          />
+
+          <Stack
+            direction="row"
+            spacing={2}
+            flexWrap="wrap"
+            justifyContent="flex-end"
+            py={2}
+          >
+            <Button
+              variant="contained"
+              color={user?.data?.active ? "primary" : "warning"}
+              onClick={disableUserAccount}
+            >
+              {user?.data?.active ? "Disable Account" : "Enable Account"}
+            </Button>
+            <Button variant="contained" color="error" onClick={handleDelete}>
+              Delete Account
+            </Button>
+          </Stack>
+        </Box>
+      </>
       <UserUpdatePassword
         open={openUpdatePassword}
         setOpen={setOpenUpdatePassword}

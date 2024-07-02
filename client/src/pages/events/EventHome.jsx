@@ -28,7 +28,11 @@ function EventHome() {
   });
 
   const handleViewEvent = (id) => {
-    navigate(`/events/${id}`);
+    navigate(`/events/${id}?redirect_to=/events`, {
+      state: {
+        prevPath: "/events",
+      },
+    });
   };
   const handleEditEvent = (id) => {
     navigate(`/events/${id}/edit`);
@@ -78,7 +82,7 @@ function EventHome() {
     <Container>
       <CustomTitle
         title="Events"
-        subtitle="Create new event"
+        subtitle="Schedule and manage school events to ensure everyone stays informed and engaged."
         color="text.main"
         backColor="#012e54"
       />

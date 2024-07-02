@@ -12,7 +12,7 @@ function Subject_Grade() {
     <Container>
       <CustomTitle
         title='Subjects & Grading System'
-        subtitle='  Track,manage and control academic and class activities'
+        subtitle=' Manage subjects offered and their corresponding grading systems to maintain academic standards.'
         img={session_icon}
         color='primary.main'
       />

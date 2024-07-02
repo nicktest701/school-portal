@@ -1,44 +1,62 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from "react";
 
-import { Navigate, useLocation } from 'react-router-dom';
-import SchoolIcon from '@mui/icons-material/School';
-import student_icon from '../../assets/images/header/student_ico.svg';
-import Back from '../../components/Back';
-import { Button, Container, Typography } from '@mui/material';
-import CustomTitle from '../../components/custom/CustomTitle';
-import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import { STUDENT_RESULT_COLUMNS } from '../../mockup/columns/studentColumns';
-import { useQuery } from '@tanstack/react-query';
-import { getSubjectScore } from '../../api/ExaminationAPI';
-import useLevelById from '../../components/hooks/useLevelById';
-import { BookSharp } from '@mui/icons-material';
-import LevelExamScoreInput from '../examination/LevelExamScoreInput';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import AddCourseResults from './AddCourseResults';
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import SchoolIcon from "@mui/icons-material/School";
+import student_icon from "../../assets/images/header/student_ico.svg";
+import Back from "../../components/Back";
+import { Box, Button, Typography } from "@mui/material";
+import CustomTitle from "../../components/custom/CustomTitle";
+import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import { STUDENT_RESULT_COLUMNS } from "../../mockup/columns/studentColumns";
+import { useQuery } from "@tanstack/react-query";
+import { getSubjectScore } from "../../api/ExaminationAPI";
+import useLevelById from "../../components/hooks/useLevelById";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import AddStudentRecord from "./AddStudentRecord";
 
 function AssignedCoursesResults() {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { state } = useLocation();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { level, levelId } = useParams();
 
-  const [openImportResults, setOpenImportResults] = useState(false);
-  const { gradeSystem } = useLevelById(state?.id);
+  const { gradeSystem } = useLevelById(levelId);
 
   const scores = useQuery({
-    queryKey: ['subject-score', state?.id, state?.subject],
-    queryFn: () => getSubjectScore({ id: state?.id, subject: state?.subject }),
-    enabled: !!state?.id && !!state?.subject,
+    queryKey: ["subject-score", levelId, searchParams.get("sub")],
+    queryFn: () =>
+      getSubjectScore({
+        id: levelId,
+        subject: searchParams.get("sub"),
+      }),
+    enabled: !!levelId && !!searchParams.get("sub"),
   });
 
-  // console.log(scores?.data)
-
-  const handleOpenImportResult = () => {
-    setOpenImportResults(true);
+  const handleImportResults = () => {
+    navigate(
+      `/examination/level/${levelId}/${level}/upload?sub=${searchParams.get(
+        "sub"
+      )}`,
+      {
+        state: {
+          prevPath: `/course/assign/${levelId}/${level}?sub=${searchParams.get(
+            "sub"
+          )}`,
+        },
+      }
+    );
   };
 
   const handleOpenAddResults = (rowData) => {
-    console.log(rowData);
     schoolSessionDispatch({
-      type: 'addStudentResults',
+      type: "addStudentResults",
       payload: {
         open: true,
         data: {
@@ -52,21 +70,21 @@ function AssignedCoursesResults() {
     });
   };
 
-  if (!state?.id || !state?.subject) {
-    return <Navigate to='/course/assign' />;
+  if (!levelId && !searchParams.get("sub")) {
+    return <Navigate to="/course/assign" />;
   }
 
   const columns = [
     ...STUDENT_RESULT_COLUMNS,
     {
       field: null,
-      title: 'Action',
+      title: "Action",
       render: (rowData) => (
         <Button
-          variant='outlined'
+          variant="outlined"
           onClick={() => handleOpenAddResults(rowData)}
         >
-          Add Results
+          Add Record
         </Button>
       ),
     },
@@ -74,69 +92,66 @@ function AssignedCoursesResults() {
 
   return (
     <>
-     
-      <Back to='/course/assign' color='primary.main' />
-
-      <Container
+      <Back to="/course/assign" color="primary.main" />
+      <Box
         sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column-reverse', sm: 'row' },
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: 2,
-          paddingY: 4,
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          justifyContent: { xs: "space-around", md: "space-between" },
+          alignItems: "center",
+          bgcolor: "#fff",
+          mb: 4,
+          p: 1,
+          pr: 2,
         }}
       >
         <CustomTitle
-          title='Current Level '
-          subtitle='  Track,manage and control academic and class activities'
-          icon={<SchoolIcon color='inherit' sx={{ width: 50, height: 50 }} />}
-          color='primary.main'
+          title="Manage Student Records"
+          subtitle="Track,manage and control academic and class activities"
+          icon={<SchoolIcon color="inherit" sx={{ width: 50, height: 50 }} />}
+          color="primary.main"
         />
         <Typography
-          sx={{ display: { xs: 'none', md: 'inline-flex' } }}
-          variant='h5'
+          // sx={{ display: { xs: "none", md: "inline-flex" } }}
+          variant="h5"
           paragraph
-          whiteSpace='nowrap'
+          whiteSpace="nowrap"
         >
           {state?.type}
         </Typography>
-      </Container>
+      </Box>
 
       {/* <Divider /> */}
 
-      <Container>
-        <CustomizedMaterialTable
-          search={true}
-          isLoading={scores.isLoading}
-          title={state?.type}
-          subtitle={state?.subject}
-          exportFileName={`${state?.type}-${state?.subject}` || ''}
-          columns={columns}
-          data={scores.data}
-          actions={[
-            {
-              icon: () => <BookSharp color='warning' />,
-              position: 'toolbar',
-              tooltip: 'Import Results',
-              onClick: handleOpenImportResult,
-              isFreeAction: true,
-            },
-          ]}
-          icon={student_icon}
-          handleRefresh={scores?.refetch}
-        />
-      </Container>
-
-      <LevelExamScoreInput
-        open={openImportResults}
-        setOpen={setOpenImportResults}
-        grades={gradeSystem}
-        defaultSubject={state?.subject}
-        classLevelId={state?.id}
+      <CustomizedMaterialTable
+        search={true}
+        isLoading={scores.isLoading}
+        title={state?.type}
+        subtitle={searchParams.get("sub")}
+        exportFileName={`${level}-${searchParams.get("sub")}` || ""}
+        columns={columns}
+        data={scores.data}
+        actions={
+          [
+            // {
+            //   icon: () => <BookSharp color="warning" />,
+            //   position: "toolbar",
+            //   tooltip: "Import Results",
+            //   onClick: handleOpenImportResult,
+            //   isFreeAction: true,
+            // },
+          ]
+        }
+        icon={student_icon}
+        handleRefresh={scores?.refetch}
+        autoCompleteComponent={
+          <Button variant="contained" onClick={handleImportResults}>
+            Import Records
+          </Button>
+        }
       />
 
-      <AddCourseResults />
+      <AddStudentRecord />
     </>
   );
 }

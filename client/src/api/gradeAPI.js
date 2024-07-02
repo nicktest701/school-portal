@@ -1,13 +1,11 @@
-import axios from 'axios';
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
+import api from './customAxios';
 
 //Get all Students
 export const getGrades = async () => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/grades`,
+      url: `/grades`,
     });
 
     return res.data;
@@ -18,9 +16,9 @@ export const getGrades = async () => {
 
 export const getGrade = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/grades/${id}`,
+      url: `/grades/${id}`,
     });
 
     return res.data;
@@ -31,9 +29,9 @@ export const getGrade = async (id) => {
 
 export const postGrades = async (newGrade) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/grades`,
+      url: `/grades`,
       data: newGrade,
     });
 
@@ -45,9 +43,9 @@ export const postGrades = async (newGrade) => {
 
 export const putGrade = async (updatedGrade) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/grades`,
+      url: `/grades`,
       data: updatedGrade,
     });
 
@@ -60,9 +58,9 @@ export const putGrade = async (updatedGrade) => {
 export const deleteGrade = async (id) => {
   // console.log(id)
   try {
-    const res = await axios({
+    const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/grades/${id}`,
+      url: `/grades/${id}`,
     });
 
     return res.data;

@@ -1,4 +1,4 @@
-import { CircleRounded } from '@mui/icons-material';
+import { CircleRounded } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -9,25 +9,25 @@ import {
   RadioGroup,
   Stack,
   Typography,
-} from '@mui/material';
-import _ from 'lodash';
-import { gradeColor } from '../../config/gradeColor';
-import { overallScoreGradeColor } from '../../config/overallScoreGradeColor';
+} from "@mui/material";
+import _ from "lodash";
+import { gradeColor } from "../../config/gradeColor";
+import { overallScoreGradeColor } from "../../config/overallScoreGradeColor";
 
 export const STUDENTS_COLUMN = [
   {
-    field: '_id',
-    title: 'ID',
+    field: "_id",
+    title: "ID",
     hidden: true,
   },
   {
-    field: 'indexnumber',
-    title: 'Student ID',
+    field: "indexnumber",
+    title: "Student ID",
     // hidden: true,
   },
   {
-    field: 'fullName',
-    title: 'FullName',
+    field: "fullName",
+    title: "FullName",
     searchable: true,
     customFilterAndSearch: (data, rowData) => {
       return (
@@ -39,21 +39,21 @@ export const STUDENTS_COLUMN = [
   },
 
   {
-    title: 'Profile',
-    field: 'profile',
+    title: "Profile",
+    field: "profile",
     export: false,
     width: 400,
     searchable: true,
     render: (rowData) => (
       <Stack
-        direction='row'
+        direction="row"
         columnGap={1}
-        justifyContent='center'
-        alignItems='center'
+        justifyContent="center"
+        alignItems="center"
       >
         <Avatar
           src={
-            rowData.profile === undefined || rowData.profile === ''
+            rowData.profile === undefined || rowData.profile === ""
               ? null
               : // : `${import.meta.env.VITE_BASE_URL}/images/students/${
                 //     rowData.profile
@@ -64,17 +64,17 @@ export const STUDENTS_COLUMN = [
         <ListItemText
           primary={
             <Typography
-              variant='body2'
+              variant="body2"
               sx={{
-                whiteSpace: 'nowrap',
-                fontWeight: 'bold',
+                whiteSpace: "nowrap",
+                fontWeight: "bold",
               }}
             >
               {rowData.fullName}
             </Typography>
           }
           secondary={
-            <Typography variant='caption'>{`${_.startCase(rowData.gender)} ,${
+            <Typography variant="caption">{`${_.startCase(rowData.gender)} ,${
               new Date().getFullYear() -
               new Date(rowData.dateofbirth).getUTCFullYear()
             }yrs`}</Typography>
@@ -85,32 +85,32 @@ export const STUDENTS_COLUMN = [
   },
 
   {
-    field: 'active',
-    title: 'Status',
+    field: "active",
+    title: "Status",
     export: false,
     render: ({ active }) => (
       <Button
-        sx={{ bgcolor: active ? 'success.lighter' : 'error.lighter' }}
+        sx={{ bgcolor: active ? "success.lighter" : "error.lighter" }}
         startIcon={
           <CircleRounded
-            sx={{ color: active ? 'green' : 'red', width: 10, height: 10 }}
+            sx={{ color: active ? "green" : "red", width: 10, height: 10 }}
           />
         }
       >
-        {active ? 'Active' : 'Disabled'}
+        {active ? "Active" : "Disabled"}
       </Button>
     ),
   },
   {
-    field: 'levelName',
-    title: 'Level',
+    field: "levelName",
+    title: "Level",
     export: true,
     hidden: true,
     render: ({ levelName }) => (
       <Typography
-        variant='caption'
-        bgcolor='primary.main'
-        color='#fff'
+        variant="caption"
+        bgcolor="primary.main"
+        color="#fff"
         padding={1}
       >
         {levelName}
@@ -118,25 +118,25 @@ export const STUDENTS_COLUMN = [
     ),
   },
   {
-    field: 'dateofbirth',
-    title: 'Date Of Birth',
+    field: "dateofbirth",
+    title: "Date Of Birth",
     hidden: true,
     export: true,
   },
   {
-    field: 'gender',
-    title: 'Gender',
+    field: "gender",
+    title: "Gender",
     hidden: true,
     export: true,
   },
   {
     field: null,
-    title: 'Contact Info',
+    title: "Contact Info",
     render: (rowData) => (
       <ListItemText
-        primary={<Typography variant='body2'>{rowData.email}</Typography>}
+        primary={<Typography variant="body2">{rowData.email}</Typography>}
         secondary={
-          <Typography variant='caption' color='primary' fontWeight='bold'>
+          <Typography variant="caption" color="primary" fontWeight="bold">
             {rowData.phonenumber}
           </Typography>
         }
@@ -144,50 +144,50 @@ export const STUDENTS_COLUMN = [
     ),
   },
   {
-    field: 'email',
-    title: 'Email',
+    field: "email",
+    title: "Email",
     export: true,
     hidden: true,
   },
   {
-    field: 'phonenumber',
-    title: 'Telephone No.',
+    field: "phonenumber",
+    title: "Telephone No.",
     export: true,
     hidden: true,
   },
   {
-    field: 'address',
-    title: 'Address',
+    field: "address",
+    title: "Address",
     export: true,
     hidden: true,
   },
   {
-    field: 'residence',
-    title: 'Residence',
+    field: "residence",
+    title: "Residence",
   },
   {
-    field: 'nationality',
-    title: 'Nationality',
+    field: "nationality",
+    title: "Nationality",
   },
   {
-    field: 'levelId',
+    field: "levelId",
     hidden: true,
   },
 ];
 export const RECENT_STUDENTS_COLUMN = [
   {
-    field: '_id',
-    title: 'ID',
+    field: "_id",
+    title: "ID",
     hidden: true,
   },
   {
-    field: 'indexnumber',
-    title: 'Student ID',
+    field: "indexnumber",
+    title: "Student ID",
     // hidden: true,
   },
   {
-    field: 'fullName',
-    title: 'FullName',
+    field: "fullName",
+    title: "FullName",
     searchable: true,
     customFilterAndSearch: (data, rowData) => {
       return (
@@ -199,21 +199,21 @@ export const RECENT_STUDENTS_COLUMN = [
   },
 
   {
-    title: 'Profile',
-    field: 'profile',
+    title: "Profile",
+    field: "profile",
     export: false,
     width: 400,
     searchable: true,
     render: (rowData) => (
       <Stack
-        direction='row'
+        direction="row"
         columnGap={1}
-        justifyContent='center'
-        alignItems='center'
+        justifyContent="center"
+        alignItems="center"
       >
         <Avatar
           src={
-            rowData.profile === undefined || rowData.profile === ''
+            rowData.profile === undefined || rowData.profile === ""
               ? null
               : // : `${import.meta.env.VITE_BASE_URL}/images/students/${
                 //     rowData.profile
@@ -224,17 +224,17 @@ export const RECENT_STUDENTS_COLUMN = [
         <ListItemText
           primary={
             <Typography
-              variant='body2'
+              variant="body2"
               sx={{
-                whiteSpace: 'nowrap',
-                fontWeight: 'bold',
+                whiteSpace: "nowrap",
+                fontWeight: "bold",
               }}
             >
               {rowData.fullName}
             </Typography>
           }
           secondary={
-            <Typography variant='caption'>{`${_.startCase(rowData.gender)} ,${
+            <Typography variant="caption">{`${_.startCase(rowData.gender)} ,${
               new Date().getFullYear() -
               new Date(rowData.dateofbirth).getUTCFullYear()
             }yrs`}</Typography>
@@ -245,26 +245,26 @@ export const RECENT_STUDENTS_COLUMN = [
   },
 
   {
-    field: 'levelName',
-    title: 'Level',
+    field: "levelName",
+    title: "Level",
     export: true,
     // hidden: true,
   },
 
   {
-    field: 'gender',
-    title: 'Gender',
+    field: "gender",
+    title: "Gender",
     hidden: true,
     export: true,
   },
   {
     field: null,
-    title: 'Contact Info',
+    title: "Contact Info",
     render: (rowData) => (
       <ListItemText
-        primary={<Typography variant='body2'>{rowData.email}</Typography>}
+        primary={<Typography variant="body2">{rowData.email}</Typography>}
         secondary={
-          <Typography variant='caption' color='primary' fontWeight='bold'>
+          <Typography variant="caption" color="primary" fontWeight="bold">
             {rowData.phonenumber}
           </Typography>
         }
@@ -273,25 +273,25 @@ export const RECENT_STUDENTS_COLUMN = [
   },
 
   {
-    field: 'levelId',
+    field: "levelId",
     hidden: true,
   },
 ];
 
 export const STUDENTS_ATTENDANCE_COLUMNS = [
   {
-    field: '_id',
-    title: 'ID',
+    field: "_id",
+    title: "ID",
     hidden: true,
   },
   {
-    field: 'profile',
-    title: 'Avatar',
+    field: "profile",
+    title: "Avatar",
     export: false,
     render: (rowData) => (
       <Avatar
         src={
-          rowData.profile === undefined || rowData.profile === ''
+          rowData.profile === undefined || rowData.profile === ""
             ? null
             : rowData?.profile
           // : `${import.meta.env.VITE_BASE_URL}/images/students/${
@@ -303,29 +303,29 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
   },
 
   {
-    field: 'fullName',
-    title: 'FullName',
+    field: "fullName",
+    title: "FullName",
     export: true,
   },
   {
-    field: 'status',
-    title: 'Status',
+    field: "status",
+    title: "Status",
     render: () => {
       return (
         <RadioGroup
           row
-          aria-labelledby='demo-row-radio-buttons-group-label'
-          name='row-radio-buttons-group'
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
         >
           <FormControlLabel
-            value='present'
-            control={<Radio size='small' />}
-            label='Present'
+            value="present"
+            control={<Radio size="small" />}
+            label="Present"
           />
           <FormControlLabel
-            value='absent'
-            control={<Radio size='small' />}
-            label='Absent'
+            value="absent"
+            control={<Radio size="small" />}
+            label="Absent"
           />
         </RadioGroup>
       );
@@ -335,34 +335,34 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
 ];
 export const STUDENTS_EXAMS_COLUMN = [
   {
-    field: '_id',
-    title: 'ID',
+    field: "_id",
+    title: "ID",
     hidden: true,
   },
   {
-    field: 'studentId',
-    title: 'studentId',
+    field: "studentId",
+    title: "studentId",
     hidden: true,
   },
   {
-    field: 'indexnumber',
-    title: 'Index Number',
+    field: "indexnumber",
+    title: "Index Number",
     hidden: true,
   },
   {
-    field: 'profile',
-    title: 'Avatar',
+    field: "profile",
+    title: "Student",
     export: false,
     render: (rowData) => (
       <Stack
-        direction='row'
+        direction="row"
         columnGap={1}
-        justifyContent='center'
-        alignItems='center'
+        justifyContent="center"
+        alignItems="center"
       >
         <Avatar
           src={
-            rowData.profile === undefined || rowData.profile === ''
+            rowData.profile === undefined || rowData.profile === ""
               ? null
               : rowData?.profile
             // : `${import.meta.env.VITE_BASE_URL}/images/students/${
@@ -373,18 +373,18 @@ export const STUDENTS_EXAMS_COLUMN = [
         <ListItemText
           primary={
             <Typography
-              variant='body2'
+              variant="body2"
               sx={{
-                whiteSpace: 'nowrap',
-                fontWeight: 'bold',
+                whiteSpace: "nowrap",
+                fontWeight: "bold",
               }}
             >
               {rowData.fullName}
             </Typography>
           }
           secondary={
-            <Typography variant='caption'>{`${
-              rowData?.indexnumber || ''
+            <Typography variant="caption">{`${
+              rowData?.indexnumber || ""
             },${_.startCase(rowData?.gender)}`}</Typography>
           }
         />
@@ -399,13 +399,13 @@ export const STUDENTS_EXAMS_COLUMN = [
   },
 
   {
-    title: 'Level',
-    field: 'level',
+    title: "Level",
+    field: "level",
   },
 
   {
-    title: 'Score',
-    field: 'overallScore',
+    title: "Score",
+    field: "overallScore",
     render: (data) => (
       <Button
         sx={{
@@ -419,17 +419,17 @@ export const STUDENTS_EXAMS_COLUMN = [
   },
 
   {
-    title: 'Completed',
-    field: 'entry',
+    title: "Completed",
+    field: "entry",
     render: ({ entry }) => (
       <Stack spacing={1}>
         <LinearProgress
-          variant='determinate'
+          variant="determinate"
           value={entry?.percent}
-          sx={{ width: 100 }}
-          color='secondary'
+          sx={{ bgcolor: "lightgray" }}
+          color={entry?.percent === 100 ? "success" : "secondary"}
         />
-        <Typography textAlign='center' fontSize={11}>
+        <Typography textAlign="center" fontSize={11}>
           {entry?.completed}/{entry?.total}
         </Typography>
       </Stack>
@@ -437,7 +437,7 @@ export const STUDENTS_EXAMS_COLUMN = [
   },
 
   {
-    field: 'levelId',
+    field: "levelId",
     hidden: true,
   },
   // {
@@ -450,47 +450,47 @@ export const STUDENTS_EXAMS_COLUMN = [
 
 export const STUDENT_RESULT_COLUMNS = [
   {
-    field: '_id',
-    title: 'ID',
+    field: "_id",
+    title: "ID",
     hidden: true,
     export: false,
   },
   {
-    field: 'indexnumber',
-    title: 'Index Number',
+    field: "indexnumber",
+    title: "Index Number",
   },
   {
-    field: 'student',
-    title: 'Student',
+    field: "student",
+    title: "Student",
   },
   {
-    field: 'course.subject',
-    title: 'Subject',
+    field: "course.subject",
+    title: "Subject",
     export: false,
   },
   {
-    field: 'course.classScore',
-    title: 'Class Score',
+    field: "course.classScore",
+    title: "Class Score",
   },
   {
-    field: 'course.examsScore',
-    title: 'Exams Score',
+    field: "course.examsScore",
+    title: "Exams Score",
   },
   {
-    field: 'course.totalScore',
-    title: 'Total Score',
+    field: "course.totalScore",
+    title: "Total Score",
   },
   {
-    field: 'course.grade',
-    title: 'Grade',
+    field: "course.grade",
+    title: "Grade",
   },
   {
-    field: 'course.remarks',
-    title: 'Remarks',
+    field: "course.remarks",
+    title: "Remarks",
     render: ({ course }) => {
       return (
         <Button
-          size='small'
+          size="small"
           sx={{
             color: gradeColor(course?.totalScore).color,
             bgcolor: gradeColor(course?.totalScore).bg,
@@ -505,91 +505,91 @@ export const STUDENT_RESULT_COLUMNS = [
 
 export const studentFeesReportColumns = [
   {
-    name: 'id',
-    title: 'ID',
+    name: "id",
+    title: "ID",
     options: {
       display: false,
     },
   },
 
   {
-    name: 'studentId',
+    name: "studentId",
     options: {
       display: false,
     },
   },
   {
-    name: 'schoolSessionId',
+    name: "schoolSessionId",
     options: {
       display: false,
     },
   },
   {
-    name: 'date',
-    title: 'Date Of Issue',
+    name: "date",
+    title: "Date Of Issue",
   },
   {
-    name: 'amountPaid',
-    title: 'Amount Paid',
+    name: "amountPaid",
+    title: "Amount Paid",
   },
   {
-    name: 'amountOutstanding',
-    title: 'Outstanding Amount',
+    name: "amountOutstanding",
+    title: "Outstanding Amount",
   },
   {
-    name: 'issuer',
-    title: 'Issuer',
+    name: "issuer",
+    title: "Issuer",
   },
 ];
 
 export const IMPORT_STUDENT_COLUMNS = [
   {
-    name: '_id',
-    title: 'ID',
+    name: "_id",
+    title: "ID",
     hidden: true,
   },
   {
-    field: 'indexnumber',
-    title: 'STUDENT ID',
+    field: "indexnumber",
+    title: "STUDENT ID",
   },
   {
-    field: 'firstname',
-    title: 'FIRST NAME',
+    field: "firstname",
+    title: "FIRST NAME",
   },
   {
-    field: 'surname',
-    title: 'SURNAME',
+    field: "surname",
+    title: "SURNAME",
   },
   {
-    field: 'othername',
-    title: 'OTHER NAME',
+    field: "othername",
+    title: "OTHER NAME",
   },
   {
-    field: 'dateofbirth',
-    title: 'DATE OF BIRTH',
+    field: "dateofbirth",
+    title: "DATE OF BIRTH",
   },
   {
-    field: 'gender',
-    title: 'GENDER',
+    field: "gender",
+    title: "GENDER",
   },
   {
-    field: 'email',
-    title: 'EMAIL ADDRESS',
+    field: "email",
+    title: "EMAIL ADDRESS",
   },
   {
-    field: 'phonenumber',
-    title: 'TELEPHONE NUMBER',
+    field: "phonenumber",
+    title: "TELEPHONE NUMBER",
   },
   {
-    field: 'address',
-    title: 'HOUSE/GPS ADDRESS',
+    field: "address",
+    title: "HOUSE/GPS ADDRESS",
   },
   {
-    field: 'residence',
-    title: 'RESIDENCE',
+    field: "residence",
+    title: "RESIDENCE",
   },
   {
-    field: 'nationality',
-    title: 'NATIONALITY',
+    field: "nationality",
+    title: "NATIONALITY",
   },
 ];

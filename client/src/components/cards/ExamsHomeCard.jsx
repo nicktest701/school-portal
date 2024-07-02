@@ -10,10 +10,11 @@ function ExamsHomeCard({ title, value, icon, color }) {
       spacing={2}
       sx={{
         bgcolor:'white',
-        borderRadius: 1,
-        padding: 2,
-        border: `1px solid lightgray`,
-        borderLeft: `2px solid #012E54`,
+        px: 2,
+        py:4,
+        borderRadius: 2,
+        boxShadow: '20px 20px 60px #d9d9d9,-20px -20px 60px #ffffff',
+        // borderLeft: `2px solid #012E54`,
       }}
     >
       <Avatar

@@ -20,45 +20,43 @@ export const getUser = () => {
 
 };
 
+export const saveUser = (accessToken) => {
 
-export const getToken = () => {
-  const token =
-    localStorage.getItem("@user") ||
-    sessionStorage.getItem("@user");
-
-  if (token === undefined || token === null || token === 'undefined') {
-    return "";
-  }
-  return token;
-};
-
-export const getRefreshToken = () => {
-  const token =
-    localStorage.getItem("@userR") ||
-    sessionStorage.getItem("@userR");
-
-  if (token === undefined || token === null || token === 'undefined') {
-    return "";
-  }
-  return token;
-
-
-};
-
-export const saveToken = (accessToken, refreshToken) => {
-
-  if (accessToken === 'undefined' || accessToken === undefined || refreshToken === 'undefined' || refreshToken === undefined) {
+  if (accessToken === 'undefined' || accessToken === undefined) {
     return;
   }
   localStorage.setItem("@user", accessToken);
-  localStorage.setItem("@userR", refreshToken);
 
 };
 
+export const deleteUser = () => {
+  localStorage.removeItem("@user");
+};
+
+
+export const getToken = () => {
+  const token =
+    localStorage.getItem("@user")
+
+  if (token === undefined || token === null || token === 'undefined') {
+    return "";
+  }
+  return token;
+};
+
+
+export const saveToken = (accessToken) => {
+
+  if (accessToken === 'undefined' || accessToken === undefined) {
+    return;
+  }
+  localStorage.setItem("@user", accessToken);
+
+
+};
 
 export const deleteToken = () => {
   localStorage.removeItem("@user");
-  localStorage.removeItem("@userR");
 
 };
 

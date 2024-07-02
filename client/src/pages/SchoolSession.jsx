@@ -35,7 +35,7 @@ const SchoolSession = () => {
       if (user?.role === "administrator") {
         return sessions;
       } else {
-        return sessions.filter((session) => session.active !== false);
+        return sessions.filter((session) => !session.active);
       }
     },
   });
@@ -48,7 +48,6 @@ const SchoolSession = () => {
       return;
     }
     schoolSessionDispatch({ type: "setCurrentSession", payload: session });
-
     localStorage.setItem("@school_session", JSON.stringify(session));
     userDispatch({ type: "setSession", payload: session });
 

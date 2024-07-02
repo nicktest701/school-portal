@@ -1,20 +1,18 @@
-import axios from "axios";
+import api from './customAxios';
 
-const user = JSON.parse(localStorage.getItem('@user'));
-axios.defaults.headers.common.Authorization = `Bearer ${user}`;
 
 //Get all Students
 export const getAllFees = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/fees/all`,
+      url: `/fees/all`,
       data: session,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
@@ -24,36 +22,36 @@ export const getAllFees = async (session) => {
 
 export const getFee = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: "GET",
-      url:  `${import.meta.env.VITE_BASE_URL}/fees/${id}`,
+      url: `/fees/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const getAllFeesByCurrentLevel = async (session) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/fees/current-level/all`,
+      url: `/fees/current-level/all`,
       data: session,
     });
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 export const getFeeForCurrentLevel = async (session, level) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/fees/current-level`,
+      url: `/fees/current-level`,
       data: {
         ...session,
         level,
@@ -61,51 +59,51 @@ export const getFeeForCurrentLevel = async (session, level) => {
     });
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const postFee = async (newFee) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: "POST",
-      url:  `${import.meta.env.VITE_BASE_URL}/fees`,
+      url: `/fees`,
       data: newFee,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const putFee = async (updatedFee) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: "PUT",
-      url:  `${import.meta.env.VITE_BASE_URL}/fees`,
+      url: `/fees`,
       data: updatedFee,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };
 
 export const deleteFee = async (id) => {
   try {
-    const res = await axios({
+    const res = await api({
       method: "DELETE",
-      url:  `${import.meta.env.VITE_BASE_URL}/fees/${id}`,
+      url: `/fees/${id}`,
     });
 
     return res.data;
   } catch (error) {
-    //console.log(error.response.data);
+
     throw error.response.data;
   }
 };

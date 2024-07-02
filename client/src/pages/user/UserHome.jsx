@@ -8,7 +8,7 @@ function UserHome() {
     <Container>
       <CustomTitle
         title='Administrators & Users'
-        subtitle='Manage information and details of users'
+        subtitle='Manage user accounts, roles, and permissions to ensure secure and appropriate access to the system.'
         img={users_icon}
         color='text.main'
       />

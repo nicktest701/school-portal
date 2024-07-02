@@ -8,7 +8,10 @@ const SchoolSchema = new mongoose.Schema(
     name: String,
     address: String,
     location: String,
-    email: String,
+    email: {
+      type: String, lowercase: true
+    },
+    website: String,
     phonenumber: String,
     motto: String,
   },

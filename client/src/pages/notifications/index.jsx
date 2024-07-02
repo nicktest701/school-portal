@@ -80,7 +80,7 @@ function Notifications() {
     <Container>
       <CustomTitle
         title="Notifications"
-        subtitle="Create new notification"
+        subtitle="Receive notifications and track activities to stay updated on important school events and tasks."
         color="text.main"
         backColor="#012e54"
       />

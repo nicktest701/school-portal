@@ -12,6 +12,8 @@ function Profile() {
   const { user } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // console.log(user)
+
   const handleOpenEdit = () => {
     setSearchParams((params) => {
       params.set("e_p", true);
@@ -23,18 +25,28 @@ function Profile() {
     <Container>
       <CustomTitle
         title="Profile"
-        subtitle="Create new notification"
+        subtitle="View and update your personal information to keep your profile accurate and current."
         color="text.main"
         backColor="#012e54"
       />
       <Container
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
+          flexDirection: "column",
           alignItems: "start",
-          pt: 4,
+          py: 4,
+          gap: 4,
+          bgcolor:'#fff' 
         }}
       >
+        <Button
+          variant="contained"
+          startIcon={<Edit />}
+          onClick={handleOpenEdit}
+          sx={{ alignSelf: "flex-end" }}
+        >
+          Edit Profile
+        </Button>
         <Stack
           width="100%"
           justifyContent="center"
@@ -60,20 +72,13 @@ function Profile() {
           </Typography>
           {/* <Typography variant="body2">@{user?.username}</Typography>
           <Typography variant="caption">{user?.email}</Typography> */}
-          <Button
-            variant="contained"
-            startIcon={<Edit />}
-            onClick={handleOpenEdit}
-          >
-            Edit Profile
-          </Button>
         </Stack>
 
         <Stack spacing={3} width="100%">
-          <Typography variant="h3">Details</Typography>{" "}
+          {/* <Typography variant="h3">Details</Typography>{" "} */}
           <CustomFormControl>
             <FormDisplayItem label="Firstname" value={user.firstname || ""} />
-            <FormDisplayItem label="Surname" value={user.surname || ""} />
+            <FormDisplayItem label="Lastname" value={user.lastname || ""} />
           </CustomFormControl>
           <FormDisplayItem label="Username" value={user.username || ""} />
           <FormDisplayItem label="Email" value={user.email || ""} />

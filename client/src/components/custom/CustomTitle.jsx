@@ -2,7 +2,16 @@ import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
 
 import PropTypes from "prop-types";
-function CustomTitle({ title, subtitle, img, icon, color }) {
+import Back from "../Back";
+function CustomTitle({
+  title,
+  titleVariant,
+  subtitle,
+  img,
+  icon,
+  bgColor,
+  color,
+}) {
   CustomTitle.propTypes = {
     title: PropTypes.string,
     subtitle: PropTypes.string,
@@ -13,7 +22,6 @@ function CustomTitle({ title, subtitle, img, icon, color }) {
 
   return (
     <>
-      {/* <Back color={backColor} /> */}
       <Box
         sx={{
           display: "flex",
@@ -22,8 +30,8 @@ function CustomTitle({ title, subtitle, img, icon, color }) {
           alignItems: "center",
           py: 3,
           my: 2,
-          px:2,
-          bgcolor: "#fff",
+          px: 2,
+          bgcolor: bgColor || "#fff",
         }}
       >
         <Stack
@@ -31,8 +39,8 @@ function CustomTitle({ title, subtitle, img, icon, color }) {
           justifyContent="center"
           alignItems="center"
           gap={2}
-      
         >
+          {/* <Back /> */}
           {img ? (
             <img
               src={img}
@@ -44,11 +52,10 @@ function CustomTitle({ title, subtitle, img, icon, color }) {
           ) : (
             icon
           )}
-
           <Stack color={color} pl={1}>
             <Typography
               color="secondary.main"
-              variant="h4"
+              variant={titleVariant || "h4"}
               textAlign={{ xs: "center", md: "left" }}
             >
               {title}
