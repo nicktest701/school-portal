@@ -3,8 +3,6 @@ import {
   Box,
   Divider,
   Grid,
-  ListItemText,
-  Stack,
   Typography,
 } from "@mui/material";
 import React, { useContext } from "react";

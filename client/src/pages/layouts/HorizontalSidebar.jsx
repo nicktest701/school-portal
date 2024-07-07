@@ -5,8 +5,9 @@ import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PropTypes from "prop-types";
 import MiniDrawerItem from "../../components/MiniDrawerItem";
 import { UserContext } from "../../context/providers/UserProvider";
+import DrawerItem from "../../components/DrawerItem";
 
-const HorizontalSidebar = ({ open, setOpen, }) => {
+const HorizontalSidebar = ({ open, setOpen }) => {
   const { user, logOutUser } = useContext(UserContext);
 
   const handleClose = () => setOpen(false);
@@ -68,6 +69,12 @@ const HorizontalSidebar = ({ open, setOpen, }) => {
             <MiniDrawerItem
               title="Messages"
               to="/sms"
+              handleClose={handleClose}
+            />
+            <DrawerItem
+              title="Data Uploads"
+              // icon={<ImportExportRounded />}
+              to="/uploads"
               handleClose={handleClose}
             />
             <MiniDrawerItem

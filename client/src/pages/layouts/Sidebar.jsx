@@ -29,6 +29,7 @@ import {
   NumbersSharp,
   SchoolRounded,
   Event,
+  ImportExportRounded,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { UserContext } from "../../context/providers/UserProvider";
@@ -133,6 +134,7 @@ const Sidebar = () => {
             />
 
             <DrawerItem title="Messages" icon={<SmsRounded />} to="/sms" />
+            <DrawerItem title="Data Uploads" icon={<ImportExportRounded />} to="/uploads" />
 
             <>
               <DrawerItem

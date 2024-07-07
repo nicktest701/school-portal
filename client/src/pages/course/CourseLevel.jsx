@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import CustomTitle from '../../components/custom/CustomTitle';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import { Button, Container, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { EMPTY_IMAGES } from '../../config/images';
 import { SchoolRounded } from '@mui/icons-material';
 import { COURSE_LEVEL_COLUMNS } from '../../mockup/columns/sessionColumns';

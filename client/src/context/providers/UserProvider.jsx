@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAllLevels } from "../../api/levelAPI";
 import { getSchoolInfo, logOut } from "../../api/userAPI";
+import { getAllNotifications } from "../../api/notificationAPI";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../config/Loader";
 import { getUser, parseJwt } from "../../config/sessionHandler";
@@ -26,7 +27,6 @@ const UserProvider = ({ children }) => {
       role: "",
     }
   );
- 
 
   const schoolInfo = useQuery({
     queryKey: ["school-info"],
@@ -52,6 +52,24 @@ const UserProvider = ({ children }) => {
     enabled: !!session?.sessionId && !!session?.termId,
   });
 
+  const notifications = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => getAllNotifications(),
+    initialData: [],
+    select: (notifications) => {
+      if (notifications === undefined || notifications?.length === 0) {
+        return [];
+      } else {
+        const removedNotifications = getItem("d_no");
+        return notifications?.filter((notification) => {
+          return !removedNotifications?.includes(notification?._id);
+        });
+      }
+    },
+    retry: false,
+    enabled: !!user?.id,
+  });
+
   useEffect(() => {
     if (getItem("r_no") === null) {
       saveItem("r_no", []);
@@ -66,7 +84,6 @@ const UserProvider = ({ children }) => {
     session,
     user: user,
     school_info: schoolInfo?.data,
-
   };
 
   const [userState, userDispatch] = useReducer(UserReducer, initState);
@@ -81,13 +98,12 @@ const UserProvider = ({ children }) => {
     mutationFn: logOut,
   });
 
-
   const logOutUser = () => {
     Swal.fire({
       title: "Exiting",
       text: "Do you want to exit app?",
       showCancelButton: true,
-      backdrop:false,
+      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         mutateAsync(
@@ -115,6 +131,7 @@ const UserProvider = ({ children }) => {
         userState,
         session,
         user,
+        notifications: notifications?.data,
         logInUser,
         logOutUser,
         school_info: schoolInfo?.data,

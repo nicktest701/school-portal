@@ -13,7 +13,7 @@ const Parent = require('../models/parentModel');
 const Examination = require('../models/examinationModel');
 const CurrentFee = require('../models/currentFeeModel');
 const Fee = require('../models/feeModel');
-const verifyJWT = require('../middlewares/verifyJWT');
+
 
 const Storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -27,7 +27,7 @@ const Storage = multer.diskStorage({
 });
 const upload = multer({ storage: Storage });
 
-router.use(verifyJWT);
+
 
 //@GET All students
 router.get(
@@ -169,7 +169,6 @@ router.get(
   })
 );
 
-
 //@GET student by student index number
 router.get(
   '/index-number',
@@ -187,7 +186,6 @@ router.get(
   })
 );
 
-
 //@GET student by student id
 router.get(
   '/:id',
@@ -202,8 +200,6 @@ router.get(
     res.status(200).json(student);
   })
 );
-
-
 
 //@GET ALL student for search
 router.post(
@@ -335,6 +331,10 @@ router.post(
   AsyncHandler(async (req, res) => {
     const { session, students, type } = req.body;
 
+    // console.log(session)
+    // return res
+    //   .status(200).json('ok')
+
     const indexNumbers = _.map(students, 'indexnumber');
 
     const existingStudents = await Student.find({
@@ -342,6 +342,8 @@ router.post(
         $in: indexNumbers,
       },
     });
+
+
 
     if (!_.isEmpty(existingStudents)) {
       return res
@@ -355,17 +357,14 @@ router.post(
 
     if (type === 'file') {
       const newStudents = await Student.create(students);
+
       if (_.isEmpty(newStudents)) {
         return res
           .status(404)
           .json('Error adding student info.Try again later.');
       }
 
-      if (_.isEmpty(newStudents)) {
-        return res
-          .status(404)
-          .json('Error adding student info.Try again later');
-      }
+
       studentIds = _.map(newStudents, '_id');
     }
 
@@ -415,9 +414,11 @@ router.post(
       });
     }
 
-    res.status(200).json('Changes Saved!!!');
+    res.status(200).json('Student Information Saved!!!');
   })
 );
+
+
 //@PUT students
 router.put(
   '/',
@@ -449,7 +450,7 @@ router.put(
   })
 );
 
-//@POST Update Student profile
+//@POST Update Student medical history
 router.put(
   '/medical',
   AsyncHandler(async (req, res) => {
@@ -470,6 +471,8 @@ router.put(
     res.status(201).json('Changes Saved!!!');
   })
 );
+
+
 //@POST Update Student profile
 router.put(
   '/profile',
@@ -490,6 +493,37 @@ router.put(
     }
 
     res.status(201).json('Profile image updated!!!');
+  })
+);
+
+//@POST Update Student bulk profile
+router.put(
+  '/bulk-profile',
+  // upload.single('profile'),
+  AsyncHandler(async (req, res) => {
+    const { students } = req.body;
+
+    const updatedStudent = students?.map(async (student) => {
+
+      return await Student.findOneAndUpdate({
+        indexnumber: student?.id
+      }, {
+        $set: {
+          profile: student?.src
+        },
+      });
+
+    })
+
+    const modifiedStudents = await Promise.all(updatedStudent);
+
+    if (_.isEmpty(modifiedStudents)) {
+      return res
+        .status(400)
+        .json('Error uploading photos.Try again later.');
+    }
+
+    res.status(201).json('Photos updated!!!');
   })
 );
 

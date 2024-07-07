@@ -1,11 +1,16 @@
-
 import api from './customAxios';
+
+
+
 //Get all Students
 export const getAllLevels = async (session, term) => {
   try {
     const res = await api({
       method: 'GET',
       url: `/levels/session`,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("@user")}`
+      },
       params: {
         session,
         term,

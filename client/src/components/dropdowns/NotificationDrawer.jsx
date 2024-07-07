@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Button,
   Drawer,
@@ -7,41 +7,27 @@ import {
   Typography,
   Tooltip,
 } from "@mui/material";
-
 import _ from "lodash";
 import { AnimatePresence } from "framer-motion";
 import { Close, Notifications, Refresh } from "@mui/icons-material";
-import PropTypes from "prop-types";
 import CustomNotificationItem from "../custom/CustomNotificationItem";
-import { getAllNotifications } from "../../api/notificationAPI";
-import { useQuery } from "@tanstack/react-query";
-import { getItem, saveItem } from "../../config/helper";
+import { saveItem } from "../../config/helper";
+import { UserContext } from "../../context/providers/UserProvider";
 
 const NotificationDrawer = ({ open, setOpen }) => {
-  const notifications = useQuery({
-    queryKey: ["notifications"],
-    queryFn: () => getAllNotifications(),
-    initialData: [],
-    select: (notifications) => {
-      const removedNotifications = getItem("d_no");
-      return notifications?.filter((notification) => {
-        return !removedNotifications?.includes(notification?._id);
-      });
-    },
-  });
+  const { notifications } = useContext(UserContext);
 
   const handleClose = () => setOpen(false);
 
   const handleMarkAllAsRead = () => {
-    const update = _.map(notifications?.data, "_id");
+    const update = _.map(notifications, "_id");
+
     saveItem("r_no", update);
-    notifications.refetch();
   };
 
   const handleRemoveAll = () => {
-    const update = _.map(notifications?.data, "_id");
+    const update = _.map(notifications, "_id");
     saveItem("d_no", update);
-    notifications.refetch();
   };
 
   return (
@@ -75,7 +61,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
           </Typography>
 
           <Tooltip title="Refresh Notifications">
-            <IconButton onClick={notifications?.refetch()}>
+            <IconButton>
               <Refresh />
             </IconButton>
           </Tooltip>
@@ -105,38 +91,30 @@ const NotificationDrawer = ({ open, setOpen }) => {
           </Tooltip>
         </Stack>
 
-        {notifications.isLoading ? (
-          <Typography>Please Wait...</Typography>
-        ) : notifications?.isError ? (
-          <Typography>An error has occurred..</Typography>
+        {notifications?.length === 0 ? (
+          <Stack
+            spacing={2}
+            height="80svh"
+            justifyContent="center"
+            alignItems="center"
+            overflow="auto"
+          >
+            <Typography>No new Notifications</Typography>
+          </Stack>
         ) : (
-          <>
-            {notifications?.data?.length === 0 ? (
-              <Stack
-                spacing={2}
-                height="80svh"
-                justifyContent="center"
-                alignItems="center"
-                overflow="auto"
-              >
-                <Typography>No new Notifications</Typography>
-              </Stack>
-            ) : (
-              <AnimatePresence>
-                <Stack spacing={1} height="90svh" overflow="auto">
-                  {notifications?.data?.map((notification) => {
-                    return (
-                      <CustomNotificationItem
-                        key={notification?._id}
-                        {...notification}
-                        closeDrawer={setOpen}
-                      />
-                    );
-                  })}
-                </Stack>
-              </AnimatePresence>
-            )}
-          </>
+          <AnimatePresence>
+            <Stack spacing={1} height="90svh" overflow="auto">
+              {notifications?.map((notification) => {
+                return (
+                  <CustomNotificationItem
+                    key={notification?._id}
+                    {...notification}
+                    closeDrawer={setOpen}
+                  />
+                );
+              })}
+            </Stack>
+          </AnimatePresence>
         )}
 
         <Typography variant="caption" textAlign="center">
@@ -146,7 +124,5 @@ const NotificationDrawer = ({ open, setOpen }) => {
     </Drawer>
   );
 };
-
-
 
 export default NotificationDrawer;

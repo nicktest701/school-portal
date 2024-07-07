@@ -111,34 +111,41 @@ router.post(
     res.status(201).json('New Teacher Added!!!');
   })
 );
-//@POST Update Teacher profile
-router.put(
-  '/profile',
-  upload.single('profile'),
-  AsyncHandler(async (req, res) => {
-    const { _id } = req.body;
 
-    const updatedTeacher = await Teacher.findByIdAndUpdate(_id, {
-      $set: {
-        profile: req.file?.filename,
+//@PUT students
+router.post(
+  '/many',
+  AsyncHandler(async (req, res) => {
+    const { students: teachers, } = req.body;
+
+    const usernames = _.map(teachers, 'username');
+
+    const existingTeachers = await Teacher.find({
+      username: {
+        $in: usernames,
       },
     });
 
-    if (_.isEmpty(updatedTeacher)) {
+    if (!_.isEmpty(existingTeachers)) {
       return res
-        .status(400)
-        .json('Error updating profile image.Try again later.');
+        .status(404)
+        .json(
+          `A teacher with the Username ${existingTeachers[0].username} already exists`
+        );
     }
 
-    await User.findByIdAndUpdate(_id, {
-      $set: {
-        profile: req.file?.filename,
-      },
-    });
+    const newTeachers = await Teacher.create(teachers);
+    if (_.isEmpty(newTeachers)) {
+      return res
+        .status(404)
+        .json('Error adding teachers info.Try again later.');
+    }
 
-    res.status(201).json('Profile image updated!!!');
+
+    res.status(200).json('Teachers Information Saved!!!');
   })
 );
+
 
 //@PUT teacher
 router.put(
@@ -174,6 +181,66 @@ router.put(
   })
 );
 
+//@PUT Update Teacher profile
+router.put(
+  '/profile',
+  upload.single('profile'),
+  AsyncHandler(async (req, res) => {
+    const { _id } = req.body;
+
+    const updatedTeacher = await Teacher.findByIdAndUpdate(_id, {
+      $set: {
+        profile: req.file?.filename,
+      },
+    });
+
+    if (_.isEmpty(updatedTeacher)) {
+      return res
+        .status(400)
+        .json('Error updating profile image.Try again later.');
+    }
+
+    await User.findByIdAndUpdate(_id, {
+      $set: {
+        profile: req.file?.filename,
+      },
+    });
+
+    res.status(201).json('Profile image updated!!!');
+  })
+);
+
+//@PUT Update Teacher bulk profile
+router.put(
+  '/bulk-profile',
+  // upload.single('profile'),
+  AsyncHandler(async (req, res) => {
+    const { students } = req.body;
+
+    const updatedTeachers = students?.map(async (student) => {
+
+      return await Teacher.findOneAndUpdate({
+        phonenumber: student?.id
+      }, {
+        $set: {
+          profile: student?.src
+        },
+      });
+
+    })
+
+    const modifiedTeachers = await Promise.all(updatedTeachers);
+
+    if (_.isEmpty(modifiedTeachers)) {
+      return res
+        .status(400)
+        .json('Error uploading photos.Try again later.');
+    }
+
+    res.status(201).json('Photos updated!!!');
+  })
+);
+
 //@DELETE teacher
 router.delete(
   '/:id',
@@ -200,23 +267,6 @@ router.delete(
   })
 );
 
-// //@DELETE teacher
-// router.delete(
-//   "/:id",
-//   AsyncHandler(async (req, res) => {
-//     const id = req.params.id;
 
-//     if (!mongoose.isValidnew ObjectId(id)) {
-//       return res.status(403).json("Invalid information provided.");
-//     }
-
-//     const teacher = await Teacher.findByIdAndRemove(id);
-
-//     if (_.isEmpty(teacher)) {
-//       return res.status(400).json("Couldn't remove Teacher info.Try again.");
-//     }
-//     res.status(200).json("Teacher has been removed successfully!!!");
-//   })
-// );
 
 module.exports = router;

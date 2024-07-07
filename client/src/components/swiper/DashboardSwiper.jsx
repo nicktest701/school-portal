@@ -14,7 +14,7 @@ import "swiper/css/navigation";
 import "swiper/css/scrollbar";
 import "swiper/css/pagination";
 
-import student3 from "../../assets/images/students/student3.jpg";
+// import student3 from "../../assets/images/students/student3.jpg";
 import student4 from "../../assets/images/students/student4.jpg";
 
 function DashboardSwiper() {

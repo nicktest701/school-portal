@@ -1,4 +1,4 @@
-import { object, number, string, array, ref, date } from 'yup';
+import { object, number, string, array, ref } from 'yup';
 
 export const loginUserValidationSchema = object().shape({
   username: string().required('Required*').trim(),

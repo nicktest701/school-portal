@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import React from "react";
 
 import PropTypes from "prop-types";
-import Back from "../Back";
+
 function CustomTitle({
   title,
   titleVariant,

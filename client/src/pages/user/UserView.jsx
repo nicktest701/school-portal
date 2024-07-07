@@ -1,19 +1,10 @@
-import {
-  CheckCircle,
-  DeleteRounded,
-  DisabledByDefault,
-  Edit,
-  MessageRounded,
-  PasswordRounded,
-} from "@mui/icons-material";
+import { Edit, MessageRounded, PasswordRounded } from "@mui/icons-material";
 import {
   Avatar,
   Box,
   Button,
   ButtonGroup,
   Chip,
-  DialogActions,
-  DialogContent,
   Divider,
   Stack,
 } from "@mui/material";
@@ -33,6 +24,7 @@ import UserUpdatePassword from "./UserUpdatePassword";
 import Back from "../../components/Back";
 import CustomTitle from "../../components/custom/CustomTitle";
 import { useNavigate, useParams } from "react-router-dom";
+import LoadingSpinner from "../../components/spinners/LoadingSpinner";
 
 const UserView = () => {
   const queryClient = useQueryClient();
@@ -287,6 +279,7 @@ const UserView = () => {
         open={openUpdatePassword}
         setOpen={setOpenUpdatePassword}
       />
+      {deleteIsLoading && <LoadingSpinner value="Removing user details" />}
     </>
   );
 };

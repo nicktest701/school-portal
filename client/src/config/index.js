@@ -1,4 +1,4 @@
-/* eslint-disable import/no-anonymous-default-export */
+
 import {
   sessionInitialValues,
   levelInitialValues,
@@ -11,7 +11,7 @@ import {
 } from "./initialValues";
 import { readCSV } from "./readCSV";
 import { readXLSX } from "./readXLSX";
-import { EMPTY_IMAGES } from "./images";
+import { EMPTY_IMAGES, IMAGES } from "./images";
 import { TEACHERSREMARKS, INTEREST, CONDUCT } from "./remarks";
 export default {
   ///Initial values
@@ -25,7 +25,7 @@ export default {
   bulkMessageInitialValues,
 
   //Images
-
+  IMAGES,
   EMPTY_IMAGES,
 
   //remarks

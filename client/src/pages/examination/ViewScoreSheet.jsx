@@ -1,6 +1,5 @@
-import { Dialog, DialogContent } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
 import { StudentContext } from "../../context/providers/StudentProvider";
 import score_icon from "../../assets/images/header/score_ico.svg";
@@ -45,7 +44,9 @@ const ViewScoreSheet = ({ open, setOpen }) => {
         subtitle="Show details of student performance"
         color="primary.main"
       />
-
+<DialogActions>
+  <Button onClick={handleClose}>Close</Button>
+</DialogActions>
       <DialogContent>
         <CustomizedMaterialTable
           icon={score_icon}

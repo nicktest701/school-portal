@@ -10,6 +10,7 @@ import {
   Stack,
   TextField,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import CustomParticle from "../components/animations/CustomParticle";
 import { Formik } from "formik";
@@ -68,15 +69,26 @@ const Login = () => {
             height: "100%",
             overflow: "clip",
             flex: 1,
-            display: { xs: "none", md: "grid" },
-            placeItems: "center",
+            display: { xs: "none", md: "flex" },
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 12,
             color: "primary.contrastText",
           }}
         >
+          <Typography
+            variant="h1"
+            textAlign="center"
+            paragraph
+            zIndex={9999999}
+          >
+            Frebby Tech School Portal
+          </Typography>
           <LoginIcon />
         </Box>
         <Container
-          // maxWidth="sm"
+          maxWidth="sm"
           sx={{
             height: "100%",
             flex: 1,
@@ -87,7 +99,7 @@ const Login = () => {
             rowGap: 2,
           }}
         >
-          <Paper elevation={2} sx={{ width: "90%", p: 3 }}>
+          <Paper elevation={3} sx={{ width: "90%", p: 3 }}>
             <Stack
               spacing={2}
               pb={4}
@@ -162,16 +174,23 @@ const Login = () => {
                     <LoadingButton
                       loading={isLoading}
                       fullWidth
+                      loadingPosition="start"
+                      startIcon={<CircularProgress size={20} />}
+                      loadingIndicator={<CircularProgress size={20} />}
                       variant="contained"
                       onClick={handleSubmit}
                     >
-                      LOG IN
+                      {isLoading ? "Please Wait.." : "Log in"}
                     </LoadingButton>
                   </Stack>
                 );
               }}
             </Formik>
           </Paper>
+          <Typography variant="body2">
+            Copyright &copy; {new Date().getFullYear()} | FrebbyTech Consults
+            (+233543772591)
+          </Typography>
         </Container>
       </Box>
       <CustomParticle />

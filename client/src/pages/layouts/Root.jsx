@@ -4,32 +4,39 @@ import { Route, Routes } from "react-router-dom";
 import Loader from "../../config/Loader";
 import Shell from "../Shell";
 import Login from "../Login";
-import FeePrint from "../fees/FeePrint";
-import LevelFeeInformation from "../fees/LevelFeeInformation";
-import Subject_Grade from "../subject";
-import NewAttendance from "../level/NewAttendance";
 import PageNotFound from "../PageNotFound";
-import Teacher from "../teacher";
-import TeacherView from "../teacher/TeacherView";
-import TeacherEdit from "../teacher/TeacherEdit";
-import Profile from "../profile";
-import Notifications from "../notifications";
-import Event from "../events";
-import EventHome from "../events/EventHome";
-import NewEvent from "../events/NewEvent";
-import ViewEvent from "../events/ViewEvent";
-import EditEvent from "../events/EditEvent";
-import TeacherAssignLevel from "../teacher/TeacherAssignLevel";
-import TeacherAssignCourse from "../teacher/TeacherAssignCourse";
-import AddCurrentSubjects from "../../components/modals/AddCurrentSubjects";
-import FeePaymentHistory from "../fees/FeePaymentHistory";
-import StudentFeesHistory from "../fees/StudentFeesHistory";
-import ExamsScore from "../examination/ExamsScore";
-import UserAdd from "../user/UserAdd";
-import User from "../user";
-import UserView from "../user/UserView";
-import UserEdit from "../user/UserEdit";
-import AttendanceHistory from "../level/AttendanceHistory";
+
+const FeePrint = lazy(() => import("../fees/FeePrint"));
+const LevelFeeInformation = lazy(() => import("../fees/LevelFeeInformation"));
+const Subject_Grade = lazy(() => import("../subject"));
+const NewAttendance = lazy(() => import("../level/NewAttendance"));
+
+const Teacher = lazy(() => import("../teacher"));
+const TeacherView = lazy(() => import("../teacher/TeacherView"));
+const TeacherEdit = lazy(() => import("../teacher/TeacherEdit"));
+const Profile = lazy(() => import("../profile"));
+const Notifications = lazy(() => import("../notifications"));
+const Event = lazy(() => import("../events"));
+const EventHome = lazy(() => import("../events/EventHome"));
+const NewEvent = lazy(() => import("../events/NewEvent"));
+const ViewEvent = lazy(() => import("../events/ViewEvent"));
+const EditEvent = lazy(() => import("../events/EditEvent"));
+const TeacherAssignLevel = lazy(() => import("../teacher/TeacherAssignLevel"));
+const TeacherAssignCourse = lazy(() =>
+  import("../teacher/TeacherAssignCourse")
+);
+const AddCurrentSubjects = lazy(() =>
+  import("../../components/modals/AddCurrentSubjects")
+);
+const FeePaymentHistory = lazy(() => import("../fees/FeePaymentHistory"));
+const StudentFeesHistory = lazy(() => import("../fees/StudentFeesHistory"));
+const ExamsScore = lazy(() => import("../examination/ExamsScore"));
+const UserAdd = lazy(() => import("../user/UserAdd"));
+const User = lazy(() => import("../user"));
+const UserView = lazy(() => import("../user/UserView"));
+const UserEdit = lazy(() => import("../user/UserEdit"));
+const AttendanceHistory = lazy(() => import("../level/AttendanceHistory"));
+const Uploads = lazy(() => import("../uploads"));
 
 const FeeNew = lazy(() => import("../fees/FeeNew"));
 const LevelExamScoreInput = lazy(() =>
@@ -528,6 +535,14 @@ const Root = () => {
             />
           </Route>
 
+          <Route
+            element={
+              <Suspense fallback={<Loader />}>
+                <Uploads />
+              </Suspense>
+            }
+            path="/uploads"
+          />
           <Route
             element={
               <Suspense fallback={<Loader />}>

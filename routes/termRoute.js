@@ -7,7 +7,7 @@ const Session = require("../models/sessionModel");
 const {
   Types: { ObjectId },
 } = require("mongoose");
-const verifyJWT = require("../middlewares/verifyJWT");
+const {verifyJWT} = require("../middlewares/verifyJWT");
 // const knex = require("../db/knex");
 
 //@GET All school Terms

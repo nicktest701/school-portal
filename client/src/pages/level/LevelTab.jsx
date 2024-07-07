@@ -55,7 +55,7 @@ const LevelTab = () => {
           };
         }
       );
-    
+
       return modifiedLevels;
     },
   });
@@ -245,7 +245,7 @@ const LevelTab = () => {
       <ViewLevel />
       <AddLevel open={openAddCurrentLevel} setOpen={setOpenAddCurrentLevel} />
       <EditLevel />
-      {isLoading || (deleteManyIsLoading && <GlobalSpinner />)}
+      {(isLoading || deleteManyIsLoading) && <GlobalSpinner />}
     </Box>
   );
 };

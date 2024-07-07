@@ -4,6 +4,7 @@ import React from "react";
 const CustomFormControl = ({ children }) => {
   return (
     <Stack
+      width="100%"
       spacing={2}
       direction={{ xs: "column", sm: "row" }}
       paddingY={1}

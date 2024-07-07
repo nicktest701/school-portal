@@ -1,11 +1,10 @@
-import React, { useReducer } from 'react';
-import PropTypes from 'prop-types';
-import SchoolSessionReducer from '../reducers/SchoolSessionReducer';
-// import { useQuery } from '@tanstack/react-query';
-// import { getAllStudents } from '../../api/studentAPI';
-
+import React, { useReducer } from "react";
+import PropTypes from "prop-types";
+import SchoolSessionReducer from "../reducers/SchoolSessionReducer";
 export const SchoolSessionContext = React.createContext();
 const SchoolSessionProvider = ({ children }) => {
+
+
   const schoolSessionValues = {
     displayAddSession: false,
     currentSession: {},
@@ -14,14 +13,14 @@ const SchoolSessionProvider = ({ children }) => {
     levelFeeInfo: {
       open: false,
       data: {
-        level: '',
-        term: '',
+        level: "",
+        term: "",
       },
     },
 
     generalAlert: {
-      message: '',
-      severity: '',
+      message: "",
+      severity: "",
     },
     //message
     messageData: {
@@ -39,14 +38,13 @@ const SchoolSessionProvider = ({ children }) => {
       data: {},
     },
     //view fees history
-    studentFeesHistoryId: '',
+    studentFeesHistoryId: "",
 
     //View exams record
     examsRecord: {
       open: false,
-      id: '',
+      id: "",
     },
-
 
     //View  Exams Report
     viewReport: {
@@ -62,8 +60,8 @@ const SchoolSessionProvider = ({ children }) => {
 
     //Global alert
     alertData: {
-      severity: 'info',
-      message: '',
+      severity: "info",
+      message: "",
     },
 
     ///Load data from file
@@ -77,7 +75,7 @@ const SchoolSessionProvider = ({ children }) => {
       open: false,
       columns: [],
       data: [],
-      type: '',
+      type: "",
     },
 
     ///fee details to be print
@@ -100,12 +98,12 @@ const SchoolSessionProvider = ({ children }) => {
     editSubject: {
       open: false,
       data: {
-        name: '',
-        code: '',
-        isCore: '',
+        name: "",
+        code: "",
+        isCore: "",
       },
     },
-    
+
     viewGrades: {
       open: false,
       ratings: [],
@@ -113,26 +111,26 @@ const SchoolSessionProvider = ({ children }) => {
 
     assignGrades: {
       open: false,
-      data: { _id: '', name: '', ratings: [] },
+      data: { _id: "", name: "", ratings: [] },
     },
     editGrades: {
       open: false,
       data: {
-        name: '',
+        name: "",
         ratings: [],
       },
     },
     addStudentResults: {
       open: false,
       data: {
-        _id: '',
-        student: '',
-        level: '',
-        classScore: '',
-        examsScore: '',
-        totalScore: '',
-        grade: '',
-        remarks: '',
+        _id: "",
+        student: "",
+        level: "",
+        classScore: "",
+        examsScore: "",
+        totalScore: "",
+        grade: "",
+        remarks: "",
       },
       grade: [],
     },
@@ -142,11 +140,14 @@ const SchoolSessionProvider = ({ children }) => {
     schoolSessionValues
   );
 
+
+
   return (
     <SchoolSessionContext.Provider
       value={{
         schoolSessionState,
         schoolSessionDispatch,
+     
       }}
     >
       {children}

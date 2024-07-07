@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const { randomUUID } = require("crypto");
-const verifyJWT = require("../middlewares/verifyJWT");
+const { verifyJWT, verifyRefreshJWT } = require("../middlewares/verifyJWT");
 const User = require("../models/userModel");
 const Teacher = require("../models/teacherModel");
 const School = require("../models/schoolModel");
@@ -60,7 +60,7 @@ router.get(
 //@GET all users
 router.get(
   "/verify",
-  verifyJWT,
+  verifyRefreshJWT,
   asyncHandler(async (req, res) => {
     const user = req.session.user;
 
@@ -101,7 +101,7 @@ router.get(
     // };
 
     const loggedInUser = {
-      id: user._id,
+      id: user.id,
       profile: user.profile,
       firstname: user.firstname,
       lastname: user.lastname,
@@ -114,20 +114,28 @@ router.get(
     };
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "24h",
+      expiresIn: "15m",
     });
 
 
-    res.json(token);
+    // const refresh_token = jwt.sign(loggedInUser, process.env.JWT_REFRESH_SECRET, {
+    //   expiresIn: "1m",
+    // });
+
+    // loggedInUser.token = token;
+
+    res.status(200).json({
+      token,
+    });
   })
-);
+)
 
 // GET School Information
 router.get(
   "/school",
   asyncHandler(async (req, res) => {
     const school = await School.findOne();
-    // console.log(school)
+
 
     res.status(200).json(school);
   })
@@ -172,7 +180,7 @@ router.get(
 
 //@GET user by username
 router.post(
-  "/auth",
+  "/login",
   asyncHandler(async (req, res) => {
     const username = req.body.username;
     const user = await User.findByUsername(username);
@@ -196,8 +204,9 @@ router.post(
         );
     }
 
+
     loggedInUser = {
-      id: user[0]._id,
+      id: user[0]._id?.toString(),
       profile: user[0].profile,
       firstname: user[0].firstname,
       lastname: user[0].lastname,
@@ -209,16 +218,19 @@ router.post(
       active: user[0].active,
     };
 
-    // req.session.user = loggedInUser;
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "24h",
+      expiresIn: "15m",
+    });
+
+    const refresh_token = jwt.sign(loggedInUser, process.env.JWT_REFRESH_SECRET, {
+      expiresIn: "30d",
     });
 
     // loggedInUser.token = token;
 
     res.status(200).json({
-      token
+      token, refresh_token
     });
   })
 );
@@ -307,7 +319,7 @@ router.put(
   upload.single("profile"),
   asyncHandler(async (req, res) => {
     const { _id } = req.body;
-    console.log(req.body)
+
     const updatedUser = await User.findByIdAndUpdate(_id, {
       $set: {
         profile: req.file?.filename,
@@ -540,7 +552,7 @@ router.delete(
   "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    //console.log(id);
+
 
     if (!mongoose.isValidObjectId(id)) {
       return res.status(401).json("Invalid User information");

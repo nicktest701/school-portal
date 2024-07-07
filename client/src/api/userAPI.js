@@ -20,11 +20,11 @@ export const getUserAuth = async (userInfo) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/users/auth`,
+      url: `${import.meta.env.VITE_BASE_URL}/users/login`,
       data: userInfo,
     });
 
-    saveToken(res.data?.token)
+    saveToken(res.data?.token,res.data.refresh_token)
 
     return res.data;
   } catch (error) {
@@ -44,7 +44,7 @@ export const verifyUser = async () => {
       },
     });
 
-    saveToken(res.data?.token)
+    saveToken(res.data?.token,res.data.refresh_token)
     return res.data;
   } catch (error) {
 
@@ -241,3 +241,26 @@ export const updateSchoolLogo = async (badge) => {
   }
 };
 
+export const downloadTemplate = async (templateName) => {
+  try {
+    const response = await api({
+      url: `/template?name=${templateName}`,
+      method: "GET",
+      responseType: "blob",
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${templateName}.xlsx`);
+
+    document.body.appendChild(link);
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+    return true;
+  } catch (error) {
+    console.log(error);
+  }
+}

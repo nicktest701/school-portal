@@ -44,19 +44,42 @@ export const getToken = () => {
   return token;
 };
 
+export const getRefreshToken = () => {
+  const token =
+    localStorage.getItem("@user_refresh")
 
-export const saveToken = (accessToken) => {
+  if (token === undefined || token === null || token === 'undefined') {
+    return "";
+  }
+  return token;
+};
+
+
+export const saveToken = (accessToken,refreshToken) => {
+
+  if (accessToken === 'undefined' || accessToken === undefined||refreshToken === 'undefined' || refreshToken === undefined) {
+    return;
+  }
+  localStorage.setItem("@user", accessToken);
+  localStorage.setItem("@user_refresh", refreshToken);
+
+
+};
+
+export const saveAccessToken = (accessToken) => {
 
   if (accessToken === 'undefined' || accessToken === undefined) {
     return;
   }
   localStorage.setItem("@user", accessToken);
+ 
 
 
 };
 
 export const deleteToken = () => {
   localStorage.removeItem("@user");
+  localStorage.removeItem("@user_refresh");
 
 };
 

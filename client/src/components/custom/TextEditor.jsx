@@ -1,6 +1,6 @@
 import { FormHelperText, FormLabel } from "@mui/material";
 import React, { useRef } from "react";
-import ReactQuill, { Quill } from "react-quill";
+import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 function TextEditor({ label, value, setValue, touched, errors }) {

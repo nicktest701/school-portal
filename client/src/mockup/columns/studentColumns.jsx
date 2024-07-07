@@ -174,6 +174,8 @@ export const STUDENTS_COLUMN = [
     hidden: true,
   },
 ];
+
+
 export const RECENT_STUDENTS_COLUMN = [
   {
     field: "_id",

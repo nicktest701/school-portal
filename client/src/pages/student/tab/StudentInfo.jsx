@@ -22,6 +22,8 @@ import PhotoUpload from "./PhotoUpload";
 import { Box, IconButton } from "@mui/material";
 import CustomStepper from "../../../components/custom/CustomStepper";
 import CustomTitle from "../../../components/custom/CustomTitle";
+import { downloadTemplate } from "../../../api/userAPI";
+import LoadingSpinner from "../../../components/spinners/LoadingSpinner";
 
 const CSV_FILE_TYPE = "text/csv";
 const XLSX_FILE_TYPE =
@@ -31,6 +33,7 @@ const XLS_FILE_TYPE = "application/vnd.ms-excel";
 const StudentInfo = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [mode, setMode] = useState("personal-info");
+  const [loadingFile, setLoadingFile] = useState(false);
   const [openPreviousSession, setOpenPreviousSession] = useState(false);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
@@ -53,6 +56,7 @@ const StudentInfo = () => {
 
   //LOAD Students from file excel,csv
   function handleLoadFile(e) {
+    setLoadingFile(true);
     const files = e.target.files[0];
 
     try {
@@ -77,10 +81,11 @@ const StudentInfo = () => {
             payload: { data: students, type: "file" },
           });
         }
+        setLoadingFile(false);
       };
     } catch (error) {
       //console.log(error.message);
-    }
+    } 
   }
 
   const getPage = () => {
@@ -103,6 +108,9 @@ const StudentInfo = () => {
     }
 
     return prevPage;
+  };
+  const handleDownloadTemplate = async () => {
+    await downloadTemplate("students");
   };
 
   return (
@@ -134,6 +142,9 @@ const StudentInfo = () => {
               py: 2,
             }}
           >
+            <Button onClick={handleDownloadTemplate}>
+              Download Student Template
+            </Button>
             <Button sx={{ bgcolor: "var(--secondary)" }}>
               <FormLabel
                 htmlFor="studentFile"
@@ -151,7 +162,7 @@ const StudentInfo = () => {
               >
                 <NoteRounded htmlColor="#fff" />
                 <Typography variant="caption" color="#fff">
-                  From file
+                  Student From file
                 </Typography>
 
                 <Input
@@ -174,7 +185,7 @@ const StudentInfo = () => {
               startIcon={<PublishIcon />}
               onClick={() => setOpenPreviousSession(true)}
             >
-              From Previous Sessions
+              Student From Previous Sessions
             </Button>
           </ButtonGroup>
         </Box>
@@ -205,6 +216,7 @@ const StudentInfo = () => {
         open={openPreviousSession}
         setOpen={setOpenPreviousSession}
       />
+      {loadingFile && <LoadingSpinner value="Loading data.." />}
     </>
   );
 };

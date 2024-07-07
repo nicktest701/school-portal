@@ -14,7 +14,7 @@ import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvi
 import { alertError } from "../../context/actions/globalAlertActions";
 import CustomTableTitle from "../custom/CustomTableTitle";
 import EmptyDataContainer from "../EmptyDataContainer";
-import LoadingSpinner from "../spinners/LoadingSpinner";
+
 
 function CustomizedMaterialTable({
   title,
@@ -33,6 +33,7 @@ function CustomizedMaterialTable({
   handleRefresh,
   showAddButton,
   showPaging,
+  addButtonIcon,
   addButtonImg,
   addButtonText,
   addButtonMessage,
@@ -191,7 +192,7 @@ function CustomizedMaterialTable({
                   {showAddButton && (
                     <Button
                       variant="contained"
-                      startIcon={<Add />}
+                      startIcon={addButtonIcon || <Add />}
                       disableElevation
                       onClick={() => onAddButtonClicked()}
                     >
@@ -200,9 +201,7 @@ function CustomizedMaterialTable({
                   )}
                 </Box>
                 <Divider />
-                <Box
-                  sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}
-                >
+                <Box sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}>
                   {autoCompleteComponent}
                 </Box>
                 <Box
@@ -279,7 +278,7 @@ function CustomizedMaterialTable({
           },
         }}
       />
-      {isLoading && <LoadingSpinner />}
+      {/* {isLoading && <LoadingSpinner />} */}
     </Box>
     // </AnimatedContainer>
   );

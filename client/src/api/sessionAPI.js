@@ -6,7 +6,7 @@ export const getAllSessions = async () => {
   try {
     const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/sessions`,
+      url: `/sessions`,
     });
 
     return res.data;
@@ -19,7 +19,7 @@ export const getSession = async (id) => {
   try {
     const res = await api({
       method: 'GET',
-      url: `${import.meta.env.VITE_BASE_URL}/sessions`,
+      url: `/sessions`,
       params: {
         id,
       },
@@ -35,7 +35,7 @@ export const postSession = async (newSession) => {
   try {
     const res = await api({
       method: 'POST',
-      url: `${import.meta.env.VITE_BASE_URL}/sessions`,
+      url: `/sessions`,
       data: newSession,
     });
 
@@ -49,7 +49,7 @@ export const putSession = async (updatedSession) => {
   try {
     const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/sessions`,
+      url: `/sessions`,
       data: updatedSession,
     });
 
@@ -63,7 +63,7 @@ export const deleteSession = async (id) => {
   try {
     const res = await api({
       method: 'DELETE',
-      url: `${import.meta.env.VITE_BASE_URL}/sessions/${id}`,
+      url: `/sessions/${id}`,
     });
 
     return res.data;
@@ -82,7 +82,7 @@ export const uploadProfileImage = async ({ _id, profile, type }) => {
   try {
     const res = await api({
       method: 'PUT',
-      url: `${import.meta.env.VITE_BASE_URL}/${type}/profile`,
+      url: `/${type}/profile`,
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -96,3 +96,40 @@ export const uploadProfileImage = async ({ _id, profile, type }) => {
   }
 };
 
+
+
+export const putBulkData = async ({ dataCategory, dataType, data }) => {
+  let config;
+
+  if (dataType === 'photos') {
+    config = {
+      method: 'PUT',
+      url: `/${dataCategory}/bulk-profile`,
+      data
+    }
+  }
+  else if (["students", 'teachers'].includes(dataCategory) && dataType === 'personal-data') {
+    config = {
+      method: 'POST',
+      url: `/${dataCategory}/many`,
+      data
+    }
+  }
+  else {
+    config = {
+      method: 'POST',
+      url: dataCategory === 'grades' ? `/grades` : '/subjects',
+      data
+    }
+  }
+
+
+  try {
+
+    const res = await api(config);
+
+    return res.data;
+  } catch (error) {
+    return error.response.data
+  }
+};

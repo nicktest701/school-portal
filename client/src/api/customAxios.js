@@ -4,9 +4,11 @@ import {
   deleteToken,
   deleteUser,
   getToken,
-  saveToken,
+  getRefreshToken,
+  saveAccessToken,
+  // saveToken,
 } from "../config/sessionHandler";
-import { isOnline } from "../config/detectOnlineStatus";
+// import { isOnline } from "../config/detectOnlineStatus";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -26,9 +28,9 @@ api.interceptors.request.use(
 
     const token = getToken();
     if (token) {
-      // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      //  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      // console.log(`Bearer ${token}`)
+
     }
 
     return config;
@@ -56,7 +58,7 @@ api.interceptors.response.use(
         originalRequest._retry = true;
 
         try {
-          const token = getToken();
+          const token = getRefreshToken();
 
           // Initiate token refresh
           const res = await axios({
@@ -70,15 +72,17 @@ api.interceptors.response.use(
 
 
           originalRequest.headers.Authorization = `Bearer ${res.data?.token}`;
-          saveToken(res.data?.token);
+          saveAccessToken(res.data?.token)
           // }
           // Retry the original request with the new access token
           return api(originalRequest);
         } catch (refreshError) {
           deleteUser();
           deleteToken();
-          // window.location.href = "/login";
-          return Promise.reject(refreshError);
+          if (location.pathname !== "/login") {
+            window.location.href = "/login";
+          }
+          // return Promise.reject(refreshError);
         }
       }
     }

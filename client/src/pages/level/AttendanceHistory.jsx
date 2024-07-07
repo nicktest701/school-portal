@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Container,
-  Dialog,
   DialogContent,
   List,
   ListItem,

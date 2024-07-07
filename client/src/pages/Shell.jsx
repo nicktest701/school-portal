@@ -23,32 +23,17 @@ import ViewUserProfile from "../components/dialog/ViewUserProfile";
 import Content from "./layouts/Content";
 import CustomDropdown from "../components/dropdowns/CustomDropdown";
 import NotificationDrawer from "../components/dropdowns/NotificationDrawer";
-import { getItem } from "../config/helper";
-import { getAllNotifications } from "../api/notificationAPI";
-import { useQuery } from "@tanstack/react-query";
 
 const Shell = () => {
+  const { user, session, notifications } = useContext(UserContext);
   const [openMiniBar, setOpenMiniBar] = useState(false);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const [openUserProfile, setOpenUserProfile] = useState(false);
-  const { user,  session } = useContext(UserContext);
 
   const {
     schoolSessionState: { generalAlert },
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
-
-  const notifications = useQuery({
-    queryKey: ["notifications"],
-    queryFn: () => getAllNotifications(),
-    initialData: [],
-    select: (notifications) => {
-      const removedNotifications = getItem("d_no");
-      return notifications?.filter((notification) => {
-        return !removedNotifications?.includes(notification?._id);
-      });
-    },
-  });
 
   const closeGeneralAlert = () => {
     schoolSessionDispatch({
@@ -64,7 +49,7 @@ const Shell = () => {
   const handleOpenNotificationDrawer = () => setOpenNotificationDrawer(true);
 
   if (_.isEmpty(session?.sessionId) || !user?.id) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login"  />;
   }
 
   return (
@@ -135,10 +120,7 @@ const Shell = () => {
 
               <div style={{ position: "relative" }}>
                 <IconButton onClick={handleOpenNotificationDrawer}>
-                  <Badge
-                    badgeContent={notifications?.data?.length}
-                    color="error"
-                  >
+                  <Badge badgeContent={notifications?.length} color="error">
                     <NotificationsSharp />
                   </Badge>
                 </IconButton>

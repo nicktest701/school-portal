@@ -203,6 +203,20 @@ export const SCHOOl_SUBJECTS = [
     label: "Subject",
   },
 ];
+export const IMPORT_SUBJECT_COLUMNS = [
+  {
+    title: "SUBJECT CODE",
+    field: "code",
+  },
+  {
+    title: "SUBJECT NAME",
+    field: "name",
+  },
+  {
+    title: "CORE SUBJECT",
+    field: "isCore",
+  },
+];
 
 export const LEVEL_OPTIONS = [
   "Day Care",
@@ -397,6 +411,26 @@ export const GRADES = [
   "E",
   "F",
 ];
+
+export const IMPORT_GRADE_COLUMNS = [
+  {
+    field: "highestMark",
+    title: "HIGHEST MARK",
+  },
+  {
+    field: "lowestMark",
+    title: "LOWEST MARK",
+  },
+  {
+    field: "grade",
+    title: "GRADE VALUE",
+  },
+  {
+    field: "remarks",
+    title: "REMARKS",
+  },
+];
+
 export const REMARKS = [
   "Excellent",
   "Distinct",

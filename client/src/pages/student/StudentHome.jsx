@@ -1,14 +1,8 @@
 import React, { useContext } from "react";
 import {
   Box,
-  Card,
   Divider,
   IconButton,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  ListSubheader,
   Typography,
 } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";

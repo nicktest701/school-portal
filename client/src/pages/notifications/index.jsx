@@ -23,6 +23,7 @@ function Notifications() {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const queryClient = useQueryClient();
+  
   const notifications = useQuery({
     queryKey: ["notifications"],
     queryFn: () => getAllNotifications(),

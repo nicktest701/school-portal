@@ -3,6 +3,8 @@ const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+const asyncHandler = require('express-async-handler')
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const createError = require('http-errors');
@@ -24,7 +26,7 @@ const eventRoute = require('./routes/eventRoute');
 const notificationRoute = require('./routes/notificationRoute');
 const userRoute = require('./routes/userRoute');
 const attendanceRoute = require('./routes/attendanceRoute');
-const verifyJWT = require('./middlewares/verifyJWT');
+const {verifyJWT} = require('./middlewares/verifyJWT');
 
 // initialize express
 const app = express();
@@ -98,13 +100,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/views', express.static(path.join(__dirname, 'views')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/reports', express.static(path.join(__dirname, 'reports')));
+app.use('/templates', express.static(path.join(__dirname, 'templates')));
 
 //routes
 
 app.use('/users', userRoute);
 
 app.use(verifyJWT);
-
 app.use('/sessions', sessionRoute);
 app.use('/terms', termRoute);
 app.use('/students', studentRoute);
@@ -121,6 +123,22 @@ app.use('/messages', messageRoute);
 app.use('/events', eventRoute);
 app.use('/notifications', notificationRoute);
 app.use('/attendances', attendanceRoute);
+
+// /airtime/template
+app.get(
+  "/template",
+  asyncHandler(async (req, res) => {
+    const template = req.query?.name || 'students'
+    const filePath = path.join(process.cwd(), "/templates/", `${template}.xlsx`);
+
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
+    } else {
+      return res.sendStatus(204);
+
+    }
+  })
+);
 
 if (process.env.NODE_ENV === 'production') {
   app.get('/*', function (req, res) {
