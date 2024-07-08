@@ -151,7 +151,7 @@ export const SCHOOL_LEVELS = [
   // },
   {
     title: "Facilitator",
-    field: "teacher.fullName",
+    field: "teacher",
     render: ({ teacher }) => {
       return teacher?._id ? (
         <Link
@@ -163,9 +163,12 @@ export const SCHOOL_LEVELS = [
           }}
           to={`/teacher/${teacher?._id}`}
         >
-          {teacher?.fullName}
+          {teacher?.fullName ||  "N/A"}
+
         </Link>
-      ) : null;
+      ) : (
+        ""
+      );
     },
   },
 ];

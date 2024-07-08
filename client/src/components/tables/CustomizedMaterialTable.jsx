@@ -258,25 +258,25 @@ function CustomizedMaterialTable({
             );
           },
         }}
-        localization={{
-          body: {
-            emptyDataSourceMessage: isLoading ? (
-              <Typography>Please Wait...</Typography>
-            ) : (
-              <>
-                {data && data?.length == 0 && (
-                  <EmptyDataContainer
-                    img={addButtonImg}
-                    message={addButtonMessage}
-                    buttonText={addButtonText}
-                    onClick={onAddButtonClicked}
-                    showAddButton={showAddButton}
-                  />
-                )}
-              </>
-            ),
-          },
-        }}
+        // localization={{
+        //   body: {
+        //     emptyDataSourceMessage: isLoading ? (
+        //       <Typography>Please Wait...</Typography>
+        //     ) : (
+        //       <>
+        //         {data && data?.length == 0 && (
+        //           <EmptyDataContainer
+        //             img={addButtonImg}
+        //             message={addButtonMessage}
+        //             buttonText={addButtonText}
+        //             onClick={onAddButtonClicked}
+        //             showAddButton={showAddButton}
+        //           />
+        //         )}
+        //       </>
+        //     ),
+        //   },
+        // }}
       />
       {/* {isLoading && <LoadingSpinner />} */}
     </Box>

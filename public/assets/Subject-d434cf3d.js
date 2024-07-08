@@ -1,0 +1,1 @@
+import{ad as t,ae as a,j as r}from"./index-bb65b4bf.js";var e={},u=a;Object.defineProperty(e,"__esModule",{value:!0});var v=e.default=void 0,o=u(t()),d=r;v=e.default=(0,o.default)((0,d.jsx)("path",{d:"M14 17H4v2h10zm6-8H4v2h16zM4 15h16v-2H4zM4 5v2h16V5z"}),"Subject");export{v as d};

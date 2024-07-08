@@ -51,7 +51,7 @@ router.get(
       match: { active: true },
     });
 
-   
+
 
     const modifiedLevels = levels.sort(
       (a, b) =>
@@ -70,7 +70,8 @@ router.get(
     const { session, term } = req.query;
 
     //No of teachers
-    const noOfTeachers = await Teacher.find().count();
+    const noOfTeachers = await Teacher.countDocuments();
+
 
     //No of levels
     const levels = await Level.find({

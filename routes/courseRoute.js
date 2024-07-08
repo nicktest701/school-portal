@@ -29,7 +29,7 @@ router.get(
       session: new ObjectId(session),
       term: new ObjectId(term),
       teacher: new ObjectId(teacher),
-    }).count();
+    }).countDocuments();
 
     const levels = await Level.find({
       session: new ObjectId(session),

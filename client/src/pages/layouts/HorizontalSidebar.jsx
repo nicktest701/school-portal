@@ -71,12 +71,12 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               to="/sms"
               handleClose={handleClose}
             />
-            <DrawerItem
+            <MiniDrawerItem
               title="Data Uploads"
-              // icon={<ImportExportRounded />}
               to="/uploads"
               handleClose={handleClose}
             />
+
             <MiniDrawerItem
               title="Users"
               to="/users"
