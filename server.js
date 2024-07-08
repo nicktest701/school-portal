@@ -26,7 +26,7 @@ const eventRoute = require('./routes/eventRoute');
 const notificationRoute = require('./routes/notificationRoute');
 const userRoute = require('./routes/userRoute');
 const attendanceRoute = require('./routes/attendanceRoute');
-const {verifyJWT} = require('./middlewares/verifyJWT');
+const { verifyJWT } = require('./middlewares/verifyJWT');
 
 // initialize express
 const app = express();
@@ -43,7 +43,11 @@ const whitelist = [
   "http://192.168.0.175:8002",
   "http://localhost:8002",
   "http://127.0.0.1:8002",
-
+  "https://52.41.36.82:10000",
+  "https://54.191.253.12:10000",
+  "https://44.226.122.3:10000",
+  "https://school-portal-aivn.onrender.com"
+  "https://school-portal-aivn.onrender.com/*"
   process.env.CLIENT_URL,
 ];
 const corsOptions = {
