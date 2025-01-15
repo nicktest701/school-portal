@@ -1,3 +1,5 @@
+import { Typography } from "@mui/material";
+
 function LoadingSpinner({ value }) {
   return (
     <div
@@ -6,7 +8,7 @@ function LoadingSpinner({ value }) {
         top: -250,
         bottom: -200,
         inset: 0,
-        backgroundColor: "rgba(255,255,255,0.92)",
+        backgroundColor: "rgba(0,0,0,0.52)",
         zIndex: "9999999",
         display: "flex",
         flexDirection: "column",
@@ -18,8 +20,8 @@ function LoadingSpinner({ value }) {
         gap: "16px",
       }}
     >
-      <div className="spinner3"></div>
-      <p>{value || "Please Wait.."}</p>
+      <div className="spinner3" ></div>
+      <Typography variant='body2' color='white' >{value || "Please Wait.."}</Typography>
     </div>
   );
 }

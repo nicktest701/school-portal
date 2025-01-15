@@ -1,69 +1,76 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from "react";
+import moment from "moment";
 import {
   Stack,
   Dialog,
   DialogContent,
   DialogActions,
-  TextField,
   Typography,
   Divider,
-} from '@mui/material';
-import { Formik } from 'formik';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { LoadingButton } from '@mui/lab';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { putTerm } from '../../api/termAPI';
-import {
-  alertSuccess,
-  alertError,
-} from '../../context/actions/globalAlertActions';
-import Transition from '../../components/animations/Transition';
-import moment from 'moment';
-import CustomDatePicker from '../../components/inputs/CustomDatePicker';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-const EditSession = () => {
-  const {
-    schoolSessionState: {
-      editSession: { open, data },
-    },
-    schoolSessionDispatch,
-  } = useContext(SchoolSessionContext);
+} from "@mui/material";
+import { useSearchParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { LoadingButton } from "@mui/lab";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { getTerm, putTerm } from "@/api/termAPI";
+import { alertSuccess, alertError } from "@/context/actions/globalAlertActions";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import Input from "@/components/inputs/Input";
+import DateInputPicker from "@/components/inputs/DateInputPicker";
 
+const EditSession = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
 
-  const [from, setFrom] = useState(null);
-  const [to, setTo] = useState(null);
-  const [vacationDate, setVacationDate] = useState(null);
-  const [reOpeningDate, setReOpeningDate] = useState(null);
+  const session = useQuery({
+    queryKey: ["terms/:id", searchParams.get("_id")],
+    queryFn: () => getTerm(searchParams.get("_id")),
+    initialData: queryClient
+      .getQueryData(["terms"])
+      ?.find((term) => term?.termId === searchParams.get("_id")),
+    enabled:
+      searchParams.get("_id") !== null &&
+      !!searchParams.get("edit_session") !== null,
+  });
+
+  const { handleSubmit, reset, control } = useForm({
+    // resolver: yupResolver(schema),
+    defaultValues: {
+      id: "",
+      from: null,
+      to: null,
+      vacationDate: null,
+      reOpeningDate: null,
+      academicYear: "",
+      term: "",
+      session: "",
+    },
+  });
 
   useEffect(() => {
-    setFrom(moment(new Date(data.from)));
-    setTo(moment(new Date(data.to)));
-    setVacationDate(moment(new Date(data.vacationDate)));
-    setReOpeningDate(moment(new Date(data.reOpeningDate)));
-  }, [data]);
-  //initial states
-  const initialValues = {
-    id: data.termId,
-    from,
-    to,
-    vacationDate,
-    reOpeningDate,
-    academicYear: data.academicYear,
-    term: data.term,
-    session: data.sessionId,
-  };
+    reset({
+      id: searchParams.get("_id"),
+      from: moment(new Date(session?.data?.from)),
+      to: moment(new Date(session?.data?.to)),
+      vacationDate: moment(new Date(session?.data?.vacationDate)),
+      reOpeningDate: moment(new Date(session?.data?.reOpeningDate)),
+      academicYear: session?.data?.academicYear,
+      term: session?.data?.term,
+      session: session?.data?.sessionId,
+    });
+  }, [session.data, reset]);
 
   const { mutateAsync, isLoading } = useMutation({
     mutationFn: putTerm,
   });
 
-  const onSubmit = (values, options) => {
-    //console.log(values);
+  const onSubmit = (values) => {
     mutateAsync(values, {
       onSettled: () => {
-        options.setSubmitting(false);
-        queryClient.invalidateQueries(['terms']);
+        queryClient.invalidateQueries(["terms"]);
+        queryClient.invalidateQueries(["terms/:id", searchParams.get("_id")]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -77,155 +84,88 @@ const EditSession = () => {
 
   //Edit session
   const handleClose = () => {
-    schoolSessionDispatch({
-      type: 'editSession',
-      payload: {
-        open: false,
-        data: {},
-      },
+    setSearchParams((params) => {
+      params.delete("_id");
+      params.delete("edit_session");
+
+      return params;
     });
   };
 
   return (
     <Dialog
-      open={open}
+      open={searchParams.get("edit_session") !== null}
       onClose={handleClose}
       fullWidth
-      maxWidth='xs'
-      TransitionComponent={Transition}
+      maxWidth="sm"
     >
-      <CustomDialogTitle title='Edit Session' onClose={handleClose} />
-      <Formik
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        enableReinitialize={true}
-      >
-        {({ values, touched, errors, handleChange, handleSubmit }) => {
-          return (
-            <>
-              <DialogContent>
-                <Stack spacing={2} paddingY={2}>
-                  <TextField
-                    label='Academic Year'
-                    InputProps={{ readOnly: true }}
-                    value={values.academicYear}
-                    size='small'
-                  />
-                  <CustomDatePicker
-                    label='Start of Academic Term'
-                    date={from}
-                    setDate={setFrom}
-                    touched={touched.from}
-                    error={errors.from}
-                    readOnly={true}
-                  />
-                  <CustomDatePicker
-                    label='End of Academic Term'
-                    date={to}
-                    setDate={setTo}
-                    touched={touched.to}
-                    error={errors.to}
-                    readOnly={true}
-                  />
+      <CustomDialogTitle title="Edit Session" onClose={handleClose} />
+      {session?.isLoading ? (
+        <p>Please Wait..</p>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogContent>
+            <Stack spacing={2} paddingY={2}>
+              <Input
+                label="Academic Year"
+                name="academicYear"
+                control={control}
+                InputProps={{ readOnly: true }}
+                fullWidth
+                margin="normal"
+                size="small"
+              />
+              <DateInputPicker
+                label="Start of Academic Term"
+                name="from"
+                control={control}
+              />
+              <DateInputPicker
+                label="End of Academic Term"
+                name="to"
+                control={control}
+              />
 
-                  <TextField
-                    label='Term/Semester'
-                    size='small'
-                    value={values.term}
-                    onChange={handleChange('term')}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
+              <Input
+                label="Term/Semester"
+                size="small"
+                name="term"
+                control={control}
+                InputProps={{ readOnly: true }}
+                fullWidth
+                margin="normal"
+              />
 
-                  <Typography fontSize={13}>Vacation</Typography>
-                  <CustomDatePicker
-                    label='Vacation Date'
-                    date={vacationDate}
-                    setDate={setVacationDate}
+              <Typography fontSize={13}>Vacation</Typography>
+              <DateInputPicker
+                label="Vacation Date"
+                name="vacationDate"
+                control={control}
+              />
 
-                    // touched={touched.to}
-                    // error={errors.to}
-                  />
+              <DateInputPicker
+                label="Next Term Begins"
+                name="reOpeningDate"
+                control={control}
+              />
 
-                  <CustomDatePicker
-                    label='Next Term Begins'
-                    date={reOpeningDate}
-                    setDate={setReOpeningDate}
-                    // touched={touched.to}
-                    // error={errors.to}
-                  />
-                  <Divider />
-                </Stack>
-              </DialogContent>
-              <DialogActions sx={{ padding: 2 }}>
-                <LoadingButton
-                  loading={isLoading}
-                  variant='contained'
-                  onClick={handleSubmit}
-                >
-                  {isLoading ? 'Please Wait..' : 'Save Changes'}
-                </LoadingButton>
-              </DialogActions>
-            </>
-          );
-        }}
-      </Formik>
+              <Divider />
+            </Stack>
+          </DialogContent>
+          <DialogActions sx={{ padding: 2 }}>
+            <LoadingButton
+              type="submit"
+              loading={isLoading}
+              variant="contained"
+              onClick={handleSubmit}
+            >
+              {isLoading ? "Please Wait.." : "Save Changes"}
+            </LoadingButton>
+          </DialogActions>
+        </form>
+      )}
     </Dialog>
   );
 };
 
 export default EditSession;
-
-/* <TextField
-  // type={isMobile() ? "date" : "text"}
-  //                   label="Vacation Date"
-  //                   size="small"
-  //                   onFocus={(e) =>
-  //                     !isMobile() && (e.currentTarget.type = "date")
-  //                   }
-  //                   onBlur={(e) =>
-  //                     !isMobile() && (e.currentTarget.type = "text")
-  //                   }
-  //                   value={values.vacationDate}
-  //                   onChange={handleChange("vacationDate")}
-  //                 /> */
-/* <TextField
-                    type={isMobile() ? "date" : "text"}
-                    label="Next Term Begins"
-                    size="small"
-                    onFocus={(e) =>
-                      !isMobile() && (e.currentTarget.type = "date")
-                    }
-                    onBlur={(e) =>
-                      !isMobile() && (e.currentTarget.type = "text")
-                    }
-                    value={values.reOpeningDate}
-                    onChange={handleChange("reOpeningDate")}
-                  /> */
-/* <TextField
-                    type={isMobile() ? "date" : "text"}
-                    label="Vacation Date"
-                    size="small"
-                    onFocus={(e) =>
-                      !isMobile() && (e.currentTarget.type = "date")
-                    }
-                    onBlur={(e) =>
-                      !isMobile() && (e.currentTarget.type = "text")
-                    }
-                    value={values.vacationDate}
-                    onChange={handleChange("vacationDate")}
-                  /> */
-/* <TextField
-                    type={isMobile() ? "date" : "text"}
-                    label="Next Term Begins"
-                    size="small"
-                    onFocus={(e) =>
-                      !isMobile() && (e.currentTarget.type = "date")
-                    }
-                    onBlur={(e) =>
-                      !isMobile() && (e.currentTarget.type = "text")
-                    }
-                    value={values.reOpeningDate}
-                    onChange={handleChange("reOpeningDate")}
-                  /> */

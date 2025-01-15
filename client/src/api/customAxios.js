@@ -17,6 +17,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
+api.defaults.headers.common["Authorization"] = `Bearer ${getToken()}`;
 api.defaults.withCredentials = true;
 
 // Set a common authorization header for all requests
@@ -27,12 +28,7 @@ api.interceptors.request.use(
     // }
 
     const token = getToken();
-    if (token) {
-      //  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-    }
-
+    config.headers.Authorization = token ? `Bearer ${token}` : '';
     return config;
   },
   (error) => {
@@ -52,7 +48,7 @@ api.interceptors.response.use(
       const originalRequest = error.config;
 
       if (
-        [401, 403].includes(error?.response?.status) &&
+        [403].includes(error?.response?.status) &&
         !originalRequest._retry
       ) {
         originalRequest._retry = true;
@@ -69,10 +65,8 @@ api.interceptors.response.use(
               Authorization: token ? `Bearer ${token}` : "",
             },
           });
-
-
-          originalRequest.headers.Authorization = `Bearer ${res.data?.token}`;
           saveAccessToken(res.data?.token)
+          originalRequest.headers.Authorization = `Bearer ${res.data?.token}`;
           // }
           // Retry the original request with the new access token
           return api(originalRequest);
@@ -82,7 +76,7 @@ api.interceptors.response.use(
           if (location.pathname !== "/login") {
             window.location.href = "/login";
           }
-          // return Promise.reject(refreshError);
+          return Promise.reject(refreshError);
         }
       }
     }

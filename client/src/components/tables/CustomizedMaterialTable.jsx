@@ -1,7 +1,18 @@
 import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 
-import { Divider, FormLabel, Input, Typography } from "@mui/material";
+import {
+  Divider,
+  FormLabel,
+  Input,
+  Typography,
+  Skeleton,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableContainer,
+  TableBody,
+} from "@mui/material";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "../../config/tableIcons";
 import { Add, Delete, Refresh } from "@mui/icons-material";
@@ -14,7 +25,6 @@ import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvi
 import { alertError } from "../../context/actions/globalAlertActions";
 import CustomTableTitle from "../custom/CustomTableTitle";
 import EmptyDataContainer from "../EmptyDataContainer";
-
 
 function CustomizedMaterialTable({
   title,
@@ -82,9 +92,22 @@ function CustomizedMaterialTable({
     }
   }
 
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
+
   return (
     // <AnimatedContainer>
-    <Box className="table-container" py={2}>
+    <Box
+      className="table-container"
+      sx={{
+        borderRadius: 0,
+        paddingBlock: "16px",
+        width: { xs: "85svw", md: "100%" },
+        marginInline: "auto",
+        py: 4,
+      }}
+    >
       <MaterialTable
         isLoading={isLoading}
         icons={tableIcons}
@@ -172,7 +195,8 @@ function CustomizedMaterialTable({
         onSelectionChange={onSelectionChange}
         components={{
           Toolbar: (props) => {
-            return data === undefined || data?.length === 0 ? null : (
+            return (data === undefined || data?.length === 0) &&
+              title !== "Students" ? null : (
               <>
                 <Box
                   sx={{
@@ -258,25 +282,25 @@ function CustomizedMaterialTable({
             );
           },
         }}
-        // localization={{
-        //   body: {
-        //     emptyDataSourceMessage: isLoading ? (
-        //       <Typography>Please Wait...</Typography>
-        //     ) : (
-        //       <>
-        //         {data && data?.length == 0 && (
-        //           <EmptyDataContainer
-        //             img={addButtonImg}
-        //             message={addButtonMessage}
-        //             buttonText={addButtonText}
-        //             onClick={onAddButtonClicked}
-        //             showAddButton={showAddButton}
-        //           />
-        //         )}
-        //       </>
-        //     ),
-        //   },
-        // }}
+        localization={{
+          body: {
+            emptyDataSourceMessage: isLoading ? (
+              <Typography>Please Wait...</Typography>
+            ) : (
+              <>
+                {data && data?.length == 0 && (
+                  <EmptyDataContainer
+                    img={addButtonImg}
+                    message={addButtonMessage}
+                    buttonText={addButtonText}
+                    onClick={onAddButtonClicked}
+                    showAddButton={showAddButton}
+                  />
+                )}
+              </>
+            ),
+          },
+        }}
       />
       {/* {isLoading && <LoadingSpinner />} */}
     </Box>
@@ -307,3 +331,55 @@ CustomizedMaterialTable.propTypes = {
 };
 
 export default CustomizedMaterialTable;
+
+const TableSkeleton = () => {
+  return (
+    <TableContainer sx={{ border: "1px solid lightgray", borderRadius: 1 }}>
+      <TableHead>
+        <TableRow>
+          {/* Placeholders for table headers */}
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          {/* Add more table cells for additional headers */}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {/* Placeholder table rows */}
+        {[...Array(8)].map((_, index) => (
+          <TableRow key={index}>
+            <TableCell sx={{ width: "10%" }}>
+              <Skeleton variant="text" width={100} />
+            </TableCell>
+            <TableCell sx={{ width: "10%" }}>
+              <Skeleton variant="text" width={100} />
+            </TableCell>
+            <TableCell sx={{ width: "10%" }}>
+              <Skeleton variant="text" width={100} />
+            </TableCell>
+            <TableCell sx={{ width: "10%" }}>
+              <Skeleton variant="text" width={100} />
+            </TableCell>
+            <TableCell sx={{ width: "10%" }}>
+              <Skeleton variant="text" width={100} />
+            </TableCell>
+
+            {/* Add more table cells for additional columns */}
+          </TableRow>
+        ))}
+      </TableBody>
+    </TableContainer>
+  );
+};

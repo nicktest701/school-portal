@@ -78,16 +78,18 @@ function CustomNotificationItem({
 
         <Typography
           variant="body2"
-          sx={{
-            // fontSize: 12,
-            // textOverflow: `ellipsis`,
-            // whiteSpace: "nowrap",
-            // overflow: "hidden",
-          }}
+          sx={
+            {
+              // fontSize: 12,
+              // textOverflow: `ellipsis`,
+              // whiteSpace: "nowrap",
+              // overflow: "hidden",
+            }
+          }
         >
           {description}
         </Typography>
-        {type === "Event" && (
+        {["Event", "Announcement"].includes(type) && (
           <Link
             to={link}
             style={{

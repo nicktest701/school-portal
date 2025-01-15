@@ -1,5 +1,5 @@
 :root {
-  --primary: rgb(1, 46, 84);
+  --primary: #012e54;
   --secondary: #ffc09f;
   /* --secondary: #32d583; */
   --button-background: dodgerblue;
@@ -26,9 +26,9 @@ html {
 }
 
 body {
-  width: 100svw;
+  /* width: 100svw;
   height: 100%;
-  min-height: 100svh;
+  min-height: 100svh; */
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
@@ -37,6 +37,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #fff;
+  /* border:2px solid rebeccapurple; */
 }
 
 h1 {
@@ -120,6 +121,21 @@ input {
   background-color: #012e54;
   color: #fff;
 }
+
+.dashboard-wrapper{
+
+  container-type: inline-size;
+}
+
+
+@container (max-width: 700px) {
+  .dashboard-sidebar  {
+    background-color:red;
+  }
+}
+
+
+
 
 .content {
   margin: auto;
@@ -586,25 +602,29 @@ tbody tr:hover svg {
   }
 }
 .spinner3 {
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   display: grid;
   border-radius: 50%;
   -webkit-mask: radial-gradient(farthest-side, #0000 40%, #ffffff 41%);
   background: linear-gradient(
         0deg,
-        rgba(1, 46, 84, 0.9) 50%,
-        rgba(1, 46, 84, 1) 0
+        /* rgba(1, 46, 84, 0.9) 50%,
+        rgba(1, 46, 84, 1) 0 */
+        rgba(255, 255, 255, 0.9) 50%,
+        rgb(255, 255, 255) 0
       )
       center/4.5px 100%,
     linear-gradient(
         90deg,
-        rgba(1, 46, 84, 0.25) 50%,
-        rgba(1, 46, 84, 0.75) 0
+        rgba(255, 255, 255, 0.36) 50%,
+        rgba(255, 255, 255, 0.75) 0
+        /* rgba(1, 46, 84, 0.25) 50%,
+        rgba(1, 46, 84, 0.75) 0 */
       )
       center/100% 4.5px;
   background-repeat: no-repeat;
-  animation: spinner2-d3o0rx 1s infinite steps(12);
+  animation: spinner2-d3o0rx 400ms infinite steps(12);
 }
 
 .spinner3::before,

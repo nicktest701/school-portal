@@ -185,7 +185,7 @@ export const RECENT_STUDENTS_COLUMN = [
   {
     field: "indexnumber",
     title: "Student ID",
-    // hidden: true,
+    hidden: true,
   },
   {
     field: "fullName",

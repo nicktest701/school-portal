@@ -6,16 +6,6 @@ import eslint from '@rollup/plugin-eslint';
 export default defineConfig({
   server: {
     port: '3000',
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:8000/',
-    //     changeOrigin: true,
-    //     secure: false,
-    //     ws: true,
-
-    //    rewrite: (path) => path.replace('/api', ''),
-    //   },
-    // },
   },
   plugins: [
     react(),
@@ -24,5 +14,11 @@ export default defineConfig({
       enforce: 'pre',
       apply: 'build',
     },
+
   ],
+  resolve: {
+    alias: {
+      '@': '/src', // Add this alias
+    },
+  },
 });

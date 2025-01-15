@@ -18,6 +18,7 @@ import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import { PasswordRounded } from "@mui/icons-material";
 import { updateUserPassword } from "../../api/userAPI";
 import { useParams } from "react-router-dom";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function UserUpdatePassword({ open, setOpen }) {
   const { id } = useParams();
@@ -128,6 +129,7 @@ function UserUpdatePassword({ open, setOpen }) {
           );
         }}
       </Formik>
+      {isLoading && <LoadingSpinner value="Updating Password.Please wait..." />}
     </Dialog>
   );
 }

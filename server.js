@@ -23,6 +23,7 @@ const feeRoute = require('./routes/feeRoute');
 const currentFeeRoute = require('./routes/currentFeeRoute');
 const messageRoute = require('./routes/messageRoute');
 const eventRoute = require('./routes/eventRoute');
+const announcementRoute = require('./routes/announcementRoute');
 const notificationRoute = require('./routes/notificationRoute');
 const userRoute = require('./routes/userRoute');
 const attendanceRoute = require('./routes/attendanceRoute');
@@ -101,36 +102,37 @@ app.use(
 
 //static path
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/views', express.static(path.join(__dirname, 'views')));
-app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use('/reports', express.static(path.join(__dirname, 'reports')));
-app.use('/templates', express.static(path.join(__dirname, 'templates')));
+app.use('/api/frebbys/v1/views', express.static(path.join(__dirname, 'views')));
+app.use('/api/frebbys/v1/images', express.static(path.join(__dirname, 'images')));
+app.use('/api/frebbys/v1/reports', express.static(path.join(__dirname, 'reports')));
+app.use('/api/frebbys/v1/templates', express.static(path.join(__dirname, 'templates')));
 
 //routes
 
-app.use('/users', userRoute);
+app.use('/api/frebbys/v1/users', userRoute);
 
 app.use(verifyJWT);
-app.use('/sessions', sessionRoute);
-app.use('/terms', termRoute);
-app.use('/students', studentRoute);
-app.use('/parents', parentRoute);
-app.use('/teachers', teacherRoute);
-app.use('/levels', levelRoute);
-app.use('/subjects', subjectRoute);
-app.use('/courses', courseRoute);
-app.use('/grades', gradeRoute);
-app.use('/examinations', examinationRoute);
-app.use('/fees', feeRoute);
-app.use('/current-fees', currentFeeRoute);
-app.use('/messages', messageRoute);
-app.use('/events', eventRoute);
-app.use('/notifications', notificationRoute);
-app.use('/attendances', attendanceRoute);
+app.use('/api/frebbys/v1/sessions', sessionRoute);
+app.use('/api/frebbys/v1/terms', termRoute);
+app.use('/api/frebbys/v1/students', studentRoute);
+app.use('/api/frebbys/v1/parents', parentRoute);
+app.use('/api/frebbys/v1/teachers', teacherRoute);
+app.use('/api/frebbys/v1/levels', levelRoute);
+app.use('/api/frebbys/v1/subjects', subjectRoute);
+app.use('/api/frebbys/v1/courses', courseRoute);
+app.use('/api/frebbys/v1/grades', gradeRoute);
+app.use('/api/frebbys/v1/examinations', examinationRoute);
+app.use('/api/frebbys/v1/fees', feeRoute);
+app.use('/api/frebbys/v1/current-fees', currentFeeRoute);
+app.use('/api/frebbys/v1/messages', messageRoute);
+app.use('/api/frebbys/v1/events', eventRoute);
+app.use('/api/frebbys/v1/notifications', notificationRoute);
+app.use('/api/frebbys/v1/attendances', attendanceRoute);
+app.use('/api/frebbys/v1/announcements', announcementRoute);
 
 // /airtime/template
 app.get(
-  "/template",
+  "/api/frebbys/v1/template",
   asyncHandler(async (req, res) => {
     const template = req.query?.name || 'students'
     const filePath = path.join(process.cwd(), "/templates/", `${template}.xlsx`);
@@ -159,17 +161,17 @@ app.use((err, req, res, next) => {
   console.log(err);
   res.status(err.status || 500);
 
-  if (process.env.NODE_ENV === 'production') {
-    res.send('An unknown error has occurred!.');
-  } else {
-    res.send({
-      error: {
-        status: err.status || 500,
-        message: err.message,
-        stack: err.stack,
-      },
-    });
-  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   res.send('An unknown error has occurred!.');
+  // } else {
+  res.send({
+    error: {
+      status: err.status || 500,
+      message: err.message,
+      stack: err.stack,
+    },
+  });
+  // }
 });
 
 db.asPromise()

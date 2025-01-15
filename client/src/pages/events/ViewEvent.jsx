@@ -49,52 +49,50 @@ function ViewEvent() {
       <Box
         // className={loaded ? "loaded" : ""}
         sx={{
-          background: `linear-gradient(to bottom,rgba(1, 46, 84,0.95),rgba(1, 46, 84,0.9)),url(${
+          background: `linear-gradient(to bottom,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.9)),url(${
             event?.data?.album || EMPTY_IMAGES?.level
           })`,
-          //   backgroundSize: "cover",
-          //   backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
           width: "100%",
-          height: 150,
           p: 4,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          mb: 8,
+          mb: 4,
         }}
       >
-        <Typography variant="h3" color="#fff" paragraph>
+        <Typography variant="h4" color="primary" paragraph>
           {event?.data?.title}
         </Typography>
 
         <Box
           spacing={2}
           display="flex"
-          justifyContent="flex-end"
+          justifyContent="space-between"
           alignItems="center"
           gap={2}
-          pr={8}
           width="100%"
         >
           <div style={{ flexGrow: 1 }}>
-            <Back to={searchParams.get("redirect_to") || "/"} color="#fff" />
+            <Back to={searchParams.get("redirect_to") || "/"} />
           </div>
 
-          <Avatar />
-          <ListItemText
-            primary="Hello"
-            secondary={`${moment(event?.data?.createdAt)?.format(
-              "LLL"
-            )}`}
-            primaryTypographyProps={{
-              color: "#fff",
-            }}
-            secondaryTypographyProps={{
-              color: "#fff",
-              whiteSpace: "nowrap",
-            }}
-          />
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            gap={2}
+          >
+            <Avatar />
+            <ListItemText
+              primary="Hello"
+              secondary={`${moment(event?.data?.createdAt)?.format("LLL")}`}
+              primaryTypographyProps={{
+                color: "secondary.main",
+              }}
+              secondaryTypographyProps={{
+                whiteSpace: "nowrap",
+              }}
+            />
+          </Box>
         </Box>
       </Box>
       <div

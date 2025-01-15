@@ -4,6 +4,7 @@ import {
   MenuRounded,
   Edit,
   ArrowForwardRounded,
+  Visibility,
 } from "@mui/icons-material";
 
 import {
@@ -23,6 +24,7 @@ const session = JSON.parse(localStorage.getItem("@school_session"));
 
 export const SCHOOL_SESSION_COLUMN = (
   handleActive,
+  handleView,
   handleEdit,
   handleDelete
 ) => {
@@ -98,6 +100,9 @@ export const SCHOOL_SESSION_COLUMN = (
       render: (rowData) => {
         return (
           <Stack direction="row" spacing={2}>
+            <IconButton onClick={() => handleView(rowData)} title="View">
+              <Visibility className="ico " titleAccess="View" />
+            </IconButton>
             <IconButton onClick={() => handleEdit(rowData)} title="Edit">
               <Edit className="ico " titleAccess="Edit" />
             </IconButton>

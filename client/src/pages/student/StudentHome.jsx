@@ -1,10 +1,5 @@
 import React, { useContext } from "react";
-import {
-  Box,
-  Divider,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
 import { RECENT_STUDENTS_COLUMN } from "../../mockup/columns/studentColumns";
@@ -33,10 +28,20 @@ const StudentHome = () => {
         termId: session.termId,
       }),
     enabled: !!session.sessionId && !!session.termId,
+    initialData: {
+      recentStudents: [],
+      noOfStudentsInEachLevel: [],
+      noOfStudentsForEachTerm: [],
+      students: 0,
+      males: 0,
+      females: 0,
+    },
   });
 
+
+
   return (
-    <>
+    <Box>
       <CustomTitle
         title="Student Portal"
         subtitle="Add, edit, and view student records to keep accurate and up-to-date information on all students."
@@ -50,14 +55,14 @@ const StudentHome = () => {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+          gridTemplateColumns: "repeat(auto-fit,minmax(100px,1fr))",
           gap: 2,
           pt: 2,
         }}
       >
         <DashboardCard
           title="Students"
-          value={108}
+          value={studentDetails.data?.students}
           icon={
             <IconButton sx={{ bgcolor: "secondary.lighter" }}>
               <Person
@@ -72,7 +77,7 @@ const StudentHome = () => {
         />
         <DashboardCard
           title="Males"
-          value={60}
+          value={studentDetails.data?.males}
           icon={
             <IconButton sx={{ bgcolor: "warning.lighter" }}>
               <Person
@@ -88,7 +93,7 @@ const StudentHome = () => {
 
         <DashboardCard
           title="Females"
-          value={48}
+          value={studentDetails.data?.females}
           icon={
             <IconButton sx={{ bgcolor: "info.lighter" }}>
               <Person
@@ -109,71 +114,37 @@ const StudentHome = () => {
       {studentDetails.isLoading && <ChartSkeleton />}
 
       {studentDetails.data && (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
-            gap: 2,
-            pt: 2,
-          }}
-        >
-          <StudentDashboardBarChart
-            data={studentDetails?.data?.noOfStudentsForEachTerm}
-          />
+        <>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit,minmax(100px,1fr))",
+              gap: 2,
+              py: 2,
+            }}
+          >
+            <StudentDashboardBarChart
+              data={studentDetails?.data?.noOfStudentsForEachTerm}
+            />
+
+            <StudentDashboardPieChart {...studentDetails?.data} />
+
+            {/* <StudentDashboardCard /> */}
+          </Box>
           <StudentDashboardLineChart
             data={studentDetails?.data?.noOfStudentsInEachLevel}
           />
-
-          <StudentDashboardPieChart {...studentDetails?.data} />
-
-          {/* <StudentDashboardCard /> */}
-        </Box>
+        </>
       )}
 
       <Box
         sx={{
-          display: "flex",
-          width: "100%",
-          flexDirection: { xs: "column", md: "row" },
-          justifyContent: "space-around",
-          // border: '1px solid red',
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
           pt: 3,
           gap: 2,
         }}
       >
-        {/* <Card
-          sx={{
-            borderRadius: "8px",
-            overflow: "hidden",
-            flex: 1,
-            minWidth: 200,
-          }}
-        >
-          <List
-            subheader={
-              <ListSubheader title="Number of Students">
-                Number of Students
-              </ListSubheader>
-            }
-          >
-            <ListItem divider>
-              <ListItemText>Students</ListItemText>
-              <ListItemSecondaryAction>
-                <ListItemText>Number</ListItemText>
-              </ListItemSecondaryAction>
-            </ListItem>
-            {studentDetails?.data?.noOfStudentsInEachLevel?.map((item) => {
-              return (
-                <ListItem key={item?.level} divider>
-                  <ListItemText>{item?.level}</ListItemText>
-                  <ListItemSecondaryAction>
-                    <ListItemText>{item?.students}</ListItemText>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              );
-            })}
-          </List>
-        </Card> */}
         <CustomizedMaterialTable
           title="Recently Added Students"
           icon={student_icon}
@@ -182,12 +153,10 @@ const StudentHome = () => {
             {
               title: "Level",
               field: "level",
-              width: "60%",
             },
             {
               title: "Students",
               field: "students",
-              width: "40%",
             },
           ]}
           options={{
@@ -232,7 +201,7 @@ const StudentHome = () => {
           }}
         />
       </Box>
-    </>
+    </Box>
   );
 };
 

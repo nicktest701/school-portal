@@ -27,6 +27,7 @@ import { levelInitialValues } from "../../config/initialValues";
 import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import { UserContext } from "../../context/providers/UserProvider";
 import { getAllTeachers } from "../../api/teacherAPI";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const AddLevel = ({ open, setOpen }) => {
   const {
@@ -40,6 +41,7 @@ const AddLevel = ({ open, setOpen }) => {
   const teachers = useQuery({
     queryKey: ["teachers"],
     queryFn: () => getAllTeachers(),
+    initialData: [],
     select: (teachers) => {
       const modifiedTeachers = teachers?.map((teacher) => {
         return {
@@ -104,7 +106,7 @@ const AddLevel = ({ open, setOpen }) => {
         {({ values, errors, touched, handleSubmit, setFieldValue }) => {
           return (
             <>
-              <DialogContent sx={{ p: 1}}>
+              <DialogContent sx={{ p: 1 }}>
                 <Stack spacing={2} paddingY={2}>
                   <Autocomplete
                     freeSolo
@@ -133,10 +135,10 @@ const AddLevel = ({ open, setOpen }) => {
                     )}
                   />
                   <Autocomplete
-                    options={teachers.data}
+                    options={teachers?.data}
                     loading={teachers.isLoading}
                     getOptionLabel={(option) => option?.fullName || ""}
-                    value={values.teacher}
+                    value={values?.teacher}
                     onChange={(e, value) => setFieldValue("teacher", value)}
                     renderInput={(params) => (
                       <TextField
@@ -161,6 +163,8 @@ const AddLevel = ({ open, setOpen }) => {
           );
         }}
       </Formik>
+
+      {isLoading && <LoadingSpinner value="Creating New Level. Please wait..." />}
     </Dialog>
   );
 };

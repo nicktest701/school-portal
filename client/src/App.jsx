@@ -1,6 +1,7 @@
 import React from "react";
 import Scrollbars from "react-custom-scrollbars";
 import { Chart, registerables } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import StudentProvider from "./context/providers/StudentProvider";
 import {
   QueryClient,
@@ -15,6 +16,7 @@ import UserProvider from "./context/providers/UserProvider";
 import Error from "./pages/Error";
 
 Chart.register(...registerables);
+Chart.register(ChartDataLabels);
 
 function App() {
   const queryClient = new QueryClient({

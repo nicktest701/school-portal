@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Box, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { STUDENTS_COLUMN } from '../../mockup/columns/studentColumns';
 import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
@@ -62,7 +62,7 @@ const StudentView = () => {
   };
 
   return (
-    <>
+    <Box>
       <CustomTitle
         title='Students Information'
         subtitle='  Track,manage and control academic and class activities'
@@ -84,7 +84,7 @@ const StudentView = () => {
         onRowClick={handleRowClick}
         addButtonImg={EMPTY_IMAGES.student}
         addButtonMessage='😑 No Students recently added !!!!'
-        showRowShadow={true}
+        // showRowShadow={true}
         handleRefresh={handleRefresh}
         autoCompleteComponent={<Autocomplete
           disableClearable
@@ -105,7 +105,7 @@ const StudentView = () => {
         />}
       />
 
-    </>
+    </Box>
   );
 };
 

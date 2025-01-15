@@ -6,12 +6,14 @@ const Examination = require('../models/examinationModel');
 const CurrentLevelDetails = require('../models/currentLevelDetailModel');
 const CurrentLevel = require('../models/currentLevelModel');
 const Teacher = require('../models/teacherModel');
-// const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
+const Attendance = require('../models/attendanceModel');
 const _ = require('lodash');
 const moment = require('moment');
 const {
   Types: { ObjectId },
 } = require('mongoose');
+
 
 const LEVEL_OPTIONS = [
   'Day Care',
@@ -69,25 +71,108 @@ router.get(
   asyncHandler(async (req, res) => {
     const { session, term } = req.query;
 
+    //No of students
+    const noOfStudents = await Student.countDocuments({ active: true });
+
+    const maleCount = await Student.countDocuments({ gender: "male", active: true });
+    const femaleCount = await Student.countDocuments({ gender: "female", active: true });
+
+
     //No of teachers
-    const noOfTeachers = await Teacher.countDocuments();
+    const noOfTeachers = await Teacher.countDocuments({ active: true });
+
 
 
     //No of levels
     const levels = await Level.find({
       session: new ObjectId(session),
       term: new ObjectId(term),
-    }).populate({
-      path: 'students',
-      match: { active: true },
+    })
+
+
+    //Atendance
+    const startOfWeek = moment().startOf('week').add(1, 'days'); // Monday
+    const endOfWeek = moment().endOf('week').subtract(1, 'days'); // Friday
+
+    const weekdays = [];
+    for (let day = 0; day <= 4; day++) {
+      weekdays.push(startOfWeek.clone().add(day, 'days').format("MM/DD/YYYY"));
+    }
+
+
+    const attendance = await Attendance.find({
+      date: { $in: weekdays },
     });
+
+    // Prepare data with empty days filled
+    const attendanceMap = weekdays.map((date) => {
+      const entry = attendance.find((a) => a.date === date);
+      return {
+        date,
+        count: entry
+          ? entry.status.filter((s) => s.status === "Present").length
+          : 0,
+      };
+    });
+
+    ///
+
+    const attendanceSummary = weekdays.map((date) => {
+      const entry = attendance.find((a) => a.date === date);
+      const presentCount = entry
+        ? entry.status.filter((s) => s.status === "Present").length
+        : 0;
+      const absentCount = entry
+        ? entry.status.filter((s) => s.status === "Absent").length
+        : 0;
+
+      return {
+        date,
+        presentCount,
+        absentCount,
+      };
+    });
+
+
+    // Initialize counts for males and females
+    let malePresent = 0, femalePresent = 0;
+    let maleAbsent = 0, femaleAbsent = 0;
+
+    // Count present and absent males and females
+    attendance.forEach((record) => {
+      record.status.forEach((student) => {
+        if (student.status === "Present") {
+          student.gender === "male" ? malePresent++ : femalePresent++;
+        } else if (student.status === "Absent") {
+          student.gender === "male" ? maleAbsent++ : femaleAbsent++;
+        }
+      });
+    });
+
+
+
+
+
+
 
     if (_.isEmpty(levels)) {
       const dashboardInfo = {
         teachers: noOfTeachers,
         levels: 0,
         courses: 0,
-        students: 0,
+        students: noOfStudents,
+        studentCount: {
+          male: maleCount,
+          female: femaleCount
+        },
+        attendance: [],
+        attendanceSummary: [],
+        genderAttendance: {
+          malePresent,
+          femalePresent,
+          maleAbsent,
+          femaleAbsent,
+        }
       };
 
       return res.status(200).json(dashboardInfo);
@@ -100,13 +185,25 @@ router.get(
     const noOfSubjects = _.flatMap(_.map(levels, 'subjects')).length;
 
     // No of Students
-    const noOfStudents = _.flatMap(_.map(levels, 'students')).length;
+    // const noOfStudents = _.flatMap(_.map(levels, 'students')).length;
 
     const dashboardInfo = {
       teachers: noOfTeachers,
       levels: noOfLevels,
       courses: noOfSubjects,
       students: noOfStudents,
+      studentCount: {
+        male: maleCount,
+        female: femaleCount
+      },
+      attendance: attendanceMap,
+      attendanceSummary,
+      genderAttendance: {
+        malePresent,
+        femalePresent,
+        maleAbsent,
+        femaleAbsent,
+      }
     };
 
     res.status(200).json(dashboardInfo);
@@ -560,32 +657,23 @@ router.put(
 router.get(
   '/recent/birthday',
   asyncHandler(async (req, res) => {
-    const { session, term } = req.query;
 
-    const students = await Level.find({
-      session: new ObjectId(session),
-      term: new ObjectId(term),
+    const targetDate = new Date();
+    const month = targetDate.getMonth();
+    const day = targetDate.getDate();
+
+
+    const students = await Student.find({
+      $expr: {
+        $and: [
+          { $eq: [{ $month: { $toDate: "$dateofbirth" } }, month + 1] }, // +1 since JS months are 0-based
+          { $eq: [{ $dayOfMonth: { $toDate: "$dateofbirth" } }, day] },
+        ],
+      },
+      active: true
     })
-      .populate({
-        path: 'students',
-        match: { active: true },
-      })
-      .select('students');
 
-    if (_.isEmpty(students)) {
-      return res.status(404).json([]);
-    }
-
-    const birthdays = students.flatMap((student) => {
-      return student.students?.filter(({ dateofbirth }) => {
-        return (
-          moment(new Date(dateofbirth)).format('Do MMMM') ===
-          moment().format('Do MMMM')
-        );
-      });
-    });
-
-    const bds = birthdays.map((student) => {
+    const bds = students.map((student) => {
       return {
         _id: student?._id,
         profile: student?.profile,

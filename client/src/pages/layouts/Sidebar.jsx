@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 import {
   Avatar,
@@ -30,13 +30,21 @@ import {
   SchoolRounded,
   Event,
   ImportExportRounded,
+  ArrowBackIos,
+  ArrowForwardIos,
+  AnnouncementRounded,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { UserContext } from "../../context/providers/UserProvider";
 
 const Sidebar = () => {
   const school_info = JSON.parse(localStorage.getItem("@school_info"));
+  const [toggleWidth, setToggleWidth] = useState(false);
   const { user, logOutUser } = useContext(UserContext);
+
+  const handleClose = () => {
+    setToggleWidth(!toggleWidth);
+  };
 
   return (
     <Box
@@ -45,13 +53,22 @@ const Sidebar = () => {
         top: 0,
         pt: 2,
         height: "100dvh",
-        display: { xs: "none", sm: "block" },
+        display: { xs: "none", sm: "inline-flex" },
         transition: "all 0.4s ease-in-out",
         bgcolor: "primary.main",
       }}
     >
-      <Box sx={{ width: { xs: 0, sm: 80, md: 250 } }}>
+      <Box sx={{ width: toggleWidth ? 80 : { xs: 0, sm: 80, md: 240 } }}>
         <Stack alignItems={{ xs: "left", sm: "center" }} pb={2} spacing={2}>
+          <IconButton
+            edge="end"
+            sx={{
+              alignSelf: toggleWidth ? "center" : "flex-end",
+            }}
+            onClick={handleClose}
+          >
+            {toggleWidth ? <ArrowForwardIos /> : <ArrowBackIos />}
+          </IconButton>
           {school_info?.badge ? (
             <Avatar
               alt="school logo"
@@ -75,7 +92,7 @@ const Sidebar = () => {
             color="white"
             textTransform="uppercase"
           >
-            {school_info?.name}
+            {!toggleWidth && school_info?.name}
           </Typography>
         </Stack>
         <Divider />
@@ -92,63 +109,67 @@ const Sidebar = () => {
           {user?.role === "administrator" ? (
             <>
               <DrawerItem
-                title="Dashboard"
+                title={toggleWidth ? "" : "Dashboard"}
                 icon={<GridViewRoundedIcon />}
                 to="/"
               />
               <DrawerItem
-                title="Sessions"
+                title={toggleWidth ? "" : "Sessions"}
                 icon={<ArticleRoundedIcon />}
                 to="/session"
               />
 
               <DrawerItem
-                title="Levels "
+                title={toggleWidth ? "" : "Levels "}
                 icon={<BedroomBabyRoundedIcon />}
                 to="/level"
               />
               <DrawerItem
-                title="Subjects & Grades"
+                title={toggleWidth ? "" : "Subjects & Grades"}
                 icon={<NumbersSharp />}
                 to="/subject"
               />
               <DrawerItem
-                title="Students"
+                title={toggleWidth ? "" : "Students"}
                 icon={<LocalLibraryRounded />}
                 to="/student"
               />
               <DrawerItem
-                title="Teachers"
+                title={toggleWidth ? "" : "Teachers"}
                 icon={<Person2Rounded />}
                 to="/teacher"
               />
               <DrawerItem
-                title="School Fees"
+                title={toggleWidth ? "" : "School Fees"}
                 icon={<PaymentsRounded />}
                 to="/fee"
               />
               <DrawerItem
-                title="Exams Portal"
+                title={toggleWidth ? "" : "Exams Portal"}
                 icon={<DataThresholdingRoundedIcon />}
                 to="/examination"
               />
 
-              <DrawerItem title="Messages" icon={<SmsRounded />} to="/sms" />
               <DrawerItem
-                title="Data Uploads"
+                title={toggleWidth ? "" : "Messages"}
+                icon={<SmsRounded />}
+                to="/sms"
+              />
+              <DrawerItem
+                title={toggleWidth ? "" : "Data Uploads"}
                 icon={<ImportExportRounded />}
                 to="/uploads"
               />
 
               <>
                 <DrawerItem
-                  title="Users"
+                  title={toggleWidth ? "" : "Users"}
                   icon={<PeopleAltRoundedIcon />}
                   to="/users"
                 />
               </>
               <DrawerItem
-                title="Settings"
+                title={toggleWidth ? "" : "Settings"}
                 icon={<SettingsRoundedIcon />}
                 to="/settings"
               />
@@ -161,26 +182,40 @@ const Sidebar = () => {
               to='/course';
             /> */}
               <DrawerItem
-                title="Levels & Courses"
+                title={toggleWidth ? "" : "Levels & Courses"}
                 icon={<BookRounded />}
                 to="/course"
               />
             </>
           )}
           <DrawerItem
-            title="Profile"
+            title={toggleWidth ? "" : "Profile"}
             icon={<PeopleAltRoundedIcon />}
             to="/profile"
           />
 
-          <DrawerItem title="Events" icon={<Event />} to="/events" />
+          <DrawerItem
+            title={toggleWidth ? "" : "Events"}
+            icon={<Event />}
+            to="/events"
+          />
+          <DrawerItem
+            title={toggleWidth ? "" : "Announcements"}
+            icon={<AnnouncementRounded />}
+            to="/announcements"
+          />
 
           <DrawerItem
-            title="Notifications & Activites"
+            title={toggleWidth ? "" : "Notifications & Activites"}
             icon={<NotificationsSharp />}
             to="/notifications"
           />
-          <DrawerItem title="About" icon={<InfoRoundedIcon />} to="/about" />
+
+          <DrawerItem
+            title={toggleWidth ? "" : "About"}
+            icon={<InfoRoundedIcon />}
+            to="/about"
+          />
 
           <Button
             variant="text"
@@ -189,7 +224,7 @@ const Sidebar = () => {
             sx={{ display: { xs: "none", md: "flex" }, pl: 2 }}
             onClick={logOutUser}
           >
-            Log out
+            {toggleWidth ? "" : " Log out"}
           </Button>
           <IconButton
             sx={{ display: { xs: "inline-flex", md: "none" }, pl: "12px" }}

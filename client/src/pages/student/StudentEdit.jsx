@@ -112,7 +112,7 @@ const StudentEdit = () => {
   };
 
   return (
-    <Dialog open={editStudentData.open} maxWidth="md" fullWidth>
+    <Dialog open={editStudentData.open} maxWidth="lg" fullWidth>
       <CustomDialogTitle
         title="Edit Student Information"
         onClose={handleClose}

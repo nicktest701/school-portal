@@ -176,7 +176,7 @@ const SMSQuick = () => {
             >
               Send Message
             </LoadingButton>
-            {isLoading && <LoadingSpinner />}
+            {isLoading && <LoadingSpinner value="Sending Message..." />}
           </Stack>
         );
       }}

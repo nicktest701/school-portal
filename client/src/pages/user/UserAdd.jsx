@@ -26,6 +26,7 @@ import { TOWNS } from "../../mockup/data/towns";
 import CustomTitle from "../../components/custom/CustomTitle";
 import { SchoolRounded } from "@mui/icons-material";
 import Back from "../../components/Back";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function UserAdd() {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -37,10 +38,10 @@ function UserAdd() {
   const [initValues] = useState(userInitialValues);
 
   //Post teacher
-  const { mutateAsync } = useMutation(postUser);
+  const { mutateAsync, isLoading } = useMutation(postUser);
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format("L");
-    values.fullname=`${values?.firstname} ${values?.lastname}`
+    values.fullname = `${values?.firstname} ${values?.lastname}`;
     // //console.log(values);
 
     mutateAsync(values, {
@@ -92,13 +93,14 @@ function UserAdd() {
           return (
             <Box bgcolor="#fff" p={2}>
               <Stack padding={2} spacing={2}>
-                <Stack sx={{ position: "relative" }}>
+              <Stack alignSelf="center">
+                <CustomImageChooser handleImageUpload={handleLoadFile}>
                   <Avatar
-                    src={profileImg}
+                    srcSet={profileImg}
                     sx={{ width: 100, height: 100, alignSelf: "center" }}
                   />
-                  <CustomImageChooser handleImageUpload={handleLoadFile} />
-                </Stack>
+                </CustomImageChooser>
+              </Stack>
                 <Typography
                   variant="body2"
                   color="primary.main"
@@ -127,19 +129,17 @@ function UserAdd() {
                     error={Boolean(touched.lastname && errors.lastname)}
                     helperText={touched.lastname && errors.lastname}
                   />
-        
-                 
                 </CustomFormControl>
                 <TextField
-                    label="Username"
-                    type="text"
-                    fullWidth
-                    size="small"
-                    value={values.username}
-                    onChange={handleChange("username")}
-                    error={Boolean(touched.username && errors.username)}
-                    helperText={touched.username && errors.username}
-                  />
+                  label="Username"
+                  type="text"
+                  fullWidth
+                  size="small"
+                  value={values.username}
+                  onChange={handleChange("username")}
+                  error={Boolean(touched.username && errors.username)}
+                  helperText={touched.username && errors.username}
+                />
                 <CustomFormControl>
                   <CustomDatePicker
                     label="Date of Birth"
@@ -309,6 +309,7 @@ function UserAdd() {
           );
         }}
       </Formik>
+      {isLoading && <LoadingSpinner value="Creating New User..." />}
     </>
   );
 }

@@ -26,6 +26,7 @@ import useLevelById from "../../components/hooks/useLevelById";
 import { UserContext } from "../../context/providers/UserProvider";
 import { postCourse } from "../../api/courseAPI";
 import TeacherCourses from "./TeacherCourses";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const TeacherAssignCourse = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -182,6 +183,7 @@ const TeacherAssignCourse = () => {
         }}
       </Formik>
       <TeacherCourses />
+      {isLoading && <LoadingSpinner value="Assigning Course.Please wait..." />}
     </Container>
   );
 };

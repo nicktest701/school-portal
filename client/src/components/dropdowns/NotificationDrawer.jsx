@@ -30,6 +30,8 @@ const NotificationDrawer = ({ open, setOpen }) => {
     saveItem("d_no", update);
   };
 
+  // console.log(notifications)
+
   return (
     <Drawer
       open={open}
@@ -45,11 +47,11 @@ const NotificationDrawer = ({ open, setOpen }) => {
           gridTemplateRows: "auto 1fr auto",
           pb: 1,
         }}
-        bgcolor="#fff"
+        // bgcolor="secondary.main"
         spacing={1}
       >
         <Stack
-          bgcolor="primary.main"
+          // bgcolor="secondary.main"
           direction="row"
           justifyContent="space-between"
           alignItems="center"

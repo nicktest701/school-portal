@@ -3,7 +3,6 @@ import {
   Stack,
   Dialog,
   DialogContent,
-
   DialogActions,
   Button,
   TextField,
@@ -32,13 +31,12 @@ import {
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import { UserContext } from "../../context/providers/UserProvider";
-
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const AddFee = ({ open, setOpen }) => {
   const {
     userState: { session },
   } = useContext(UserContext);
-
 
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -281,6 +279,7 @@ const AddFee = ({ open, setOpen }) => {
                   Save
                 </LoadingButton>
               </DialogActions>
+              {isSubmitting && <LoadingSpinner value="Adding New Fee..." />}
             </>
           );
         }}

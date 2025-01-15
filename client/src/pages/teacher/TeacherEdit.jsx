@@ -29,6 +29,7 @@ import Loader from "../../config/Loader";
 import { Box, Button, Container } from "@mui/material";
 import Back from "../../components/Back";
 import CustomTitle from "../../components/custom/CustomTitle";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const TeacherEdit = () => {
   const queryClient = useQueryClient();
@@ -135,7 +136,7 @@ const TeacherEdit = () => {
                     <CustomImageChooser handleImageUpload={uploadProfile}>
                       <Avatar
                         srcSet={profileImage}
-                        sx={{ width: 120, height: 120, alignSelf: "center" }}
+                        sx={{ width: 100, height: 100, alignSelf: "center" }}
                       />
                     </CustomImageChooser>
                   </Stack>
@@ -310,6 +311,7 @@ const TeacherEdit = () => {
           );
         }}
       </Formik>
+      {isLoading && <LoadingSpinner value="Saving Changes.." />}
     </Container>
   );
 };

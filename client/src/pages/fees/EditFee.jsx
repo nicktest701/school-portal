@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Stack,
   Dialog,
@@ -14,17 +14,18 @@ import {
   FormHelperText,
   InputAdornment,
   Divider,
-} from '@mui/material';
-import _ from 'lodash';
-import { Formik } from 'formik';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { LoadingButton } from '@mui/lab';
-import { FEES_OPTIONS } from '../../mockup/columns/sessionColumns';
-import { putFee } from '../../api/feeAPI';
-import FeesItem from './FeeItem';
-import { currencyFormatter } from '../../config/currencyFormatter';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import Transition from '../../components/animations/Transition';
+} from "@mui/material";
+import _ from "lodash";
+import { Formik } from "formik";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LoadingButton } from "@mui/lab";
+import { FEES_OPTIONS } from "../../mockup/columns/sessionColumns";
+import { putFee } from "../../api/feeAPI";
+import FeesItem from "./FeeItem";
+import { currencyFormatter } from "../../config/currencyFormatter";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import Transition from "../../components/animations/Transition";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 const EditFee = () => {
   const queryClient = useQueryClient();
 
@@ -33,12 +34,12 @@ const EditFee = () => {
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
-  const [fee, setFee] = useState('');
+  const [fee, setFee] = useState("");
   const [feeList, setFeeList] = useState([]);
   const [amount, setAmount] = useState(0);
   const [msg, setMsg] = useState({
-    severity: '',
-    text: '',
+    severity: "",
+    text: "",
   });
 
   useEffect(() => {
@@ -47,19 +48,19 @@ const EditFee = () => {
 
   //ADD Fee item to list
   const handleAddFee = () => {
-    if (fee === '' || amount === '') {
+    if (fee === "" || amount === "") {
       return;
     }
     setFeeList((prev) => {
       return prev !== undefined
         ? _.values(
-            _.merge(_.keyBy([...prev, { fee, amount: Number(amount) }], 'fee'))
+            _.merge(_.keyBy([...prev, { fee, amount: Number(amount) }], "fee"))
           )
         : [{ fee, amount: Number(amount) }];
     });
 
-    setFee('');
-    setAmount('');
+    setFee("");
+    setAmount("");
   };
 
   //REMOVE fee item from list
@@ -71,14 +72,14 @@ const EditFee = () => {
   };
 
   const totalFees = useMemo(
-    () => currencyFormatter(_.sumBy(feeList, 'amount')),
+    () => currencyFormatter(_.sumBy(feeList, "amount")),
     [feeList]
   );
 
   const { mutateAsync } = useMutation(putFee);
 
   const onSubmit = (values, options) => {
-    setMsg({ text: '' });
+    setMsg({ text: "" });
 
     mutateAsync(
       {
@@ -87,13 +88,13 @@ const EditFee = () => {
       },
       {
         onSettled: () => {
-          queryClient.invalidateQueries(['fees']);
+          queryClient.invalidateQueries(["fees"]);
           options.setSubmitting(false);
         },
         onSuccess: () => {
           setMsg({
-            severity: 'info',
-            text: 'Changes Saved!!!',
+            severity: "info",
+            text: "Changes Saved!!!",
           });
         },
       }
@@ -103,7 +104,7 @@ const EditFee = () => {
   //CLOSE Edit Fees
   const handleClose = () => {
     schoolSessionDispatch({
-      type: 'setFeeEditData',
+      type: "setFeeEditData",
       payload: {
         open: false,
         data: {},
@@ -115,7 +116,7 @@ const EditFee = () => {
       open={feeEditData.open}
       onClose={handleClose}
       fullWidth
-      maxWidth='xs'
+      maxWidth="xs"
       TransitionComponent={Transition}
     >
       <DialogTitle>Edit Fees</DialogTitle>
@@ -140,7 +141,7 @@ const EditFee = () => {
                   severity={msg.severity}
                   onClose={() =>
                     setMsg({
-                      text: '',
+                      text: "",
                     })
                   }
                 >
@@ -150,15 +151,15 @@ const EditFee = () => {
               <DialogContent>
                 <Stack spacing={2} paddingY={2}>
                   <TextField
-                    label=' Level'
-                    size='small'
+                    label=" Level"
+                    size="small"
                     InputProps={{
                       readOnly: true,
                     }}
                     value={
                       feeEditData?.data?.level !== undefined
                         ? feeEditData?.data?.level
-                        : ''
+                        : ""
                     }
                   />
 
@@ -167,53 +168,53 @@ const EditFee = () => {
                     fullWidth
                     options={FEES_OPTIONS}
                     isOptionEqualToValue={(option, value) =>
-                      value === undefined || value === '' || option === value
+                      value === undefined || value === "" || option === value
                     }
-                    getOptionLabel={(option) => option || ''}
+                    getOptionLabel={(option) => option || ""}
                     value={fee}
                     onInputChange={(e, value) => setFee(value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Select Fee Type'
-                        size='small'
+                        label="Select Fee Type"
+                        size="small"
                         error={Boolean(touched?.fee && errors?.fee)}
                         helperText={
                           touched?.fee &&
                           errors?.fee &&
-                          'Enter a least one fee type*'
+                          "Enter a least one fee type*"
                         }
                       />
                     )}
                   />
                   <TextField
-                    type='number'
-                    label='Enter Fee Amount'
-                    size='small'
+                    type="number"
+                    label="Enter Fee Amount"
+                    size="small"
                     InputProps={{
                       startAdornment: (
-                        <InputAdornment position='start'>GHS</InputAdornment>
+                        <InputAdornment position="start">GHS</InputAdornment>
                       ),
 
                       endAdornment: (
-                        <InputAdornment position='end'>p</InputAdornment>
+                        <InputAdornment position="end">p</InputAdornment>
                       ),
                     }}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     error={Boolean(touched?.fee && errors?.fee)}
-                    helperText={touched?.fee && errors?.fee && 'Required*'}
+                    helperText={touched?.fee && errors?.fee && "Required*"}
                   />
                   <Button
-                    variant='contained'
-                    size='small'
+                    variant="contained"
+                    size="small"
                     onClick={handleAddFee}
                   >
                     Add
                   </Button>
 
                   <List sx={{ maxHeight: 400 }}>
-                    <Typography variant='body1' sx={{ fontWeight: 'bold' }}>
+                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                       Fees
                     </Typography>
                     {_.isEmpty(feeList) ? (
@@ -230,17 +231,17 @@ const EditFee = () => {
                       })
                     )}
                     <Divider />
-                    <Stack direction='row' justifyContent='space-between'>
-                      <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                    <Stack direction="row" justifyContent="space-between">
+                      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                         Total Fees
                       </Typography>
-                      <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+                      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                         {totalFees}
                       </Typography>
                     </Stack>
                   </List>
                   {errors.fee && (
-                    <FormHelperText sx={{ color: 'error.main' }}>
+                    <FormHelperText sx={{ color: "error.main" }}>
                       {errors.fee}
                     </FormHelperText>
                   )}
@@ -250,12 +251,13 @@ const EditFee = () => {
                 <Button onClick={handleClose}>Cancel</Button>
                 <LoadingButton
                   loading={isSubmitting}
-                  variant='contained'
+                  variant="contained"
                   onClick={handleSubmit}
                 >
                   Save Changes
                 </LoadingButton>
               </DialogActions>
+              {isSubmitting && <LoadingSpinner value="Saving Changes..." />}
             </>
           );
         }}

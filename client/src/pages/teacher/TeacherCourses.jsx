@@ -22,6 +22,7 @@ import {
 } from "../../context/actions/globalAlertActions";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import { useParams } from "react-router-dom";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function TeacherCourses() {
   const queryClient = useQueryClient();
@@ -42,7 +43,7 @@ function TeacherCourses() {
   });
 
   //Delete Course
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isLoading } = useMutation({
     mutationFn: deleteCourse,
   });
 
@@ -76,60 +77,66 @@ function TeacherCourses() {
   }
 
   return (
-    <List
-      subheader={
-        <ListSubheader
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 4,
-          }}
-        >
-          <ListItemText
-            primary="Assign Courses"
-            secondary="List of assigned courses"
-            primaryTypographyProps={{
-              fontSize: 18,
-              color: "var(--secondary)",
-            }}
+    <>
+      <List
+        subheader={
+          <ListSubheader
             sx={{
-              py: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 4,
             }}
-          />
-          <Tooltip title="Refresh Courses">
-            <IconButton onClick={courses.refetch}>
-              <RefreshRounded />
-            </IconButton>
-          </Tooltip>
-          <Divider />
-        </ListSubheader>
-      }
-      sx={{
-        pt: 4,
-      }}
-    >
-      {courses?.data?.length > 0 ? (
-        courses?.data?.map((course) => (
-          <ListItem key={course?._id} divider>
-            <ListItemText primary={course?.level} />
-            <ListItemText primary={course?.subject} />
+          >
+            <ListItemText
+              primary="Assign Courses"
+              secondary="List of assigned courses"
+              primaryTypographyProps={{
+                fontSize: 18,
+                color: "var(--secondary)",
+              }}
+              sx={{
+                py: 2,
+              }}
+            />
+            <Tooltip title="Refresh Courses">
+              <IconButton onClick={courses.refetch}>
+                <RefreshRounded />
+              </IconButton>
+            </Tooltip>
+            <Divider />
+          </ListSubheader>
+        }
+        sx={{
+          pt: 4,
+        }}
+      >
+        {courses?.data?.length > 0 ? (
+          courses?.data?.map((course) => (
+            <ListItem key={course?._id} divider>
+              <ListItemText primary={course?.level} />
+              <ListItemText primary={course?.subject} />
 
-            <ListItemSecondaryAction>
-              <Button
-                title="Remove Course"
-                color="error"
-                size="small"
-                endIcon={<DeleteRounded />}
-                onClick={() => removeCourse(course?._id)}
-              >   Remove</Button>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))
-      ) : (
-        <Typography textAlign="center">No Course Available</Typography>
-      )}
-    </List>
+              <ListItemSecondaryAction>
+                <Button
+                  title="Remove Course"
+                  color="error"
+                  size="small"
+                  endIcon={<DeleteRounded />}
+                  onClick={() => removeCourse(course?._id)}
+                >
+                  {" "}
+                  Remove
+                </Button>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))
+        ) : (
+          <Typography textAlign="center">No Course Available</Typography>
+        )}
+      </List>
+      {isLoading && <LoadingSpinner value="Removing Course.Please wait..." />}
+    </>
   );
 }
 

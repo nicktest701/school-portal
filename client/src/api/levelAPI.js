@@ -204,12 +204,11 @@ export const addSubjectsToLevel = async (data) => {
   }
 };
 
-export const getTodaysBirth = async (session, term) => {
+export const getTodaysBirth = async () => {
   try {
     const res = await api({
       method: 'GET',
       url: `/levels/recent/birthday`,
-      params: { session, term },
     });
 
     return res.data;

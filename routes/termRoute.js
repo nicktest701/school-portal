@@ -7,7 +7,7 @@ const Session = require("../models/sessionModel");
 const {
   Types: { ObjectId },
 } = require("mongoose");
-const {verifyJWT} = require("../middlewares/verifyJWT");
+const { verifyJWT } = require("../middlewares/verifyJWT");
 // const knex = require("../db/knex");
 
 //@GET All school Terms
@@ -95,21 +95,20 @@ router.get(
 router.get(
   "/:id",
   asyncHandler(async (req, res) => {
-    const sessionId = req.query.sessionId;
+    const { id } = req.params;
 
     // const term = await knex("session_term_info").select("*").where({
     //   sessionId,
     //   active: true,
     // });
 
-    const term = await Term.findOne({
-      session: new ObjectId(sessionId),
-      active: true,
-    }).populate("session");
+    const term = await Term.findById(id).populate("session");
 
     res.status(200).json(term);
   })
 );
+
+
 
 //Add new School Term
 router.post(
@@ -183,7 +182,7 @@ router.post(
       academicYear,
     });
 
-    const sessionID = randomUUID();
+    // const sessionID = randomUUID();
 
     // const newSession_ = await knex("sessions").insert({
     //   _id: sessionID,
@@ -230,7 +229,11 @@ router.put(
   "/",
   asyncHandler(async (req, res) => {
     const { id, ...rest } = req.body;
-    const modifiedTerm = await Term.findByIdAndUpdate(id, rest);
+    const modifiedTerm = await Term.findByIdAndUpdate(id, {
+      $set: {
+        ...rest
+      }
+    });
 
     // const modifiedTerm = await knex("terms")
     //   .where({ _id: id })
@@ -246,7 +249,7 @@ router.put(
 
     res
       .status(201)
-      .json("Session information has been updated successfully!!!");
+      .json("Changes Saved!");
   })
 );
 
@@ -320,6 +323,7 @@ router.put(
     res.status(201).json(" Session have been removed successfully!!!");
   })
 );
+
 router.delete(
   "/:id",
   asyncHandler(async (req, res) => {

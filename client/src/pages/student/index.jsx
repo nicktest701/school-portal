@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Outlet } from 'react-router-dom';
-import Container from '@mui/material/Container';
-import { getAllStudentsBySession } from '../../api/levelAPI';
-import { StudentContext } from '../../context/providers/StudentProvider';
-import StudentNav from './layout/StudentNav';
-import { UserContext } from '../../context/providers/UserProvider';
+import React, { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Outlet } from "react-router-dom";
+import Box from "@mui/material/Box";
+import { getAllStudentsBySession } from "../../api/levelAPI";
+import { StudentContext } from "../../context/providers/StudentProvider";
+import StudentNav from "./layout/StudentNav";
+import { UserContext } from "../../context/providers/UserProvider";
 
 function Student() {
   const {
@@ -15,22 +15,30 @@ function Student() {
   //  console.log(students)
 
   useQuery({
-    queryKey: ['all-students', session],
+    queryKey: ["all-students", session],
     queryFn: () => getAllStudentsBySession(session),
     enabled: !!session.sessionId,
     onSuccess: (students) => {
-      studentDispatch({ type: 'getAllStudents', payload: students });
+      studentDispatch({ type: "getAllStudents", payload: students });
     },
   });
 
   return (
     <>
       <StudentNav />
-      <Container maxWidth='lg'>
+
+      <Box
+        sx={{
+          p: 4,
+        }}
+      >
         <Outlet />
-      </Container>
+      </Box>
     </>
   );
 }
 
 export default Student;
+
+// <Container maxWidth="lg">
+// </Container>

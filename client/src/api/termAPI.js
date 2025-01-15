@@ -25,10 +25,8 @@ export const getTerm = async (id) => {
   try {
     const res = await api({
       method: 'GET',
-      url: `/terms`,
-      params: {
-        id,
-      },
+      url: `/terms/${id}`,
+
     });
 
     return res.data;

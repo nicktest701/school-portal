@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import  Box from '@mui/material/Box';
-import _ from 'lodash';
+import React, { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import Box from "@mui/material/Box";
+import _ from "lodash";
 const LineChart = ({ data }) => {
-  
-
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
 
   useEffect(() => {
     if (data) {
-      setLabels(_.map(data, 'term'));
-      setDataset(_.map(data, 'student'));
+      setLabels(_.map(data, "term"));
+      setDataset(_.map(data, "student"));
     }
   }, [data]);
 
@@ -21,7 +19,8 @@ const LineChart = ({ data }) => {
     <Box
       sx={{
         minWidth: 100,
-        height: 100,
+        width: "100%",
+        height: 200,
       }}
     >
       <Bar
@@ -29,9 +28,11 @@ const LineChart = ({ data }) => {
           labels,
           datasets: [
             {
-              label: 'No of Students',
+              label: "No of Students",
               data: dataset,
-              backgroundColor: [' rgb(1, 46, 84)', 'rgb(255, 192, 159)'],
+              backgroundColor: [" rgb(1, 46, 84)", "rgb(255, 192, 159)"],
+              barThickness: 10,
+              borderRadius: 10,
             },
           ],
         }}

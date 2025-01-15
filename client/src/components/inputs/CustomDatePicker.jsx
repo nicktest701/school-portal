@@ -28,6 +28,7 @@ function CustomDatePicker({
           },
         }}
         sx={{ width: "100%", ...style }}
+        
       />
     </LocalizationProvider>
   );

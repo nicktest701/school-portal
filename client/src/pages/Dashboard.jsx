@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
 import Calendar from "react-calendar";
-import { Box, Stack, Typography, Avatar, Container } from "@mui/material";
+import { Box, Stack, Typography, Avatar } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { generateNewCurrentLevelDetailsFromLevels } from "../api/levelAPI";
 import DashboardSwiper from "../components/swiper/DashboardSwiper";
-import CustomParticle from "../components/animations/CustomParticle";
 import Birthday from "../components/items/Birthday";
 import "react-calendar/dist/Calendar.css";
 import "../theme/Calendar.css";
@@ -14,6 +13,8 @@ import CustomCard from "../components/cards/CustomCard";
 import { EMPTY_IMAGES } from "../config/images";
 import CustomEvent from "../components/calendar/CustomEvent";
 import CustomTitle from "../components/custom/CustomTitle";
+import Announcement from "@/components/calendar/Announcement";
+import Event from "@/components/calendar/Event";
 
 const Dashboard = () => {
   const {
@@ -42,15 +43,23 @@ const Dashboard = () => {
     <>
       <Box
         sx={{
+          width: "100%",
           display: "flex",
-          justifyContent: "center",
-          alignItems: "start",
-          overscrollBehaviorInline: "contain",
-          gap: 4,
-          px: 2,
+          justifyContent: "space-between",
+          // alignItems: "start",
+          // overscrollBehaviorInline: "contain",
+          gap: 2,
+          p: 2,
         }}
       >
-        <Container>
+        <Box
+          sx={{
+            flexGrow: 1,
+          }}
+        >
+          <Typography variant="h6" sx={{ color: "primary.main" }}>
+            {session?.academicYear}-{session?.term}
+          </Typography>
           <Box
             sx={{
               width: "100%",
@@ -61,7 +70,11 @@ const Dashboard = () => {
             }}
           >
             <Box>
-              <Typography variant="h4" textAlign="right">
+              <Typography
+                variant="h4"
+                textAlign="right"
+                textTransform="capitalize"
+              >
                 Welcome,{user?.fullname?.split(" ")[0]}!
               </Typography>
               <Typography>Your current dashboard for today!</Typography>
@@ -88,13 +101,6 @@ const Dashboard = () => {
           </Typography> */}
           <DashboardCardsContainer />
 
-          <Typography
-            variant="h6"
-            sx={{ textAlign: "right", color: "primary.main" }}
-          >
-            {session?.academicYear}-{session?.term}
-          </Typography>
-
           {/* <Divider /> */}
           <Box sx={{ pt: 4 }}>
             <div style={{ marginBottom: "24px" }}>
@@ -105,35 +111,42 @@ const Dashboard = () => {
             </div>
             <div style={{ paddingBlock: "24px" }}>
               <Typography variant="h4" paragraph>
-                Event Calendar
+                Event,Announcements & Activities
               </Typography>
               <CustomEvent />
             </div>
           </Box>
-        </Container>
+        </Box>
 
         <Box
           sx={{
-            width: { xs: 0, sm: 250 },
+            width: { xs: 0, sm: 300 },
+            // minWidth: { xs: 0, md: 250 },
             display: { xs: "none", md: "block" },
             transition: "all 0.4s ease-in-out",
             position: "sticky",
             top: 0,
-            height: "100svh",
+            minHeight: "100svh",
           }}
         >
           <Stack spacing={3} height="100%">
             <CustomCard title="Calendar">
               <Calendar onChange={onChange} value={value} />
             </CustomCard>
+            <CustomCard title="Events">
+              <Event />
+            </CustomCard>
             <CustomCard title="Birthday">
               <Birthday />
+            </CustomCard>
+            <CustomCard title="Announcements">
+              <Announcement />
             </CustomCard>
           </Stack>
         </Box>
       </Box>
 
-      <CustomParticle />
+      {/* <CustomParticle /> */}
     </>
   );
 };

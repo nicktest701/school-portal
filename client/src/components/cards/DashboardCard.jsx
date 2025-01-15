@@ -11,7 +11,8 @@ const DashboardCard = ({ title, value, icon }) => {
       sx={{
         position: 'relative',
         borderRadius: 2,
-        boxShadow: '20px 20px 60px #d9d9d9,-20px -20px 60px #ffffff',
+        boxShadow: '20px 20px 60px #d9d9d9',
+        // boxShadow: '20px 20px 60px #d9d9d9,-20px -20px 60px #ffffff',
       }}
       elevation={1}
     >

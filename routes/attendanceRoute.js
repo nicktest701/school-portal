@@ -66,6 +66,7 @@ router.get(
       date,
     });
 
+
     if (_.isEmpty(attendance)) {
       //Select students from the level with this id
       const level = await Level.findById(id).populate({
@@ -74,9 +75,11 @@ router.get(
       });
 
       const students = level.students.map((student) => {
+
         return {
           _id: student?._id,
           fullName: student?.fullName,
+          gender: student?.gender,
           status: '',
         };
       });

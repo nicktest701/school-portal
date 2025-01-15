@@ -23,6 +23,7 @@ import CustomTitle from "../../components/custom/CustomTitle";
 import Back from "../../components/Back";
 import { getTeacher } from "../../api/teacherAPI";
 import TeacherLevels from "./TeacherLevels";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const TeacherAssignLevel = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -141,6 +142,7 @@ const TeacherAssignLevel = () => {
       </Formik>
 
       <TeacherLevels />
+      {isLoading && <LoadingSpinner value="Assigning Level.Please wait..." />}
     </Container>
   );
 };

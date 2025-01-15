@@ -80,11 +80,6 @@ const SchoolSessionProvider = ({ children }) => {
 
     ///fee details to be print
     feePrintData: {},
-
-    editSession: {
-      open: false,
-      data: {},
-    },
     viewLevel: {
       open: false,
       data: {},

@@ -37,6 +37,8 @@ const LevelTab = () => {
   const [openAddCurrentLevel, setOpenAddCurrentLevel] = useState(false);
   //Get Session id
 
+
+  
   const levels = useQuery({
     queryKey: ["levels", session.sessionId, session.termId],
     queryFn: () => getAllLevels(session.sessionId, session.termId),
@@ -59,6 +61,8 @@ const LevelTab = () => {
       return modifiedLevels;
     },
   });
+
+  
 
   const { mutateAsync, isLoading } = useMutation({ mutationFn: deleteLevel });
 

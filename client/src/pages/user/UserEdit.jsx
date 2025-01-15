@@ -25,6 +25,7 @@ import Back from "../../components/Back";
 import CustomTitle from "../../components/custom/CustomTitle";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box } from "@mui/material";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const UserEdit = () => {
   const queryClient = useQueryClient();
@@ -280,6 +281,8 @@ const UserEdit = () => {
                   </DialogActions>
                 </Stack>
               </Box>
+
+              {isLoading && <LoadingSpinner value="Saving Changes..." />}
             </>
           );
         }}

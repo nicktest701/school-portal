@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Drawer, IconButton, Stack } from "@mui/material";
-import { Close, Event, NotificationsSharp } from "@mui/icons-material";
+import { AnnouncementRounded, Close, Event, NotificationsSharp } from "@mui/icons-material";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PropTypes from "prop-types";
 import MiniDrawerItem from "../../components/MiniDrawerItem";
@@ -109,6 +109,7 @@ const HorizontalSidebar = ({ open, setOpen }) => {
         />
 
         <MiniDrawerItem title="Events" icon={<Event />} to="/events" />
+        <MiniDrawerItem title="Announcements" icon={<AnnouncementRounded />} to="/announcements" />
 
         <MiniDrawerItem
           title="Notifications & Activites"

@@ -26,6 +26,7 @@ import { putLevel } from '../../api/levelAPI';
 
 import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
 import { getAllTeachers } from '../../api/teacherAPI';
+import LoadingSpinner from '@/components/spinners/LoadingSpinner';
 
 const EditLevel = () => {
   const queryClient = useQueryClient();
@@ -173,6 +174,8 @@ const EditLevel = () => {
           );
         }}
       </Formik>
+
+      {isLoading && <LoadingSpinner value="Saving Changes..." />}
     </Dialog>
   );
 };

@@ -38,6 +38,7 @@ function NewEvent() {
   const navigate = useNavigate();
   const [type, setType] = useState("");
   const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
   const [description, setDescription] = useState("");
   const [profile, setProfile] = useState(null);
   
@@ -70,6 +71,7 @@ function NewEvent() {
     title,
     description,
     album: profile,
+    caption
   };
 
   const { mutateAsync, isLoading } = useMutation({
@@ -142,6 +144,17 @@ function NewEvent() {
                 onChange={(e) => setTitle(e.target.value)}
                 error={Boolean(touched.title && errors.title)}
                 helperText={touched.title && errors.title}
+              />
+              <TextField
+                label="Event Caption"
+                fullWidth
+                size="small"
+                row={3}
+                maxRows={3}
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                error={Boolean(touched.caption && errors.caption)}
+                helperText={touched.caption && errors.caption}
               />
               <TextEditor
                 label="Description"

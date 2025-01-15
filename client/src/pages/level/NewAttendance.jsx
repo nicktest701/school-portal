@@ -51,6 +51,7 @@ function NewAttendance({ to }) {
     queryFn: () => getAttendance(id, date.format("L")),
     enabled: !!id && !!date,
     onSuccess: (attendance) => {
+      console.log(attendance.status);
       setAllStudents(attendance?.status);
     },
   });
@@ -110,6 +111,8 @@ function NewAttendance({ to }) {
   });
 
   const handleSaveStudentAttendance = (data) => {
+    // console.log(data)
+    // delete data?.tableData;
     const newAttendance = {
       level: id,
       date: date.format("L"),
@@ -202,6 +205,11 @@ function NewAttendance({ to }) {
           {
             field: "fullName",
             title: "FullName",
+            export: true,
+          },
+          {
+            field: "gender",
+            title: "Gender",
             export: true,
           },
           {

@@ -46,7 +46,7 @@ router.post(
     await Notification.create({
       type: 'Event',
       title: newEvent?.title,
-      description: truncateWords(newEvent?.description, 20),
+      description: truncateWords(newEvent?.caption, 20),
       album: newEvent?.album,
       link: `/events/${event._id}`
     })

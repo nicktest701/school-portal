@@ -37,6 +37,7 @@ function EditEvent() {
   const navigate = useNavigate();
   const [type, setType] = useState("");
   const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
   const [description, setDescription] = useState("");
   const [profile, setProfile] = useState(null);
 
@@ -50,6 +51,7 @@ function EditEvent() {
     onSuccess: (event) => {
       setTitle(event?.title);
       setType(event?.type);
+      setCaption(event?.caption);
       setDescription(event?.description);
       setProfile(event?.album);
     },
@@ -91,7 +93,6 @@ function EditEvent() {
   });
 
   const onSubmit = (values) => {
-
     mutateAsync(values, {
       onSettled: () => {
         queryClient.invalidateQueries(["events"]);
@@ -108,7 +109,7 @@ function EditEvent() {
 
   return (
     <Container>
-         <Back to='/events' color="primary.main" />
+      <Back to="/events" color="primary.main" />
       <CustomTitle
         title="New Events"
         subtitle=" Send single and bulk SMS to students and parents"
@@ -159,6 +160,18 @@ function EditEvent() {
                 onChange={(e) => setTitle(e.target.value)}
                 error={Boolean(touched.title && errors.title)}
                 helperText={touched.title && errors.title}
+              />
+
+              <TextField
+                label="Event Caption"
+                fullWidth
+                size="small"
+                row={3}
+                maxRows={3}
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                error={Boolean(touched.caption && errors.caption)}
+                helperText={touched.caption && errors.caption}
               />
               <div
                 style={{

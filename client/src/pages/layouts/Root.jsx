@@ -1,10 +1,18 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Loader from "../../config/Loader";
 import Shell from "../Shell";
 import Login from "../Login";
 import PageNotFound from "../PageNotFound";
+import Announcements from "../announcement";
+import MoreAnnouncements from "../announcement/MoreAnnouncements";
+import MoreEvents from "../events/MoreEvents";
+import { UserContext } from "@/context/providers/UserProvider";
+
+//Session
+const Sessions = lazy(() => import("../session/Sessions"));
+const ViewSession = lazy(() => import("../session/ViewSession"));
 
 const FeePrint = lazy(() => import("../fees/FeePrint"));
 const LevelFeeInformation = lazy(() => import("../fees/LevelFeeInformation"));
@@ -85,6 +93,7 @@ const AssignedCoursesResults = lazy(() =>
 );
 
 const Root = () => {
+  const { user } = useContext(UserContext);
   // useEffect(() => {
   //   if (screenfull.isEnabled) {
   //     screenfull.request();
@@ -103,6 +112,7 @@ const Root = () => {
               </Suspense>
             }
           />
+
           <Route
             element={
               <Suspense fallback={<Loader />}>
@@ -110,7 +120,24 @@ const Root = () => {
               </Suspense>
             }
             path="/session"
-          />
+          >
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <Sessions />
+                </Suspense>
+              }
+              index={true}
+            />
+            <Route
+              element={
+                <Suspense fallback={<Loader />}>
+                  <ViewSession />
+                </Suspense>
+              }
+              path=":id"
+            />
+          </Route>
 
           {/* Class and Subjects */}
           <Route
@@ -534,6 +561,32 @@ const Root = () => {
               }
             />
           </Route>
+          {/* Announcements */}
+          <Route
+            element={
+              <Suspense fallback={<Loader />}>
+                <Announcements />
+              </Suspense>
+            }
+            path="/announcements"
+          >
+            <Route
+              index
+              element={
+                <Suspense fallback={<Loader />}>
+                  <MoreAnnouncements />
+                </Suspense>
+              }
+            />
+            <Route
+              path="new"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <SMSNew />
+                </Suspense>
+              }
+            />
+          </Route>
 
           <Route
             element={
@@ -564,7 +617,11 @@ const Root = () => {
             <Route
               element={
                 <Suspense fallback={<Loader />}>
-                  <EventHome />
+                  {user?.role === "administrator" ? (
+                    <EventHome />
+                  ) : (
+                    <MoreEvents />
+                  )}
                 </Suspense>
               }
               index
@@ -578,6 +635,7 @@ const Root = () => {
               }
               path="new"
             />
+
             <Route
               element={
                 <Suspense fallback={<Loader />}>
@@ -586,6 +644,7 @@ const Root = () => {
               }
               path=":id"
             />
+
             <Route
               element={
                 <Suspense fallback={<Loader />}>

@@ -152,14 +152,6 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         generalAlert: payload,
       };
 
-    case 'editSession':
-      return {
-        ...state,
-        editSession: {
-          open: payload.open,
-          data: payload.data,
-        },
-      };
     case 'viewLevel':
       return {
         ...state,

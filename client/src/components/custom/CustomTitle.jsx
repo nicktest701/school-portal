@@ -1,5 +1,7 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, IconButton } from "@mui/material";
 import React from "react";
+import { ArrowBackRounded } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 import PropTypes from "prop-types";
 
@@ -11,6 +13,9 @@ function CustomTitle({
   icon,
   bgColor,
   color,
+  showBack,
+  to,
+  right,
 }) {
   CustomTitle.propTypes = {
     title: PropTypes.string,
@@ -20,9 +25,12 @@ function CustomTitle({
     img: PropTypes.string,
   };
 
+  const navigate = useNavigate();
+  const goBack = () => navigate(to || -1);
+
   return (
     <>
-      <Box
+      <Stack
         sx={{
           display: "flex",
           flexDirection: { xs: "column-reverse", sm: "row" },
@@ -33,42 +41,61 @@ function CustomTitle({
           px: 2,
           bgcolor: bgColor || "#fff",
         }}
+        gap={2}
+        width="100%"
       >
+        {img ? (
+          <img
+            src={img}
+            style={{
+              width: "40px",
+              height: "40px",
+            }}
+          />
+        ) : (
+          icon
+        )}
         <Stack
-          direction={{ xs: "column", md: "row" }}
-          justifyContent="center"
-          alignItems="center"
-          gap={2}
+          flex="1"
+          // flexDirection={{ xs: "column-reverse" ,md:'column'}}
+          color={color}
+          pl={1}
         >
-          {/* <Back /> */}
-          {img ? (
-            <img
-              src={img}
-              style={{
-                width: "40px",
-                height: "40px",
-              }}
-            />
-          ) : (
-            icon
-          )}
-          <Stack color={color} pl={1}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {showBack && (
+              <Box
+                sx={{
+                  backgroundColor: "transparent",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  my: 1,
+                }}
+              >
+                <IconButton
+                  onClick={goBack}
+                  sx={{ bgcolor: "rgba(1, 46, 84,0.1)" }}
+                >
+                  <ArrowBackRounded sx={{ color: color || "#fff" }} />
+                </IconButton>
+              </Box>
+            )}
             <Typography
+              flex={1}
               color="secondary.main"
               variant={titleVariant || "h4"}
               textAlign={{ xs: "center", md: "left" }}
             >
               {title}
             </Typography>
-            <Typography
-              textAlign={{ xs: "center", md: "left" }}
-              variant="body2"
-            >
-              {subtitle}
-            </Typography>
           </Stack>
+          <Typography textAlign={{ xs: "center", md: "left" }} variant="body2">
+            {subtitle}
+          </Typography>
         </Stack>
-      </Box>
+        {right}
+      </Stack>
+
       {/* <Divider /> */}
     </>
   );
