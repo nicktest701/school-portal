@@ -5,7 +5,7 @@ import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PropTypes from "prop-types";
 import MiniDrawerItem from "../../components/MiniDrawerItem";
 import { UserContext } from "../../context/providers/UserProvider";
-import DrawerItem from "../../components/DrawerItem";
+
 
 const HorizontalSidebar = ({ open, setOpen }) => {
   const { user, logOutUser } = useContext(UserContext);

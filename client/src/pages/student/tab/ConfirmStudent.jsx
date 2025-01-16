@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   ListItemText,
   Stack,

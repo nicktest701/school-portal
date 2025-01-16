@@ -2,7 +2,7 @@ import { Button, Typography } from "@mui/material";
 import { SwiperSlide } from "swiper/react";
 import { useNavigate } from "react-router-dom";
 
-function DashboardSwiperContent({ id, title, content, img }) {
+function DashboardSwiperContent({ id, title, img }) {
   const navigate = useNavigate();
 
   const handleViewEvent = () => {

@@ -7,7 +7,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import LoadingButton from "@mui/lab/LoadingButton";
 import CustomFormControl from "../../../components/inputs/CustomFormControl";
 import { Formik } from "formik";
-import _ from "lodash";
 import { StudentContext } from "../../../context/providers/StudentProvider";
 import { studentPersonalDataValidationSchema } from "../../../config/validationSchema";
 import CustomDatePicker from "../../../components/inputs/CustomDatePicker";

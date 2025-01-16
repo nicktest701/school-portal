@@ -15,7 +15,7 @@ import { v4 as uuid } from "uuid";
 import Swal from "sweetalert2";
 import { useDropzone } from "react-dropzone";
 import _ from "lodash";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import {
@@ -204,7 +204,7 @@ const Uploads = () => {
     mutationFn: putBulkData,
   });
 
-  const onSubmit = (values) => {
+  const onSubmit = () => {
     Swal.fire({
       title: "Importing results",
       text: `You are about to import ${dataCategory} ${dataType}.Proceed with import?`,

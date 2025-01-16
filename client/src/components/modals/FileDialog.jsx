@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   Typography,
-  useTheme,
 } from '@mui/material';
 import _ from 'lodash';
 import Swal from 'sweetalert2';
@@ -30,7 +29,6 @@ function FileDialog() {
 
   //Params
   const { state } = useLocation();
-  const { palette } = useTheme();
   const queryClient = useQueryClient();
   const [columns, setColumns] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

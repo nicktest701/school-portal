@@ -17,7 +17,7 @@ const Error = ({ _error, resetErrorBoundary }) => {
       <Typography variant='h4'>
         Something went wrong.Try again later!
       </Typography>
-      {/* <Typography variant='caption'>{error?.message}</Typography> */}
+      <Typography variant='caption'>{_error?.message}</Typography>
       <Typography variant='caption' textAlign='center'>
         Try checking your internet connection.
       </Typography>

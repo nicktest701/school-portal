@@ -727,7 +727,7 @@ export const EXAMS_COLUMNS = [
   {
     field: "noOfStudents",
     title: "More",
-    render: (rowData) => {
+    render: () => {
       return <Button endIcon={<ArrowForwardRounded />}>View Details</Button>;
     },
   },

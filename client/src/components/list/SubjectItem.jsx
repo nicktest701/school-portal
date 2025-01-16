@@ -52,7 +52,7 @@ const SubjectItem = ({
                 title='Core'
                 checked={isCore}
                 value={isCore}
-                onChange={(e) => handleIsCore(name, !isCore)}
+                onChange={() => handleIsCore(name, !isCore)}
               />
             }
           />

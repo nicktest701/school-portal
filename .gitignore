@@ -27,3 +27,4 @@ playground.js
 
 *.png
 *.pdf
+.cache

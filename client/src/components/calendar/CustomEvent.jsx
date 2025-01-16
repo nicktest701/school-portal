@@ -36,11 +36,11 @@ function CustomEvent() {
     },
   });
 
-  const handleDateSelect = (selectInfo) => {
-    const { start, end } = selectInfo;
-    // console.log("Selected range:", start, end);
-    // Add any other logic you need here, such as updating state or making an API call
-  };
+  // const handleDateSelect = (selectInfo) => {
+  //   // const { start, end } = selectInfo;
+  //   // console.log("Selected range:", start, end);
+  //   // Add any other logic you need here, such as updating state or making an API call
+  // };
   // Handle mouse hover to open popover
   const handleEventMouseEnter = (info) => {
     setAnchorEl(info.el);
@@ -53,7 +53,7 @@ function CustomEvent() {
     setSelectedEvent(null);
   };
 
-  console.log(session);
+
   return (
     <Box
       sx={{
@@ -73,7 +73,7 @@ function CustomEvent() {
         }}
         editable={true}
         selectable={true}
-        select={handleDateSelect}
+        // select={handleDateSelect}
         selectMirror={true}
         dayMaxEvents={true}
         initialDate={moment().format("YYYY-MM-DD")}
@@ -129,14 +129,7 @@ function CustomEvent() {
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleEventMouseLeave}
-        // anchorOrigin={{
-        //   vertical: "bottom",
-        //   horizontal: "center",
-        // }}
-        // transformOrigin={{
-        //   vertical: "top",
-        //   horizontal: "center",
-        // }}
+     
       >
         {selectedEvent && (
           <Typography sx={{ p: 2 }}>

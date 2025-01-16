@@ -12,7 +12,7 @@ import { useErrorBoundary } from "react-error-boundary";
 import DashboardSkeleton from "../skeleton/DashboardSkeleton";
 import { IconButton, Stack, Typography } from "@mui/material";
 import StudentCountChart from "../charts/StudentCountChart";
-import StudentTotalAttendance from "../charts/StudentTotalAttendance";
+// import StudentTotalAttendance from "../charts/StudentTotalAttendance";
 import WeeklyAttendance from "../charts/WeeklyAttendance";
 import WeeklyGenderAttendance from "../charts/WeeklyGenderAttendanceBarChart";
 
