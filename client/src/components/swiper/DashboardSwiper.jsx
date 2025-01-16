@@ -1,8 +1,7 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import React from "react";
-import { Navigation, Pagination, Autoplay, A11y, Scrollbar } from "swiper";
-import { EffectCards } from "swiper";
-import { getAllEvents } from "../../api/eventAPI";
+import { Navigation, Pagination, Autoplay, A11y, Scrollbar,EffectCards } from "swiper/modules";
+import { getAllEvents } from "@/api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
 
 import DashboardSwiperContent from "./DashboardSwiperContent";

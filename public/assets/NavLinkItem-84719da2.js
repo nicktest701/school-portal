@@ -1,1 +1,0 @@
-import{ak as a,j as i,fs as l}from"./index-ce442eb1.js";const p=({to:t,text:o,color:n})=>{const{palette:r}=a(),s=({isActive:e})=>({textDecoration:"none",borderBottom:e?`solid 2px ${r.secondary.main}`:null,color:n||"#012e54",fontWeight:e?"bolder":"400",whiteSpace:"nowrap",fontSize:"14px"});return i.jsx(l,{to:t,style:s,end:!0,children:o})};export{p as N};

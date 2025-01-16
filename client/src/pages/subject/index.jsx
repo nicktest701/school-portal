@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import session_icon from '../../assets/images/header/session_ico.svg';
 import CustomTitle from '../../components/custom/CustomTitle';
 import Grade from './Grade';
-import Subject from './subject';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import Subject from './Subject';
 
 function Subject_Grade() {
   const [tab, setTab] = useState('1');
