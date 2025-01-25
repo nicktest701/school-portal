@@ -1,21 +1,9 @@
 import SchoolIcon from "@mui/icons-material/School";
-import {
-  Badge,
-  Box,
-  Card,
-  CardContent,
-  CircularProgress,
-  Divider,
-  Grid2,
-  IconButton,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
+import { Typography } from "@mui/material";
 import CurrentLevelTab from "./CurrentLevelTab";
 import Back from "../../components/Back";
 import CustomTitle from "../../components/custom/CustomTitle";
 import { useParams } from "react-router-dom";
-
 
 const CurrentLevel = () => {
   const { type } = useParams();
@@ -34,7 +22,6 @@ const CurrentLevel = () => {
           </Typography>
         }
       />
-  
 
       <CurrentLevelTab />
     </>

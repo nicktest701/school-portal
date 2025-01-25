@@ -1,28 +1,17 @@
 import React, { useContext, useState } from "react";
 import _ from "lodash";
-import {
-  Alert,
-  AppBar,
-  Avatar,
-  Badge,
-  Box,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { ArrowDropDown, Menu, NotificationsSharp } from "@mui/icons-material";
+import { Alert, AppBar, Badge, Box, IconButton } from "@mui/material";
+import { Menu, NotificationsSharp } from "@mui/icons-material";
 import GlobalAlert from "@/components/alerts/GlobalAlert";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import QuickMessage from "@/components/modals/QuickMessage";
 import HorizontalSidebar from "./HorizontalSidebar";
 import NotificationDrawer from "@/components/dropdowns/NotificationDrawer";
 import { UserContext } from "@/context/providers/UserProvider";
-import CustomDropdown from "@/components/dropdowns/CustomDropdown";
-import { Link } from "react-router-dom";
 import AccountDropdown from "@/components/dropdowns/AccountDropdown";
 
 function Header() {
-  const { user, notifications } = useContext(UserContext);
+  const { notifications } = useContext(UserContext);
   const [openMiniBar, setOpenMiniBar] = useState(false);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
   const {
@@ -108,21 +97,7 @@ function Header() {
               </Badge>
             </IconButton>
           </div>
-          {/* <Button
-                size="small"
-                startIcon={
-                  <Avatar
-                    src={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                      user?.profile
-                    }`}
-                    sx={{ width: 30, height: 30, cursor: "pointer" }}
-                  />
-                }
-                endIcon={<ArrowDropDown />}
-                onClick={handleOpenUserProfile}
-              >
-                {_.startCase(user?.fullname)}
-              </Button> */}
+
           <AccountDropdown />
         </Box>
       </AppBar>

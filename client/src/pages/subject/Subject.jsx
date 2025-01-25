@@ -52,7 +52,7 @@ function Subject() {
           onSettled: () => {
             queryClient.invalidateQueries(["subjects"]);
           },
-          onSuccess: (data) => {
+          onSuccess: () => {
             schoolSessionDispatch(alertSuccess("Subject Removed!"));
           },
           onError: (error) => {

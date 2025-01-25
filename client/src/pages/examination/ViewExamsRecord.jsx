@@ -16,7 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import { getExams } from '../../api/ExaminationAPI';
 import ExamsItem from '../../components/list/ExamsItem';
-import Report from './Report';
+
 
 const ViewExamsRecord = () => {
   const { palette } = useTheme();

@@ -151,9 +151,6 @@ function Grade() {
         columns={columns}
         data={grades?.data}
         actions={[]}
-        // showRowShadow={true}
-        // handleEdit={handlEditSession}
-        // handleDelete={handleDeleteSession}
         showAddButton={true}
         addButtonImg={EMPTY_IMAGES.session}
         addButtonMessage="😑 No Grading system available!.Create a new one!"

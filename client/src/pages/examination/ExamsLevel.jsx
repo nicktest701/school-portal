@@ -44,7 +44,6 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import exams_icon from "@/assets/images/header/exams_ico.svg";
 import { UserContext } from "@/context/providers/UserProvider";
 import Back from "@/components/Back";
-import DashboardHero from "@/components/DashboardHero";
 import { gradeColor } from "@/config/gradeColor";
 
 const ExamsLevel = ({ type }) => {

@@ -1,6 +1,5 @@
 import * as React from "react";
 import Popover from "@mui/material/Popover";
-import Typography from "@mui/material/Typography";
 import { CheckBoxRounded, HelpOutlineRounded } from "@mui/icons-material";
 import { List, ListItem, ListItemText } from "@mui/material";
 
@@ -37,16 +36,16 @@ export default function GradePopover({ grades = [] }) {
         }}
       >
         <List>
-          {/* <ListItem secondaryAction={<small>Core</small>}>
+          <ListItem>
             <ListItemText
-              primary="Subject"
+              primary="Grading System"
               slotProps={{
                 primary: {
                   fontSize: "12px",
                 },
               }}
             />
-          </ListItem> */}
+          </ListItem>
           {grades?.map((value) => (
             <ListItem
               secondaryAction={value?.isCore ? <CheckBoxRounded /> : null}

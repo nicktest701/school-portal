@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import {
   Alert,
   Avatar,
-  Paper,
   Box,
   Container,
   Stack,
@@ -12,14 +11,14 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import CustomParticle from "../components/animations/CustomParticle";
+
 import { Formik } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import { loginUserValidationSchema } from "../config/validationSchema";
 import { getUserAuth } from "../api/userAPI";
 import { UserContext } from "../context/providers/UserProvider";
 import { useLocation, useNavigate } from "react-router-dom";
-import LoginIcon from "../components/svg/LoginIcon";
+
 
 const Login = () => {
   const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef } from "react";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import Swal from "sweetalert2";
 import { useReactToPrint } from "react-to-print";
@@ -6,7 +6,6 @@ import { useReactToPrint } from "react-to-print";
 import Transition from "@/components/animations/Transition";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
-import _ from "lodash";
 import { useMutation } from "@tanstack/react-query";
 import { UserContext } from "@/context/providers/UserProvider";
 import { publishStudentReport } from "@/api/ExaminationAPI";

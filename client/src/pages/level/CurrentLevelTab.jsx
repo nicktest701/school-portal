@@ -8,13 +8,12 @@ import useLevelById from "@/components/hooks/useLevelById";
 import student_icon from "@/assets/images/header/student_ico.svg";
 import {
   FemaleRounded,
-  HelpOutlineRounded,
   MaleRounded,
   Note,
   NoteAltRounded,
 } from "@mui/icons-material";
 import GroupIcon from "@mui/icons-material/Group";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+
 import { Person, RefreshRounded } from "@mui/icons-material";
 import {
   Badge,
@@ -26,7 +25,6 @@ import {
   Divider,
   Grid2,
   IconButton,
-  LinearProgress,
   Typography,
 } from "@mui/material";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";

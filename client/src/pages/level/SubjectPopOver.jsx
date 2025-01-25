@@ -1,6 +1,5 @@
 import * as React from "react";
 import Popover from "@mui/material/Popover";
-import Typography from "@mui/material/Typography";
 import { CheckBoxRounded, HelpOutlineRounded } from "@mui/icons-material";
 import { List, ListItem, ListItemText } from "@mui/material";
 
@@ -18,13 +17,7 @@ export default function SubjectPopover({ subjects = [] }) {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  function generate(element) {
-    return subjects?.map((value) =>
-      React.cloneElement(element, {
-        key: value,
-      })
-    );
-  }
+
 
   return (
     <>
