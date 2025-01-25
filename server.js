@@ -149,11 +149,11 @@ app.get(
   })
 );
 
-if (process.env.NODE_ENV === 'production') {
-  app.get('/*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
-}
+// if (process.env.NODE_ENV === 'production') {
+//   app.get('/*', function (req, res) {
+//     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+//   });
+// }
 
 //error handlers
 // app.use((req, res, next) => {
