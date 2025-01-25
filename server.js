@@ -49,7 +49,9 @@ const whitelist = [
   "https://44.226.122.3:10000",
   "https://school-portal-aivn.onrender.com",
   "https://school-portal-aivn.onrender.com/*",
-  
+  "https://school-portal-chi.vercel.app/",
+  "https://school-portal-chi.vercel.app/*",
+
   process.env.CLIENT_URL,
 ];
 const corsOptions = {
@@ -186,11 +188,11 @@ db.asPromise()
 
 
 
-  process.on('uncaughtException', (err) => {
-    console.error('Unhandled Exception:', err);
-  });
-  
-  process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection:', reason);
-  });
-  
+process.on('uncaughtException', (err) => {
+  console.error('Unhandled Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection:', reason);
+});
+
