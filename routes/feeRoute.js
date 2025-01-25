@@ -210,7 +210,7 @@ router.delete(
   "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    await Fee.findByIdAndRemove(id);
+    await Fee.findByIdAndDelete(id);
 
     res.status(201).json("Fee has been removed successfully");
   })
@@ -220,7 +220,7 @@ router.delete(
 //   "/:id",
 //   asyncHandler(async (req, res) => {
 //     const id = req.params.id;
-//     await Fee.findByIdAndRemove(id);
+//     await Fee.findByIdAndDelete(id);
 
 //     res.sendStatus(201);
 //   })

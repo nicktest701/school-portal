@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { LoadingButton } from '@mui/lab';
+import React, { useContext, useState } from "react";
+
 import {
   Button,
   Dialog,
@@ -13,41 +13,45 @@ import {
   ListItem,
   Checkbox,
   ListItemText,
-} from '@mui/material';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import _ from 'lodash';
+} from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import _ from "lodash";
 
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 
-import {
-  alertError,
-  alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import LevelSubjectItem from '../../components/items/LevelSubjectItem';
-import useLevel from '../../components/hooks/useLevel';
-import { assignGradeToLevel } from '../../api/levelAPI';
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import LevelItem from "@/components/items/LevelItem";
+import useLevel from "@/components/hooks/useLevel";
+import { assignGradeToLevel } from "@/api/levelAPI";
+import { useSearchParams } from "react-router-dom";
+import { getGrade } from "@/api/gradeAPI";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import Swal from "sweetalert2";
 
 const AssignGrade = () => {
   const {
     schoolSessionState: {
-      assignGrades: {
-        open,
-        data: { name, ratings },
-      },
+      assignGrades: { data },
     },
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
+
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [levels, setLevels] = useState([]);
-
   const [levelList, setLevelList] = useState([]);
-
   const { levelsOption, levelLoading } = useLevel();
+
+  const grade = useQuery({
+    queryKey: ["grade", searchParams.get("grade_id")],
+    queryFn: () => getGrade(searchParams.get("grade_id") || data?._id),
+    enabled: !!searchParams.get("grade_id"),
+  });
 
   const handleAddLevel = () => {
     const newLevels = _.values(
-      _.merge(_.keyBy([...levelList, ...levels], '_id'))
+      _.merge(_.keyBy([...levelList, ...levels], "_id"))
     );
 
     setLevelList(newLevels);
@@ -58,76 +62,90 @@ const AssignGrade = () => {
   const handleRemoveLevel = (searchLevel) => {
     setLevelList((prev) => {
       const filteredLevels = prev.filter(({ type }) => type !== searchLevel);
-
       return filteredLevels;
     });
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: assignGradeToLevel,
   });
 
   const handleSaveLevels = () => {
-    const ids = _.map(levelList, '_id');
+    const ids = _.map(levelList, "_id");
 
     const info = {
-      grade: ratings,
+      grade: searchParams.get("grade_id"),
       levels: ids,
     };
 
-    mutateAsync(info, {
-      onSettled: () => {
-        queryClient.invalidateQueries(['levels']);
-      },
-      onSuccess: (data) => {
-        schoolSessionDispatch(alertSuccess(data));
-        setLevelList([]);
-        handleClose();
-      },
-      onError: (error) => {
-        schoolSessionDispatch(alertError(error));
-      },
+    Swal.fire({
+      title: "Assign Grade",
+      text: "Do yow wish to assign grade to selected Levels?",
+      showCancelButton: true,
+      backdrop: false,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        mutateAsync(info, {
+          onSettled: () => {
+            queryClient.invalidateQueries(["levels"]);
+          },
+          onSuccess: (data) => {
+            schoolSessionDispatch(alertSuccess(data));
+            setLevelList([]);
+            handleClose();
+          },
+          onError: (error) => {
+            schoolSessionDispatch(alertError(error));
+          },
+        });
+      }
     });
   };
 
   const handleClose = () => {
-    schoolSessionDispatch({
-      type: 'assignGrade',
-      payload: { open: false, data: {} },
+    setSearchParams((params) => {
+      params.delete("grade_id");
+
+      return params;
     });
   };
 
   // console.log(levelsOption);
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth>
+    <Dialog
+      open={searchParams.get("grade_id") !== null}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+    >
       <CustomDialogTitle
-        title='Assign Grade'
-        subtitle='Add the selected grading system to your levels'
+        title="Assign Grade"
+        subtitle="Add the selected grading system to your levels"
         onClose={handleClose}
       />
       <DialogContent>
         <Stack spacing={2} paddingY={2}>
-          <Typography variant='h6' color='secondary'>
-            {name}
+          <Typography variant="h6" color="secondary">
+            {grade?.data?.name}
           </Typography>
 
-          <Stack direction='row' spacing={2} alignItems='center'>
+          <Stack direction="row" spacing={2} alignItems="center">
             <Autocomplete
               multiple
               freeSolo
               fullWidth
               defaultValue={[]}
               loading={levelLoading}
-              loadingText='Loading Levels.Please Wait...'
+              loadingText="Loading Levels.Please Wait..."
               options={levelsOption}
               disableCloseOnSelect
-              getOptionLabel={(option) => option?.type || ''}
+              getOptionLabel={(option) => option?.type || ""}
               renderOption={(props, option, state) => {
                 return (
                   <ListItem
                     {...props}
-                    sx={{ display: 'flex', alignItems: 'center' }}
+                    sx={{ display: "flex", alignItems: "center" }}
                   >
                     <Checkbox checked={state?.selected} />
                     <ListItemText primary={option?.type} />
@@ -139,12 +157,12 @@ const AssignGrade = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label='Select Level to assign'
-                  size='small'
+                  label="Select Level to assign"
+                  size="small"
                 />
               )}
             />
-            <Button variant='contained' size='small' onClick={handleAddLevel}>
+            <Button variant="contained" size="small" onClick={handleAddLevel}>
               Add
             </Button>
           </Stack>
@@ -154,7 +172,7 @@ const AssignGrade = () => {
             ) : (
               levelList.map(({ _id, type }) => {
                 return (
-                  <LevelSubjectItem
+                  <LevelItem
                     key={_id}
                     name={type}
                     removeSubject={handleRemoveLevel}
@@ -167,15 +185,18 @@ const AssignGrade = () => {
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton
+        <Button
           disabled={levelList.length === 0}
-          variant='contained'
+          variant="contained"
           onClick={handleSaveLevels}
-          loading={isLoading}
+          loading={isPending}
         >
-          {isLoading ? 'Please wait' : 'Assign Grade'}
-        </LoadingButton>
+          {isPending ? "Please wait" : "Assign Grade"}
+        </Button>
       </DialogActions>
+      {(isPending || grade.isPending) && (
+        <LoadingSpinner value="Please Wait.." />
+      )}
     </Dialog>
   );
 };

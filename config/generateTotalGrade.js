@@ -1,16 +1,25 @@
 const _ = require('lodash');
+const Level = require('../models/levelModel');
 const Subject = require('../models/subjectModel');
 
-module.exports = generateTotalGrade = async (scores, gradeSystem) => {
+module.exports = generateTotalGrade = async (scores, levelId) => {
+  const level = await Level.findById(levelId)
+    .populate({
+      path: 'subjects',
+      match: { isCore: true },
+    })// Populate subjects
+    .populate('grades')   // Populate grades
+
+
   const subjects = await Subject.find({
     isCore: true,
   });
   // console.log(gradeSystem)
 
-  const coreSubjects = _.map(subjects, 'name');
+  const coreSubjects = _.map(level?.subjects, 'name');
   //GET Student Grade
   const allSubjectsGrades = _.map(scores, ({ totalScore, subject }) => {
-    const selected = gradeSystem?.find(
+    const selected = level?.grades?.ratings?.find(
       (grade) =>
         grade?.lowestMark <= totalScore && totalScore <= grade?.highestMark
     );

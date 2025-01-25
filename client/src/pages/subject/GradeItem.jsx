@@ -1,4 +1,4 @@
-import { Close } from '@mui/icons-material';
+import { Close } from "@mui/icons-material";
 
 import {
   Button,
@@ -7,9 +7,9 @@ import {
   ListItem,
   ListItemSecondaryAction,
   Stack,
-} from '@mui/material';
-import React from 'react';
-import { gradeColor } from '../../config/gradeColor';
+} from "@mui/material";
+import React from "react";
+import { gradeColor } from "../../config/gradeColor";
 
 function GradeItem({
   id,
@@ -20,22 +20,18 @@ function GradeItem({
   removeGrade,
 }) {
   return (
-    <ListItem divider>
-      <Stack
-        direction='row'
-        spacing={4}
-        width='80%'
-      >
-        <FormLabel sx={{ width: '15%' }}>{highestMark}</FormLabel>
-        <FormLabel sx={{ width: '15%' }}>-</FormLabel>
-        <FormLabel sx={{ width: '15%' }}>{lowestMark}</FormLabel>
-        <FormLabel sx={{ width: '15%' }}>{grade}</FormLabel>
-        <ListItemSecondaryAction >
+    <ListItem divider >
+      <Stack direction="row" spacing={4} width="80%">
+        <FormLabel sx={{ width: "15%" }}>{highestMark}</FormLabel>
+        <FormLabel sx={{ width: "15%" }}>-</FormLabel>
+        <FormLabel sx={{ width: "15%" }}>{lowestMark}</FormLabel>
+        <FormLabel sx={{ width: "15%" }}>{grade}</FormLabel>
+        <ListItemSecondaryAction>
           <Button
-            size='small'
+            size="small"
             sx={{
               px: 2,
-               mr:4,
+              mr: 4,
               bgcolor: gradeColor(highestMark).bg,
               color: gradeColor(highestMark).color,
             }}

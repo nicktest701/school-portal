@@ -50,7 +50,7 @@ function DashboardCardsContainer() {
     },
   });
 
-  if (info.isLoading) return <DashboardSkeleton />;
+  if (info.isPending) return <DashboardSkeleton />;
 
   return (
     <Stack spacing={3}>

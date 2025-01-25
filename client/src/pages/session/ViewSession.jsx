@@ -58,7 +58,7 @@ const ViewSession = () => {
           </Button>
         }
       />
-      {session?.isLoading ? (
+      {session?.isPending ? (
         <p>Please Wait..</p>
       ) : (
         <>

@@ -1,4 +1,4 @@
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import { Box } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
@@ -38,7 +38,7 @@ function UserAdd() {
   const [initValues] = useState(userInitialValues);
 
   //Post teacher
-  const { mutateAsync, isLoading } = useMutation(postUser);
+  const { mutateAsync, isPending } = useMutation(postUser);
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format("L");
     values.fullname = `${values?.firstname} ${values?.lastname}`;
@@ -294,7 +294,7 @@ function UserAdd() {
                   spacing={2}
                   paddingY={2}
                 >
-                  <LoadingButton
+                  <Button
                     loading={isSubmitting}
                     variant="contained"
                     color="primary"
@@ -302,14 +302,14 @@ function UserAdd() {
                     onClick={handleSubmit}
                   >
                     Save User
-                  </LoadingButton>
+                  </Button>
                 </Stack>
               </Stack>
             </Box>
           );
         }}
       </Formik>
-      {isLoading && <LoadingSpinner value="Creating New User..." />}
+      {isPending && <LoadingSpinner value="Creating New User..." />}
     </>
   );
 }

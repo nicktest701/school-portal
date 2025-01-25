@@ -11,7 +11,7 @@ function ExamsHomeCard({ title, value, icon, color }) {
       sx={{
         bgcolor:'white',
         px: 2,
-        py:4,
+        py:2,
         borderRadius: 2,
         boxShadow: '20px 20px 60px #d9d9d9,-20px -20px 60px #ffffff',
         // borderLeft: `2px solid #012E54`,
@@ -19,8 +19,8 @@ function ExamsHomeCard({ title, value, icon, color }) {
     >
       <Avatar
         sx={{
-          width: 50,
-          height: 50,
+          width: 24,
+          height: 24,
           color: `${color}.dark`,
           bgcolor: `${color}.lighter`,
         }}

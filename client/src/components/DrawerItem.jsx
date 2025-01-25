@@ -42,7 +42,7 @@ const DrawerItem = ({ title, icon, to }) => {
         >
           {icon}
           <Typography
-            variant="body2"
+            variant="caption"
             sx={{
               display: { xs: "block", sm: "none", md: "block" },
               whiteSpace: "noWrap",

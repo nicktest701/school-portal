@@ -85,7 +85,7 @@ const StudentInfo = () => {
       };
     } catch (error) {
       //console.log(error.message);
-    } 
+    }
   }
 
   const getPage = () => {
@@ -132,14 +132,22 @@ const StudentInfo = () => {
               <ArrowBackRounded />
             </IconButton>
           )}
+        </Box>
 
+        <Container
+          sx={{ py: 4, mb: 4, border: "1px solid lightgray", bgcolor: "#fff" }}
+        >
           <ButtonGroup
             variant="contained"
             size="small"
             sx={{
               display: "flex",
-              justifyContent: "flex-end",
+              flexDirection: { xs: "column", md: "row" },
+              justifyContent: "center",
               py: 2,
+              boxShadow: 0,
+              borderRadius: 0,
+              gap: { xs: 1, md: 0 },
             }}
           >
             <Button onClick={handleDownloadTemplate}>
@@ -188,11 +196,6 @@ const StudentInfo = () => {
               Student From Previous Sessions
             </Button>
           </ButtonGroup>
-        </Box>
-
-        <Container
-          sx={{ py: 4, mb: 4, border: "1px solid lightgray", bgcolor: "#fff" }}
-        >
           {mode === "personal-info" && (
             <PersonalInformation mode={mode} setMode={setMode} />
           )}

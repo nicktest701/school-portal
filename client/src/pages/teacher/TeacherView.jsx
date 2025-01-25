@@ -54,7 +54,7 @@ const TeacherView = () => {
 
   //DELETE Teacher Info
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: deleteTeacher,
   });
 
@@ -198,7 +198,7 @@ const TeacherView = () => {
           </Box>
         </Box>
       </Container>
-      {isLoading && <LoadingSpinner value="Removing Facilitator Information" />}
+      {isPending && <LoadingSpinner value="Removing Facilitator Information" />}
     </>
   );
 };

@@ -29,6 +29,7 @@ function ExamsScoreList({ details }) {
       render: ({ totalScore, remarks }) => {
         return (
           <Button
+            size="small"
             sx={{
               width: "100%",
               color: gradeColor(totalScore).color,

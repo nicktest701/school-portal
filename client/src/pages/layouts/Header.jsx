@@ -19,6 +19,7 @@ import NotificationDrawer from "@/components/dropdowns/NotificationDrawer";
 import { UserContext } from "@/context/providers/UserProvider";
 import CustomDropdown from "@/components/dropdowns/CustomDropdown";
 import { Link } from "react-router-dom";
+import AccountDropdown from "@/components/dropdowns/AccountDropdown";
 
 function Header() {
   const { user, notifications } = useContext(UserContext);
@@ -122,27 +123,7 @@ function Header() {
               >
                 {_.startCase(user?.fullname)}
               </Button> */}
-          <CustomDropdown
-            titleContent={
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Avatar
-                  src={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                    user?.profile
-                  }`}
-                  sx={{ width: 30, height: 30, cursor: "pointer" }}
-                />
-                <Typography> {_.startCase(user?.fullname)}</Typography>
-                <ArrowDropDown />
-              </Stack>
-            }
-          >
-            <li>
-              <Link to="/profile">Profile</Link>
-            </li>
-            <li>
-              <Link to="/profile">Log Out</Link>
-            </li>
-          </CustomDropdown>
+          <AccountDropdown />
         </Box>
       </AppBar>
     </>

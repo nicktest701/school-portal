@@ -8,6 +8,14 @@ const EventSchema = new mongoose.Schema(
     caption: String,
     description: String,
     album: String,
+    session: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Session',
+    },
+    term: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Term',
+    },
     active: {
       type: Boolean,
       default: true,

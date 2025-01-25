@@ -12,21 +12,17 @@ import {
 import _ from "lodash";
 import { Formik } from "formik";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoadingButton } from "@mui/lab";
-
-import { updateExams } from "../../api/ExaminationAPI";
-import { examsScoreValidationSchema } from "../../config/validationSchema";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import ExamsScoreItem from "../../components/list/ExamsScoreItem";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { generateCustomGrade } from "../../config/generateCustomGrade";
+import { updateExams } from "@/api/ExaminationAPI";
+import { examsScoreValidationSchema } from "@/config/validationSchema";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { generateCustomGrade } from "@/config/generateCustomGrade";
 import { useParams, useSearchParams } from "react-router-dom";
-import { UserContext } from "../../context/providers/UserProvider";
+import { UserContext } from "@/context/providers/UserProvider";
+import useLevelById from "@/components/hooks/useLevelById";
+import ExamsScoreTable from "@/components/tables/ExamsScoreTable";
 
-const ExamsScoreInput = ({ setTab, options }) => {
+const ExamsScoreInput = ({ setTab }) => {
   const {
     userState: { session },
   } = useContext(UserContext);
@@ -42,47 +38,36 @@ const ExamsScoreInput = ({ setTab, options }) => {
 
   const [scoreList, setScoreList] = useState([]);
 
+  const { gradeSystem, subjects } = useLevelById(levelId);
+
   const initialValues = {
-    subject: "",
+    subject: {
+      _id: "",
+      name: "",
+    },
     classScore: 0,
     examsScore: 0,
   };
 
-  const title = {
-    subject: "Subject",
-    classScore: "Class",
-    examsScore: "Exams",
-    totalScore: "Total",
-    grade: "Grade",
-    remarks: "Remarks",
-  };
-
   const onSubmit = (values, option) => {
     const total = Number(values.classScore) + Number(values.examsScore);
-    const summary = generateCustomGrade(total, options?.grades);
+
+    const summary = generateCustomGrade(total, gradeSystem?.ratings);
 
     const score = {
-      ...values,
+      _id: values?.subject?._id,
+      subject: values?.subject?.name,
+      classScore: values.classScore,
+      examsScore: values.examsScore,
       ...summary,
     };
-    const filteredScoreList = _.merge(
-      _.keyBy([...scoreList, score], "subject")
-    );
+
+    const filteredScoreList = _.merge(_.keyBy([...scoreList, score], "_id"));
     setScoreList(_.values(filteredScoreList));
     option.resetForm();
   };
 
-  //Remove Subject from Score List
-  const handleRemoveSubject = (searchSubject) => {
-    setScoreList((prev) => {
-      const filteredScoreList = prev.filter(
-        ({ subject }) => subject !== searchSubject
-      );
-      return filteredScoreList;
-    });
-  };
-
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: updateExams,
   });
 
@@ -100,11 +85,7 @@ const ExamsScoreInput = ({ setTab, options }) => {
 
     mutateAsync(data, {
       onSettled: () => {
-        queryClient.invalidateQueries(["student-records"]);
-        queryClient.invalidateQueries(["exams-scores"]);
-        queryClient.invalidateQueries(["exams-details"]);
-        queryClient.invalidateQueries(["exams-reports"]);
-        queryClient.invalidateQueries(["exams-by-id"]);
+        queryClient.invalidateQueries(["exams-by-id", searchParams.get("eid")]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -135,6 +116,8 @@ const ExamsScoreInput = ({ setTab, options }) => {
         values,
         errors,
         touched,
+        isValid,
+        dirty,
         handleChange,
         handleSubmit,
         setFieldValue,
@@ -156,16 +139,32 @@ const ExamsScoreInput = ({ setTab, options }) => {
                 {msgs.text}
               </Alert>
             )}
-            < >
-              <Grid container spacing={2} rowGap={2} sx={{minHeight:'60svh'}}>
+            <>
+              <Stack spacing={2} direction="row" justifyContent="flex-end">
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button
+                  variant="contained"
+                  disabled={scoreList.length === 0}
+                  onClick={handleSaveResults}
+                  loading={isPending}
+                >
+                  Save Results
+                </Button>
+              </Stack>
+              <Grid
+                container
+                spacing={2}
+                rowGap={2}
+                sx={{ minHeight: "60svh" }}
+              >
                 <Grid item xs={12} md={5} padding={2}>
                   <Stack spacing={2} py={2}>
                     <Typography>Add Subject Score</Typography>
                     <Autocomplete
-                      freeSolo
-                      options={options?.subjects}
+                      // freeSolo
+                      options={subjects}
                       loadingText="Loading Subjects.Please Wait..."
-                      getOptionLabel={(option) => option || ""}
+                      getOptionLabel={(option) => option?.name || ""}
                       value={values.subject}
                       onChange={(e, value) => setFieldValue("subject", value)}
                       renderInput={(params) => (
@@ -196,37 +195,23 @@ const ExamsScoreInput = ({ setTab, options }) => {
                       error={Boolean(errors.examsScore)}
                       helperText={touched.examsScore && errors.examsScore}
                     />
-                    <Button variant="contained" onClick={handleSubmit}>
+                    <Button
+                      variant="contained"
+                      onClick={handleSubmit}
+                      disabled={!isValid || !dirty}
+                    >
                       Add Score
                     </Button>
                   </Stack>
                 </Grid>
                 <Grid item xs={12} md={7} padding={2}>
-                <Typography>Scores Preview</Typography>
-                  <ExamsScoreItem item={title} title={true} />
-                  <List sx={{ maxHeight: 300, overflowY: "scroll" }}>
-                    {scoreList.map((item) => (
-                      <ExamsScoreItem
-                        key={item.subject}
-                        item={item}
-                        removeSubject={handleRemoveSubject}
-                      />
-                    ))}
-                  </List>
+                  <Typography>Scores Preview</Typography>
+                  <ExamsScoreTable
+                    data={scoreList || []}
+                    setData={setScoreList}
+                  />
                 </Grid>
               </Grid>
-
-              <Stack spacing={2} direction="row" justifyContent="flex-end">
-                <Button onClick={handleClose}>Cancel</Button>
-                <LoadingButton
-                  variant="contained"
-                  disabled={scoreList.length === 0}
-                  onClick={handleSaveResults}
-                  loading={isLoading}
-                >
-                  Save Results
-                </LoadingButton>
-              </Stack>
             </>
           </>
         );

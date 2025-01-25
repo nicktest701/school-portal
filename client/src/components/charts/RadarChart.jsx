@@ -7,10 +7,11 @@ const RadarChart = ({ values, labels }) => {
 
   return (
     <Box
-      sx={{
-        minWidth: 200,
-        height: 200,
-      }}
+    sx={{
+      minWidth: 100,
+      width: "100%",
+      height: 200,
+    }}
     >
       <Radar
         datasetIdKey='id'

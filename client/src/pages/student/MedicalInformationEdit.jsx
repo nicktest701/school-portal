@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
+import Button from "@mui/material/Button";
 import { Formik } from 'formik';
 import { Dialog, DialogContent, TextField } from '@mui/material';
 import { SaveAs } from '@mui/icons-material';
@@ -24,7 +24,7 @@ const MedicalInformationEdit = ({ medical }) => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: updateStudentMedicalHistory,
   });
   const onSubmit = (values, options) => {
@@ -76,15 +76,15 @@ const MedicalInformationEdit = ({ medical }) => {
             return (
               <Stack padding={2} spacing={1}>
                 <Stack direction='row' justifyContent='flex-end' spacing={2}>
-                  <LoadingButton
-                    loading={isSubmitting || isLoading}
+                  <Button
+                    loading={isSubmitting || isPending}
                     variant='contained'
                     color='primary'
                     onClick={handleSubmit}
                     endIcon={<SaveAs />}
                   >
                     Save Changes
-                  </LoadingButton>
+                  </Button>
                 </Stack>
                 {/* <Typography
                   variant='body2'

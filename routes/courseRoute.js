@@ -204,7 +204,7 @@ router.delete(
   '/:id',
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    await Course.findByIdAndRemove(id);
+    await Course.findByIdAndDelete(id);
 
     res.send(204).send('Course Removed!');
   })

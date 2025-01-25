@@ -5,10 +5,10 @@ import {
   MenuItem,
   Autocomplete,
   Dialog,
-  DialogContent,
+  DialogContent,Button
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { LoadingButton } from '@mui/lab';
+
 import CustomFormControl from '../../../components/inputs/CustomFormControl';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Formik } from 'formik';
@@ -250,7 +250,7 @@ const ParentEdit = () => {
                     spacing={2}
                     paddingY={4}
                   >
-                    <LoadingButton
+                    <Button
                       loading={isSubmitting}
                       variant='contained'
                       color='primary'
@@ -258,7 +258,7 @@ const ParentEdit = () => {
                       onClick={handleSubmit}
                     >
                       Save Changes
-                    </LoadingButton>
+                    </Button>
                   </Stack>
                 </Stack>
               );

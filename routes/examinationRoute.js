@@ -81,8 +81,11 @@ router.get(
       ),
     };
 
+    const levelDetails = await Level.findById(levelId);
+
+
     //FIND Numnber of subjects
-    const noOfSubjects = students[0]?.level?.subjects?.length ?? 0;
+    const noOfSubjects = levelDetails?.subjects?.length ?? 0;
     //Calculate cumulative marks
     let passMark = (noOfSubjects * 100) / 2;
 
@@ -98,6 +101,22 @@ router.get(
     });
     examsDetails.passStudents = studentsAboveAverage.length ?? 0;
     examsDetails.failStudents = studentsBelowAverage.length ?? 0;
+
+    //is Results complete
+    const totalTargetResults = Number(noOfSubjects) * students?.length
+    const completedResults = _.sumBy(students, (student) => student?.scores?.length)
+    const resultsComplete = parseInt(
+      Number(completedResults / totalTargetResults) * 100
+    )
+
+
+    //is Results complete
+    const totalOverallScore = _.sumBy(students, 'overallScore') ?? 0
+    const totalExpectedScore = Number(noOfSubjects) * 100
+    const scorePercentage = parseInt(
+      Number(totalOverallScore / totalExpectedScore) * 100
+    )
+
 
     const selectedStudents = students.map(
       ({ _id, student, level, scores, overallScore }) => {
@@ -122,9 +141,13 @@ router.get(
       }
     );
 
+
     res.status(200).json({
       ...examsDetails,
       students: selectedStudents,
+      resultsCompleted: resultsComplete,
+      scorePercentage
+
     });
   })
 );
@@ -164,7 +187,7 @@ router.get(
         report;
 
       //GET Student Grade
-      const grade = await generateTotalGrade(scores, level?.grades);
+      const grade = await generateTotalGrade(scores, level?._id);
 
       //GET student position
       const positions = getPosition(allStudentsOverallScore);
@@ -288,7 +311,7 @@ router.get(
         // STUDENT_PHOTO = await ImageToBase64(url, 'image/png');
 
         //GET Student Grade
-        const grade = await generateTotalGrade(scores, level?.grades);
+        const grade = await generateTotalGrade(scores, level?._id);
 
         //GET student position
         const positions = getPosition(allStudentsOverallScore);
@@ -411,15 +434,22 @@ router.get(
     }).select('overallScore');
 
     //GET Student Grade
-    const grade = await generateTotalGrade(scores, level?.grades);
+    const grade = await generateTotalGrade(scores, level?._id);
 
     //GET student position
     const positions = getPosition(allStudentsOverallScore);
+
 
     const position =
       positions.find((exams) => {
         return exams._id.toString() === _id.toString();
       }).position || '';
+
+    const expectedScore = level.subjects?.length * 100;
+    const scorePercentage = parseInt(
+      Number(overallScore / expectedScore) * 100
+    )
+
 
     const modifiedStudentRecord = {
       _id,
@@ -428,7 +458,6 @@ router.get(
       vacationDate: term.vacationDate,
       reOpeningDate: term.reOpeningDate,
       rollNumber: level.students?.length,
-      // rollNumber: level.rollNumber,
       totalLevelAttendance: level.attendance,
       profile: student?.profile ? student?.profile : '',
       indexnumber: student?.indexnumber,
@@ -444,12 +473,15 @@ router.get(
       grade,
       overallScore,
       comments,
+      scorePercentage,
       entry: {
         completed: scores?.length || 0,
         total: level?.subjects?.length || 0,
         percent: parseInt(
           Number(scores?.length / level?.subjects?.length) * 100
         ),
+        bestScoreSubject: _.maxBy(scores, 'totalScore'),
+        worstScoreSubject: _.minBy(scores, 'totalScore'),
       },
     };
 
@@ -477,13 +509,13 @@ router.get(
           course !== undefined
             ? course
             : {
-                subject,
-                classScore: '',
-                examsScore: '',
-                totalScore: '',
-                grade: '',
-                remarks: '',
-              },
+              subject,
+              classScore: '',
+              examsScore: '',
+              totalScore: '',
+              grade: '',
+              remarks: '',
+            },
       };
     });
 
@@ -543,7 +575,7 @@ router.post(
           report;
 
         //GET Student Grade
-        const grade = await generateTotalGrade(scores, level?.grades);
+        const grade = await generateTotalGrade(scores, level?._id);
 
         //GET student position
         const positions = getPosition(allStudentsOverallScore);
@@ -673,7 +705,7 @@ router.post(
       studentRecord;
 
     //GET Student Grade
-    const grade = await generateTotalGrade(scores, level?.grades);
+    const grade = await generateTotalGrade(scores, level?._id);
 
     //GET student position
     const positions = getPosition(allStudentsOverallScore);
@@ -880,7 +912,7 @@ router.post(
     });
 
     if (_.isEmpty(examsInfo)) {
-      const overallScore = _.sumBy(scores, 'totalScore');
+      const overallScore = _.sumBy(scores, (score) => Number(score?.totalScore));
       const comments = generateRemarks(overallScore);
 
       await Examination.create({
@@ -901,12 +933,12 @@ router.post(
 
     // Merge scores with  with same subjects
     const newScores = _.merge(
-      _.keyBy([...examsInfo?.scores, ...scores], 'subject')
+      _.keyBy([...examsInfo?.scores, ...scores], '_id')
     );
 
     const latestScores = _.values(newScores);
 
-    const overallScore = _.sumBy(latestScores, 'totalScore');
+    const overallScore = _.sumBy(latestScores, (score) => Number(score?.totalScore));
     const comments = generateRemarks(overallScore);
 
     await Examination.findByIdAndUpdate(
@@ -959,7 +991,7 @@ router.put(
 
 router.delete(
   '/',
-  asyncHandler(async (req, res) => {})
+  asyncHandler(async (req, res) => { })
 );
 
 module.exports = router;

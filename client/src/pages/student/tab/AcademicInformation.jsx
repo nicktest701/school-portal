@@ -4,7 +4,6 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
-import LoadingButton from "@mui/lab/LoadingButton";
 import CustomFormControl from "../../../components/inputs/CustomFormControl";
 import { Formik } from "formik";
 import { StudentContext } from "../../../context/providers/StudentProvider";
@@ -91,7 +90,7 @@ const AcademicInformation = ({ setMode }) => {
           return (
             <Stack py={2} spacing={1}>
               <Stack direction="row" justifyContent="flex-end" spacing={2}>
-                <LoadingButton
+                <Button
                   loading={isSubmitting}
                   variant="contained"
                   color="primary"
@@ -99,7 +98,7 @@ const AcademicInformation = ({ setMode }) => {
                   endIcon={<ArrowForward />}
                 >
                   Continue
-                </LoadingButton>
+                </Button>
               </Stack>
               <Typography
                 variant="h5"

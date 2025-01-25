@@ -7,7 +7,7 @@ import {
   Autocomplete,
   Avatar,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import { Formik } from "formik";
 import CustomFormControl from "../../../components/inputs/CustomFormControl";
 import { StudentContext } from "../../../context/providers/StudentProvider";
@@ -486,14 +486,14 @@ const ParentInfo = ({ setMode }) => {
             </div>
 
             <Stack direction="row" justifyContent="flex-end" spacing={2}>
-              <LoadingButton
+              <Button
                 loading={isSubmitting}
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
               >
                 Save & Continue
-              </LoadingButton>
+              </Button>
             </Stack>
           </Stack>
         );

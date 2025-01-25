@@ -1,5 +1,5 @@
 import PivotTableChartRounded from "@mui/icons-material/PivotTableChartRounded";
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
@@ -9,7 +9,15 @@ const StudentDashboardPieChart = ({ females, males }) => {
   const { palette } = useTheme();
   return (
     <Card elevation={1}>
-      <CardHeader avatar={<PivotTableChartRounded />} title="Males & Females" />
+      <CardHeader
+        avatar={<PivotTableChartRounded />}
+        title="Males & Females"
+        subheader={
+          <Typography fontSize={12} fontStyle="italic">
+            Total number of males and females.
+          </Typography>
+        }
+      />
       <CardContent>
         <Box
           sx={{
@@ -63,6 +71,18 @@ const StudentDashboardPieChart = ({ females, males }) => {
                 legend: {
                   // display: false,
                   position: "bottom",
+                },
+                datalabels: {
+                  display: true,
+                  color: "white",
+                  anchor: "center",
+                  align: "end",
+                  font: {
+                    size: "14px",
+                  },
+                  backgroundColor: "#000",
+                  // borderRadius:'40px',
+                  formatter: (value) => value, // Display the data value directly
                 },
               },
             }}

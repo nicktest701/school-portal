@@ -1,11 +1,11 @@
 import React from "react";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { EXAMS_COLUMNS } from "../../mockup/columns/sessionColumns";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { EXAMS_COLUMNS } from "@/mockup/columns/sessionColumns";
 import { useNavigate } from "react-router-dom";
-import useLevel from "../../components/hooks/useLevel";
-import exams_icon from "../../assets/images/header/exams_ico.svg";
-import { EMPTY_IMAGES } from "../../config/images";
-import CustomTitle from "../../components/custom/CustomTitle";
+import useLevel from "@/components/hooks/useLevel";
+import exams_icon from "@/assets/images/header/exams_ico.svg";
+import { EMPTY_IMAGES } from "@/config/images";
+import CustomTitle from "@/components/custom/CustomTitle";
 
 const ExamsHome = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const ExamsHome = () => {
         title="Current Levels"
         search
         icon={exams_icon}
-        isLoading={levelLoading}
+        isPending={levelLoading}
         columns={EXAMS_COLUMNS}
         data={levelsOption !== undefined ? levelsOption : []}
         actions={[]}

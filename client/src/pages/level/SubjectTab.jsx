@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { Add, CheckCircleRounded } from "@mui/icons-material";
 import {
   Alert,
@@ -7,19 +7,15 @@ import {
   Link,
   Stack,
   Typography,
-  useTheme,
 } from "@mui/material";
 import _ from "lodash";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import CustomizedTable from "../../components/tables/CustomizedTable";
-import { deleteSubject, getAllSubjects } from "../../api/subjectAPI";
-import AddSubject from "../../components/modals/AddSubject";
-import { SCHOOl_SUBJECTS } from "../../mockup/columns/sessionColumns";
+import CustomizedTable from "@/components/tables/CustomizedTable";
+import { deleteSubject, getAllSubjects } from "@/api/subjectAPI";
+import AddSubject from "@/components/modals/AddSubject";
+import { SCHOOl_SUBJECTS } from "@/mockup/columns/sessionColumns";
 const SubjectTab = () => {
-  const {
-    palette: { primary },
-  } = useTheme();
   const queryClient = useQueryClient();
   const [openAddSubject, setOpenAddSubject] = useState(false);
 
@@ -28,9 +24,12 @@ const SubjectTab = () => {
     text: "",
   });
 
-  const subjects = useQuery(["subject"], () => getAllSubjects());
+  const subjects = useQuery({
+    queryKey: ["subject"],
+    queryFn: getAllSubjects,
+  });
 
-  const { mutateAsync } = useMutation(deleteSubject);
+  const { mutateAsync } = useMutation({ mutationFn: deleteSubject });
 
   const handleDeleteLevel = (id) => {
     Swal.fire({

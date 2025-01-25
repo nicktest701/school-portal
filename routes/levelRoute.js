@@ -51,7 +51,9 @@ router.get(
     }).populate({
       path: 'students',
       match: { active: true },
-    });
+    }).populate('subjects') // Populate subjects
+      .populate('grades')   // Populate grades
+
 
 
 
@@ -60,6 +62,8 @@ router.get(
         LEVEL_OPTIONS.indexOf(a?.level?.name) -
         LEVEL_OPTIONS.indexOf(b?.level?.name)
     );
+
+    // console.log(levels)
 
     res.status(200).json(modifiedLevels);
   })
@@ -217,7 +221,8 @@ router.get(
     const level = await Level.findById(id).populate({
       path: 'students',
       match: { active: true },
-    });
+    }).populate('subjects') // Populate subjects
+      .populate('grades')   // Populate grades
 
     if (level.students?.length !== 0) {
       const modifiedStudents = level?.students.map((student) => {
@@ -259,7 +264,12 @@ router.get(
   '/:id',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const levels = await Level.findById(id);
+    const levels = await Level.findById(id)
+      .populate('subjects') // Populate subjects
+      .populate('grades')   // Populate grades
+
+
+    console.log(levels)
     res.status(200).json(levels);
   })
 );
@@ -447,7 +457,7 @@ router.put(
       },
       {
         $set: {
-          grades: grade,
+          grades: new ObjectId(grade),
         },
       },
       {
@@ -467,7 +477,7 @@ router.delete(
   '/',
   asyncHandler(async (req, res) => {
     const { sessionId, termId, id } = req.query;
-    const deletedLevel = await Level.findByIdAndRemove(id);
+    const deletedLevel = await Level.findByIdAndDelete(id);
 
     if (_.isEmpty(deletedLevel)) {
       return res.status(404).json('Error removing level info.Try again later');
@@ -525,7 +535,7 @@ router.get(
 //   "/",
 //   asyncHandler(async (req, res) => {
 //     const { sessionId, termId, id } = req.query;
-//     const deletedLevel = await Level.findByIdAndRemove(id);
+//     const deletedLevel = await Level.findByIdAndDelete(id);
 
 //     if (_.isEmpty(deletedLevel)) {
 //       return res.status(404).json("Error removing level info.Try again later");
@@ -569,7 +579,7 @@ router.put(
   asyncHandler(async (req, res) => {
     const { levelId, subjects } = req.body;
     const newSubjects = await Level.findByIdAndUpdate(levelId, {
-      subjects,
+      subjects: _.map(subjects, (subject) => new ObjectId(subject)),
     });
     if (_.isEmpty(newSubjects)) {
       return res

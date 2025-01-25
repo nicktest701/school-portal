@@ -6,11 +6,11 @@ import {
   DialogActions,
   TextField,
   Autocomplete,
+  Button
 } from "@mui/material";
 import _ from "lodash";
 import { Formik } from "formik";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LoadingButton } from "@mui/lab";
 import {
   LEVEL_OPTIONS,
   LEVEL_TYPE_OPTIONS,
@@ -55,7 +55,7 @@ const AddLevel = ({ open, setOpen }) => {
   });
 
   //ADD New Level
-  const { mutateAsync, isLoading } = useMutation({ mutationFn: postLevel });
+  const { mutateAsync, isPending } = useMutation({ mutationFn: postLevel });
 
   const onSubmit = (values, options) => {
     const newType = `${values.level}${values.type}`;
@@ -136,7 +136,7 @@ const AddLevel = ({ open, setOpen }) => {
                   />
                   <Autocomplete
                     options={teachers?.data}
-                    loading={teachers.isLoading}
+                    loading={teachers.isPending}
                     getOptionLabel={(option) => option?.fullName || ""}
                     value={values?.teacher}
                     onChange={(e, value) => setFieldValue("teacher", value)}
@@ -151,20 +151,20 @@ const AddLevel = ({ open, setOpen }) => {
                 </Stack>
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
-                <LoadingButton
-                  loading={isLoading}
+                <Button
+                  loading={isPending}
                   variant="contained"
                   onClick={handleSubmit}
                 >
                   Add Level
-                </LoadingButton>
+                </Button>
               </DialogActions>
             </>
           );
         }}
       </Formik>
 
-      {isLoading && <LoadingSpinner value="Creating New Level. Please wait..." />}
+      {isPending && <LoadingSpinner value="Creating New Level. Please wait..." />}
     </Dialog>
   );
 };

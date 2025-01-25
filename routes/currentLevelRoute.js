@@ -240,7 +240,7 @@ router.delete(
   "/",
   asyncHandler(async (req, res) => {
     const _id = req.query._id;
-    await CurrentLevel.findByIdAndRemove(_id);
+    await CurrentLevel.findByIdAndDelete(_id);
 
     res.sendStatus(201);
   })

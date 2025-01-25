@@ -13,7 +13,7 @@ import {
 import moment from 'moment';
 import { Formik } from 'formik';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import LoadingButton from '@mui/lab/LoadingButton';
+import Button from "@mui/material/Button";
 import { postTerm } from '../../api/termAPI';
 import { sessionValidationSchema } from '../../config/validationSchema';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
@@ -150,13 +150,13 @@ const AddSchoolSession = ({ open, setOpen }) => {
                 </Stack>
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
-                <LoadingButton
+                <Button
                   loading={isSubmitting}
                   variant='contained'
                   onClick={handleSubmit}
                 >
                   Save
-                </LoadingButton>
+                </Button>
               </DialogActions>
             </>
           );

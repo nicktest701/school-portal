@@ -30,7 +30,7 @@ function CustomizedMaterialTable({
   title,
   subtitle,
   exportFileName,
-  isLoading,
+  isPending,
   search,
   style,
   columns,
@@ -92,8 +92,20 @@ function CustomizedMaterialTable({
     }
   }
 
-  if (isLoading) {
+  if (isPending) {
     return <TableSkeleton />;
+  }
+
+  if (data && data?.length === 0) {
+    return (
+      <EmptyDataContainer
+        img={addButtonImg}
+        message={addButtonMessage}
+        buttonText={addButtonText}
+        onClick={onAddButtonClicked}
+        showAddButton={showAddButton}
+      />
+    );
   }
 
   return (
@@ -103,13 +115,13 @@ function CustomizedMaterialTable({
       sx={{
         borderRadius: 0,
         paddingBlock: "16px",
-        width: { xs: "85svw", md: "100%" },
+        width: { xs: "100%", md: "95%", lg: "100%" },
         marginInline: "auto",
         py: 4,
       }}
     >
       <MaterialTable
-        isLoading={isLoading}
+        isLoading={isPending}
         icons={tableIcons}
         columns={modifiedColumns}
         data={data === undefined ? [] : data}
@@ -172,7 +184,7 @@ function CustomizedMaterialTable({
           minHeight: "60svh",
           marginInline: "auto",
           // boxShadow: "0 2px 3px rgba(0,0,0,0.1)",
-          borderRadius: 2,
+          borderRadius: "12px",
           ...style,
         }}
         actions={[
@@ -284,11 +296,11 @@ function CustomizedMaterialTable({
         }}
         localization={{
           body: {
-            emptyDataSourceMessage: isLoading ? (
+            emptyDataSourceMessage: isPending ? (
               <Typography>Please Wait...</Typography>
             ) : (
               <>
-                {data && data?.length == 0 && (
+                {data && data?.length === 0 && (
                   <EmptyDataContainer
                     img={addButtonImg}
                     message={addButtonMessage}
@@ -302,14 +314,14 @@ function CustomizedMaterialTable({
           },
         }}
       />
-      {/* {isLoading && <LoadingSpinner />} */}
+      {/* {isPending && <LoadingSpinner />} */}
     </Box>
     // </AnimatedContainer>
   );
 }
 CustomizedMaterialTable.propTypes = {
   icon: PropTypes.node,
-  isLoading: PropTypes.bool,
+  isPending: PropTypes.bool,
   search: PropTypes.bool,
   showAddButton: PropTypes.bool,
   title: PropTypes.string,

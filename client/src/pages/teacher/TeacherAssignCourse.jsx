@@ -1,14 +1,13 @@
 import React, { useContext, useState } from "react";
 import {
   Autocomplete,
-  Button,
   Container,
   DialogActions,
   Box,
   Stack,
   TextField,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Formik } from "formik";
@@ -53,7 +52,7 @@ const TeacherAssignCourse = () => {
 
   const { id } = useParams();
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postCourse,
   });
 
@@ -166,8 +165,8 @@ const TeacherAssignCourse = () => {
                 </Stack>
                 <DialogActions>
                   <Button onClick={handleReset}>Cancel</Button>
-                  <LoadingButton
-                    loading={isLoading}
+                  <Button
+                    loading={isPending}
                     variant="contained"
                     onClick={handleSubmit}
                     disabled={
@@ -175,7 +174,7 @@ const TeacherAssignCourse = () => {
                     }
                   >
                     Assign Course
-                  </LoadingButton>
+                  </Button>
                 </DialogActions>
               </Box>
             </>
@@ -183,7 +182,7 @@ const TeacherAssignCourse = () => {
         }}
       </Formik>
       <TeacherCourses />
-      {isLoading && <LoadingSpinner value="Assigning Course.Please wait..." />}
+      {isPending && <LoadingSpinner value="Assigning Course.Please wait..." />}
     </Container>
   );
 };

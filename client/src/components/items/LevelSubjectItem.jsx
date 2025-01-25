@@ -7,12 +7,12 @@ import {
   ListItemText,
 } from "@mui/material";
 
-const LevelSubjectItem = ({ name, removeSubject }) => {
+const LevelSubjectItem = ({ subject, removeSubject }) => {
   return (
     <>
       <ListItem sx={{ mt: 3 }}>
         <ListItemText
-          secondary={name}
+          secondary={subject?.name}
           secondaryTypographyProps={{
             fontSize: 12,
             fontStyle: "italic",
@@ -27,7 +27,7 @@ const LevelSubjectItem = ({ name, removeSubject }) => {
             gap: 1,
           }}
         >
-          <IconButton onClick={() => removeSubject(name)}>
+          <IconButton onClick={() => removeSubject(subject?._id)}>
             <DeleteOutline />
           </IconButton>
         </ListItemSecondaryAction>

@@ -10,6 +10,14 @@ const MessageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    session: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Session',
+    },
+    term: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Term',
+    },
   },
   {
     timestamps: true,

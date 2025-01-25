@@ -558,7 +558,7 @@ router.delete(
       return res.status(401).json("Invalid User information");
     }
 
-    const user = await User.findByIdAndRemove(id, {
+    const user = await User.findByIdAndDelete(id, {
       new: true,
     });
 

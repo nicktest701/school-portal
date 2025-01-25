@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import DialogActions from "@mui/material/DialogActions";
 import Divider from "@mui/material/Divider";
@@ -54,7 +54,7 @@ const UserEdit = () => {
   }, [user?.data]);
 
   //PUT user
-  const { mutateAsync, isLoading } = useMutation({ mutationFn: putUser });
+  const { mutateAsync, isPending } = useMutation({ mutationFn: putUser });
   const onSubmit = (values, options) => {
     delete values.profile;
      values.fullname=`${values?.firstname} ${values?.lastname}`
@@ -269,20 +269,20 @@ const UserEdit = () => {
                     />
                   </CustomFormControl>
                   <DialogActions>
-                    <LoadingButton
-                      loading={isSubmitting || isLoading}
+                    <Button
+                      loading={isSubmitting || isPending}
                       variant="contained"
                       color="primary"
                       sx={{ minWidth: { xs: 100, sm: 150 } }}
                       onClick={handleSubmit}
                     >
                       Save Changes
-                    </LoadingButton>
+                    </Button>
                   </DialogActions>
                 </Stack>
               </Box>
 
-              {isLoading && <LoadingSpinner value="Saving Changes..." />}
+              {isPending && <LoadingSpinner value="Saving Changes..." />}
             </>
           );
         }}

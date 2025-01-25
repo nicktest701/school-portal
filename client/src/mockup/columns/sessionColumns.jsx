@@ -442,6 +442,7 @@ export const IMPORT_GRADE_COLUMNS = [
 export const REMARKS = [
   "Excellent",
   "Distinct",
+  "Outstanding",
   "Highest",
   "Very Good",
   "Higher",

@@ -1,11 +1,10 @@
 import Check from "@mui/icons-material/Check";
 import HistoryRounded from "@mui/icons-material/HistoryRounded";
 import MonetizationOnRounded from "@mui/icons-material/MonetizationOnRounded";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
@@ -25,7 +24,7 @@ import {
   getCurrentFeeForStudent,
   postCurrentFee,
 } from "../../api/currentFeeAPI";
-import { currencyFormatter } from "../../config/currencyFormatter"; 
+import { currencyFormatter } from "../../config/currencyFormatter";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { UserContext } from "../../context/providers/UserProvider";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
@@ -85,25 +84,23 @@ const FeeMakePayment = () => {
   const { students, levelLoading } = useLevelById(currentLevel?.levelId);
 
   ///Get Student fees info
-  useQuery(
-    ["student-fees", studentInfo?._id, searchParams.get("level_id")],
-    () =>
+  useQuery({
+    queryKey: ["student-fees", studentInfo?._id, searchParams.get("level_id")],
+    queryFn: () =>
       getCurrentFeeForStudent({
         session: session.sessionId,
         term: session.termId,
         student: studentInfo?._id,
         level: searchParams.get("level_id"),
-      }),
-    {
-      enabled: !!studentInfo?._id && !!searchParams.get("level_id"),
-      onSuccess: (data) => {
-        setTotalAmountPaid(data?.totalAmountPaid);
-        setTotalArreas(data?.totalArreas);
-        setCurrentFeesPaid(data?.current?.amountPaid || 0);
-        setTotalFees(data?.totalFees);
-      },
-    }
-  );
+      }),   
+    enabled: !!studentInfo?._id && !!searchParams.get("level_id"),
+    onSuccess: (data) => {
+      setTotalAmountPaid(data?.totalAmountPaid);
+      setTotalArreas(data?.totalArreas);
+      setCurrentFeesPaid(data?.current?.amountPaid || 0);
+      setTotalFees(data?.totalFees);
+    },
+  });
 
   //Calculate total fees to pay
   const totalFeesToBePaid = useMemo(() => {
@@ -145,7 +142,7 @@ const FeeMakePayment = () => {
   }, [currentAmount, totalOutStanding, totalAmountPaid, totalFees]);
 
   //Add fees to database
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postCurrentFee,
   });
 
@@ -255,7 +252,7 @@ const FeeMakePayment = () => {
             sx={{ width: 250 }}
             fullWidth
             options={levelOptions?.data ? levelOptions.data : []}
-            loading={levelOptions?.isLoading}
+            loading={levelOptions?.isPending}
             disableClearable
             closeText=" "
             noOptionsText="No Level Available"
@@ -386,16 +383,16 @@ const FeeMakePayment = () => {
               />
 
               {/* <Button>Cancel</Button> */}
-              <LoadingButton
+              <Button
                 disabled={_.isEmpty(studentInfo?._id)}
                 size="large"
                 variant="contained"
                 startIcon={<MonetizationOnRounded />}
-                loading={isLoading}
+                loading={isPending}
                 onClick={formik.handleSubmit}
               >
                 Make Payment
-              </LoadingButton>
+              </Button>
             </Stack>
           </Paper>
         </Grid>
@@ -501,7 +498,6 @@ const FeeMakePayment = () => {
           </Paper>
         </Grid>
       </Grid>
-
     </>
   );
 };

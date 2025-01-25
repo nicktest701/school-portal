@@ -127,7 +127,7 @@ const UserView = () => {
 
   //DELETE User Info
 
-  const { mutateAsync: deleteMutate, isLoading: deleteIsLoading } = useMutation(
+  const { mutateAsync: deleteMutate, isPending: deleteIsLoading } = useMutation(
     {
       mutationFn: deleteUser,
     }

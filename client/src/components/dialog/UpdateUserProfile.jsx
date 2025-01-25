@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -24,7 +24,6 @@ import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import CustomImageChooser from "../../components/inputs/CustomImageChooser";
 import { UserContext } from "../../context/providers/UserProvider";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "@mui/material";
 
 const UpdateUserProfile = () => {
   const { user } = useContext(UserContext);
@@ -233,7 +232,7 @@ const UpdateUserProfile = () => {
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <LoadingButton
+                <Button
                   loading={isSubmitting}
                   variant="contained"
                   color="primary"
@@ -241,7 +240,7 @@ const UpdateUserProfile = () => {
                   onClick={handleSubmit}
                 >
                   Save Changes
-                </LoadingButton>
+                </Button>
               </DialogActions>
             </>
           );

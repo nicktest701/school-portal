@@ -78,7 +78,7 @@ const StudentFeesHistory = () => {
             icon={history_icon}
             addButtonImg={history_icon}
             addButtonMessage="No Fees History Found"
-            isLoading={studentFee.isLoading}
+            isPending={studentFee.isPending}
             exportFileName={studentFee?.data?.fullName}
             columns={STUDENT_FEES_HISTORY_COLUMNS}
             data={studentFee?.data?.payment}
@@ -114,7 +114,7 @@ const StudentFeesHistory = () => {
       <div ref={componentRef} className="print-container">
         <FeeReport student={studentFee?.data} />
       </div>
-      {studentFee.isLoading && <GlobalSpinner />}
+      {studentFee.isPending && <GlobalSpinner />}
     </>
   );
 };

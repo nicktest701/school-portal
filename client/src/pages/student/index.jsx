@@ -25,15 +25,9 @@ function Student() {
 
   return (
     <>
-      <StudentNav />
-
-      <Box
-        sx={{
-          p: 4,
-        }}
-      >
+      <StudentNav />  
         <Outlet />
-      </Box>
+    
     </>
   );
 }

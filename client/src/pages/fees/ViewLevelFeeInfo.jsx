@@ -40,7 +40,7 @@ function ViewLevelFeeInfo() {
     >
       <CustomDialogTitle title='School Fees Details' onClose={handleClose} />
       <DialogContent>
-        {levelFeeSummary?.isLoading && <Typography>Loading.....</Typography>}
+        {levelFeeSummary?.isPending && <Typography>Loading.....</Typography>}
         {levelFeeSummary?.data !== undefined && (
           <Stack rowGap={2}>
             <ViewLevelFeeInfoItem

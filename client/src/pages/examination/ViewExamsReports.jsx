@@ -1,37 +1,47 @@
 /* eslint-disable react/display-name */
-import React, { memo, useCallback, useContext, useRef, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
+import InputAdornment from "@mui/material/InputAdornment";
 import {
   Typography,
   Button,
   Container,
   Stack,
   ButtonGroup,
+  TextField,
 } from "@mui/material";
 import Swal from "sweetalert2";
-import LoadingButton from "@mui/lab/LoadingButton";
-import ReactToPrint from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import { FixedSizeList } from "react-window";
 import PropTypes from "prop-types";
 import { Link, useParams } from "react-router-dom";
-import Report from "./Report";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { generateReports, publishReports } from "../../api/ExaminationAPI";
-import { UserContext } from "../../context/providers/UserProvider";
+import { generateReports, publishReports } from "@/api/ExaminationAPI";
+import { UserContext } from "@/context/providers/UserProvider";
 import ViewScoreSheet from "./ViewScoreSheet";
-import { StudentContext } from "../../context/providers/StudentProvider";
-import { ArrowBack, Note } from "@mui/icons-material";
-import Loader from "../../config/Loader";
-
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import CustomTitle from "../../components/custom/CustomTitle";
+import { StudentContext } from "@/context/providers/StudentProvider";
+import { ArrowBack, Note, Search } from "@mui/icons-material";
+import Loader from "@/config/Loader";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import CustomTitle from "@/components/custom/CustomTitle";
+import ReportCard from "./ReportCard";
 
 const ViewExamsReports = () => {
   const {
     userState: { session },
   } = useContext(UserContext);
+  const [isPending, startTransition] = useTransition();
   const { studentDispatch } = useContext(StudentContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [openScoreSheet, setOpenScoreSheet] = useState(false);
   const { levelId } = useParams();
   const componentRef = useRef();
@@ -45,12 +55,15 @@ const ViewExamsReports = () => {
         levelId,
       }),
     enabled: !!levelId && !!session.sessionId && !!session.termId,
-    onSuccess: (data) => {
-      studentDispatch({ type: "getReportDetails", payload: data });
-    },
+    initialData: [],
   });
 
-  const { mutateAsync, isLoading } = useMutation({
+  useEffect(() => {
+    studentDispatch({ type: "getReportDetails", payload: reports?.data });
+    setFilteredData(reports?.data?.results);
+  }, [reports.data]);
+
+  const { mutateAsync, isPending: publishIsPending } = useMutation({
     mutationFn: publishReports,
   });
   const handlePublishReports = () => {
@@ -103,22 +116,42 @@ const ViewExamsReports = () => {
   };
 
   const generatedReports = memo(({ data, index, isScrolling, style }) => {
-    return <Report key={index} student={data[index]} style={style} />;
+    return <ReportCard key={index} student={data[index]} style={style} />;
   });
 
   const reportCard = useCallback(
     (report) => {
-      return <Report key={report?._id} student={report} />;
+      return <ReportCard key={report?._id} student={report} />;
     },
     [reports?.data?.results]
   );
 
   const handlOpenScoreSheet = () => setOpenScoreSheet(true);
 
+  const reactToPrintFn = useReactToPrint({
+    documentTitle: "Student Report",
+    contentRef: componentRef,
+  });
+
+  const handleSearch = useCallback((e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+
+    startTransition(() => {
+      const results = reports.data?.results?.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(value)
+        )
+      );
+
+      setFilteredData(results);
+    });
+  },[])
+
   return (
     <>
       <Container>
-        <Link to={-1}>
+        <Link to={-1} style={{ color: "var(--primary)" }}>
           <ArrowBack />
         </Link>
         <CustomTitle
@@ -128,41 +161,65 @@ const ViewExamsReports = () => {
         />
         <Stack
           py={2}
-          direction={{ xs: "column", md: "row" }}
-          spacing={2}
-          alignItems="center"
-          justifyContent="center"
+          // direction={{ xs: "column", md: "row" }}
+          // spacing={2}
+          // alignItems="center"
+          // justifyContent="center"
         >
-          <ButtonGroup variant="contained"  sx={{ mb: 4 }}>             
-            <Button onClick={handlOpenScoreSheet} color="warning">
+          <ButtonGroup
+            variant="contained"
+            sx={{
+              mb: 4,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "none",
+            }}
+          >
+            <Button variant="outlined" onClick={handlOpenScoreSheet}>
               View Score Sheet
             </Button>
-            <ReactToPrint
-              // pageStyle={
-              //   'width:8.5in";min-height:11in"; margin:auto",padding:4px;'
-              // }
-              trigger={() => <Button color="info">Print Reports</Button>}
-              content={() => componentRef.current}
-              documentTitle="Report"
-            />
-            <LoadingButton
-              loading={isLoading}
+
+            <Button onClick={() => reactToPrintFn()}>Print Reports</Button>
+
+            <Button
+              loading={publishIsPending}
               loadingPosition="start"
               startIcon={<Note />}
               onClick={handlePublishReports}
               color="success"
             >
-              {isLoading ? "Please Wait" : "Publish Reports"}
-            </LoadingButton>
+              {publishIsPending ? "Please Wait" : "Publish Reports"}
+            </Button>
           </ButtonGroup>
+
+          <TextField
+            placeholder="Search for Report"
+            value={searchTerm}
+            onChange={handleSearch}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {isPending &&<div className="spinner-loader"></div>}
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
         </Stack>
       </Container>
 
-      {reports.isLoading && <Loader />}
+      {reports.isPending && <Loader />}
       {reports.isError && (
         <Typography>Error loading report info.....</Typography>
       )}
-      {reports.data?.results && reports.data?.results?.length === 0 && (
+      {filteredData && filteredData?.length === 0 && (
         <Typography>No Report Available.....</Typography>
       )}
 
@@ -171,8 +228,8 @@ const ViewExamsReports = () => {
         height={1096}
         width={"215mm"}
         itemSize={1200}
-        itemCount={reports.data?.results?.length}
-        itemData={reports.data?.results}
+        itemCount={filteredData?.length}
+        itemData={filteredData}
         style={{
           marginInline: "auto",
         }}
@@ -181,11 +238,12 @@ const ViewExamsReports = () => {
       </FixedSizeList>
 
       <div ref={componentRef} className="print-container">
-        {reports.data?.results?.map((report) => {
+        {filteredData?.map((report) => {
           return reportCard(report);
         })}
       </div>
       <ViewScoreSheet open={openScoreSheet} setOpen={setOpenScoreSheet} />
+      {/* {isPending && <LoadingSpinner value="Please Wait..." />} */}
     </>
   );
 };

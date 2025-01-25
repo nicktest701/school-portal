@@ -65,7 +65,7 @@ const FeeHome = () => {
       </Box>
 
       <CustomizedMaterialTable
-        isLoading={recentFees.isLoading}
+        isPending={recentFees.isPending}
         title='Recent Fee Payment'
         icon={teacher_icon}
         columns={[

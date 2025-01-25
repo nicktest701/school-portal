@@ -20,14 +20,16 @@ const LevelSchema = new mongoose.Schema(
       ref: 'Fee',
     },
     level: Object,
-    subjects: {
-      type: Array,
-      default: [],
-    },
+    subjects: [
+      { type: mongoose.SchemaTypes.ObjectId, ref: 'Subject', default: [] },
+    ],
     students: [
       { type: mongoose.SchemaTypes.ObjectId, ref: 'Student', default: [] },
     ],
-    grades: Array,
+    grades: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Grade',
+    },
     rollNumber: {
       type: Number,
       default: 0,
@@ -49,6 +51,12 @@ const LevelSchema = new mongoose.Schema(
         get() {
           const name = `${this.level?.name}${this.level?.type}`;
           return name;
+        },
+      },
+      noOfStudents: {
+        get() {
+          const rollNumber = this.students?.length;
+          return rollNumber;
         },
       },
     },

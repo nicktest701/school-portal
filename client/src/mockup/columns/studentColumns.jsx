@@ -175,7 +175,6 @@ export const STUDENTS_COLUMN = [
   },
 ];
 
-
 export const RECENT_STUDENTS_COLUMN = [
   {
     field: "_id",
@@ -428,7 +427,11 @@ export const STUDENTS_EXAMS_COLUMN = [
         <LinearProgress
           variant="determinate"
           value={entry?.percent}
-          sx={{ bgcolor: "lightgray" }}
+          sx={{
+            height: 8,
+            borderRadius: 1,
+            mt: 1,
+          }}
           color={entry?.percent === 100 ? "success" : "secondary"}
         />
         <Typography textAlign="center" fontSize={11}>

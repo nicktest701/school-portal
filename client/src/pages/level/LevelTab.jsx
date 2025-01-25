@@ -4,26 +4,19 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import _ from "lodash";
 import AddLevel from "./AddLevel";
-import { SCHOOL_LEVELS } from "../../mockup/columns/sessionColumns";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { SCHOOL_LEVELS } from "@/mockup/columns/sessionColumns";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { useNavigate } from "react-router-dom";
-import {
-  deleteLevel,
-  deleteManyLevels,
-  getAllLevels,
-} from "../../api/levelAPI";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { EMPTY_IMAGES } from "../../config/images";
-import { UserContext } from "../../context/providers/UserProvider";
-import level_icon from "../../assets/images/header/level_ico.svg";
-import ActionItem from "../../components/items/ActionItem";
+import { deleteLevel, deleteManyLevels, getAllLevels } from "@/api/levelAPI";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { EMPTY_IMAGES } from "@/config/images";
+import { UserContext } from "@/context/providers/UserProvider";
+import level_icon from "@/assets/images/header/level_ico.svg";
+import ActionItem from "@/components/items/ActionItem";
 import EditLevel from "./EditLevel";
 import ViewLevel from "./ViewLevel";
-import GlobalSpinner from "../../components/spinners/GlobalSpinner";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
+import GlobalSpinner from "@/components/spinners/GlobalSpinner";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
 const LevelTab = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -37,8 +30,6 @@ const LevelTab = () => {
   const [openAddCurrentLevel, setOpenAddCurrentLevel] = useState(false);
   //Get Session id
 
-
-  
   const levels = useQuery({
     queryKey: ["levels", session.sessionId, session.termId],
     queryFn: () => getAllLevels(session.sessionId, session.termId),
@@ -62,9 +53,7 @@ const LevelTab = () => {
     },
   });
 
-  
-
-  const { mutateAsync, isLoading } = useMutation({ mutationFn: deleteLevel });
+  const { mutateAsync, isPending } = useMutation({ mutationFn: deleteLevel });
 
   const handleDelete = (id) => {
     const values = {
@@ -113,7 +102,7 @@ const LevelTab = () => {
     setSelectedLevels(rows);
   };
 
-  const { mutateAsync: deleteManyMutateAsync, isLoading: deleteManyIsLoading } =
+  const { mutateAsync: deleteManyMutateAsync, isPending: deleteManyIsLoading } =
     useMutation({
       mutationFn: deleteManyLevels,
     });
@@ -233,7 +222,7 @@ const LevelTab = () => {
         title="Levels"
         icon={level_icon}
         search={true}
-        isLoading={levels.isLoading}
+        isPending={levels.isPending}
         columns={newLevelColumns}
         data={levels.data}
         actions={[]}
@@ -249,7 +238,7 @@ const LevelTab = () => {
       <ViewLevel />
       <AddLevel open={openAddCurrentLevel} setOpen={setOpenAddCurrentLevel} />
       <EditLevel />
-      {(isLoading || deleteManyIsLoading) && <GlobalSpinner />}
+      {(isPending || deleteManyIsLoading) && <GlobalSpinner />}
     </Box>
   );
 };

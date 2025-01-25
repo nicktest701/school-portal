@@ -576,7 +576,7 @@ router.delete(
       });
     }
 
-    const student = await Student.findByIdAndRemove(id);
+    const student = await Student.findByIdAndDelete(id);
     if (student === null) {
       return res.json({
         error: true,

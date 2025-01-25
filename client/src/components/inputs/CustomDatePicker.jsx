@@ -10,6 +10,13 @@ function CustomDatePicker({
   disableFuture,
   style,
 }) {
+  // Function to disable weekends
+  const disableWeekends = (date) => {
+    if (!date) return false;
+    const day = date.day(); // day() returns 0 for Sunday and 6 for Saturday
+    return day === 0 || day === 6;
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
       <DatePicker
@@ -19,6 +26,7 @@ function CustomDatePicker({
         format="Do MMMM YYYY"
         disableMaskedInput
         disableFuture={disableFuture}
+        shouldDisableDate={disableWeekends}
         slotProps={{
           textField: {
             fullWidth: true,
@@ -28,7 +36,6 @@ function CustomDatePicker({
           },
         }}
         sx={{ width: "100%", ...style }}
-        
       />
     </LocalizationProvider>
   );

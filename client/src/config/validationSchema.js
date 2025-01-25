@@ -208,7 +208,11 @@ export const quickMessageValidationSchema = object().shape({
 });
 
 export const examsScoreValidationSchema = object().shape({
-  subject: string().required('Subject is Required*').nullable(true),
+  // subject: string().required('Subject is Required*').nullable(true),
+  subject: object({
+    _id: string().required('Required*'),
+    name: string().required('Required*'),
+  }),
   classScore: number()
     .required('Subject is Required*')
     .min(0, 'Class Score should be between 0-50')

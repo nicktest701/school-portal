@@ -229,7 +229,7 @@ router.delete(
 //   "/:id",
 //   asyncHandler(async (req, res) => {
 //     const id = req.params.id;
-//     const deletedAttendance = await Attendance.findByIdAndRemove(id);
+//     const deletedAttendance = await Attendance.findByIdAndDelete(id);
 
 //     if (_.isEmpty(deletedAttendance)) {
 //       return res

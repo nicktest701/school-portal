@@ -46,7 +46,7 @@ function Notifications() {
     handleDeleteNotifications();
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: deleteNotifications,
   });
 
@@ -87,7 +87,7 @@ function Notifications() {
       />
 
       <CustomizedMaterialTable
-        isLoading={notifications.isLoading || isLoading}
+        isPending={notifications.isPending || isPending}
         columns={NOTIFICATIONS(
           handleViewNotification,
           handleEditNotification,

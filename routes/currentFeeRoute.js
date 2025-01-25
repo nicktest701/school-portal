@@ -476,7 +476,7 @@ router.delete(
   '/:id',
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    await CurrentFee.findByIdAndRemove(id);
+    await CurrentFee.findByIdAndDelete(id);
 
     res.sendStatus(201);
   })

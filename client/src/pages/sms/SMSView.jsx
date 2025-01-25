@@ -19,7 +19,6 @@ import {
 } from "../../context/actions/globalAlertActions";
 import { deleteMessage, resendMessage } from "../../api/messageAPI";
 import Transition from "../../components/animations/Transition";
-import { LoadingButton } from "@mui/lab";
 import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 
 function SMSView() {
@@ -32,7 +31,7 @@ function SMSView() {
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
-  const { mutateAsync, isLoading } = useMutation(resendMessage);
+  const { mutateAsync, isPending } = useMutation(resendMessage);
   const onSend = () => {
     const message = {
       id: data?._id,
@@ -55,7 +54,7 @@ function SMSView() {
     });
   };
 
-  const { mutateAsync: deleteMutateAsync, isLoading: dLoading } =
+  const { mutateAsync: deleteMutateAsync, isPending: dLoading } =
     useMutation(deleteMessage);
   const handleDelete = () => {
     Swal.fire({
@@ -113,26 +112,26 @@ function SMSView() {
             {/* <IconButton color='error' onClick={handleDelete}>
               <DeleteForeverRounded />
             </IconButton> */}
-            <LoadingButton
+            <Button
               color="error"
               loading={dLoading}
               onClick={handleDelete}
             >
               Remove
-            </LoadingButton>
+            </Button>
           </Tooltip>
           {/* {!data.active && ( */}
           <Tooltip title="Resend">
             {/* <IconButton color='success' onClick={onSend}>
               <RefreshRounded />
             </IconButton> */}
-            <LoadingButton
-              loading={isLoading}
+            <Button
+              loading={isPending}
               variant="contained"
               onClick={onSend}
             >
               Resend
-            </LoadingButton>
+            </Button>
           </Tooltip>
           {/* // )} */}
         </Stack>

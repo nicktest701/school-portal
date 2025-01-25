@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { SendRounded } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
+
 import {
   Stack,
   TextField,
@@ -15,6 +15,7 @@ import {
 import { Formik } from 'formik';
 import { useMutation } from '@tanstack/react-query';
 import CustomDialogTitle from '../dialog/CustomDialogTitle';
+import Button from "@mui/material/Button";
 import { postMessage } from '../../api/messageAPI';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import Transition from '../animations/Transition';
@@ -226,14 +227,14 @@ const QuickMessage = () => {
                     helperText={touched.message && errors.message}
                   />
                 </Stack>
-                <LoadingButton
+                <Button
                   loading={isSubmitting}
                   variant='contained'
                   onClick={handleSubmit}
                   endIcon={<SendRounded />}
                 >
                   Send Message
-                </LoadingButton>
+                </Button>
               </DialogContent>
             </>
           );
@@ -252,7 +253,7 @@ export default QuickMessage;
 
 //     <DialogActions sx={{ padding: 2 }}>
 //       <Button onClick={() => setOpen(false)}>Cancel</Button>
-//       <LoadingButton>Save</LoadingButton>
+//       <Button>Save</Button>
 //     </DialogActions>
 
 // );

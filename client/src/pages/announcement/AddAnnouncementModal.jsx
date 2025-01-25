@@ -18,7 +18,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { postAnnouncement } from "@/api/announcementAPI";
-import { LoadingButton } from "@mui/lab";
+
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -36,7 +36,7 @@ const AddAnnouncementModal = ({ open, onClose }) => {
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postAnnouncement,
   });
 
@@ -185,15 +185,15 @@ const AddAnnouncementModal = ({ open, onClose }) => {
             <Button onClick={onClose} variant="outlined">
               Cancel
             </Button>
-            <LoadingButton
-              loading={isLoading}
+            <Button
+              loading={isPending}
               type="submit"
               variant="contained"
               color="primary"
               disabled={!formik.isValid || !formik.dirty}
             >
               Create
-            </LoadingButton>
+            </Button>
           </Box>
         </form>
       </Box>

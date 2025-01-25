@@ -1,4 +1,7 @@
 import React, { useCallback, useContext } from "react";
+import * as XLSX from "xlsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   Box,
   Button,
@@ -8,32 +11,41 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  CircularProgress,
+  Card,
+  CardContent,
+  Badge,
+  LinearProgress,
+  Grid2,
+  IconButton,
 } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import GroupIcon from "@mui/icons-material/Group";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import DoNotDisturbOnTotalSilenceOutlinedIcon from "@mui/icons-material/DoNotDisturbOnTotalSilenceOutlined";
 import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { useQuery } from "@tanstack/react-query";
-import * as XLSX from "xlsx";
-import { useNavigate, useParams } from "react-router-dom";
-import { STUDENTS_EXAMS_COLUMN } from "../../mockup/columns/studentColumns";
-import ExamsHomeCard from "../../components/cards/ExamsHomeCard";
-import { getExamsDetails } from "../../api/ExaminationAPI";
 import {
   BookSharp,
   NoteOutlined,
   List,
   ChevronRight,
+  RefreshRounded,
 } from "@mui/icons-material";
-
-import student_icon from "../../assets/images/header/student_ico.svg";
-import { EMPTY_IMAGES } from "../../config/images";
-import CustomTitle from "../../components/custom/CustomTitle";
-import exams_icon from "../../assets/images/header/exams_ico.svg";
-import { UserContext } from "../../context/providers/UserProvider";
-import Back from "../../components/Back";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { STUDENTS_EXAMS_COLUMN } from "@/mockup/columns/studentColumns";
+import ExamsHomeCard from "@/components/cards/ExamsHomeCard";
+import { getExamsDetails } from "@/api/ExaminationAPI";
+import student_icon from "@/assets/images/header/student_ico.svg";
+import { EMPTY_IMAGES } from "@/config/images";
+import CustomTitle from "@/components/custom/CustomTitle";
+import exams_icon from "@/assets/images/header/exams_ico.svg";
+import { UserContext } from "@/context/providers/UserProvider";
+import Back from "@/components/Back";
+import DashboardHero from "@/components/DashboardHero";
+import { gradeColor } from "@/config/gradeColor";
 
 const ExamsLevel = ({ type }) => {
   const theme = useTheme();
@@ -55,6 +67,17 @@ const ExamsLevel = ({ type }) => {
         levelId,
       }),
     enabled: !!levelId && !!session.sessionId && !!session.termId,
+    initialData: {
+      noOfStudents: 0,
+      highestMarks: 0,
+      lowestMarks: 0,
+      averageMarks: 0,
+      passStudents: 0,
+      failStudents: 0,
+      students: [],
+      resultsCompleted: 0,
+      scorePercentage: 0,
+    },
   });
 
   const handleViewExamsDetails = (rowData) => {
@@ -142,7 +165,7 @@ const ExamsLevel = ({ type }) => {
       10
     );
     worksheet["!cols"] = [{ wch: max_width }];
-    XLSX.writeFile(workbook, `${level || "Subject"}.xlsx`, {
+    XLSX.writeFile(workbook, `${level || "Subject"}-Assessment.xlsx`, {
       compression: true,
     });
   }, [examDetails?.data?.students]);
@@ -157,12 +180,13 @@ const ExamsLevel = ({ type }) => {
       <Container
         sx={{
           display: "flex",
-          flexDirection: { xs: "column-reverse", sm: "row" },
+          flexDirection: { size: "column-reverse", sm: "row" },
           justifyContent: "space-between",
           alignItems: "center",
           gap: 2,
           bgcolor: "#fff",
           my: 2,
+          borderRadius: "12px",
         }}
       >
         <CustomTitle
@@ -172,9 +196,8 @@ const ExamsLevel = ({ type }) => {
           backColor="#012e54"
         />
         <Typography
-          sx={{ display: { xs: "none", md: "inline-flex" } }}
+          sx={{ display: { size: "none", md: "inline-flex" } }}
           variant="h5"
-          paragraph
           whiteSpace="nowrap"
         >
           {level}
@@ -189,9 +212,9 @@ const ExamsLevel = ({ type }) => {
         sx={{
           width: "100%",
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+          gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))",
           gap: 2,
-          py: 6,
+          py: 2,
         }}
       >
         <ExamsHomeCard
@@ -232,27 +255,197 @@ const ExamsLevel = ({ type }) => {
         />
       </Box>
 
+      {/* Dashboard hero  */}
+      <Card sx={{ margin: "auto", padding: 2 }}>
+        <CardContent>
+          {/* Header */}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Box display="flex" alignItems="center" gap={2} flex={1}>
+              {/* Circular Progress with Text */}
+              <Box>
+                <Box
+                  sx={{
+                    position: "relative",
+                    display: "inline-flex",
+                  }}
+                >
+                  {/* Non-completed part */}
+                  <CircularProgress
+                    variant="determinate"
+                    value={100} // Always render the full circle as light gray
+                    size={90}
+                    thickness={3}
+                    sx={{
+                      color: "lightgray",
+                    }}
+                  />
+                  <CircularProgress
+                    variant="determinate"
+                    value={examDetails?.data?.scorePercentage}
+                    size={90}
+                    thickness={3}
+                    sx={{
+                      color: gradeColor(examDetails?.data?.scorePercentage).bg,
+
+                      position: "absolute", // Stack it on top of the gray progress
+                      left: 0,
+                      // bgcolor:'lightgray'
+                    }} // Optional styling for 100%
+                  />
+                  <Box
+                    sx={{
+                      top: 0,
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      position: "absolute",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
+                      component="div"
+                      color="text.primary"
+                    >
+                      {examDetails?.data?.scorePercentage}%
+                    </Typography>
+                  </Box>
+                </Box>
+                <Typography>Performance </Typography>
+              </Box>
+              <Box>
+                <Typography variant="h6" fontWeight="bold">
+                  {level ?? "Students"}
+                  <Badge
+                    color="success"
+                    variant="dot"
+                    overlap="circular"
+                    sx={{ marginLeft: 1 }}
+                  >
+                    <CheckCircleIcon color="success" />
+                  </Badge>
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  9052900 | ASHANTI REGION
+                </Typography>
+              </Box>
+            </Box>
+            <IconButton
+              sx={{ justifySelf: "flex-end" }}
+              onClick={examDetails.refetch}
+            >
+              <RefreshRounded
+                sx={{ width: { xs: 24, md: 40 }, height: { xs: 24, md: 40 } }}
+              />
+            </IconButton>
+          </Box>
+
+          {/* Progress Section */}
+          <Box mt={2}>
+            <Typography variant="body2" color="text.secondary">
+              Below is the state of school results by distinct academic year and
+              semesters.
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Only 5 academic year/semester results out of 6 have been approved.
+            </Typography>
+            <Box mt={2} display="flex" alignItems="center" gap={1}>
+              <Typography variant="body2" fontWeight="bold" color="primary">
+                Result Entry Progress
+              </Typography>
+            </Box>
+            <LinearProgress
+              variant="determinate"
+              value={examDetails?.data?.resultsCompleted}
+              color={
+                gradeColor(examDetails?.data?.resultsCompleted).bg?.split(
+                  "."
+                )[0]
+              }
+              sx={{
+                height: 8,
+                borderRadius: 1,
+                mt: 1,
+              }}
+            />
+            <Typography variant="body2" color="text.secondary" mt={0.5}>
+              Progress: {examDetails?.data?.resultsCompleted}%
+            </Typography>
+          </Box>
+
+          <Divider sx={{ my: 3 }} />
+
+          {/* Statistics Section */}
+          <Grid2 container spacing={2}>
+            <Grid2 size={4}>
+              <Box textAlign="center">
+                <GroupIcon color="primary" />
+                <Typography variant="h6">33</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Teachers
+                </Typography>
+              </Box>
+            </Grid2>
+            <Grid2 item size={4}>
+              <Box textAlign="center">
+                <GroupIcon color="primary" />
+                <Typography variant="h6">311</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Students
+                </Typography>
+              </Box>
+            </Grid2>
+            <Grid2 item size={4}>
+              <Box textAlign="center">
+                <AssignmentTurnedInIcon color="primary" />
+                <Typography variant="h6">314</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Assigned
+                </Typography>
+              </Box>
+            </Grid2>
+          </Grid2>
+        </CardContent>
+      </Card>
+
       <CustomizedMaterialTable
         title={level ?? "Students"}
         icon={student_icon}
-        isLoading={examDetails.isLoading}
+        isPending={examDetails.isPending}
         columns={column}
         search={true}
         data={examDetails?.data?.students}
         autoCompleteComponent={
-          <ButtonGroup>
-            <Button startIcon={<NoteOutlined />} onClick={downloadSheet}>
-              {matches ? " Download Assessment Sheet" : ""}
-            </Button>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 2,
+            }}
+          >
+            <ButtonGroup size="small">
+              <Button startIcon={<NoteOutlined />} onClick={downloadSheet}>
+                {matches ? " Download Assessment Sheet" : ""}
+              </Button>
 
-            <Button startIcon={<BookSharp />} onClick={handleImportResults}>
-              {matches ? "Import Results" : ""}
-            </Button>
+              <Button startIcon={<BookSharp />} onClick={handleImportResults}>
+                {matches ? "Import Results" : ""}
+              </Button>
 
-            <Button startIcon={<List />} onClick={handleGenerateReports}>
-              {matches ? " View Students Report" : ""}
-            </Button>
-          </ButtonGroup>
+              <Button startIcon={<List />} onClick={handleGenerateReports}>
+                {matches ? " View Students Report" : ""}
+              </Button>
+            </ButtonGroup>
+          </Box>
         }
         actions={[]}
         handleRefresh={examDetails.refetch}
@@ -265,3 +458,58 @@ const ExamsLevel = ({ type }) => {
 };
 
 export default ExamsLevel;
+
+{
+  /* Circular Progress with Text */
+}
+//   <Box>
+//   <Box
+//     sx={{
+//       position: "relative",
+//       display: "inline-flex",
+//     }}
+//   >
+//     {/* Non-completed part */}
+//     <CircularProgress
+//       variant="determinate"
+//       value={100} // Always render the full circle as light gray
+//       size={90}
+//       thickness={3}
+//       sx={{
+//         color: "lightgray",
+//       }}
+//     />
+//     <CircularProgress
+//       variant="determinate"
+//       value={examDetails?.data?.resultsCompleted}
+//       size={90}
+//       thickness={3}
+//       sx={{
+//         color:
+//           examDetails?.data?.resultsCompleted === 100
+//             ? "green"
+//             : "primary.main",
+//         position: "absolute", // Stack it on top of the gray progress
+//         left: 0,
+//         // bgcolor:'lightgray'
+//       }} // Optional styling for 100%
+//     />
+//     <Box
+//       sx={{
+//         top: 0,
+//         left: 0,
+//         bottom: 0,
+//         right: 0,
+//         position: "absolute",
+//         display: "flex",
+//         alignItems: "center",
+//         justifyContent: "center",
+//       }}
+//     >
+//       <Typography variant="h6" component="div" color="text.primary">
+//         {examDetails?.data?.resultsCompleted}%
+//       </Typography>
+//     </Box>
+//   </Box>
+//   <Typography>Results Entry </Typography>
+// </Box>

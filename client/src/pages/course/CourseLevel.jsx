@@ -62,7 +62,7 @@ function CourseLevel() {
 
       <CustomizedMaterialTable
         title='Levels'
-        isLoading={levelLoading}
+        isPending={levelLoading}
         columns={columns}
         data={classLevel}
         search

@@ -5,7 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
 import Swal from "sweetalert2";
 import { Formik } from "formik";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,7 +31,7 @@ function UserUpdatePassword({ open, setOpen }) {
     confirmPassword: "",
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: updateUserPassword,
   });
 
@@ -115,21 +115,21 @@ function UserUpdatePassword({ open, setOpen }) {
                 </Stack>
               </DialogContent>
               <DialogActions>
-                <LoadingButton
-                  loading={isLoading}
+                <Button
+                  loading={isPending}
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
                   startIcon={<PasswordRounded />}
                 >
                   Update Password
-                </LoadingButton>
+                </Button>
               </DialogActions>
             </>
           );
         }}
       </Formik>
-      {isLoading && <LoadingSpinner value="Updating Password.Please wait..." />}
+      {isPending && <LoadingSpinner value="Updating Password.Please wait..." />}
     </Dialog>
   );
 }

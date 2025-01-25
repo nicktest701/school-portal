@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import LoadingButton from '@mui/lab/LoadingButton';
-import CustomFormControl from '../../../components/inputs/CustomFormControl';
+import Button from "@mui/material/Button";
+import CustomFormControl from '@/components/inputs/CustomFormControl';
 import { Formik } from 'formik';
-import { StudentContext } from '../../../context/providers/StudentProvider';
-import MedicalAllergy from '../../../components/items/MedicalAllergy';
+import { StudentContext } from '@/context/providers/StudentProvider';
+import MedicalAllergy from '@/components/items/MedicalAllergy';
 import { TextField } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
-import { medicalValidationSchema } from '../../../config/validationSchema';
+import { medicalValidationSchema } from '@/config/validationSchema';
 
 const MedicalInformation = ({ setMode }) => {
   const {
@@ -51,7 +51,7 @@ const MedicalInformation = ({ setMode }) => {
         return (
           <Stack padding={2} spacing={1}>
             <Stack direction='row' justifyContent='flex-end' spacing={2}>
-              <LoadingButton
+              <Button
                 loading={isSubmitting}
                 variant='contained'
                 color='primary'
@@ -59,7 +59,7 @@ const MedicalInformation = ({ setMode }) => {
                 endIcon={<ArrowForward />}
               >
                 Continue
-              </LoadingButton>
+              </Button>
             </Stack>
             <Typography
            variant='h5'

@@ -1,6 +1,5 @@
 import React, { useContext, useMemo, useState } from "react";
 import { SendRounded } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
 import {
   Stack,
   TextField,
@@ -10,6 +9,7 @@ import {
   RadioGroup,
   Radio,
   Typography,
+  Button,
 } from "@mui/material";
 import { Formik } from "formik";
 import { useMutation } from "@tanstack/react-query";
@@ -33,7 +33,7 @@ const SMSQuick = () => {
     [radioValue]
   );
 
-  const { mutateAsync, isLoading } = useMutation({ mutationFn: postMessage });
+  const { mutateAsync, isPending } = useMutation({ mutationFn: postMessage });
   const onSubmit = (values, options) => {
     values.rate = "quick";
     mutateAsync(values, {
@@ -167,7 +167,7 @@ const SMSQuick = () => {
               helperText={touched.message && errors.message}
             /> */}
 
-            <LoadingButton
+            <Button
               loading={isSubmitting}
               variant="contained"
               onClick={handleSubmit}
@@ -175,8 +175,8 @@ const SMSQuick = () => {
               sx={{ alignSelf: "flex-end" }}
             >
               Send Message
-            </LoadingButton>
-            {isLoading && <LoadingSpinner value="Sending Message..." />}
+            </Button>
+            {isPending && <LoadingSpinner value="Sending Message..." />}
           </Stack>
         );
       }}

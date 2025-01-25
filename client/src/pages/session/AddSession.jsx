@@ -12,7 +12,7 @@ import {
 import { useForm } from "react-hook-form";
 import moment from "moment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
 import { postTerm } from "../../api/termAPI";
 import { sessionValidationSchema } from "../../config/validationSchema";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
@@ -48,7 +48,7 @@ const AddSession = () => {
   });
 
   //ADD New Session
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postTerm,
   });
 
@@ -126,9 +126,9 @@ const AddSession = () => {
           </Stack>
         </DialogContent>
         <DialogActions sx={{ padding: 2 }}>
-          <LoadingButton type="submit" loading={isLoading} variant="contained">
-            {isLoading ? "Saving" : "Save"}
-          </LoadingButton>
+          <Button type="submit" loading={isPending} variant="contained">
+            {isPending ? "Saving" : "Save"}
+          </Button>
         </DialogActions>
       </form>
     </Dialog>

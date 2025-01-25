@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
-  Button,
   TextField,
   Autocomplete,
   Alert,
@@ -18,7 +17,7 @@ import {
 import _ from "lodash";
 import { Formik } from "formik";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import { FEES_OPTIONS } from "../../mockup/columns/sessionColumns";
 import { putFee } from "../../api/feeAPI";
 import FeesItem from "./FeeItem";
@@ -249,13 +248,13 @@ const EditFee = () => {
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
                 <Button onClick={handleClose}>Cancel</Button>
-                <LoadingButton
+                <Button
                   loading={isSubmitting}
                   variant="contained"
                   onClick={handleSubmit}
                 >
                   Save Changes
-                </LoadingButton>
+                </Button>
               </DialogActions>
               {isSubmitting && <LoadingSpinner value="Saving Changes..." />}
             </>

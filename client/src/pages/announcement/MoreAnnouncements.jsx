@@ -150,7 +150,7 @@ const MoreAnnouncements = () => {
     );
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: deleteAnnouncement,
   });
 
@@ -456,7 +456,7 @@ const MoreAnnouncements = () => {
       />
       <EditAnnouncementModal onClose={handleCloseEditAnnouncement} />
 
-      {(multipleDeleteAnnouncements.isLoading || isLoading) && (
+      {(multipleDeleteAnnouncements.isPending || isPending) && (
         <LoadingSpinner value="Removing Announcement.Please Wait.." />
       )}
     </Box>

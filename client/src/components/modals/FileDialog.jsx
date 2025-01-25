@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -9,7 +8,7 @@ import {
 } from '@mui/material';
 import _ from 'lodash';
 import Swal from 'sweetalert2';
-import LoadingButton from '@mui/lab/LoadingButton';
+import Button from "@mui/material/Button";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
 import MaterialTable from 'material-table';
@@ -31,7 +30,7 @@ function FileDialog() {
   const { state } = useLocation();
   const queryClient = useQueryClient();
   const [columns, setColumns] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPending, setIsLoading] = useState(true);
   const { schoolSessionState, schoolSessionDispatch } =
     useContext(SchoolSessionContext);
   const fileData = schoolSessionState.fileData;
@@ -108,13 +107,13 @@ function FileDialog() {
       <DialogTitle>Preview</DialogTitle>
       <DialogActions sx={{ paddingX: 3 }}>
         <Button onClick={handleCloseDialog}>Cancel</Button>
-        <LoadingButton
+        <Button
           variant='contained'
-          loading={isLoading}
+          loading={isPending}
           onClick={handlePostStudents}
         >
           Save
-        </LoadingButton>
+        </Button>
       </DialogActions>
       <DialogContent>
         {fileData.data?.length === 0 ? (
@@ -122,7 +121,7 @@ function FileDialog() {
         ) : (
           <MaterialTable
             title='Students'
-            isLoading={isLoading}
+            isPending={isPending}
             icons={tableIcons}
             columns={columns}
             data={fileData.data}

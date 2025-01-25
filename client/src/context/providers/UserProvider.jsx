@@ -3,14 +3,14 @@ import Swal from "sweetalert2";
 import UserReducer from "../reducers/UserReducer";
 import PropTypes from "prop-types";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAllLevels } from "../../api/levelAPI";
-import { getSchoolInfo, logOut } from "../../api/userAPI";
-import { getAllNotifications } from "../../api/notificationAPI";
+import { getAllLevels } from "@/api/levelAPI";
+import { getSchoolInfo, logOut } from "@/api/userAPI";
+import { getAllNotifications } from "@/api/notificationAPI";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../config/Loader";
-import { getUser, parseJwt } from "../../config/sessionHandler";
-import { getItem, saveItem } from "../../config/helper";
-import LoadingSpinner from "../../components/spinners/LoadingSpinner";
+import Loader from "@/config/Loader";
+import { getUser, parseJwt } from "@/config/sessionHandler";
+import { getItem, saveItem } from "@/config/helper";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 export const UserContext = React.createContext();
 
 const UserProvider = ({ children }) => {
@@ -80,7 +80,7 @@ const UserProvider = ({ children }) => {
   }, []);
 
   const initState = {
-    isLoading: true,
+    isPending: true,
     session,
     user: user,
     school_info: schoolInfo?.data,
@@ -94,7 +94,7 @@ const UserProvider = ({ children }) => {
 
   //LOG OUT from System
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: logOut,
   });
 
@@ -121,12 +121,12 @@ const UserProvider = ({ children }) => {
     });
   };
 
-  if (schoolInfo?.isLoading) {
+  if (schoolInfo?.isPending) {
     return <Loader />;
   }
 
   return (
-    <UserContext.Provider
+    <UserContext
       value={{
         userState,
         session,
@@ -139,8 +139,8 @@ const UserProvider = ({ children }) => {
       }}
     >
       {children}
-      {isLoading && <LoadingSpinner value="Signing Out" />}
-    </UserContext.Provider>
+      {isPending && <LoadingSpinner value="Signing Out" />}
+    </UserContext>
   );
 };
 UserProvider.propTypes = {

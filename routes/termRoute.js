@@ -328,7 +328,7 @@ router.delete(
   "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const deletedTerm = await Term.findByIdAndRemove(id);
+    const deletedTerm = await Term.findByIdAndDelete(id);
 
     // const deletedTerm = await knex("terms").where("_id", id).del();
 

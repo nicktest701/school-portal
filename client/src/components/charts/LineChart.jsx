@@ -1,6 +1,6 @@
-import { Line } from 'react-chartjs-2';
-import { useTheme } from '@mui/material';
-import Box from '@mui/material/Box';
+import { Line } from "react-chartjs-2";
+import { useTheme } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const LineChart = ({ labels, values, values2 }) => {
   const { palette } = useTheme();
@@ -8,24 +8,25 @@ const LineChart = ({ labels, values, values2 }) => {
   return (
     <Box
       sx={{
-        minWidth: 200,
+        minWidth: 100,
+        width: "100%",
         height: 200,
       }}
     >
       <Line
-        datasetIdKey='line'
+        datasetIdKey="line"
         data={{
           labels,
 
           datasets: [
             {
-              label: 'Present',
+              label: "Present",
               data: values,
               borderColor: palette.secondary.main,
               tension: 0.3,
             },
             values2 && {
-              label: 'Absent',
+              label: "Absent",
               data: values2,
               borderColor: palette.primary.main,
               tension: 0.3,

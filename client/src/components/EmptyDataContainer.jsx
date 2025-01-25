@@ -15,6 +15,7 @@ const EmptyDataContainer = ({
 }) => {
   return (
     <Container
+    maxWidth='xl'
       className="hide-on-pint"
       sx={{
         backgroundColor: "#fff",

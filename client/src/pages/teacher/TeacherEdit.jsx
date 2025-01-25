@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,25 +10,25 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
-import { getTeacher, putTeacher } from "../../api/teacherAPI";
-import CustomFormControl from "../../components/inputs/CustomFormControl";
-import { teacherValidationSchema } from "../../config/validationSchema";
+import { getTeacher, putTeacher } from "@/api/teacherAPI";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { teacherValidationSchema } from "@/config/validationSchema";
 import {
   alertError,
   alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { uploadProfileImage } from "../../api/sessionAPI";
+} from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { uploadProfileImage } from "@/api/sessionAPI";
 import moment from "moment";
 import { useParams, useNavigate } from "react-router-dom";
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
-import { TOWNS } from "../../mockup/data/towns";
-import { NATIONALITY } from "../../mockup/data/nationality";
-import CustomImageChooser from "../../components/inputs/CustomImageChooser";
-import Loader from "../../config/Loader";
-import { Box, Button, Container } from "@mui/material";
-import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
+import CustomDatePicker from "@/components/inputs/CustomDatePicker";
+import { TOWNS } from "@/mockup/data/towns";
+import { NATIONALITY } from "@/mockup/data/nationality";
+import CustomImageChooser from "@/components/inputs/CustomImageChooser";
+import Loader from "@/config/Loader";
+import { Box,Container } from "@mui/material";
+import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const TeacherEdit = () => {
@@ -56,7 +56,7 @@ const TeacherEdit = () => {
   }, [teacher?.data]);
 
   //Put teacher
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: putTeacher,
   });
   const onSubmit = (values) => {
@@ -100,7 +100,7 @@ const TeacherEdit = () => {
     navigate(`/teacher/${id}`);
   };
 
-  if (teacher?.isLoading) {
+  if (teacher?.isPending) {
     return <Loader />;
   }
 
@@ -295,15 +295,15 @@ const TeacherEdit = () => {
                   </CustomFormControl>
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <LoadingButton
-                      loading={isLoading}
+                    <Button
+                      loading={isPending}
                       variant="contained"
                       color="primary"
                       sx={{ minWidth: { xs: 100, sm: 150 } }}
                       onClick={handleSubmit}
                     >
                       Save Changes
-                    </LoadingButton>
+                    </Button>
                   </DialogActions>
                 </Stack>
               </Box>
@@ -311,7 +311,7 @@ const TeacherEdit = () => {
           );
         }}
       </Formik>
-      {isLoading && <LoadingSpinner value="Saving Changes.." />}
+      {isPending && <LoadingSpinner value="Saving Changes.." />}
     </Container>
   );
 };

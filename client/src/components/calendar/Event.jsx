@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Typography, Card, CardContent, Grid, Stack } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Stack,
+  Grid2,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { getAllEvents } from "@/api/eventAPI";
@@ -23,9 +30,9 @@ const Event = () => {
     <Box>
       {events.length !== 0 ? (
         <>
-          <Grid container spacing={2}>
+          <Grid2 container spacing={2} sx={{ minHeight: 400 }}>
             {_.take(events, 5).map((event) => (
-              <Grid item xs={12} key={event._id}>
+              <Grid2 item xs={12} key={event._id} sx={{ width: "100%" }}>
                 <Card
                   sx={{
                     borderTop: `2px solid #d4edda`,
@@ -46,13 +53,18 @@ const Event = () => {
                     </Typography>
                   </CardContent>
                 </Card>
-              </Grid>
+              </Grid2>
             ))}
-          </Grid>
+          </Grid2>
 
           {/* View More Button */}
           <Box sx={{ textAlign: "center", mt: 3 }}>
-            <Link to="/events">View More</Link>
+            <Link
+              to="/events"
+              style={{ fontSize: "12px", color: "var(--primary-color)" }}
+            >
+              View More
+            </Link>
           </Box>
         </>
       ) : (
@@ -61,7 +73,7 @@ const Event = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography>No Birthday Today</Typography>
+          <Typography>No Events </Typography>
         </Stack>
       )}
     </Box>

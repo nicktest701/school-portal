@@ -97,7 +97,7 @@ router.delete(
   asyncHandler(async (req, res) => {
     const id = req.params.id;
 
-    const notification = await Notification.findByIdAndRemove(id, {
+    const notification = await Notification.findByIdAndDelete(id, {
       new: true,
     });
 

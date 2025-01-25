@@ -1,1 +1,0 @@
-const m=(o,k)=>{const t=k==null?void 0:k.find(n=>(n==null?void 0:n.lowestMark)<=o&&o<=n.highestMark);return{totalScore:o,grade:t==null?void 0:t.grade,remarks:t==null?void 0:t.remarks}};export{m as g};

@@ -7,10 +7,11 @@ const PieChart = () => {
 
   return (
     <Box
-      sx={{
-        minWidth: 150,
-        height: 150,
-      }}
+    sx={{
+      minWidth: 100,
+      width: "100%",
+      height: 200,
+    }}
     >
       <Doughnut
         datasetIdKey='pie'

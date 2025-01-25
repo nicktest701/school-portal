@@ -5,11 +5,10 @@ import {
   TextField,
   Typography,
   MenuItem,
-  Button,
   Autocomplete,
   Box,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
 import CustomFormControl from "../../components/inputs/CustomFormControl";
@@ -40,7 +39,7 @@ const TeacherAdd = ({ setTab }) => {
   const [initValues] = useState(teacherInitialValues);
 
   //Post teacher
-  const { isLoading, mutateAsync } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: postTeacher,
   });
   const onSubmit = (values, options) => {
@@ -280,15 +279,15 @@ const TeacherAdd = ({ setTab }) => {
                   >
                     Cancel
                   </Button>
-                  <LoadingButton
-                    loading={isLoading}
+                  <Button
+                    loading={isPending}
                     variant="contained"
                     color="primary"
                     sx={{ minWidth: { xs: 100, sm: 150 } }}
                     onClick={handleSubmit}
                   >
                     Save
-                  </LoadingButton>
+                  </Button>
                 </Stack>
               </Stack>
             );
@@ -296,7 +295,7 @@ const TeacherAdd = ({ setTab }) => {
         </Formik>
       </Box>
       {/* </Scrollbars> */}
-      {isLoading && <LoadingSpinner value="Please Wait.." />}
+      {isPending && <LoadingSpinner value="Please Wait.." />}
     </>
   );
 };

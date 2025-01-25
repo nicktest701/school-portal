@@ -11,7 +11,7 @@ import {
 import { useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { getTerm, putTerm } from "@/api/termAPI";
 import { alertSuccess, alertError } from "@/context/actions/globalAlertActions";
@@ -62,7 +62,7 @@ const EditSession = () => {
     });
   }, [session.data, reset]);
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: putTerm,
   });
 
@@ -100,7 +100,7 @@ const EditSession = () => {
       maxWidth="sm"
     >
       <CustomDialogTitle title="Edit Session" onClose={handleClose} />
-      {session?.isLoading ? (
+      {session?.isPending ? (
         <p>Please Wait..</p>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -153,14 +153,14 @@ const EditSession = () => {
             </Stack>
           </DialogContent>
           <DialogActions sx={{ padding: 2 }}>
-            <LoadingButton
+            <Button
               type="submit"
-              loading={isLoading}
+              loading={isPending}
               variant="contained"
               onClick={handleSubmit}
             >
-              {isLoading ? "Please Wait.." : "Save Changes"}
-            </LoadingButton>
+              {isPending ? "Please Wait.." : "Save Changes"}
+            </Button>
           </DialogActions>
         </form>
       )}

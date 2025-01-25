@@ -125,7 +125,7 @@ function AssignedCoursesResults() {
 
       <CustomizedMaterialTable
         search={true}
-        isLoading={scores.isLoading}
+        isPending={scores.isPending}
         title={state?.type}
         subtitle={searchParams.get("sub")}
         exportFileName={`${level}-${searchParams.get("sub")}` || ""}

@@ -1,12 +1,13 @@
 import React from "react";
+import _ from "lodash";
 import {
   Container,
-  DialogContent,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
   Typography,
+  Box,
 } from "@mui/material";
 import { PropTypes } from "prop-types";
 import { useParams } from "react-router-dom";
@@ -34,8 +35,8 @@ function AttendanceHistory() {
         subtitle="Review past attendance records to analyze trends, identify issues, and ensure comprehensive tracking of student and staff presence."
         color="primary.main"
       />
-      <DialogContent>
-        {attendanceHistory.isLoading && <Typography>Loading....</Typography>}
+      <Box sx={{ bgcolor: "#fff", p: 2 }}>
+        {attendanceHistory.isPending && <Typography>Loading....</Typography>}
 
         <ListItemText
           primary={`Attendance - ${attendanceHistory?.data?.length} days`}
@@ -45,7 +46,7 @@ function AttendanceHistory() {
             textAlign: "right",
           }}
         />
-        <List sx={{ maxHeight: 600 }}>
+        <List sx={{ maxHeight: "50svh", overflowY: "auto" }}>
           <ListItem>
             <ListItemText primary="Date" />
             <ListItemText primary="Present" />
@@ -57,28 +58,66 @@ function AttendanceHistory() {
                 <ListItemText
                   primary={moment(attendance.date).format("Do MMMM,YYYY")}
                   secondary={moment(attendance.date).format("dddd")}
-                  secondaryTypographyProps={{
-                    color: "primary.main",
-                    fontWeight: "bold",
+                  slotProps={{
+                    secondary: {
+                      color: "primary.main",
+                      fontWeight: "bold",
+                    },
                   }}
                 />
                 <ListItemText
                   primary={attendance.present}
-                  primaryTypographyProps={{
-                    width: 100,
+                  slotProps={{
+                    primary: {
+                      width: 100,
+                    },
                   }}
                 />
                 <ListItemText
                   primary={attendance.absent}
-                  primaryTypographyProps={{
-                    width: 100,
+                  slotProps={{
+                    primary: {
+                      width: 100,
+                    },
                   }}
                 />
               </ListItemButton>
             ))}
+          <ListItemButton divider>
+            <ListItemText
+              primary={"Total"}
+              slotProps={{
+                secondary: {
+                  color: "primary.main",
+                  fontWeight: "bold",
+                },
+                primary: {
+                  width: 130,
+                },
+              }}
+
+              
+            />
+            <ListItemText
+              primary={_.sumBy(attendanceHistory.data, "present")}
+              slotProps={{
+                primary: {
+                  width: 100,
+                },
+              }}
+            />
+            <ListItemText
+              primary={_.sumBy(attendanceHistory.data, "absent")}
+              slotProps={{
+                primary: {
+                  width: 100,
+                },
+              }}
+            />
+          </ListItemButton>
         </List>
-      </DialogContent>
-      {attendanceHistory.isLoading && (
+      </Box>
+      {attendanceHistory.isPending && (
         <LoadingSpinner value="Loading Attendance History" />
       )}
     </Container>

@@ -17,7 +17,10 @@ const TeacherHome = () => {
   const navigate = useNavigate();
 
   //GET All Teachers
-  const teachers = useQuery(["teachers"], () => getAllTeachers());
+  const teachers = useQuery({
+    queryKey: ["teachers"],
+    queryFn: getAllTeachers,
+  });
   const isNotTeacher = teachers?.data?.length === 0;
 
   //VIEW Teacher Info
@@ -54,7 +57,7 @@ const TeacherHome = () => {
           <CustomizedMaterialTable
             title="Teachers"
             icon={teacher_icon}
-            isLoading={teachers.isLoading}
+            isPending={teachers.isPending}
             columns={TEACHERS_COLUMN}
             data={teachers.data ? teachers.data : []}
             actions={[]}
@@ -73,7 +76,6 @@ const TeacherHome = () => {
           <TeacherAdd setTab={setTab} />
         </TabPanel>
       </TabContext>
-
     </Container>
   );
 };

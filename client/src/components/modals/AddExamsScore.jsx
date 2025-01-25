@@ -4,18 +4,17 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
   Autocomplete,
   Alert,
   List,
-  Grid,
+  Grid2,
   Typography,
 } from "@mui/material";
 import _ from "lodash";
 import { Formik } from "formik";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import ExamsScoreItem from "../list/ExamsScoreItem";
 import { generateGrade } from "../../config/generateGrade";
 import { useParams } from "react-router-dom";
@@ -25,17 +24,18 @@ import { examsScoreValidationSchema } from "../../config/validationSchema";
 import CustomDialogTitle from "../dialog/CustomDialogTitle";
 const AddExamsScore = ({ open, setOpen, levelId }) => {
   const { examsId } = useParams();
-
   const queryClient = useQueryClient();
+  const [subjectOptions, setSubjectOptions] = useState([]);
+  const [scoreList, setScoreList] = useState([]);
 
   const [msgs, setMsgs] = useState({
     severity: "",
     text: "",
   });
-  const [subjectOptions, setSubjectOptions] = useState([]);
-  const [scoreList, setScoreList] = useState([]);
 
-  useQuery(["subjects"], () => getSubjectsForLevel(levelId), {
+  useQuery({
+    queryKey: ["subjects"],
+    queryFn: () => getSubjectsForLevel(levelId),
     enabled: !!levelId,
     onSuccess: ({ subjects }) => {
       setSubjectOptions(subjects);
@@ -79,7 +79,7 @@ const AddExamsScore = ({ open, setOpen, levelId }) => {
     });
   };
 
-  const { mutateAsync } = useMutation(postExams);
+  const {isPending, mutateAsync } = useMutation({ mutationFn: postExams });
 
   //Handle Save Results
   const handleSaveResults = () => {
@@ -135,8 +135,8 @@ const AddExamsScore = ({ open, setOpen, levelId }) => {
                 </Alert>
               )}
               <DialogContent>
-                <Grid container spacing={2} rowGap={2}>
-                  <Grid item xs={12} md={6} padding={2}>
+                <Grid2 container spacing={2} rowGap={2}>
+                  <Grid2 item xs={12} md={6} padding={2}>
                     <Stack spacing={2} paddingY={2}>
                       <Autocomplete
                         freeSolo
@@ -180,8 +180,8 @@ const AddExamsScore = ({ open, setOpen, levelId }) => {
                     >
                       Add
                     </Button>
-                  </Grid>
-                  <Grid item xs={12} md={6} padding={2}>
+                  </Grid2>
+                  <Grid2 item xs={12} md={6} padding={2}>
                     <Stack>
                       <Typography variant="caption">Preview</Typography>
                       <ExamsScoreItem item={title} title={true} />
@@ -195,17 +195,18 @@ const AddExamsScore = ({ open, setOpen, levelId }) => {
                         ))}
                       </List>
                     </Stack>
-                  </Grid>
-                </Grid>
+                  </Grid2>
+                </Grid2>
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
-                <LoadingButton
+                <Button
+                loading={isPending}
                   variant="contained"
                   disabled={scoreList.length === 0 ? true : false}
                   onClick={handleSaveResults}
                 >
                   Save Results
-                </LoadingButton>
+                </Button>
               </DialogActions>
             </>
           );

@@ -122,7 +122,7 @@ function CustomEvent() {
           }
           navigate(`/events/${extendedProps?._id}`);
         }}
-        loading={events.isLoading}
+        loading={events.isPending}
       />
 
       <Popover

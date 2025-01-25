@@ -47,7 +47,7 @@ function EventHome() {
     handleDeleteEvents();
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: deleteEvents,
   });
 
@@ -90,7 +90,7 @@ function EventHome() {
       <CustomizedMaterialTable
         // title="Recent Events"
         // icon={sms_icon}
-        isLoading={events.isLoading || isLoading}
+        isPending={events.isPending || isPending}
         columns={EVENTS(handleViewEvent, handleEditEvent, handleDeleteEvent)}
         data={events.data}
         handleRefresh={events.refetch}

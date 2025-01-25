@@ -58,7 +58,7 @@ const Sidebar = () => {
         bgcolor: "primary.main",
       }}
     >
-      <Box sx={{ width: toggleWidth ? 80 : { xs: 0, sm: 80, md: 240 } }}>
+      <Box sx={{ width: toggleWidth ? 80 : { xs: 0, sm: 80, md: 220 } }}>
         <Stack alignItems={{ xs: "left", sm: "center" }} pb={2} spacing={2}>
           <IconButton
             edge="end"
@@ -77,12 +77,12 @@ const Sidebar = () => {
                 school_info?.badge
               }`}
               sx={{
-                width: 40,
-                height: 40,
+                width: 64,
+                height: 64,
               }}
             />
           ) : (
-            <SchoolRounded sx={{ width: 40, height: 40 }} />
+            <SchoolRounded sx={{ width: 64, height: 64 }} />
           )}
 
           <Typography
@@ -103,7 +103,7 @@ const Sidebar = () => {
           sx={{
             height: "100%",
             overflowY: "scroll",
-            pb: 20,
+            pb: 36,
           }}
         >
           {user?.role === "administrator" ? (

@@ -215,7 +215,7 @@ router.delete(
   asyncHandler(async (req, res) => {
     const id = req.params.id;
 
-    const message = await Message.findByIdAndRemove(id, {
+    const message = await Message.findByIdAndDelete(id, {
       new: true,
     });
 

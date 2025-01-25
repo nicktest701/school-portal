@@ -83,7 +83,7 @@ const Sessions = () => {
     setSelectedSessions(rows);
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: deleteManyTerms,
   });
 
@@ -177,7 +177,7 @@ const Sessions = () => {
           <CustomizedMaterialTable
             title="Sessions"
             icon={session_icon}
-            isLoading={sessions.isLoading}
+            isPending={sessions.isPending}
             columns={SCHOOL_SESSION_COLUMN(
               handleActivateSession,
               handleViewSession,
@@ -205,7 +205,7 @@ const Sessions = () => {
       </Container>
 
      
-      {isLoading && <GlobalSpinner />}
+      {isPending && <GlobalSpinner />}
     </>
   );
 };

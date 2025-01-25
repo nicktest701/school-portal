@@ -65,7 +65,7 @@ const FeeHistory = () => {
           disableClearable
           clearText=" "
           options={allStudents?.data ?? []}
-          loading={allStudents.isLoading}
+          loading={allStudents.isPending}
           loadingText="Loading Students.Please Wait..."
           noOptionsText="No Student found"
           isOptionEqualToValue={(option, value) =>
@@ -84,7 +84,7 @@ const FeeHistory = () => {
         />
       </Stack>
 
-      {/* {studentFeesHistory?.isLoading ? (
+      {/* {studentFeesHistory?.isPending ? (
         <Typography>Please Wait...</Typography>
       ) : studentFeesHistory?.error ? (
         <Typography>An error has occurred!</Typography>

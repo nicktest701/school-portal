@@ -65,7 +65,7 @@ function AssignCourses() {
 
       <CustomizedMaterialTable
         title="Courses"
-        isLoading={courses.isLoading}
+        isPending={courses.isPending}
         columns={columns}
         data={courses.data}
         actions={[]}

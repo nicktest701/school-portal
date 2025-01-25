@@ -1,23 +1,23 @@
 import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { EMPTY_IMAGES } from "../../config/images";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { EMPTY_IMAGES } from "@/config/images";
 
 import AddGrade from "./AddGrade";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { deleteGrade, getGrades } from "../../api/gradeAPI";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { deleteGrade, getGrades } from "@/api/gradeAPI";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { Button, Link, Stack } from "@mui/material";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import ViewGrade from "./ViewGrade";
 import EditGrade from "./EditGrade";
 import AssignGrade from "./AssignGrade";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { useSearchParams } from "react-router-dom";
 
 function Grade() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [openAddGrade, setOpenAddGrade] = useState(false);
   const handleOpenAddGrade = () => setOpenAddGrade(true);
 
@@ -26,7 +26,7 @@ function Grade() {
 
   const grades = useQuery({
     queryKey: ["grades"],
-    queryFn: () => getGrades(),
+    queryFn: getGrades,
     initialData: [],
   });
 
@@ -47,11 +47,14 @@ function Grade() {
   const handleOpenAssignGrade = (data) => {
     schoolSessionDispatch({
       type: "assignGrade",
-      payload: { open: true, data },
+      payload: { data },
+    });
+    setSearchParams((params) => {
+      params.set("grade_id", data?._id);
+      return params;
     });
   };
-
-  const { mutateAsync } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: deleteGrade,
   });
   const removeGrade = (id) => {
@@ -67,7 +70,7 @@ function Grade() {
             queryClient.invalidateQueries(["grades"]);
           },
           onSuccess: (data) => {
-            schoolSessionDispatch(alertSuccess(data));
+            schoolSessionDispatch(alertSuccess("Grade Removed!"));
           },
           onError: (error) => {
             schoolSessionDispatch(alertError(error));
@@ -144,7 +147,7 @@ function Grade() {
       <CustomizedMaterialTable
         title="Grading System"
         icon={EMPTY_IMAGES.grade}
-        isLoading={grades.isLoading}
+        isPending={grades.isPending}
         columns={columns}
         data={grades?.data}
         actions={[]}
@@ -166,6 +169,7 @@ function Grade() {
       <ViewGrade />
       <EditGrade />
       <AssignGrade />
+      {isPending && <LoadingSpinner value="Removing Grade. Please Wait.." />}
     </>
   );
 }

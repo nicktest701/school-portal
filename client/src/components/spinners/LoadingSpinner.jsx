@@ -20,7 +20,8 @@ function LoadingSpinner({ value }) {
         gap: "16px",
       }}
     >
-      <div className="spinner3" ></div>
+      
+      <div className="spinner"></div>
       <Typography variant='body2' color='white' >{value || "Please Wait.."}</Typography>
     </div>
   );

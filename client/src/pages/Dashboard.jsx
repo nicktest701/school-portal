@@ -2,17 +2,17 @@ import React, { useContext, useState } from "react";
 import Calendar from "react-calendar";
 import { Box, Stack, Typography, Avatar } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { generateNewCurrentLevelDetailsFromLevels } from "../api/levelAPI";
-import DashboardSwiper from "../components/swiper/DashboardSwiper";
-import Birthday from "../components/items/Birthday";
+import { generateNewCurrentLevelDetailsFromLevels } from "@/api/levelAPI";
+import DashboardSwiper from "@/components/swiper/DashboardSwiper";
+import Birthday from "@/components/items/Birthday";
 import "react-calendar/dist/Calendar.css";
-import "../theme/Calendar.css";
-import { UserContext } from "../context/providers/UserProvider";
-import DashboardCardsContainer from "../components/cards/DashboardCardsContainer";
-import CustomCard from "../components/cards/CustomCard";
-import { EMPTY_IMAGES } from "../config/images";
-import CustomEvent from "../components/calendar/CustomEvent";
-import CustomTitle from "../components/custom/CustomTitle";
+import "@/theme/Calendar.css";
+import { UserContext } from "@/context/providers/UserProvider";
+import DashboardCardsContainer from "@/components/cards/DashboardCardsContainer";
+import CustomCard from "@/components/cards/CustomCard";
+import { EMPTY_IMAGES } from "@/config/images";
+import CustomEvent from "@/components/calendar/CustomEvent";
+import CustomTitle from "@/components/custom/CustomTitle";
 import Announcement from "@/components/calendar/Announcement";
 import Event from "@/components/calendar/Event";
 
@@ -120,12 +120,13 @@ const Dashboard = () => {
 
         <Box
           sx={{
-            width: { xs: 0, sm: 300 },
+            width: { xs: 0, sm: 270 },
             // minWidth: { xs: 0, md: 250 },
             display: { xs: "none", md: "block" },
             transition: "all 0.4s ease-in-out",
             position: "sticky",
             top: 0,
+            // height:'200svh',
             minHeight: "100svh",
           }}
         >

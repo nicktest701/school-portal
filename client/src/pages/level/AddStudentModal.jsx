@@ -12,7 +12,6 @@ import {
   useTheme,
   Alert,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
 import CustomFormControl from "../../components/inputs/CustomFormControl";
 import { useMutation } from "@tanstack/react-query";
 import { Formik } from "formik";
@@ -262,7 +261,7 @@ const AddStudentModal = () => {
                   >
                     Cancel
                   </Button>
-                  <LoadingButton
+                  <Button
                     loading={isSubmitting}
                     variant="contained"
                     color="primary"
@@ -270,7 +269,7 @@ const AddStudentModal = () => {
                     onClick={handleSubmit}
                   >
                     Save
-                  </LoadingButton>
+                  </Button>
                 </Stack>
               </Stack>
             );

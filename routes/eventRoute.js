@@ -106,7 +106,7 @@ router.delete(
   asyncHandler(async (req, res) => {
     const id = req.params.id;
 
-    const event = await Event.findByIdAndRemove(id, {
+    const event = await Event.findByIdAndDelete(id, {
       new: true,
     });
 

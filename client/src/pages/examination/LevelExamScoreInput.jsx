@@ -1,7 +1,6 @@
 import {
   Autocomplete,
   Box,
-  Button,
   FormHelperText,
   Input,
   Stack,
@@ -10,7 +9,7 @@ import {
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import _ from "lodash";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSubjectsForLevel } from "../../api/levelAPI";
@@ -53,7 +52,7 @@ const LevelExamScoreInput = () => {
   const queryClient = useQueryClient();
   const { state } = useLocation();
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, setIsLoading] = useState(false);
   const [fieldError, setFieldError] = useState("");
   const [mainError, setMainError] = useState("");
   const [subject, setSubject] = useState(searchParams.get("sub"));
@@ -266,7 +265,7 @@ const LevelExamScoreInput = () => {
                 ? [searchParams.get("sub")]
                 : levelOptions?.data?.subjects
             }
-            loading={levelOptions?.isLoading}
+            loading={levelOptions?.isPending}
             getOptionLabel={(option) => option || ""}
             isOptionEqualToValue={(option, value) =>
               value === undefined || value === "" || value === option
@@ -305,7 +304,7 @@ const LevelExamScoreInput = () => {
               htmlFor="resultFile"
               title="Import results"
             >
-              {isLoading ? "Please Wait..." : "Upload File"}
+              {isPending ? "Please Wait..." : "Upload File"}
             </label>
 
             <Input
@@ -336,7 +335,7 @@ const LevelExamScoreInput = () => {
             icon={EMPTY_IMAGES.score}
             search={true}
             exportFileName={`${subject} - `}
-            isLoading={isLoading}
+            isPending={isPending}
             title={subject}
             columns={columns}
             data={data}
@@ -346,12 +345,12 @@ const LevelExamScoreInput = () => {
                 {data?.length > 0 && (
                   <Stack direction="row" spacing={3} justifyContent="flex-end">
                     <Button>Cancel</Button>
-                    <LoadingButton
+                    <Button
                       variant="contained"
                       onClick={handlePostResults}
                     >
                       Save Results
-                    </LoadingButton>
+                    </Button>
                   </Stack>
                 )}
               </>
@@ -359,7 +358,7 @@ const LevelExamScoreInput = () => {
           />
         </>
       </Box>
-      {isLoading && <LoadingSpinner />}
+      {isPending && <LoadingSpinner />}
     </>
   );
 };

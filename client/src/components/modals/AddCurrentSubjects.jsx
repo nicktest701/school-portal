@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -32,13 +31,12 @@ const AddCurrentSubjects = () => {
   const [subjectList, setSubjectList] = useState([]);
 
   const { subjects, levelLoading } = useLevelById(searchParams.get("_id"));
+  // console.log(subjects)
 
   const subjectOptions = useQuery({
     queryKey: ["subjects"],
     queryFn: () => getSubjects(),
-    select: (subjects) => {
-      return _.map(subjects, "name");
-    },
+    initialData: [],
   });
 
   useEffect(() => {
@@ -47,30 +45,38 @@ const AddCurrentSubjects = () => {
 
   //Add Subjects to subject list
   const handleAddSubject = () => {
-    const newSubjects = _.uniq([...subjectList, ...subject]);
+    // const newSubjects = _.uniq([...subjectList, ...subject]);
+
+    const newSubjects = _.values(
+      _.merge(_.keyBy([...subjectList, ...subject], "_id"))
+    );
+
+    console.log(subjectList);
     setSubjectList(newSubjects);
 
     setSubject([]);
   };
 
   //Remove subject from class
-  const handleRemoveSubject = (searchSubject) => {
+  const handleRemoveSubject = (subjectId) => {
     setSubjectList((prev) => {
       const filteredSubjects = prev.filter(
-        (subject) => subject !== searchSubject
+        (subject) => subject?._id !== subjectId
       );
 
       return filteredSubjects;
     });
   };
 
-  const { mutateAsync, isLoading } = useMutation(addSubjectsToLevel);
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: addSubjectsToLevel,
+  });
 
   //Save subjects to db
   const handleSaveSubjects = () => {
     const values = {
       levelId: searchParams.get("_id"),
-      subjects: subjectList,
+      subjects: _.map(subjectList, "_id"),
     };
 
     mutateAsync(values, {
@@ -104,14 +110,16 @@ const AddCurrentSubjects = () => {
           justifyContent="center"
           alignItems="flex-start"
         >
-          <Typography variant='h6'>Please select one or multiple courses</Typography>
+          <Typography variant="h6">
+            Please select one or multiple courses
+          </Typography>
           <Autocomplete
             multiple={true}
             freeSolo
             fullWidth
             options={subjectOptions.data ?? []}
             disableCloseOnSelect
-            getOptionLabel={(option) => option || ""}
+            getOptionLabel={(option) => option?.name || ""}
             value={subject}
             onChange={(e, value) => setSubject(value)}
             renderInput={(params) => (
@@ -133,6 +141,7 @@ const AddCurrentSubjects = () => {
               py: 2,
               alignSelf: "flex-end",
             }}
+            disabled={subject?.length === 0}
           >
             Add Course
           </Button>
@@ -158,15 +167,15 @@ const AddCurrentSubjects = () => {
               <Typography variant="h4">
                 {subjectList.length} Course(s) Available
               </Typography>
-              <LoadingButton
+              <Button
                 startIcon={<SaveAltRounded />}
-                loading={isLoading}
+                loading={isPending}
                 variant="contained"
                 onClick={handleSaveSubjects}
                 disabled={subjectList?.length === 0}
               >
                 Save Courses
-              </LoadingButton>
+              </Button>
             </ListSubheader>
           }
         >
@@ -175,8 +184,8 @@ const AddCurrentSubjects = () => {
           {subjectList?.map((subject) => {
             return (
               <LevelSubjectItem
-                key={subject}
-                name={subject}
+                key={subject?._id}
+                subject={subject}
                 removeSubject={handleRemoveSubject}
               />
             );

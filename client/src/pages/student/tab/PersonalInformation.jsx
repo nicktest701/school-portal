@@ -4,18 +4,18 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import Autocomplete from "@mui/material/Autocomplete";
-import LoadingButton from "@mui/lab/LoadingButton";
-import CustomFormControl from "../../../components/inputs/CustomFormControl";
+import Button from "@mui/material/Button";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
 import { Formik } from "formik";
-import { StudentContext } from "../../../context/providers/StudentProvider";
-import { studentPersonalDataValidationSchema } from "../../../config/validationSchema";
-import CustomDatePicker from "../../../components/inputs/CustomDatePicker";
+import { StudentContext } from "@/context/providers/StudentProvider";
+import { studentPersonalDataValidationSchema } from "@/config/validationSchema";
+import CustomDatePicker from "@/components/inputs/CustomDatePicker";
 import moment from "moment";
-import { NATIONALITY } from "../../../mockup/data/nationality";
-import { TOWNS } from "../../../mockup/data/towns";
+import { NATIONALITY } from "@/mockup/data/nationality";
+import { TOWNS } from "@/mockup/data/towns";
 import { ArrowForward } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
-import { getStudentByIndexNumber } from "../../../api/studentAPI";
+import { getStudentByIndexNumber } from "@/api/studentAPI";
 
 const PersonalInformation = ({ setMode }) => {
   const {
@@ -72,7 +72,7 @@ const PersonalInformation = ({ setMode }) => {
         return (
           <Stack py={2} spacing={2}>
             <Stack direction="row" justifyContent="flex-end" spacing={2}>
-              <LoadingButton
+              <Button
                 loading={isSubmitting}
                 variant="contained"
                 color="primary"
@@ -81,7 +81,7 @@ const PersonalInformation = ({ setMode }) => {
                 disabled={doesStudentExist?.isError}
               >
                 Continue
-              </LoadingButton>
+              </Button>
             </Stack>
             <Typography
               variant="h5"

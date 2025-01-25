@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
 
 import {
   Stack,
@@ -8,17 +8,18 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
-} from '@mui/material';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { Formik } from 'formik';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { putSubject } from '../../api/subjectAPI';
+  Button,
+} from "@mui/material";
+import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
+import { Formik } from "formik";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { putSubject } from "../../api/subjectAPI";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import { LoadingButton } from '@mui/lab';
+} from "../../context/actions/globalAlertActions";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function EditSubject() {
   const {
@@ -29,13 +30,13 @@ function EditSubject() {
   } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: putSubject,
   });
   const onSubmit = (values) => {
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(['subjects']);
+        queryClient.invalidateQueries(["subjects"]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -48,19 +49,14 @@ function EditSubject() {
   };
   const handleCloseDialog = () => {
     schoolSessionDispatch({
-      type: 'editSubject',
+      type: "editSubject",
       payload: { open: false, data: {} },
     });
   };
 
   return (
-    <Dialog
-      open={open}
-      fullWidth
-      maxWidth='xs'
-      //   TransitionComponent={Transition}
-    >
-      <CustomDialogTitle title='Edit Subject' onClose={handleCloseDialog} />
+    <Dialog open={open} fullWidth maxWidth="xs">
+      <CustomDialogTitle title="Edit Subject" onClose={handleCloseDialog} />
       <Formik
         initialValues={data}
         onSubmit={onSubmit}
@@ -73,29 +69,30 @@ function EditSubject() {
               <DialogContent>
                 <Stack spacing={2} paddingY={2}>
                   <FormControlLabel
-                    sx={{ alignSelf: 'flex-end' }}
-                    label='Core Subject'
+                    sx={{ alignSelf: "flex-end" }}
+                    label="Core Subject"
                     control={
                       <Checkbox
                         value={values.isCore || false}
                         checked={values?.isCore}
-                        onChange={handleChange('isCore')}
+                        onChange={handleChange("isCore")}
+                        defaultChecked={false}
                       />
                     }
                   />
                   <TextField
-                    label='Code'
-                    size='small'
-                    value={values.code || ''}
-                    onChange={handleChange('code')}
+                    label="Code"
+                    size="small"
+                    value={values?.code || ""}
+                    onChange={handleChange("code")}
                     error={Boolean(touched.code && errors.code)}
                     helperText={touched.code && errors.code}
                   />
                   <TextField
-                    label='Name'
-                    size='small'
-                    value={values.name || ''}
-                    onChange={handleChange('name')}
+                    label="Name"
+                    size="small"
+                    value={values?.name || ""}
+                    onChange={handleChange("name")}
                     error={Boolean(touched.name && errors.name)}
                     helperText={touched.name && errors.name}
                     InputProps={{
@@ -105,18 +102,19 @@ function EditSubject() {
                 </Stack>
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
-                <LoadingButton
-                  loading={isLoading}
-                  variant='contained'
+                <Button
+                  loading={isPending}
+                  variant="contained"
                   onClick={handleSubmit}
                 >
-                  {isLoading ? 'Saving' : 'Save Changes'}
-                </LoadingButton>
+                  {isPending ? "Saving" : "Save Changes"}
+                </Button>
               </DialogActions>
             </>
           );
         }}
       </Formik>
+      {isPending && <LoadingSpinner value="Saving Changes. Please Wait.." />}
     </Dialog>
   );
 }

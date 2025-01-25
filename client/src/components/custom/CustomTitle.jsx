@@ -40,6 +40,7 @@ function CustomTitle({
           my: 2,
           px: 2,
           bgcolor: bgColor || "#fff",
+          borderRadius: '12px',
         }}
         gap={2}
         width="100%"

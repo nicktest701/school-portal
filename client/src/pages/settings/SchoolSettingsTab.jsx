@@ -2,7 +2,7 @@ import { Avatar, Box, Container, Stack, TextField } from "@mui/material";
 import { Formik } from "formik";
 import React, { useContext, useState } from "react";
 
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import CustomImageChooser from "../../components/inputs/CustomImageChooser";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import {
@@ -180,14 +180,14 @@ function SchoolSettingsTab() {
                   helperText={touched.motto && errors.motto}
                 />
 
-                <LoadingButton
+                <Button
                   loading={isSubmitting}
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
                 >
                   Save Settings
-                </LoadingButton>
+                </Button>
               </Stack>
             </>
           );

@@ -10,7 +10,7 @@ import {
 } from "../../context/actions/globalAlertActions";
 import { Formik } from "formik";
 import { Dialog, DialogContent, Stack, TextField } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
 import { UserContext } from "../../context/providers/UserProvider";
 import LoadingSpinner from "../../components/spinners/LoadingSpinner";
@@ -28,7 +28,7 @@ function AddStudentRecord() {
   } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: updateExams,
   });
   const onSubmit = (values) => {
@@ -134,20 +134,20 @@ function AddStudentRecord() {
                     helperText={touched.examsScore && errors.examsScore}
                   />
 
-                  <LoadingButton
-                    loading={isLoading}
+                  <Button
+                    loading={isPending}
                     variant="contained"
                     onClick={handleSubmit}
                   >
                     Save Record
-                  </LoadingButton>
+                  </Button>
                 </Stack>
               </>
             );
           }}
         </Formik>
       </DialogContent>
-      {isLoading && <LoadingSpinner value="Saving Record..." />}
+      {isPending && <LoadingSpinner value="Saving Record..." />}
     </Dialog>
   );
 }

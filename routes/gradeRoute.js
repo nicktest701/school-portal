@@ -17,6 +17,7 @@ router.get(
   '/:id',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
+   
     const grade = await Grade.findById(id);
 
     res.status(200).json(grade);
@@ -69,7 +70,7 @@ router.delete(
   '/:id',
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    await Grade.findByIdAndRemove(id);
+    await Grade.findByIdAndDelete(id);
 
     res.status(204).send('Grade removed');
   })

@@ -12,23 +12,23 @@ import {
   ListItemSecondaryAction,
   Stack,
   TextField,
-} from '@mui/material';
-import _ from 'lodash';
-import { v4 as uuid } from 'uuid';
-import React, { useContext, useState } from 'react';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { Formik } from 'formik';
-import { gradesValidationSchema } from '../../config/validationSchema';
-import GradeItem from './GradeItem';
-import { GRADES, REMARKS } from '../../mockup/columns/sessionColumns';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getGrade, putGrade } from '../../api/gradeAPI';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+} from "@mui/material";
+import _ from "lodash";
+import { v4 as uuid } from "uuid";
+import React, { useContext, useEffect, useState } from "react";
+import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
+import { Formik } from "formik";
+import { gradesValidationSchema } from "../../config/validationSchema";
+import GradeItem from "./GradeItem";
+import { GRADES, REMARKS } from "../../mockup/columns/sessionColumns";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getGrade, putGrade } from "../../api/gradeAPI";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import { LoadingButton } from '@mui/lab';
+} from "../../context/actions/globalAlertActions";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function EditGrade() {
   const {
@@ -40,30 +40,31 @@ function EditGrade() {
 
   const queryClient = useQueryClient();
   const [grades, setGrades] = useState([]);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const initialValues = {
     lowestMark: 0,
     highestMark: 0,
-    grade: '',
-    remarks: '',
+    grade: "",
+    remarks: "",
   };
 
-  useQuery({
-    queryKey: ['grade', data?._id],
+  const grade = useQuery({
+    queryKey: ["grade", data?._id],
     queryFn: () => getGrade(data?._id),
     enabled: !!data?._id,
     initialData: data,
-    onSuccess: (data) => {
-      setName(data?.name);
-      setGrades(data?.ratings);
-    },
   });
+
+  useEffect(() => {
+    setName(grade?.data?.name);
+    setGrades(grade?.data?.ratings);
+  }, [grade.data]);
 
   const onSubmit = (values, option) => {
     values.id = uuid();
 
     const newGrades = _.values(
-      _.merge(_.keyBy([...grades, values], 'remarks'))
+      _.merge(_.keyBy([...grades, values], "remarks"))
     );
     setGrades(newGrades);
     option.resetForm();
@@ -74,7 +75,7 @@ function EditGrade() {
     setGrades(filteredGrades);
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: putGrade,
   });
 
@@ -87,7 +88,7 @@ function EditGrade() {
 
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(['grades']);
+        queryClient.invalidateQueries(["grades"]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -100,13 +101,9 @@ function EditGrade() {
     });
   };
 
-
-
-  
-
   const handleCloseDialog = () => {
     schoolSessionDispatch({
-      type: 'editGrade',
+      type: "editGrade",
       payload: { open: false, data: {} },
     });
   };
@@ -114,16 +111,16 @@ function EditGrade() {
   return (
     <Dialog open={open}>
       <CustomDialogTitle
-        title='New Grading System'
-        subtitle='Add new grades and remarks'
+        title="New Grading System"
+        subtitle="Add new grades and remarks"
         onClose={handleCloseDialog}
       />
 
       <DialogContent>
         <Stack spacing={3} py={2}>
           <TextField
-            label='Name of Grading System'
-            size='small'
+            label="Name of Grading System"
+            size="small"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -142,24 +139,24 @@ function EditGrade() {
               handleSubmit,
             }) => {
               return (
-                <Stack direction='row' spacing={1}>
+                <Stack direction="row" spacing={1}>
                   <TextField
-                    label='Lowest Mark'
-                    type='number'
-                    inputMode='numeric'
-                    size='small'
+                    label="Lowest Mark"
+                    type="number"
+                    inputMode="numeric"
+                    size="small"
                     value={values.lowestMark}
-                    onChange={handleChange('lowestMark')}
+                    onChange={handleChange("lowestMark")}
                     error={Boolean(touched.lowestMark && errors.lowestMark)}
                     helperText={errors.lowestMark}
                   />
                   <TextField
-                    label='Highest Mark'
-                    type='number'
-                    inputMode='numeric'
-                    size='small'
+                    label="Highest Mark"
+                    type="number"
+                    inputMode="numeric"
+                    size="small"
                     value={values.highestMark}
-                    onChange={handleChange('highestMark')}
+                    onChange={handleChange("highestMark")}
                     error={Boolean(touched.highestMark && errors.highestMark)}
                     helperText={errors.highestMark}
                   />
@@ -167,15 +164,15 @@ function EditGrade() {
                   <Autocomplete
                     freeSolo
                     options={GRADES}
-                    getOptionLabel={(option) => option || ''}
+                    getOptionLabel={(option) => option || ""}
                     defaultValue={values.grade}
                     value={values.grade}
-                    onChange={(e, value) => setFieldValue('grade', value)}
+                    onChange={(e, value) => setFieldValue("grade", value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Grade'
-                        size='small'
+                        label="Grade"
+                        size="small"
                         // value={values.grade}
                         // onChange={handleChange('grade')}
                         error={Boolean(touched.grade && errors.grade)}
@@ -187,15 +184,15 @@ function EditGrade() {
                     freeSolo
                     fullWidth
                     options={REMARKS}
-                    getOptionLabel={(option) => option || ''}
+                    getOptionLabel={(option) => option || ""}
                     defaultValue={values.remarks}
                     value={values.remarks}
-                    onChange={(e, value) => setFieldValue('remarks', value)}
+                    onChange={(e, value) => setFieldValue("remarks", value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='remarks'
-                        size='small'
+                        label="remarks"
+                        size="small"
                         // value={values.remarks}
                         // onChange={handleChange('remarks')}
                         error={Boolean(touched.remarks && errors.remarks)}
@@ -204,8 +201,8 @@ function EditGrade() {
                     )}
                   />
                   <Button
-                    size='small'
-                    variant='contained'
+                    size="small"
+                    variant="contained"
                     onClick={handleSubmit}
                   >
                     Add
@@ -215,16 +212,16 @@ function EditGrade() {
             }}
           </Formik>
           <Divider>
-            <Chip label='Grades' />
+            <Chip label="Grades" />
           </Divider>
         </Stack>
         <List>
           <ListItem divider>
             <Stack
-              direction='row'
+              direction="row"
               spacing={2}
-              justifyContent='space-between'
-              width='80%'
+              justifyContent="space-between"
+              width="80%"
             >
               <FormLabel>Highest Mark</FormLabel>
               <FormLabel>Lowest Mark</FormLabel>
@@ -246,15 +243,16 @@ function EditGrade() {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCloseDialog}>Cancel</Button>
-        <LoadingButton
-          loading={isLoading}
-          variant='contained'
+        <Button
+          loading={isPending}
+          variant="contained"
           disabled={grades.length === 0}
           onClick={saveGrades}
         >
           Save Changes
-        </LoadingButton>
+        </Button>
       </DialogActions>
+      {isPending && <LoadingSpinner value="Saving Changes. Please Wait.." />}
     </Dialog>
   );
 }

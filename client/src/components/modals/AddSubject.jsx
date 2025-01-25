@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -129,9 +128,9 @@ const AddSubject = ({ open, setOpen }) => {
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
         <Button onClick={() => setOpen(false)}>Cancel</Button>
-        <LoadingButton variant="contained" onClick={handleSaveSubjects}>
+        <Button variant="contained" onClick={handleSaveSubjects}>
           Save Changes
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

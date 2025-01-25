@@ -43,9 +43,11 @@ const GlobalAlert = () => {
         sx={{
           // width: "100%",
           bgcolor: "#fff",
-          color: alertData?.severity === "info" ? "success.darker" : "error.darker",
+          borderRadius: 0,
+          color:
+            alertData?.severity === "info" ? "success.darker" : "error.darker",
           borderBottom: `2px solid ${color}`,
-          py: 1,
+          py: 2,
         }}
       >
         {alertData?.message}

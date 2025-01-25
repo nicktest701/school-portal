@@ -18,7 +18,7 @@ import * as Yup from "yup";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAnnouncement, putAnnouncement } from "@/api/announcementAPI";
-import { LoadingButton } from "@mui/lab";
+
 
 // Validation Schema
 const validationSchema = Yup.object().shape({
@@ -38,7 +38,7 @@ const EditAnnouncementModal = ({ onClose }) => {
   // Fetching announcement by ID using React Query
   const {
     data: announcement,
-    isLoading,
+    isPending,
     isError,
   } = useQuery({
     queryKey: ["announcement", announcementId],
@@ -104,7 +104,7 @@ const EditAnnouncementModal = ({ onClose }) => {
           width: { xs: 300, md: 500 },
         }}
       >
-        {isLoading ? (
+        {isPending ? (
           <Box display="flex" justifyContent="center" alignItems="center">
             <CircularProgress />
           </Box>
@@ -183,15 +183,15 @@ const EditAnnouncementModal = ({ onClose }) => {
                 >
                   Cancel
                 </Button>
-                <LoadingButton
-                  loading={mutation.isLoading}
+                <Button
+                  loading={mutation.isPending}
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={mutation.isLoading}
+                  disabled={mutation.isPending}
                 >
-                  {mutation.isLoading ? "Updating..." : "Update Announcement"}
-                </LoadingButton>
+                  {mutation.isPending ? "Updating..." : "Update Announcement"}
+                </Button>
               </Box>
             </form>
           </>

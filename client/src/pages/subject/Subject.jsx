@@ -1,20 +1,21 @@
-import React, { useContext, useState } from 'react';
-import Swal from 'sweetalert2';
-import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
-import { EMPTY_IMAGES } from '../../config/images';
-import AddSubject from './AddSubject';
-import { SUBJECT_COLUMNS } from '../../mockup/columns/sessionColumns';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteSubject, getSubjects } from '../../api/subjectAPI';
-import { Stack } from '@mui/material';
-import Edit from '@mui/icons-material/Edit';
-import DeleteOutline from '@mui/icons-material/DeleteOutline';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import EditSubject from './EditSubject';
+import React, { useContext, useState } from "react";
+import Swal from "sweetalert2";
+import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import { EMPTY_IMAGES } from "../../config/images";
+import AddSubject from "./AddSubject";
+import { SUBJECT_COLUMNS } from "../../mockup/columns/sessionColumns";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteSubject, getSubjects } from "../../api/subjectAPI";
+import { Stack } from "@mui/material";
+import Edit from "@mui/icons-material/Edit";
+import DeleteOutline from "@mui/icons-material/DeleteOutline";
+import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import EditSubject from "./EditSubject";
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
+} from "../../context/actions/globalAlertActions";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function Subject() {
   const queryClient = useQueryClient();
@@ -23,25 +24,25 @@ function Subject() {
   const handleOpen = () => setOpenAddSubject(true);
 
   const subjects = useQuery({
-    queryKey: ['subjects'],
+    queryKey: ["subjects"],
     queryFn: () => getSubjects(),
-    initialData: []
+    initialData: [],
   });
 
   const updateSubject = (subject) => {
     schoolSessionDispatch({
-      type: 'editSubject',
+      type: "editSubject",
       payload: { open: true, data: subject },
     });
   };
 
-  const { mutateAsync } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: deleteSubject,
   });
   const removeSubject = (id) => {
     Swal.fire({
-      title: 'Removing Subject',
-      text: 'Do you want to remove?',
+      title: "Removing Subject",
+      text: "Do you want to remove?",
 
       showCancelButton: true,
       backdrop: false,
@@ -49,10 +50,10 @@ function Subject() {
       if (isConfirmed) {
         mutateAsync(id, {
           onSettled: () => {
-            queryClient.invalidateQueries(['subjects']);
+            queryClient.invalidateQueries(["subjects"]);
           },
           onSuccess: (data) => {
-            schoolSessionDispatch(alertSuccess(data));
+            schoolSessionDispatch(alertSuccess("Subject Removed!"));
           },
           onError: (error) => {
             schoolSessionDispatch(alertError(error));
@@ -62,25 +63,26 @@ function Subject() {
     });
   };
 
+ 
   const columns = [
     ...SUBJECT_COLUMNS,
     {
-      title: 'Action',
+      title: "Action",
       field: null,
       render: (rowData) => {
         return (
-          <Stack direction='row' spacing={2}>
+          <Stack direction="row" spacing={2}>
             <Edit
-              className='ico edit'
+              className="ico edit"
               onClick={() => updateSubject(rowData)}
-              title='Edit'
-              titleAccess='Edit'
+              title="Edit"
+              titleAccess="Edit"
             />
             <DeleteOutline
-              className='ico delete'
+              className="ico delete"
               onClick={() => removeSubject(rowData?._id)}
-              title='Delete'
-              titleAccess='Delete'
+              title="Delete"
+              titleAccess="Delete"
             />
           </Stack>
         );
@@ -92,25 +94,26 @@ function Subject() {
     <div>
       <CustomizedMaterialTable
         search
-        title='Subjects'
+        title="Subjects"
         icon={EMPTY_IMAGES.subject}
-        isLoading={subjects.isLoading}
+        isPending={subjects.isPending}
         columns={columns}
         data={subjects?.data}
         actions={[]}
         showRowShadow={false}
         showAddButton={true}
         addButtonImg={EMPTY_IMAGES.session}
-        addButtonMessage='😑 No Subjects system available!.Create a new one!'
-        addButtonText='New Subject'
+        addButtonMessage="😑 No Subjects system available!.Create a new one!"
+        addButtonText="New Subject"
         onAddButtonClicked={handleOpen}
         handleRefresh={subjects.refetch}
         options={{
-          paginationPosition: 'bottom',
+          paginationPosition: "bottom",
         }}
       />
       <AddSubject open={openAddSubject} setOpen={setOpenAddSubject} />
       <EditSubject />
+      {isPending && <LoadingSpinner value="Removing Subject. Please Wait.." />}
     </div>
   );
 }

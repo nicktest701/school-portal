@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import _ from "lodash";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
 import { StudentContext } from "../../../context/providers/StudentProvider";
-import { Avatar, Button } from "@mui/material";
+import { Avatar } from "@mui/material";
 import { AddAPhoto, ArrowForwardRounded } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 
@@ -86,13 +86,13 @@ const PhotoUpload = ({ setMode }) => {
       style={{ border: "1px dashed black" }}
     >
       <Stack direction="row" justifyContent="flex-end" spacing={2}>
-        <LoadingButton
+        <Button
           variant="contained"
           onClick={onSubmit}
           endIcon={<ArrowForwardRounded />}
         >
           Continue
-        </LoadingButton>
+        </Button>
       </Stack>
       <Typography
         variant="h5"

@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { LoadingButton } from '@mui/lab';
+import React, { useContext, useState } from "react";
+import * as XLSX from "xlsx";
 import {
   Button,
   Dialog,
@@ -15,40 +15,41 @@ import {
   ListItem,
   Checkbox,
   ListItemText,
-} from '@mui/material';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import _ from 'lodash';
-import { SUBJECTS } from '../../mockup/columns/sessionColumns';
+  FormLabel,
+  Input,
+} from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import _ from "lodash";
+import { SUBJECTS } from "@/mockup/columns/sessionColumns";
 
-import SubjectItem from '../../components/list/SubjectItem';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { postSubjects } from '../../api/subjectAPI';
-import {
-  alertError,
-  alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import SubjectItem from "@/components/list/SubjectItem";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { postSubjects } from "@/api/subjectAPI";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { Download, NoteRounded } from "@mui/icons-material";
+import { downloadTemplate } from "@/api/userAPI";
 
 const AddSubject = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [subjects, setSubjects] = useState([]);
   const [msg, setMsg] = useState({
-    severity: '',
-    text: '',
+    severity: "",
+    text: "",
   });
   const [subjectList, setSubjectList] = useState([]);
 
   const appendSubjectCode = (subject) => {
     const newSubjects = _.values(
-      _.merge(_.keyBy([...subjectList, subject], 'name'))
+      _.merge(_.keyBy([...subjectList, subject], "name"))
     );
     setSubjectList(newSubjects);
   };
 
   const handleAddSubject = () => {
     const newSubjects = _.values(
-      _.merge(_.keyBy([...subjectList, ...subjects], 'name'))
+      _.merge(_.keyBy([...subjectList, ...subjects], "name"))
     );
 
     setSubjectList(newSubjects);
@@ -67,7 +68,6 @@ const AddSubject = ({ open, setOpen }) => {
   };
 
   const handleIsCoreSubject = (searchSubject, isCore) => {
-    
     const filteredSubject = subjectList.find(
       ({ name }) => name === searchSubject
     );
@@ -75,22 +75,25 @@ const AddSubject = ({ open, setOpen }) => {
     filteredSubject.isCore = isCore;
 
     const newSubjects = _.values(
-      _.merge(_.keyBy([...subjectList, filteredSubject], 'name'))
+      _.merge(_.keyBy([...subjectList, filteredSubject], "name"))
     );
 
     setSubjectList(newSubjects);
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postSubjects,
   });
 
   const handleSaveSubjects = () => {
-    setMsg({ text: '' });
+    setMsg({ text: "" });
+
+    // console.log(subjectList);
+    // return;
 
     mutateAsync(subjectList, {
       onSettled: () => {
-        queryClient.invalidateQueries(['subjects']);
+        queryClient.invalidateQueries(["subjects"]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -103,19 +106,53 @@ const AddSubject = ({ open, setOpen }) => {
     });
   };
 
+  const handleFileUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const binaryStr = e.target?.result;
+        if (binaryStr) {
+          const workbook = XLSX.read(binaryStr, { type: "binary" });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+          const headers = jsonData[0].map((header) => _.camelCase(header));
+          const rows = jsonData.slice(1);
+
+          const formattedData = rows.map((row) => {
+            const rowData = {};
+            headers.forEach((header, index) => {
+              rowData[header] = row[index];
+            });
+            return rowData;
+          });
+
+          setSubjectList(formattedData);
+        }
+      };
+      reader.readAsBinaryString(file);
+    }
+  };
+
+  const handleDownloadTemplate = async () => {
+    await downloadTemplate("subjects");
+  };
+
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} maxWidth='sm' fullWidth>
+    <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
       <CustomDialogTitle
-        title='New Subjects'
-        subtitle='Add new subjects'
+        title="New Subjects"
+        subtitle="Add new subjects"
         onClose={() => setOpen(false)}
       />
       <DialogContent>
         {msg.text && <Alert severity={msg.severity}>{msg.text}</Alert>}
         <Stack spacing={2} paddingY={2}>
-          <Typography variant='h5' sx={{ textAlign: 'right' }}></Typography>
+          <Typography variant="h5" sx={{ textAlign: "right" }}></Typography>
           <Divider />
-          <Stack direction='row' spacing={2} alignItems='center'>
+          <Stack direction="row" spacing={2} alignItems="center">
             <Autocomplete
               multiple
               freeSolo
@@ -123,12 +160,12 @@ const AddSubject = ({ open, setOpen }) => {
               defaultValue={SUBJECTS}
               options={SUBJECTS}
               disableCloseOnSelect
-              getOptionLabel={(option) => option?.name || ''}
+              getOptionLabel={(option) => option?.name || ""}
               renderOption={(props, option, state) => {
                 return (
                   <ListItem
                     {...props}
-                    sx={{ display: 'flex', alignItems: 'center' }}
+                    sx={{ display: "flex", alignItems: "center" }}
                   >
                     <Checkbox checked={state?.selected} />
                     <ListItemText primary={option?.name} />
@@ -138,13 +175,57 @@ const AddSubject = ({ open, setOpen }) => {
               value={subjects}
               onChange={(e, value) => setSubjects(value)}
               renderInput={(params) => (
-                <TextField {...params} label='Select Subject' size='small' />
+                <TextField {...params} label="Select Subject" size="small" />
               )}
             />
-            <Button variant='contained' size='small' onClick={handleAddSubject}>
+            <Button variant="contained" size="small" onClick={handleAddSubject}>
               Add
             </Button>
           </Stack>
+          <Button sx={{ bgcolor: "var(--secondary)", width: 280 }}>
+            <FormLabel
+              htmlFor="studentFile"
+              title="Import Subjects from File"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+
+                gap: 1,
+                color: "primary.main",
+                fontSize: 11,
+                cursor: "pointer",
+              }}
+            >
+              <NoteRounded htmlColor="#fff" />
+              <Typography variant="caption" color="#fff">
+                Import Subjects from File (.xlsx,.xls,.csv)
+              </Typography>
+
+              <Input
+                type="file"
+                id="studentFile"
+                name="studentFile"
+                hidden
+                inputProps={{
+                  accept: ".xlsx,.xls,.csv",
+                }}
+                onChange={handleFileUpload}
+                onClick={(e) => {
+                  e.target.value = null;
+                  e.currentTarget.value = null;
+                }}
+              />
+            </FormLabel>
+          </Button>
+          <Button
+            sx={{ alignSelf: "flex-end", textDecoration: "underline" }}
+            variant="text"
+            onClick={handleDownloadTemplate}
+            endIcon={<Download/>}
+          >
+            Download Template here
+          </Button>
           <List sx={{ maxHeight: 400 }}>
             {_.isEmpty(subjectList) ? (
               <Typography>No Subject selected</Typography>
@@ -166,14 +247,14 @@ const AddSubject = ({ open, setOpen }) => {
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
         <Button onClick={() => setOpen(false)}>Cancel</Button>
-        <LoadingButton
+        <Button
           disabled={subjectList.length === 0}
-          variant='contained'
+          variant="contained"
           onClick={handleSaveSubjects}
-          loading={isLoading}
+          loading={isPending}
         >
-          {isLoading ? 'Please wait' : 'Save Changes'}
-        </LoadingButton>
+          {isPending ? "Please wait" : "Save Changes"}
+        </Button>
       </DialogActions>
     </Dialog>
   );

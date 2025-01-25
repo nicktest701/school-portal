@@ -2,12 +2,11 @@ import React, { useContext, useState } from "react";
 import {
   Autocomplete,
   Box,
-  Button,
   Container,
   DialogActions,
   TextField,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Formik } from "formik";
@@ -45,7 +44,7 @@ const TeacherAssignLevel = () => {
     enabled: !!id,
   });
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: assignTeacherLevel,
   });
   const onSubmit = (values, options) => {
@@ -126,14 +125,14 @@ const TeacherAssignLevel = () => {
                 />
                 <DialogActions>
                   <Button onClick={handleReset}>Cancel</Button>
-                  <LoadingButton
-                    loading={isLoading}
+                  <Button
+                    loading={isPending}
                     variant="contained"
                     onClick={handleSubmit}
                     disabled={currentLevel?._id === ""}
                   >
                     Assign Level
-                  </LoadingButton>
+                  </Button>
                 </DialogActions>
               </Box>
             </>
@@ -142,7 +141,7 @@ const TeacherAssignLevel = () => {
       </Formik>
 
       <TeacherLevels />
-      {isLoading && <LoadingSpinner value="Assigning Level.Please wait..." />}
+      {isPending && <LoadingSpinner value="Assigning Level.Please wait..." />}
     </Container>
   );
 };

@@ -179,6 +179,17 @@ db.asPromise()
     app.listen(port, () => console.log(`listening on port ${port}!`));
   })
   .catch((error) => {
-    //console.log(error);
-    throw error;
+    console.log(error);
+    // throw error;
   });
+
+
+
+  process.on('uncaughtException', (err) => {
+    console.error('Unhandled Exception:', err);
+  });
+  
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason);
+  });
+  

@@ -25,7 +25,7 @@ function UserTab() {
   return (
     <>
       <CustomizedMaterialTable
-        isLoading={users.isLoading}
+        isPending={users.isPending}
         title="Users"
         icon={users_icon}
         search={true}

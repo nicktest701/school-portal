@@ -8,7 +8,7 @@ const UserReducer = (state, action) => {
     case 'setLoading':
       return {
         ...state,
-        isLoading: true,
+        isPending: true,
       };
     case 'setSession':
       return {

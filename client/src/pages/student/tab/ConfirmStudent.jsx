@@ -10,21 +10,20 @@ import {
 } from "@mui/material";
 import React, { useContext, useRef, useState } from "react";
 import _ from "lodash";
-import { StudentContext } from "../../../context/providers/StudentProvider";
-import MedicalAllergyItem from "../../../components/items/MedicalAllergyItem";
-import CustomDialogTitle from "../../../components/dialog/CustomDialogTitle";
+import { StudentContext } from "@/context/providers/StudentProvider";
+import MedicalAllergyItem from "@/components/items/MedicalAllergyItem";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import ReactToPrint from "react-to-print";
-import { LoadingButton } from "@mui/lab";
 import moment from "moment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postNewStudent } from "../../../api/studentAPI";
-import { SchoolSessionContext } from "../../../context/providers/SchoolSessionProvider";
+import { postNewStudent } from "@/api/studentAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import {
   alertError,
   alertSuccess,
-} from "../../../context/actions/globalAlertActions";
+} from "@/context/actions/globalAlertActions";
 import { SchoolRounded } from "@mui/icons-material";
-import GlobalSpinner from "../../../components/spinners/GlobalSpinner";
+import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 
 function ConfirmStudent({ open, setOpen, setMode }) {
   const queryClient = useQueryClient();
@@ -40,7 +39,7 @@ function ConfirmStudent({ open, setOpen, setMode }) {
   const [id, setId] = useState("");
   const [hideSaveBtn, setHideSaveBtn] = useState(false);
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postNewStudent,
   });
   const onSubmit = () => {
@@ -122,14 +121,14 @@ function ConfirmStudent({ open, setOpen, setMode }) {
           documentTitle="Admission"
         />
         {/* // ) : ( */}
-        <LoadingButton
-          loading={isLoading}
+        <Button
+          loading={isPending}
           variant="contained"
           color="primary"
           onClick={onSubmit}
         >
           Save Student Data
-        </LoadingButton>
+        </Button>
         {/* // )} */}
       </Box>
 
@@ -539,7 +538,7 @@ function ConfirmStudent({ open, setOpen, setMode }) {
           </Stack>
         </div>
       </DialogContent>
-      {isLoading && <GlobalSpinner />}
+      {isPending && <GlobalSpinner />}
     </Dialog>
   );
 }

@@ -6,6 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { Bar } from "react-chartjs-2";
 import _ from "lodash";
+import { Typography } from "@mui/material";
 const StudentDashboardLineChart = ({ data }) => {
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
@@ -18,8 +19,12 @@ const StudentDashboardLineChart = ({ data }) => {
   }, [data]);
 
   return (
-    <Card elevation={1}>
-      <CardHeader avatar={<PieChartRounded />} title="Students" />
+    <Card elevation={1} >
+      <CardHeader avatar={<PieChartRounded />} title="Students" subheader={
+          <Typography fontSize={12} fontStyle="italic">
+            Total number of active students at each level.
+          </Typography>
+        } />
       <CardContent>
         <Box
           sx={{
@@ -36,7 +41,7 @@ const StudentDashboardLineChart = ({ data }) => {
                 {
                   label: "Levels",
                   data: dataset,
-                  backgroundColor: ["rgb(255, 192, 159)"," rgb(1, 46, 84)", ],
+                  backgroundColor: ["rgb(255, 192, 159)", " rgb(1, 46, 84)"],
                   barThickness: 10,
                   borderRadius: 10,
                 },
@@ -52,7 +57,7 @@ const StudentDashboardLineChart = ({ data }) => {
               scales: {
                 x: {
                   ticks: {
-                    display: false,
+                    // display: false,
                   },
                   grid: {
                     display: false,
@@ -70,6 +75,18 @@ const StudentDashboardLineChart = ({ data }) => {
               plugins: {
                 legend: {
                   // display: false,
+                },
+                datalabels: {
+                  display: true,
+                  color: "white",
+                  anchor: "center",
+                  align: "end",
+                  font: {
+                    size: "14px",
+                  },
+                  backgroundColor: "#000",
+                  // borderRadius:'40px',
+                  formatter: (value) => value, // Display the data value directly
                 },
               },
             }}

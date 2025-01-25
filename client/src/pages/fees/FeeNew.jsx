@@ -101,7 +101,7 @@ const FeeNew = () => {
           icon={fee_icon}
           columns={SCHOOL_FEES_COLUMNS(handleView, handleEdit, handleDeleteFee)}
           data={fees.data ? fees.data : []}
-          isLoading={fees.isLoading}
+          isPending={fees.isPending}
           actions={[]}
           search={true}
           // onRowClick={handleGetLevelFeeInfo}

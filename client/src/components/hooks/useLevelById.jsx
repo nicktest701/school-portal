@@ -1,34 +1,44 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getLevel } from '../../api/levelAPI';
-import { useState } from 'react';
-
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getLevel } from "../../api/levelAPI";
+import { useMemo } from "react";
 
 function useLevelById(id) {
-  const [students, setStudents] = useState([]);
-  const [subjects, setSubjects] = useState([]);
   const queryClient = useQueryClient();
 
   const levels = useQuery({
-    queryKey: ['level', id],
+    queryKey: ["level", id],
     queryFn: () => getLevel(id),
     enabled: !!id,
     initialData: queryClient
-      .getQueryData(['levels'])
+      .getQueryData(["levels"])
       ?.find((level) => level?._id === id),
-    onSuccess: (data) => {
-      setStudents(data?.students);
-      setSubjects(data?.subjects);
-    },
   });
 
+  console.log(levels.data);
+
+  const levelData = useMemo(() => {
+    if (levels.data) {
+      return {
+        students: levels?.data?.students,
+        gradeSystem: levels?.data?.grades,
+        subjects: levels?.data?.subjects,
+        rollNumber: levels?.data?.students?.length,
+      };
+    } else {
+      return {
+        students: [],
+        gradeSystem: [],
+        subjects: [],
+        rollNumber: 0,
+      };
+    }
+  }, [levels.data]);
+
   return {
-    levelLoading: levels.isLoading,
-    students,
-    gradeSystem: levels?.data?.grades,
-    subjects: subjects,
-    rollNumber: levels?.data?.students?.length,
+    levelLoading: levels.isPending,
     refetch: levels.refetch,
     levelError: levels?.error,
+    ...levelData,
   };
 }
 

@@ -40,6 +40,11 @@ body {
   /* border:2px solid rebeccapurple; */
 }
 
+body.swal2-shown > [aria-hidden="true"] {
+  transition: 0.1s filter linear;
+  filter: blur(3px);
+}
+
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
@@ -122,20 +127,15 @@ input {
   color: #fff;
 }
 
-.dashboard-wrapper{
-
+.dashboard-wrapper {
   container-type: inline-size;
 }
 
-
 @container (max-width: 700px) {
-  .dashboard-sidebar  {
-    background-color:red;
+  .dashboard-sidebar {
+    background-color: red;
   }
 }
-
-
-
 
 .content {
   margin: auto;
@@ -267,7 +267,6 @@ a.button:active {
 .swal2-container {
   z-index: 110000 !important;
   font-family: inherit;
-  background-color: hsla(0, 7%, 8%, 0.2) !important;
 }
 
 .swal2-title {
@@ -351,6 +350,15 @@ tbody tr:hover svg {
     margin: 0;
     /* padding: 0; */
     border: 0;
+  }
+
+  .custom-shape-divider-top-1737365089 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
   }
 
   /* .table-container{
@@ -611,7 +619,7 @@ tbody tr:hover svg {
         0deg,
         /* rgba(1, 46, 84, 0.9) 50%,
         rgba(1, 46, 84, 1) 0 */
-        rgba(255, 255, 255, 0.9) 50%,
+          rgba(255, 255, 255, 0.9) 50%,
         rgb(255, 255, 255) 0
       )
       center/4.5px 100%,
@@ -619,7 +627,7 @@ tbody tr:hover svg {
         90deg,
         rgba(255, 255, 255, 0.36) 50%,
         rgba(255, 255, 255, 0.75) 0
-        /* rgba(1, 46, 84, 0.25) 50%,
+          /* rgba(1, 46, 84, 0.25) 50%,
         rgba(1, 46, 84, 0.75) 0 */
       )
       center/100% 4.5px;
@@ -643,6 +651,34 @@ tbody tr:hover svg {
 }
 
 @keyframes spinner3-d3o0rx {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(farthest-side, var(--primary) 94%, #0000) top/9px
+      9px no-repeat,
+    conic-gradient(#0000 30%, var(--primary));
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 9px), #000 0);
+  animation: spinner-c7wet2 1s infinite linear;
+}
+
+.spinner-loader {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(farthest-side, var(--primary) 94%, #0000) top/9px
+      9px no-repeat,
+    conic-gradient(#0000 30%, var(--primary));
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 4px), #000 0);
+  animation: spinner-c7wet2 750ms infinite linear;
+}
+
+@keyframes spinner-c7wet2 {
   100% {
     transform: rotate(1turn);
   }

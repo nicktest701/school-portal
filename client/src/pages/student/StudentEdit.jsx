@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import Dialog from "@mui/material/Dialog";
@@ -62,7 +62,7 @@ const StudentEdit = () => {
   };
 
   //Put student
-  const { mutateAsync, isLoading } = useMutation({ mutationFn: putStudent });
+  const { mutateAsync, isPending } = useMutation({ mutationFn: putStudent });
   const onSubmit = (values) => {
     values.dateofbirth = moment(dob).format("L");
     // //console.log(values);
@@ -303,14 +303,14 @@ const StudentEdit = () => {
                 </Stack>
               </DialogContent>
               <DialogActions>
-                <LoadingButton
-                  loading={isLoading}
+                <Button
+                  loading={isPending}
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
                 >
                   Save Changes
-                </LoadingButton>
+                </Button>
               </DialogActions>
             </>
           );

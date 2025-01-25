@@ -7,6 +7,14 @@ const AnnouncementSchema = new mongoose.Schema(
     description: String,
     priority: String,
     bgColor: String,
+    session: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Session',
+    },
+    term: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Term',
+    },
     active: {
       type: Boolean,
       default: true,

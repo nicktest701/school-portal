@@ -43,7 +43,7 @@ function TeacherCourses() {
   });
 
   //Delete Course
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: deleteCourse,
   });
 
@@ -69,7 +69,7 @@ function TeacherCourses() {
     });
   };
 
-  if (courses.isLoading) {
+  if (courses.isPending) {
     return <Typography>Loading Courses</Typography>;
   }
   if (courses.isError) {
@@ -135,7 +135,7 @@ function TeacherCourses() {
           <Typography textAlign="center">No Course Available</Typography>
         )}
       </List>
-      {isLoading && <LoadingSpinner value="Removing Course.Please wait..." />}
+      {isPending && <LoadingSpinner value="Removing Course.Please wait..." />}
     </>
   );
 }

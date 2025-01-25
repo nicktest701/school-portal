@@ -8,7 +8,7 @@ router.get(
   '/',
   asyncHandler(async (req, res) => {
     const subjects = await Subject.find();
-
+    // console.log(subjects)
     if (_.isEmpty(subjects)) {
       return res.status(200).send([]);
     }
@@ -113,7 +113,7 @@ router.delete(
   '/:id',
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    await Subject.findByIdAndRemove(id);
+    await Subject.findByIdAndDelete(id);
 
     res.status(204).send('Subject removed');
   })

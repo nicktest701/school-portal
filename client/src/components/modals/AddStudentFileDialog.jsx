@@ -44,6 +44,7 @@ function AddStudentFileDialog() {
 
   //Get All levels
   const { levelsOption } = useLevel();
+  // console.log(levelsOption)
 
   //CLOSE File Dialog
   const handleCloseDialog = () => {
@@ -59,7 +60,7 @@ function AddStudentFileDialog() {
     });
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postManyStudents,
   });
   const handlePostStudents = () => {
@@ -107,7 +108,7 @@ function AddStudentFileDialog() {
     <Dialog open={fileData.open} fullScreen fullWidth>
       <CustomDialogTitle onClose={handleCloseDialog} />
 
-      <Container>
+      <DialogContent sx={{px:4}}>
         <CustomTitle
           title="Import Students"
           subtitle="Enroll new students by adding their personal and academic details to the system for accurate record-keeping and future reference by importing Student data from excel or csv files."
@@ -121,19 +122,6 @@ function AddStudentFileDialog() {
           </Typography>
         </Stack>
 
-        {/* <DialogActions sx={{ paddingX: 3 }}>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <LoadingButton
-            variant="contained"
-            loading={isLoading}
-            onClick={handlePostStudents}
-          >
-            Import Students
-          </LoadingButton>
-        </DialogActions> */}
-      </Container>
-
-      <DialogContent>
         {fileData.data?.length === 0 ? (
           <Typography>No data available</Typography>
         ) : (
@@ -185,7 +173,7 @@ function AddStudentFileDialog() {
           />
         )}
       </DialogContent>
-      {isLoading && <GlobalSpinner />}
+      {isPending && <GlobalSpinner />}
     </Dialog>
   );
 }

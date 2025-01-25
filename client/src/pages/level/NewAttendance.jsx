@@ -1,7 +1,12 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import moment from "moment";
 import _ from "lodash";
-import { LoadingButton } from "@mui/lab";
 import {
   Box,
   Button,
@@ -14,8 +19,8 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import CustomDatePicker from "@/components/inputs/CustomDatePicker";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -23,18 +28,15 @@ import {
   getAttendance,
   postAttendance,
   postStudentAttendance,
-} from "../../api/attendanceAPI";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import student_icon from "../../assets/images/header/student_ico.svg";
+} from "@/api/attendanceAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import student_icon from "@/assets/images/header/student_ico.svg";
 import { SchoolRounded, SaveAsRounded } from "@mui/icons-material";
 import SaveAltRounded from "@mui/icons-material/SaveAltRounded";
-import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
-import LoadingSpinner from "../../components/spinners/LoadingSpinner";
+import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function NewAttendance({ to }) {
   const { id, type } = useParams();
@@ -50,11 +52,11 @@ function NewAttendance({ to }) {
     queryKey: ["attendance", id, date],
     queryFn: () => getAttendance(id, date.format("L")),
     enabled: !!id && !!date,
-    onSuccess: (attendance) => {
-      console.log(attendance.status);
-      setAllStudents(attendance?.status);
-    },
   });
+
+  useEffect(() => {
+    setAllStudents(attendance?.data?.status);
+  }, [attendance.data]);
 
   const completed = useMemo(() => {
     const markedStudents = _.filter(allstudents, ({ status }) =>
@@ -78,9 +80,8 @@ function NewAttendance({ to }) {
     );
     setAllStudents(updatedStudents);
   };
-
   ///POST new Attendance
-  const { mutateAsync: postAttendanceAsync, isLoading: isPostingAttendance } =
+  const { mutateAsync: postAttendanceAsync, isPending: isPostingAttendance } =
     useMutation({
       mutationFn: postAttendance,
     });
@@ -106,13 +107,11 @@ function NewAttendance({ to }) {
   };
 
   ///POST new Attendance
-  const { mutateAsync: postStudentAttendanceAsync, isLoading } = useMutation({
+  const { mutateAsync: postStudentAttendanceAsync, isPending } = useMutation({
     mutationFn: postStudentAttendance,
   });
 
   const handleSaveStudentAttendance = (data) => {
-    // console.log(data)
-    // delete data?.tableData;
     const newAttendance = {
       level: id,
       date: date.format("L"),
@@ -151,25 +150,6 @@ function NewAttendance({ to }) {
       />
 
       <Box sx={{ bgcolor: "#fff", p: 2 }}>
-        <DialogActions sx={{ padding: 2 }}>
-          <LoadingButton
-            variant="contained"
-            startIcon={<SaveAsRounded />}
-            onClick={handleSaveAttendance}
-            loading={isPostingAttendance}
-          >
-            {isPostingAttendance ? "Saving" : "Save Attendance"}
-          </LoadingButton>
-        </DialogActions>
-
-        <Box display="flex" justifyContent="flex-start" width={280}>
-          <CustomDatePicker
-            label="Date of Attendance"
-            date={date}
-            setDate={setDate}
-            disableFuture={true}
-          />
-        </Box>
         <Box sx={{ display: "flex", justifyContent: "center", pt: 3 }}>
           <CircularProgress
             variant="determinate"
@@ -190,7 +170,7 @@ function NewAttendance({ to }) {
 
       <CustomizedMaterialTable
         search={true}
-        isLoading={attendance.isLoading}
+        isPending={attendance.isPending}
         icon={student_icon}
         title={`Attendance for ${type}`}
         exportFileName={`Attendance for ${type} on ${date.format(
@@ -242,23 +222,53 @@ function NewAttendance({ to }) {
             field: null,
             title: "Action",
             render: (rowData) => (
-              <LoadingButton
+              <Button
                 size="small"
                 startIcon={<SaveAltRounded color="secondary" />}
                 onClick={() => handleSaveStudentAttendance(rowData)}
-                loading={isLoading}
+                loading={isPending}
               >
                 Save
-              </LoadingButton>
+              </Button>
             ),
           },
         ]}
         data={allstudents}
         actions={[]}
         autoCompleteComponent={
-          <Button variant="contained" onClick={navigateToAttendanceHistory}>
-            View Attendance History
-          </Button>
+          <Box
+            display="flex"
+            flexDirection={{
+              xs: "column",
+              md: "row",
+            }}
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+          >
+            <Box width={280}>
+              <CustomDatePicker
+                label="Date of Attendance"
+                date={date}
+                setDate={setDate}
+                disableFuture={true}
+              />
+            </Box>
+
+            <DialogActions sx={{ padding: 2 }}>
+              <Button
+                variant="contained"
+                startIcon={<SaveAsRounded />}
+                onClick={handleSaveAttendance}
+                loading={isPostingAttendance}
+              >
+                {isPostingAttendance ? "Saving" : "Save Attendance"}
+              </Button>
+              <Button variant="outlined" onClick={navigateToAttendanceHistory}>
+                View History
+              </Button>
+            </DialogActions>
+          </Box>
         }
         options={{
           pageSize: 10,
@@ -266,7 +276,7 @@ function NewAttendance({ to }) {
         }}
         handleRefresh={attendance.refetch}
       />
-      {(isLoading || isPostingAttendance) && (
+      {(isPending || isPostingAttendance) && (
         <LoadingSpinner value="Saving Attendance. Please Wait..." />
       )}
     </>

@@ -14,7 +14,7 @@ const Birthday = () => {
     initialData: [],
   });
 
-  if (students.isLoading) return <BirthdaySkeleton />;
+  if (students.isPending) return <BirthdaySkeleton />;
 
   return (
     <Card sx={{ p: 2, flexGrow: 1 }}>
@@ -26,7 +26,7 @@ const Birthday = () => {
           </Stack>
         }
       >
-        {students.isLoading && <Typography>Loading...</Typography>}
+        {students.isPending && <Typography>Loading...</Typography>}
 
         {students?.data?.length !== 0 ? (
           students?.data?.map((student) => (

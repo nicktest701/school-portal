@@ -106,7 +106,7 @@ const ViewRawSheet = ({ open, setOpen, students }) => {
       <DialogContent>
         <Autocomplete
           options={subjects?.data?.subjects}
-          loading={subjects.isLoading}
+          loading={subjects.isPending}
           getOptionLabel={(option) => option || ''}
           isOptionEqualToValue={(option, value) =>
             value === undefined || value === '' || value === option

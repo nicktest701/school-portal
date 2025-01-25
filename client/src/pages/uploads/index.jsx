@@ -11,42 +11,33 @@ import {
   Autocomplete,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
+import * as XLSX from "xlsx";
 import { v4 as uuid } from "uuid";
 import Swal from "sweetalert2";
 import { useDropzone } from "react-dropzone";
 import _ from "lodash";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { readXLSX } from "../../config/readXLSX";
-import { readCSV } from "../../config/readCSV";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { Add, AddAPhoto, UploadFileRounded } from "@mui/icons-material";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { EMPTY_IMAGES, IMAGES } from "../../config/images";
-import { UserContext } from "../../context/providers/UserProvider";
-import CustomTitle from "../../components/custom/CustomTitle";
-import LoadingSpinner from "../../components/spinners/LoadingSpinner";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { EMPTY_IMAGES, IMAGES } from "@/config/images";
+import { UserContext } from "@/context/providers/UserProvider";
+import CustomTitle from "@/components/custom/CustomTitle";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { Formik } from "formik";
-import CustomFormControl from "../../components/inputs/CustomFormControl";
-import { downloadTemplate } from "../../api/userAPI";
-import { switchColumns } from "../../config/columns";
-import { putBulkData } from "../../api/sessionAPI";
-import useLevel from "../../components/hooks/useLevel";
-import GlobalSpinner from "../../components/spinners/GlobalSpinner";
-import { LoadingButton } from "@mui/lab";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { downloadTemplate } from "@/api/userAPI";
+import { switchColumns } from "@/config/columns";
+import { putBulkData } from "@/api/sessionAPI";
+import useLevel from "@/components/hooks/useLevel";
 
 const Uploads = () => {
   const CSV_FILE_TYPE = "text/csv";
   const XLSX_FILE_TYPE =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   const XLS_FILE_TYPE = "application/vnd.ms-excel";
-  const FILE_TYPES = `".csv",
-    "application/vnd.ms-excel",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"`;
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
@@ -59,7 +50,6 @@ const Uploads = () => {
   const [dataType, setDataType] = useState("personal-data");
   const [gradeName, setGradeName] = useState("");
   const [bulkData, setBulkData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
   const [mainError, setMainError] = useState("");
 
@@ -73,15 +63,18 @@ const Uploads = () => {
     maxFiles: 20,
     accept:
       dataType === "personal-data"
-        ? FILE_TYPES
+        ? {
+            "text/csv": [".csv"],
+            "application/vnd.ms-excel": [".xls"],
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+              [".xlsx"],
+          }
         : {
             "image/*": [".jpeg", ".png", ".webp"],
           },
     maxSize: 200000,
     multiple: true,
     onDrop: (acceptedFiles) => {
-      setLoadingData(true);
-
       if (!_.isEmpty(acceptedFiles)) {
         if (dataType === "personal-data") {
           handleLoadFile(acceptedFiles[0]);
@@ -89,19 +82,15 @@ const Uploads = () => {
 
         if (dataType === "photos") {
           handleLoadImages(acceptedFiles);
-          // setBulkData(personalData);
-          // console.log(personalData);
         }
+      } else {
+        setMainError("No files selected");
       }
-
-      setLoadingData(false);
     },
   });
 
   const fileType = acceptedFiles[0]?.type;
-  //  type: 'text/csv'
-  // type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  // type: 'image/png'
+
   const initialValues = {
     dataCategory,
     dataType,
@@ -114,57 +103,63 @@ const Uploads = () => {
   function handleLoadFile(files) {
     try {
       const reader = new FileReader();
-      files.type === CSV_FILE_TYPE
-        ? reader.readAsBinaryString(files)
-        : reader.readAsArrayBuffer(files);
 
       reader.onload = async function (event) {
-        let results = [];
-        if ([XLSX_FILE_TYPE, XLS_FILE_TYPE].includes(files.type)) {
-          results = readXLSX(event.target.result);
-        }
+        // setLoadingData(true);
+        const binaryStr = event.target?.result;
+        if (binaryStr) {
+          const workbook = XLSX.read(binaryStr, { type: "binary" });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-        if (files.type === CSV_FILE_TYPE) {
-          results = readCSV(event.target.result);
-        }
+          const headers = jsonData[0].map((header) => _.camelCase(header));
+          const rows = jsonData.slice(1);
 
-        setBulkData([]);
-        if (dataCategory === "grades") {
-          const modifiedResults = results?.map((result) => {
-            return {
-              id: uuid(),
-              ...result,
-            };
+          const results = rows.map((row) => {
+            const rowData = {};
+            headers.forEach((header, index) => {
+              rowData[header] = row[index];
+            });
+            return rowData;
           });
-          setBulkData(modifiedResults);
-          return;
-        }
-        if (dataCategory === "subjects") {
-          const modifiedResults = results?.map((result) => {
-            return {
-              ...result,
-              isCore: ["Yes", "True", true].includes(result?.isCore)
-                ? true
-                : false,
-            };
-          });
-          setBulkData(modifiedResults);
-          return;
-        }
-        setBulkData(results);
 
-        // if (results.length !== 0) {
-
-        // }
+          setBulkData([]);
+          if (dataCategory === "grades") {
+            const modifiedResults = results?.map((result) => {
+              return {
+                id: uuid(),
+                ...result,
+              };
+            });
+            setBulkData(modifiedResults);
+            return;
+          }
+          if (dataCategory === "subjects") {
+            const modifiedResults = results?.map((result) => {
+              return {
+                ...result,
+                isCore: ["Yes", "True", true].includes(result?.isCore)
+                  ? true
+                  : false,
+              };
+            });
+            setBulkData(modifiedResults);
+            return;
+          }
+          setBulkData(results);
+        }
       };
+      reader.readAsBinaryString(files);
     } catch (error) {
       setMainError(error);
     } finally {
-      setIsLoading(false);
+      // setLoadingData(false);
     }
   }
   //LOAD Photos
   function handleLoadImages(imagefiles) {
+    // setLoadingData(true);
     const files = Array.from(imagefiles);
 
     const imagePromises = files.map(async (file) => {
@@ -197,10 +192,13 @@ const Uploads = () => {
       })
       .catch((error) => {
         console.error("Error reading files: ", error);
+      })
+      .finally(() => {
+        // setLoadingData(false);
       });
   }
 
-  const { mutateAsync, isLoading: isDataImporting } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: putBulkData,
   });
 
@@ -209,9 +207,9 @@ const Uploads = () => {
       title: "Importing results",
       text: `You are about to import ${dataCategory} ${dataType}.Proceed with import?`,
       showCancelButton: true,
+      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
-        setIsLoading(true);
         let payload;
 
         if (["students", "teachers"].includes(dataCategory)) {
@@ -228,7 +226,6 @@ const Uploads = () => {
               type: "file",
             },
           };
-          console.log(payload);
         }
 
         if (dataCategory === "grades") {
@@ -243,9 +240,6 @@ const Uploads = () => {
         }
 
         mutateAsync(payload, {
-          onSettled: () => {
-            setIsLoading(false);
-          },
           onSuccess: (data) => {
             schoolSessionDispatch(alertSuccess(data));
             navigate(state?.prevPath);
@@ -261,6 +255,26 @@ const Uploads = () => {
   const handleDownloadTemplate = async () => {
     await downloadTemplate(dataCategory);
   };
+
+  //CLOSE File Dialog
+  const handleCancelUploads = () => {
+    Swal.fire({
+      title: "Cancel Uploads",
+      text: "Unsaved Changes will be lost. Are you sure?",
+      showCancelButton: true,
+
+      allowOutsideClick: () => false,
+      closeOnClickOutside: false,
+      backdrop: ` rgba(0,0,0,0.4)`,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        setDataCategory("students");
+        setDataType("personal-data");
+        setBulkData([]);
+      }
+    });
+  };
+
   const columns = switchColumns(dataCategory);
 
   return (
@@ -286,6 +300,7 @@ const Uploads = () => {
                 px={2}
                 my={4}
                 border="1px solid lightgray"
+                borderRadius="12px"
               >
                 <Typography>
                   Select an <b>EXCEL</b> OR <b>CSV</b> file containing student
@@ -389,7 +404,7 @@ const Uploads = () => {
                       )}
                     </CustomFormControl>
                     <Link
-                      sx={{ cursor: "pointer", width: 180 }}
+                      sx={{ cursor: "pointer", display: "block" }}
                       onClick={handleDownloadTemplate}
                       variant="caption"
                     >
@@ -404,18 +419,7 @@ const Uploads = () => {
                       {...getRootProps({ className: "dropzone" })}
                       justifyContent="center"
                       alignItems="center"
-                      // sx={{
-                      //   borderRadius: 1,
-                      //   border:
-                      //     touched.album && errors.album
-                      //       ? "1px solid #B72136"
-                      //       : "1px dotted lightgray",
-                      //   py: 8,
-                      //   px: 4,
-                      // }}
                     >
-                      {/* )} */}
-
                       <input {...getInputProps()} />
                       {fileType === CSV_FILE_TYPE ? (
                         <img
@@ -473,11 +477,16 @@ const Uploads = () => {
                 </>
               </Stack>
               {bulkData?.length > 0 && (
-                <Stack direction="row" justifyContent="flex-end" width='50%'>
-                  <Button>Cancel</Button>
-                  <LoadingButton variant="contained" onClick={handleSubmit}>
+                <Stack
+                  direction="row"
+                  justifyContent="flex-start"
+                  width="100%"
+                  gap={2}
+                >
+                  <Button onClick={handleCancelUploads}>Cancel</Button>
+                  <Button variant="contained" onClick={handleSubmit}>
                     Import Data
-                  </LoadingButton>
+                  </Button>
                 </Stack>
               )}
             </>
@@ -494,8 +503,8 @@ const Uploads = () => {
           <CustomizedMaterialTable
             icon={EMPTY_IMAGES.score}
             search={true}
-            // isLoading={isLoading}
-            title={dataCategory}
+            // isPending={isPending}
+            title={_.upperCase(dataCategory)}
             columns={columns}
             data={bulkData}
             actions={[]}
@@ -535,8 +544,7 @@ const Uploads = () => {
         )}
       </>
 
-      {(isLoading || loadingData) && <LoadingSpinner />}
-      {isDataImporting && <GlobalSpinner />}
+      {(isPending || loadingData) && <LoadingSpinner value="Please Wait.." />}
     </Container>
   );
 };

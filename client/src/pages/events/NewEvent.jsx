@@ -1,9 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
-import "react-quill/dist/quill.snow.css";
 import {
   Container,
   Stack,
-  Button,
   Autocomplete,
   Typography,
   TextField,
@@ -11,7 +9,7 @@ import {
   FormLabel,
   FormHelperText,
 } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import { Formik } from "formik";
 import { AddAPhoto } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
@@ -74,7 +72,7 @@ function NewEvent() {
     caption
   };
 
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postEvent,
   });
 
@@ -227,14 +225,14 @@ function NewEvent() {
 
               <Stack direction="row" justifyContent="flex-end" spacing={2}>
                 <Button onClick={() => navigate("/events")}>Cancel</Button>
-                <LoadingButton
-                  loading={isLoading}
+                <Button
+                  loading={isPending}
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
                 >
                   Create Event
-                </LoadingButton>
+                </Button>
               </Stack>
             </Stack>
           );

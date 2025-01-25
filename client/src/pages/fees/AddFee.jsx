@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  Button,
   TextField,
   Autocomplete,
   Alert,
@@ -17,7 +16,7 @@ import {
 import _ from "lodash";
 import { Formik } from "formik";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
 import { FEES_OPTIONS } from "../../mockup/columns/sessionColumns";
 import { getAllFees, postFee } from "../../api/feeAPI";
 import FeesItem from "./FeeItem";
@@ -54,7 +53,9 @@ const AddFee = ({ open, setOpen }) => {
   //Find all existing level
   const { levelsOption } = useLevel();
 
-  useQuery(["fees"], () => getAllFees(session), {
+  useQuery( {
+    queryKey:["fees"],
+    queryFn: () => getAllFees(session),
     enabled: !!session?.sessionId,
     onSuccess: (fees) => setAllFees(fees),
   });
@@ -271,13 +272,13 @@ const AddFee = ({ open, setOpen }) => {
                 </Stack>
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
-                <LoadingButton
+                <Button
                   loading={isSubmitting}
                   variant="contained"
                   onClick={handleSubmit}
                 >
                   Save
-                </LoadingButton>
+                </Button>
               </DialogActions>
               {isSubmitting && <LoadingSpinner value="Adding New Fee..." />}
             </>

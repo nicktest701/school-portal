@@ -75,7 +75,7 @@ function FeePaymentHistory() {
         </Box>
 
         <CustomizedMaterialTable
-          isLoading={fees.isLoading}
+          isPending={fees.isPending}
           icon={fee_icon}
           title={`Fee Payment on ${date.format("LL")}`}
           addButtonImg={fee_icon}

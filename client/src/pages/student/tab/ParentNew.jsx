@@ -8,8 +8,9 @@ import {
   Avatar,
   DialogContent,
   Dialog,
+  Button
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+
 import CustomFormControl from '../../../components/inputs/CustomFormControl';
 import { Formik } from 'formik';
 import { StudentContext } from '../../../context/providers/StudentProvider';
@@ -37,7 +38,7 @@ const ParentNew = ({ open, setOpen }) => {
   const queryClient = useQueryClient();
   const { studentId } = useParams();
 
-  const { isLoading, mutateAsync } = useMutation({ mutationFn: postParent });
+  const { isPending, mutateAsync } = useMutation({ mutationFn: postParent });
 
   const onSubmit = (values, options) => {
     // console.log(values);
@@ -523,14 +524,14 @@ const ParentNew = ({ open, setOpen }) => {
                 </div>
 
                 <Stack direction='row' justifyContent='flex-end' spacing={2}>
-                  <LoadingButton
-                    loading={isLoading}
+                  <Button
+                    loading={isPending}
                     variant='contained'
                     color='primary'
                     onClick={handleSubmit}
                   >
                     Save
-                  </LoadingButton>
+                  </Button>
                 </Stack>
               </Stack>
             );

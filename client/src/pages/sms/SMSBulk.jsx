@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { SendRounded } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
 import {
   Stack,
   TextField,
@@ -30,7 +30,7 @@ const SMSBulk = () => {
   const [radioValue, setRadioValue] = useState("sms");
   const [group, setGroup] = useState("students");
 
-  const { mutateAsync, isLoading } = useMutation(postMessage);
+  const { mutateAsync, isPending } = useMutation(postMessage);
   const onSubmit = (values, options) => {
     values.rate = "bulk";
     values.group = group;
@@ -152,21 +152,21 @@ const SMSBulk = () => {
               error={Boolean(touched.message && errors.message)}
               helperText={touched.message && errors.message}
             /> */}
-              <LoadingButton
-                loading={isSubmitting || isLoading}
+              <Button
+                loading={isSubmitting || isPending}
                 variant="contained"
                 onClick={handleSubmit}
                 endIcon={<SendRounded />}
                 sx={{ alignSelf: "flex-end" }}
               >
                 Send Message
-              </LoadingButton>
+              </Button>
             </Stack>
           );
         }}
       </Formik>
 
-      {isLoading && <LoadingSpinner value="Sending Message..." />}
+      {isPending && <LoadingSpinner value="Sending Message..." />}
     </>
   );
 };

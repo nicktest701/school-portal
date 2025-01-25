@@ -24,6 +24,8 @@ db.on('disconnected', () => {
   //console.log("db disconnected");
 });
 
+
+
 process.on('SIGINT', async () => {
   await db.close();
   process.exit(0);
