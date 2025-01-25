@@ -69,7 +69,7 @@ function Grade() {
           onSettled: () => {
             queryClient.invalidateQueries(["grades"]);
           },
-          onSuccess: (data) => {
+          onSuccess: () => {
             schoolSessionDispatch(alertSuccess("Grade Removed!"));
           },
           onError: (error) => {

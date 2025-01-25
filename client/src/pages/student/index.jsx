@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
-import Box from "@mui/material/Box";
-import { getAllStudentsBySession } from "../../api/levelAPI";
-import { StudentContext } from "../../context/providers/StudentProvider";
+import { getAllStudentsBySession } from "@/api/levelAPI";
+import { StudentContext } from "@/context/providers/StudentProvider";
 import StudentNav from "./layout/StudentNav";
-import { UserContext } from "../../context/providers/UserProvider";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function Student() {
   const {

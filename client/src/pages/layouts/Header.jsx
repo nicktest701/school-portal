@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import _ from "lodash";
 import { Alert, AppBar, Badge, Box, IconButton } from "@mui/material";
 import { Menu, NotificationsSharp } from "@mui/icons-material";
 import GlobalAlert from "@/components/alerts/GlobalAlert";

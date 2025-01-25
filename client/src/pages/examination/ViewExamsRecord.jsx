@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,16 +7,16 @@ import {
   Stack,
   useTheme,
   Typography,
-} from '@mui/material';
-import ReactToPrint from 'react-to-print';
-import Transition from '../../components/animations/Transition';
-import PropTypes from 'prop-types';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { useQuery } from '@tanstack/react-query';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { getExams } from '../../api/ExaminationAPI';
-import ExamsItem from '../../components/list/ExamsItem';
-
+} from "@mui/material";
+import { useReactToPrint } from "react-to-print";
+import Transition from "@/components/animations/Transition";
+import PropTypes from "prop-types";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { useQuery } from "@tanstack/react-query";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { getExams } from "@/api/ExaminationAPI";
+import ExamsItem from "@/components/list/ExamsItem";
+import ReportCard from "./ReportCard";
 
 const ViewExamsRecord = () => {
   const { palette } = useTheme();
@@ -27,7 +27,7 @@ const ViewExamsRecord = () => {
   } = useContext(SchoolSessionContext);
 
   const { data: student } = useQuery({
-    queryKey: ['student-exams-records', examsRecord.id],
+    queryKey: ["student-exams-records", examsRecord.id],
     queryFn: () => getExams(examsRecord.id),
     enabled: !!examsRecord.id,
   });
@@ -35,50 +35,38 @@ const ViewExamsRecord = () => {
   //close dialog
   const handleClose = () => {
     schoolSessionDispatch({
-      type: 'openViewExamsRecord',
-      payload: { open: false, id: '' },
+      type: "openViewExamsRecord",
+      payload: { open: false, id: "" },
     });
   };
 
-  // const records = useQuery({
-  //   queryKey: ['exams-record'],
-  //   queryFn: () =>
-  //     generateReports({
-  //       sessionId: session.sessionId,
-  //       termId: session.termId,
-  //     }),
-  //   enabled: !!examsRecord.id,
-  // });
+  const reactToPrintFn = useReactToPrint({
+    documentTitle: "Student Report",
+    contentRef: componentRef,
+  });
 
   return (
     <>
       <Dialog
         open={examsRecord.open}
         onClose={handleClose}
-        maxWidth='md'
+        maxWidth="md"
         fullWidth
         TransitionComponent={Transition}
       >
-        <CustomDialogTitle title='Exams Details' onClose={handleClose} />
+        <CustomDialogTitle title="Exams Details" onClose={handleClose} />
         <DialogActions>
-          <ReactToPrint
-            // pageStyle={
-            //   'width:8.5in";min-height:11in"; margin:auto",padding:4px;'
-            // }
-            trigger={() => <Button variant='contained'>Print Report</Button>}
-            content={() => componentRef.current}
-            documentTitle={'Report'}
-          />
+          <Button onClick={() => reactToPrintFn()}>Print Report</Button>
         </DialogActions>
         <DialogContent>
-          <Stack direction='row' spacing={2}>
-            <Typography variant='h5'>
+          <Stack direction="row" spacing={2}>
+            <Typography variant="h5">
               {student?.level}-{student?.term}
             </Typography>
           </Stack>
           <Stack>
             <table
-              style={{ textAlign: 'center', borderCollapse: 'collapse' }}
+              style={{ textAlign: "center", borderCollapse: "collapse" }}
               // border='1'
             >
               <thead>
@@ -101,8 +89,8 @@ const ViewExamsRecord = () => {
                 ) : (
                   <tr>
                     <td
-                      colSpan='7'
-                      style={{ padding: '3px 1px', fontSize: '20px' }}
+                      colSpan="7"
+                      style={{ padding: "3px 1px", fontSize: "20px" }}
                     >
                       No Student Record Available
                     </td>
@@ -111,12 +99,12 @@ const ViewExamsRecord = () => {
               </tbody>
               <tfoot
                 style={{
-                  textAlign: 'center',
-                  textDecoration: 'underline',
+                  textAlign: "center",
+                  textDecoration: "underline",
                   borderTop: `solid 5px ${palette.secondary.main}`,
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
-                  width: '100%',
+                  bgcolor: "primary.main",
+                  color: "primary.contrastText",
+                  width: "100%",
                   padding: 1,
                 }}
               >
@@ -134,8 +122,8 @@ const ViewExamsRecord = () => {
           </Stack>
         </DialogContent>
       </Dialog>
-      <div className='print-container' ref={componentRef}>
-        <Report student={student} />
+      <div className="print-container" ref={componentRef}>
+        <ReportCard student={student} />
       </div>
     </>
   );
