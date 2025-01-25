@@ -49,6 +49,7 @@ const whitelist = [
   "https://44.226.122.3:10000",
   "https://school-portal-aivn.onrender.com",
   "https://school-portal-aivn.onrender.com/*",
+  
   process.env.CLIENT_URL,
 ];
 const corsOptions = {

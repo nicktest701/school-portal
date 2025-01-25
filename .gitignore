@@ -25,6 +25,5 @@ yarn-debug.log*
 yarn-error.log*
 playground.js
 
-*.png
 *.pdf
 .cache
