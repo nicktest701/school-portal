@@ -49,8 +49,11 @@ const whitelist = [
   "https://44.226.122.3:10000",
   "https://school-portal-aivn.onrender.com",
   "https://school-portal-aivn.onrender.com/*",
-  "https://school-portal-chi.vercel.app/",
+  "https://school-portal-chi.vercel.app",
   "https://school-portal-chi.vercel.app/*",
+  "https://vercel.com/nicktest701s-projects/school-portal/DKVdBYdzULv2q6tLYarAWtoWuFTn",
+  "https://school-portal-nicktest701s-projects.vercel.app",
+  "https://school-portal-git-main-nicktest701s-projects.vercel.app",
 
   process.env.CLIENT_URL,
 ];
@@ -162,7 +165,7 @@ app.get(
 
 app.use((err, req, res, next) => {
   console.log(err);
-  res.status(err.status || 500);
+  // res.status(err.status || 500);
 
   // if (process.env.NODE_ENV === 'production') {
   //   res.send('An unknown error has occurred!.');
