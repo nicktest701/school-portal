@@ -1,28 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import DialogActions from "@mui/material/DialogActions";
-import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
-import { getUser, putUser } from "../../api/userAPI";
-import CustomFormControl from "../../components/inputs/CustomFormControl";
-import { userEditValidationSchema } from "../../config/validationSchema";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { uploadProfileImage } from "../../api/sessionAPI";
+import { getUser, putUser } from "@/api/userAPI";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { userEditValidationSchema } from "@/config/validationSchema";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { uploadProfileImage } from "@/api/sessionAPI";
 import moment from "moment";
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
-import CustomImageChooser from "../../components/inputs/CustomImageChooser";
-import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
+import CustomDatePicker from "@/components/inputs/CustomDatePicker";
+import CustomImageChooser from "@/components/inputs/CustomImageChooser";
+import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
@@ -32,9 +28,8 @@ const UserEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [dob, setDob] = useState(null);
-  const [profileImage, setProfileImage] = useState(null);
 
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
 
   // const user = userEditData?.data;
 
@@ -48,22 +43,22 @@ const UserEdit = () => {
 
   useEffect(() => {
     setDob(moment(user?.data?.dateofbirth));
-    setProfileImage(
-      `${import.meta.env.VITE_BASE_URL}/images/users/${user?.data?.profile}`
-    );
   }, [user?.data]);
 
   //PUT user
   const { mutateAsync, isPending } = useMutation({ mutationFn: putUser });
   const onSubmit = (values, options) => {
     delete values.profile;
-     values.fullname=`${values?.firstname} ${values?.lastname}`
+    values.fullname = `${values.firstname} ${values.lastname}`;
     values.dateofbirth = moment(dob).format("L");
+    values.isOnlyUpdate = true;
 
-    // //console.log(values);
+    // console.log(values);
+    // return
     mutateAsync(values, {
       onSettled: () => {
         queryClient.invalidateQueries(["users"]);
+        queryClient.invalidateQueries({ queryKey: ["user", id] });
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
@@ -76,7 +71,10 @@ const UserEdit = () => {
     });
   };
 
-  const uploadProfile = async (e) => {
+  const changeProfile = useMutation({
+    mutationFn: uploadProfileImage,
+  });
+  const uploadProfile = (e) => {
     const profile = e.target?.files[0];
     const info = {
       _id: id,
@@ -84,25 +82,31 @@ const UserEdit = () => {
       type: "users",
     };
 
-    try {
-      const data = await uploadProfileImage(info);
-      schoolSessionDispatch(alertSuccess(data));
-      setProfileImage(URL.createObjectURL(profile));
-    } catch (error) {
-      schoolSessionDispatch(alertError(error));
-    }
-    queryClient.invalidateQueries(["users"]);
+    changeProfile.mutateAsync(info, {
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        queryClient.invalidateQueries({ queryKey: ["user", id] });
+      },
+      onSuccess: () => {
+        schoolSessionDispatch(alertSuccess("Profile Updated!"));
+      },
+      onError: (error) => {
+        schoolSessionDispatch(alertError("An unknown error has occurred!"));
+      },
+    });
   };
+
+  const handleGoBack = () => navigate(`/users/${id}`);
 
   return (
     <>
-      <Back color="#012e54" />
+      <Back color="#012e54" to={`/users/${id}`} />
       <CustomTitle
         title="Update User Information"
         subtitle="Make Changes to user profile information"
         color="primary.main"
       />
-      <Divider />
+     
       <Formik
         initialValues={user?.data}
         onSubmit={onSubmit}
@@ -119,14 +123,18 @@ const UserEdit = () => {
         }) => {
           return (
             <>
-              <Box sx={{ bgcolor: "#fff" }}>
+              <Box sx={{ bgcolor: "#fff", borderRadius: "12px" }}>
                 <Stack padding={2} spacing={2}>
                   <Stack alignSelf="center">
                     <CustomImageChooser handleImageUpload={uploadProfile}>
-                      <Avatar
-                        srcSet={profileImage}
-                        sx={{ width: 100, height: 100, alignSelf: "center" }}
-                      />
+                      {changeProfile.isPending ? (
+                        <div className="spinner"></div>
+                      ) : (
+                        <Avatar
+                          srcSet={user?.data?.profile}
+                          sx={{ width: 100, height: 100, alignSelf: "center" }}
+                        />
+                      )}
                     </CustomImageChooser>
                   </Stack>
                   <Typography
@@ -138,40 +146,40 @@ const UserEdit = () => {
                   </Typography>
 
                   <CustomFormControl>
-                  <TextField
-                    label="Firstname"
-                    type="text"
-                    fullWidth
-                    size="small"
-                    value={values.firstname}
-                    onChange={handleChange("firstname")}
-                    error={Boolean(touched.firstname && errors.firstname)}
-                    helperText={touched.firstname && errors.firstname}
-                  />
-                  <TextField
-                    label="Lastname"
-                    type="text"
-                    fullWidth
-                    size="small"
-                    value={values.lastname}
-                    onChange={handleChange("lastname")}
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    helperText={touched.lastname && errors.lastname}
-                  />
-        
-                 
-                </CustomFormControl>
-                              
                     <TextField
-                      label="Username"
+                      label="Firstname"
+                      type="text"
                       fullWidth
                       size="small"
-                      value={values?.username || ""}
-                      onChange={handleChange("username")}
-                      error={Boolean(touched.username && errors.username)}
-                      helperText={touched.username && errors.username}
+                      value={values?.firstname}
+                      onChange={handleChange("firstname")}
+                      error={Boolean(touched.firstname && errors.firstname)}
+                      helperText={touched.firstname && errors.firstname}
                     />
-               
+                    <TextField
+                      label="Lastname"
+                      type="text"
+                      fullWidth
+                      size="small"
+                      value={values?.lastname}
+                      onChange={handleChange("lastname")}
+                      error={Boolean(touched.lastname && errors.lastname)}
+                      helperText={touched.lastname && errors.lastname}
+                    />
+                  </CustomFormControl>
+
+                  <TextField
+                    label="Username"
+                    fullWidth
+                    size="small"
+                    value={values?.username || ""}
+                    onChange={handleChange("username")}
+                    error={Boolean(touched.username && errors.username)}
+                    helperText={touched.username && errors.username}
+                    contentEditable={false}
+                    disabled={true}
+                  />
+
                   <CustomFormControl>
                     <CustomDatePicker
                       label="Date of Birth"
@@ -210,7 +218,7 @@ const UserEdit = () => {
                     <MenuItem value="director">Director</MenuItem>
                     <MenuItem value="secretary">Secretary</MenuItem>
                     <MenuItem value="coordinator">Exams Coordinator</MenuItem>
-                    <MenuItem value="teacher">Facilitator</MenuItem>
+                    <MenuItem value="teacher">Teacher</MenuItem>
                   </TextField>
                   <CustomFormControl>
                     <TextField
@@ -271,9 +279,14 @@ const UserEdit = () => {
                   <DialogActions>
                     <Button
                       loading={isSubmitting || isPending}
+                      onClick={handleGoBack}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      loading={isSubmitting || isPending}
                       variant="contained"
                       color="primary"
-                      sx={{ minWidth: { xs: 100, sm: 150 } }}
                       onClick={handleSubmit}
                     >
                       Save Changes

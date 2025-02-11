@@ -8,15 +8,12 @@ import Typography from "@mui/material/Typography";
 import SaveAltRounded from "@mui/icons-material/SaveAltRounded";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { addSubjectsToLevel } from "../../api/levelAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { addSubjectsToLevel } from "@/api/levelAPI";
 import LevelSubjectItem from "../items/LevelSubjectItem";
-import { getSubjects } from "../../api/subjectAPI";
+import { getSubjects } from "@/api/subjectAPI";
 
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import useLevelById from "../hooks/useLevelById";
 import { Box, ListSubheader } from "@mui/material";
 import Back from "../Back";
@@ -151,21 +148,23 @@ const AddCurrentSubjects = () => {
           sx={{
             height: 400,
             p: 2,
-            mt: 4,
+            my: 4,
             overflow: "auto",
             bgcolor: "#fff",
+            borderRadius: "12px",
           }}
           subheader={
             <ListSubheader
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column", md: "row" },
                 alignItems: "center",
                 justifyContent: "space-between",
                 gap: 4,
               }}
             >
-              <Typography variant="h4">
-                {subjectList.length} Course(s) Available
+              <Typography variant="h6">
+                {subjectList?.length} Course(s) Available
               </Typography>
               <Button
                 startIcon={<SaveAltRounded />}

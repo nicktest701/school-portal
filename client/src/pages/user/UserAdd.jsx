@@ -10,27 +10,26 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
 import moment from "moment";
 import React, { useContext, useState } from "react";
-import { postUser } from "../../api/userAPI";
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
-import CustomFormControl from "../../components/inputs/CustomFormControl";
-import CustomImageChooser from "../../components/inputs/CustomImageChooser";
-import { userInitialValues } from "../../config/initialValues";
-import { userValidationSchema } from "../../config/validationSchema";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { NATIONALITY } from "../../mockup/data/nationality";
-import { TOWNS } from "../../mockup/data/towns";
-import CustomTitle from "../../components/custom/CustomTitle";
+import { postUser } from "@/api/userAPI";
+import CustomDatePicker from "@/components/inputs/CustomDatePicker";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import CustomImageChooser from "@/components/inputs/CustomImageChooser";
+import { userInitialValues } from "@/config/initialValues";
+import { userValidationSchema } from "@/config/validationSchema";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { NATIONALITY } from "@/mockup/data/nationality";
+import { TOWNS } from "@/mockup/data/towns";
+import CustomTitle from "@/components/custom/CustomTitle";
 import { SchoolRounded } from "@mui/icons-material";
-import Back from "../../components/Back";
+import Back from "@/components/Back";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 function UserAdd() {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   //states
   const [profileImg, setProfieImg] = useState(null);
@@ -38,11 +37,12 @@ function UserAdd() {
   const [initValues] = useState(userInitialValues);
 
   //Post teacher
-  const { mutateAsync, isPending } = useMutation(postUser);
+  const { mutateAsync, isPending } = useMutation({ mutationFn: postUser });
   const onSubmit = (values, options) => {
     values.dateofbirth = moment(dob).format("L");
     values.fullname = `${values?.firstname} ${values?.lastname}`;
-    // //console.log(values);
+    // console.log(values);
+    // return;
 
     mutateAsync(values, {
       onSettled: () => {
@@ -51,6 +51,7 @@ function UserAdd() {
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
+        navigate(`/users`);
         options.resetForm();
         setProfieImg(null);
       },
@@ -93,14 +94,14 @@ function UserAdd() {
           return (
             <Box bgcolor="#fff" p={2}>
               <Stack padding={2} spacing={2}>
-              <Stack alignSelf="center">
-                <CustomImageChooser handleImageUpload={handleLoadFile}>
-                  <Avatar
-                    srcSet={profileImg}
-                    sx={{ width: 100, height: 100, alignSelf: "center" }}
-                  />
-                </CustomImageChooser>
-              </Stack>
+                <Stack alignSelf="center">
+                  <CustomImageChooser handleImageUpload={handleLoadFile}>
+                    <Avatar
+                      srcSet={profileImg}
+                      sx={{ width: 100, height: 100, alignSelf: "center" }}
+                    />
+                  </CustomImageChooser>
+                </Stack>
                 <Typography
                   variant="body2"
                   color="primary.main"
@@ -268,6 +269,7 @@ function UserAdd() {
                     label="Password"
                     fullWidth
                     size="small"
+                    autoComplete="no"
                     value={values.password}
                     onChange={handleChange("password")}
                     error={Boolean(touched.password && errors.password)}
@@ -277,6 +279,7 @@ function UserAdd() {
                     type="password"
                     label="Confirm Password"
                     fullWidth
+                    autoComplete="no"
                     size="small"
                     value={values.confirmPassword}
                     onChange={handleChange("confirmPassword")}
@@ -291,14 +294,14 @@ function UserAdd() {
                 <Stack
                   direction="row"
                   justifyContent="flex-end"
+                  alignItems="center"
                   spacing={2}
                   paddingY={2}
                 >
                   <Button
-                    loading={isSubmitting}
+                    loading={isSubmitting || isPending}
                     variant="contained"
                     color="primary"
-                    sx={{ minWidth: { xs: 100, sm: 150 } }}
                     onClick={handleSubmit}
                   >
                     Save User

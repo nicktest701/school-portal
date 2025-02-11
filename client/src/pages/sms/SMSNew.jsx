@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { MailRounded, Message } from "@mui/icons-material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import {  Divider, Tab, Typography } from "@mui/material";
+import { Divider, Tab, Typography } from "@mui/material";
 import SMSQuick from "./SMSQuick";
 import SMSBulk from "./SMSBulk";
-import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
+import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
 
 const SMSNew = () => {
   const [tab, setTab] = useState("1");
@@ -39,10 +39,10 @@ const SMSNew = () => {
           />
           <Tab label="Bulk Messages" value="2" icon={null} />
         </TabList>
-        <TabPanel value="1">
+        <TabPanel value="1" sx={{ px: 0 }}>
           <SMSQuick />
         </TabPanel>
-        <TabPanel value="2">
+        <TabPanel value="2" sx={{ px: 0 }}>
           <SMSBulk />
         </TabPanel>
       </TabContext>

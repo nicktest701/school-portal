@@ -11,6 +11,7 @@ const _ = require('lodash');
 const multer = require('multer');
 const Teacher = require('../models/teacherModel');
 const User = require('../models/userModel');
+const { uploadFile } = require('../config/uploadFile');
 
 //
 const Storage = multer.diskStorage({
@@ -81,6 +82,14 @@ router.post(
         );
     }
 
+    let teacherPhoto = "https://firebasestorage.googleapis.com/v0/b/fir-system-54b99.appspot.com/o/download.png?alt=media&token=c3f23cd6-8973-4681-9900-98dbadc93d2a"
+    if (req.file) {
+      const filename = req.file?.filename;
+      teacherPhoto = await uploadFile(filename, 'users/');
+      newTeacher.profile = teacherPhoto
+    }
+
+
     // console.log(newTeacher)
     const teacher = await Teacher.create(newTeacher);
 
@@ -90,10 +99,14 @@ router.post(
 
     const hashedPassword = await bcrypt.hash(teacher?.phonenumber, 10);
 
+
+
     const user = {
       _id: teacher?._id,
-      profile: req?.file?.filename,
-      fullname: _.startCase(`${newTeacher?.surname} ${newTeacher?.firstname}`),
+      profile: teacherPhoto,
+      firstname: newTeacher?.firstname,
+      lastname: newTeacher?.surname,
+      fullname: _.startCase(`${newTeacher?.firstname} ${newTeacher?.surname}`),
       username: teacher?.username,
       dateofbirth: teacher?.dateofbirth,
       email: teacher?.email,
@@ -188,9 +201,18 @@ router.put(
   AsyncHandler(async (req, res) => {
     const { _id } = req.body;
 
+
+    if (_.isEmpty(req.file)) {
+      return res.status(400).json("Please upload a file");
+    }
+
+    const filename = req.file?.filename;
+    const userPhoto = await uploadFile(filename, 'users/');
+
+
     const updatedTeacher = await Teacher.findByIdAndUpdate(_id, {
       $set: {
-        profile: req.file?.filename,
+        profile: userPhoto
       },
     });
 
@@ -202,7 +224,7 @@ router.put(
 
     await User.findByIdAndUpdate(_id, {
       $set: {
-        profile: req.file?.filename,
+        profile: userPhoto
       },
     });
 
@@ -213,23 +235,29 @@ router.put(
 //@PUT Update Teacher bulk profile
 router.put(
   '/bulk-profile',
-  // upload.single('profile'),
+  upload.array("profile", 20),
   AsyncHandler(async (req, res) => {
-    const { students } = req.body;
 
-    const updatedTeachers = students?.map(async (student) => {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json("No files uploaded");
+    }
+
+
+    const uploadedUrls = await uploadMultipleImages(req.files, "users/");
+
+    const updatedTeachers = uploadedUrls?.map(async (teacher) => {
 
       return await Teacher.findOneAndUpdate({
-        phonenumber: student?.id
+        phonenumber: teacher?.indexnumber
       }, {
         $set: {
-          profile: student?.src
+          profile: teacher?.url
         },
       });
 
     })
-
     const modifiedTeachers = await Promise.all(updatedTeachers);
+
 
     if (_.isEmpty(modifiedTeachers)) {
       return res

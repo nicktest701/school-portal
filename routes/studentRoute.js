@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { randomUUID } = require('crypto');
-const AsyncHandler = require('express-async-handler');
+const asyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
 const {
   Types: { ObjectId },
@@ -13,6 +13,7 @@ const Parent = require('../models/parentModel');
 const Examination = require('../models/examinationModel');
 const CurrentFee = require('../models/currentFeeModel');
 const Fee = require('../models/feeModel');
+const { uploadFile, uploadMultipleImages } = require('../config/uploadFile');
 
 
 const Storage = multer.diskStorage({
@@ -29,10 +30,11 @@ const upload = multer({ storage: Storage });
 
 
 
+
 //@GET All students
 router.get(
   '/',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const students = await Student.find({});
     res.json(students);
   })
@@ -41,7 +43,7 @@ router.get(
 //@GET All students
 router.get(
   '/',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const students = await Student.find({});
     res.json(students);
   })
@@ -50,7 +52,7 @@ router.get(
 //@GET All students details
 router.get(
   '/details',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { sessionId, termId } = req.query;
 
     const allLevels = await Level.find({
@@ -155,7 +157,7 @@ router.get(
 //@GET Parent by student ID
 router.get(
   '/parent',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id } = req.query;
     const parent = await Parent.findOne({
       student: new ObjectId(id),
@@ -172,7 +174,7 @@ router.get(
 //@GET student by student index number
 router.get(
   '/index-number',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id } = req.query;
 
     const student = await Student.findOne({
@@ -189,7 +191,7 @@ router.get(
 //@GET student by student id
 router.get(
   '/:id',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const student = await Student.findById(id);
@@ -204,7 +206,7 @@ router.get(
 //@GET ALL student for search
 router.post(
   '/search/all',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { level } = req.body;
 
     //find student current level details
@@ -237,9 +239,13 @@ router.post(
 //@POST students
 router.post(
   '/',
-  // upload.single('profile'),
-  AsyncHandler(async (req, res) => {
-    const { personal, medical, academic, parent } = req.body;
+  upload.single('profile'),
+  asyncHandler(async (req, res) => {
+    const { details } = req.body;
+
+
+    const studentDetails = JSON.parse(details)
+    const { personal, medical, academic, parent } = studentDetails;
 
     const doesStudentExists = await Student.findOne({
       indexnumber: personal?.indexnumber
@@ -249,11 +255,15 @@ router.post(
       return res.status(400).json('Index Number already exist!');
     }
 
-
+    let studentPhoto = "https://firebasestorage.googleapis.com/v0/b/fir-system-54b99.appspot.com/o/download.png?alt=media&token=c3f23cd6-8973-4681-9900-98dbadc93d2a"
+    if (req.file) {
+      const filename = req.file?.filename;
+      studentPhoto = await uploadFile(filename, 'students/');
+    }
 
     //Add new Student
     const student = await Student.create({
-      profile: personal?.profile,
+      profile: studentPhoto,
       indexnumber: personal?.indexnumber,
       firstname: personal?.firstname,
       surname: personal?.surname,
@@ -291,24 +301,16 @@ router.post(
       comments: {},
     });
 
-    //find current fees for a particular student class
-    const fees = await Fee.findOne({
+
+    await CurrentFee.create({
       session: new ObjectId(personal.session?.sessionId),
       term: new ObjectId(personal.session?.termId),
       level: new ObjectId(personal.level?._id),
+      fee: level?.fees?._id,
+      student: student._id,
+      payment: [],
     });
 
-    //Generate current student fees
-    if (!_.isEmpty(fees)) {
-      await CurrentFee.create({
-        session: new ObjectId(personal.session?.sessionId),
-        term: new ObjectId(personal.session?.termId),
-        level: new ObjectId(personal.level?._id),
-        fee: fees._id,
-        student: student._id,
-        payment: [],
-      });
-    }
 
     const firstParent = {
       ...parent.parent1,
@@ -328,7 +330,7 @@ router.post(
 //@PUT students
 router.post(
   '/many',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { session, students, type } = req.body;
 
     // console.log(session)
@@ -420,9 +422,27 @@ router.post(
 
 
 //@PUT students
+router.post(
+  '/test',
+  upload.single('profile'),
+  asyncHandler(async (req, res) => {
+
+    let filename = req.file?.filename;
+    imageURL = await uploadFile(filename, 'students/');
+    console.log(imageURL)
+
+    // const studentPhoto = await uploadBase64Image(req.body?.profile, '123', 'students')
+
+    // res.status(200).json({
+    //   studentPhoto
+    // });
+    res.status(200).json('done');
+  })
+);
+//@PUT students
 router.put(
   '/',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const id = req.body._id;
 
     if (!mongoose.isValidObjectId(id)) {
@@ -453,7 +473,7 @@ router.put(
 //@POST Update Student medical history
 router.put(
   '/medical',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id } = req.body;
 
     const updatedStudent = await Student.findByIdAndUpdate(id, {
@@ -477,12 +497,21 @@ router.put(
 router.put(
   '/profile',
   upload.single('profile'),
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { _id } = req.body;
+
+    if (_.isEmpty(req.file)) {
+      return res.status(400).json("Please upload a file");
+    }
+
+
+    const filename = req.file?.filename;
+    const studentPhoto = await uploadFile(filename, 'students/');
+
 
     const updatedStudent = await Student.findByIdAndUpdate(_id, {
       $set: {
-        profile: req.file?.filename,
+        profile: studentPhoto
       },
     });
 
@@ -499,23 +528,29 @@ router.put(
 //@POST Update Student bulk profile
 router.put(
   '/bulk-profile',
-  // upload.single('profile'),
-  AsyncHandler(async (req, res) => {
-    const { students } = req.body;
+  upload.array("profile", 20),
+  asyncHandler(async (req, res) => {
 
-    const updatedStudent = students?.map(async (student) => {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json("No files uploaded");
+    }
+
+
+    const uploadedUrls = await uploadMultipleImages(req.files, "students/");
+
+    const updatedStudents = uploadedUrls?.map(async (student) => {
 
       return await Student.findOneAndUpdate({
-        indexnumber: student?.id
+        indexnumber: student?.indexnumber
       }, {
         $set: {
-          profile: student?.src
+          profile: student?.url
         },
       });
 
     })
 
-    const modifiedStudents = await Promise.all(updatedStudent);
+    const modifiedStudents = await Promise.all(updatedStudents);
 
     if (_.isEmpty(modifiedStudents)) {
       return res
@@ -530,7 +565,7 @@ router.put(
 //@DISABLE Student account
 router.get(
   '/disable',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const { id, active } = req.query;
 
     if (!mongoose.isValidObjectId(id)) {
@@ -566,7 +601,7 @@ router.get(
 //@DELETE student
 router.delete(
   '/',
-  AsyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) => {
     const id = req.query.id;
 
     if (!mongoose.isValidObjectId(id)) {

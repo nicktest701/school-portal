@@ -27,13 +27,7 @@ export const TEACHERS_COLUMN = [
       >
         <Avatar
           src={
-            rowData.profile === undefined || rowData.profile === ""
-              ? null
-              : rowData?.profile?.startsWith("data:image")
-              ? rowData?.profile
-              : `${import.meta.env.VITE_BASE_URL}/images/users/${
-                  rowData.profile
-                }`
+            rowData.profile
           }
         />
         <ListItemText

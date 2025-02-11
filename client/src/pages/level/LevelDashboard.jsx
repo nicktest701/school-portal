@@ -5,10 +5,10 @@ import Person3 from "@mui/icons-material/Person3";
 
 import { Box, Divider, Typography } from "@mui/material";
 import LevelTab from "./LevelTab";
-import useLevel from "../../components/hooks/useLevel";
-import CustomTitle from "../../components/custom/CustomTitle";
-import level_icon from "../../assets/images/header/level_ico.svg";
-import DashboardCard from "../../components/cards/DashboardCard";
+import useLevel from "@/components/hooks/useLevel";
+import CustomTitle from "@/components/custom/CustomTitle";
+import level_icon from "@/assets/images/header/level_ico.svg";
+import DashboardCard from "@/components/cards/DashboardCard";
 
 const LevelDashboard = () => {
   const { levelSummary } = useLevel();

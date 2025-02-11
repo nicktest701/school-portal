@@ -1,20 +1,20 @@
 import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { EMPTY_IMAGES } from "../../config/images";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { EMPTY_IMAGES } from "@/config/images";
 import AddSubject from "./AddSubject";
-import { SUBJECT_COLUMNS } from "../../mockup/columns/sessionColumns";
+import { SUBJECT_COLUMNS } from "@/mockup/columns/sessionColumns";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteSubject, getSubjects } from "../../api/subjectAPI";
+import { deleteSubject, getSubjects } from "@/api/subjectAPI";
 import { Stack } from "@mui/material";
 import Edit from "@mui/icons-material/Edit";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import EditSubject from "./EditSubject";
 import {
   alertError,
   alertSuccess,
-} from "../../context/actions/globalAlertActions";
+} from "@/context/actions/globalAlertActions";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function Subject() {
@@ -26,7 +26,7 @@ function Subject() {
   const subjects = useQuery({
     queryKey: ["subjects"],
     queryFn: () => getSubjects(),
-    initialData: [],
+    // initialData: [],
   });
 
   const updateSubject = (subject) => {
@@ -73,13 +73,13 @@ function Subject() {
         return (
           <Stack direction="row" spacing={2}>
             <Edit
-              className="ico edit"
+              className="ico"
               onClick={() => updateSubject(rowData)}
               title="Edit"
               titleAccess="Edit"
             />
             <DeleteOutline
-              className="ico delete"
+              className="ico"
               onClick={() => removeSubject(rowData?._id)}
               title="Delete"
               titleAccess="Delete"

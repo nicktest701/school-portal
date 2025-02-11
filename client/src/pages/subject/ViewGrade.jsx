@@ -1,16 +1,8 @@
-import {
-  Dialog,
-  DialogContent,
-  FormLabel,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
- 
-} from '@mui/material';
-import React, { useContext } from 'react';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import GradeItem from './GradeItem';
+import { Dialog, DialogContent } from "@mui/material";
+import React, { useContext } from "react";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import GradeTable from "@/components/tables/GradeTable";
 
 function ViewGrade() {
   const {
@@ -22,30 +14,15 @@ function ViewGrade() {
 
   const handleCloseDialog = () => {
     schoolSessionDispatch({
-      type: 'viewGrade',
+      type: "viewGrade",
       payload: { open: false, data: [] },
     });
   };
   return (
-    <Dialog open={open} maxWidth='sm' fullWidth>
-      <CustomDialogTitle title='Grade' onClose={handleCloseDialog} />
+    <Dialog open={open} maxWidth="sm" fullWidth>
+      <CustomDialogTitle title="Grade" onClose={handleCloseDialog} />
       <DialogContent>
-        <List>
-          <ListItem
-            sx={{ display: 'flex', columnGap: 8 }}
-            width='80%'
-          >
-            <FormLabel>Highest Mark</FormLabel>
-            <FormLabel>Lowest Mark</FormLabel>
-            <FormLabel>Grade</FormLabel>
-            <ListItemSecondaryAction>
-              <FormLabel>Remarks</FormLabel>
-            </ListItemSecondaryAction>
-          </ListItem>
-          {ratings.map((item) => (
-            <GradeItem key={item?.id} {...item} />
-          ))}
-        </List>
+        <GradeTable data={ratings} />
       </DialogContent>
     </Dialog>
   );

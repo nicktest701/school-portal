@@ -52,7 +52,7 @@ const Uploads = () => {
   const [bulkData, setBulkData] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
   const [mainError, setMainError] = useState("");
-
+  const [uploadProgress, setUploadProgress] = useState(0);
   //Get All levels
   const { levelsOption } = useLevel();
 
@@ -159,43 +159,46 @@ const Uploads = () => {
   }
   //LOAD Photos
   function handleLoadImages(imagefiles) {
-    // setLoadingData(true);
     const files = Array.from(imagefiles);
 
-    const imagePromises = files.map(async (file) => {
-      const src = () =>
-        new Promise((resolve, reject) => {
-          const reader = new FileReader();
+    setBulkData([]);
+    setBulkData(files);
+    // setLoadingData(true);
 
-          reader.onload = (event) => {
-            resolve(event.target.result);
-          };
+    // const imagePromises = files.map(async (file) => {
+    //   const src = () =>
+    //     new Promise((resolve, reject) => {
+    //       const reader = new FileReader();
 
-          reader.onerror = (error) => {
-            reject(error);
-          };
+    //       reader.onload = (event) => {
+    //         resolve(event.target.result);
+    //       };
 
-          reader.readAsDataURL(file);
-        });
-      const imageSrc = await src();
+    //       reader.onerror = (error) => {
+    //         reject(error);
+    //       };
 
-      return {
-        id: file.name?.split(".")[0],
-        src: imageSrc,
-      };
-    });
+    //       reader.readAsDataURL(file);
+    //     });
+    //   const imageSrc = await src();
 
-    Promise.all(imagePromises)
-      .then((imagesDataUrls) => {
-        setBulkData([]);
-        setBulkData(imagesDataUrls);
-      })
-      .catch((error) => {
-        console.error("Error reading files: ", error);
-      })
-      .finally(() => {
-        // setLoadingData(false);
-      });
+    //   return {
+    //     id: file.name?.split(".")[0],
+    //     src: imageSrc,
+    //   };
+    // });
+
+    // Promise.all(imagePromises)
+    //   .then((imagesDataUrls) => {
+    //     setBulkData([]);
+    //     setBulkData(imagesDataUrls);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error reading files: ", error);
+    //   })
+    //   .finally(() => {
+    //     // setLoadingData(false);
+    //   });
   }
 
   const { mutateAsync, isPending } = useMutation({
@@ -239,15 +242,23 @@ const Uploads = () => {
           payload = { dataCategory, dataType, data: bulkData };
         }
 
-        mutateAsync(payload, {
-          onSuccess: (data) => {
-            schoolSessionDispatch(alertSuccess(data));
-            navigate(state?.prevPath);
+        mutateAsync(
+          {
+            ...payload,
+            onProgress: setUploadProgress,
           },
-          onError: (error) => {
-            schoolSessionDispatch(alertError(error));
-          },
-        });
+          {
+            onSuccess: (data) => {
+              setUploadProgress(0);
+              schoolSessionDispatch(alertSuccess(data));
+              setBulkData([]);
+              navigate(state?.prevPath);
+            },
+            onError: (error) => {
+              schoolSessionDispatch(alertError(error));
+            },
+          }
+        );
       }
     });
   };
@@ -294,12 +305,19 @@ const Uploads = () => {
         {({ errors, touched, handleSubmit }) => {
           return (
             <>
+              {/* {uploadProgress !== null && (
+                <div>
+                  <progress value={uploadProgress} max="100"></progress>
+                  <p>{uploadProgress}% uploaded</p>
+                </div>
+              )} */}
               <Stack
                 spacing={2}
                 py={4}
                 px={2}
                 my={4}
-                border="1px solid lightgray"
+                // border="1px solid lightgray"
+                bgcolor="#fff"
                 borderRadius="12px"
               >
                 <Typography>
@@ -403,13 +421,16 @@ const Uploads = () => {
                         />
                       )}
                     </CustomFormControl>
-                    <Link
-                      sx={{ cursor: "pointer", display: "block" }}
-                      onClick={handleDownloadTemplate}
-                      variant="caption"
-                    >
-                      Download {dataCategory} template here
-                    </Link>
+                    {(dataType === "personal-data" ||
+                      ["grades", "subjects"].includes(dataCategory)) && (
+                      <Link
+                        sx={{ cursor: "pointer", display: "block" }}
+                        onClick={handleDownloadTemplate}
+                        variant="caption"
+                      >
+                        Download {dataCategory} template here
+                      </Link>
+                    )}
                   </Stack>
 
                   <Box pt={2}>
@@ -439,16 +460,21 @@ const Uploads = () => {
                         />
                       )}
 
-                      <Typography
-                        variant="body2"
-                        textAlign="center"
-                        pt={4}
-                        paragraph
-                      >
+                      <Typography variant="body2" textAlign="center" pt={4}>
                         Drag & drop your{" "}
                         {dataType === "personal-data" ? "data File" : "photos"}{" "}
                         here
                       </Typography>
+                      {dataType === "photos" && (
+                        <small
+                          style={{
+                            color: "red",
+                            paddingBottom: "4px",
+                          }}
+                        >
+                          (You can upload up to 20 photos at time)
+                        </small>
+                      )}
                       <Button
                         variant="outlined"
                         onClick={open}
@@ -479,13 +505,13 @@ const Uploads = () => {
               {bulkData?.length > 0 && (
                 <Stack
                   direction="row"
-                  justifyContent="flex-start"
+                  justifyContent="flex-end"
                   width="100%"
                   gap={2}
                 >
                   <Button onClick={handleCancelUploads}>Cancel</Button>
                   <Button variant="contained" onClick={handleSubmit}>
-                    Import Data
+                    Import {dataCategory || "Data"}
                   </Button>
                 </Stack>
               )}
@@ -523,20 +549,20 @@ const Uploads = () => {
             {bulkData?.map((image) => {
               return (
                 <Stack
-                  key={image?.id}
+                  key={image?.name}
                   border="1px solid #ccc"
                   alignItems="center"
                   p={1}
                   spacing={1}
                 >
                   <img
-                    src={image?.src}
+                    src={URL.createObjectURL(image)}
                     style={{
-                      width: 100,
-                      height: 100,
+                      width: 80,
+                      height: 80,
                     }}
                   />
-                  <Typography>{image?.id}</Typography>
+                  <Typography variant="caption">{image?.name}</Typography>
                 </Stack>
               );
             })}
@@ -544,7 +570,13 @@ const Uploads = () => {
         )}
       </>
 
-      {(isPending || loadingData) && <LoadingSpinner value="Please Wait.." />}
+      {(isPending || loadingData) && (
+        <LoadingSpinner
+          value={
+            isPending ? `Please Wait..${uploadProgress}%` : "Please Wait.."
+          }
+        />
+      )}
     </Container>
   );
 };

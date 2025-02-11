@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import Box from "@mui/material/Box";
-
+import { useMediaQuery, useTheme } from "@mui/material";
 import {
   Divider,
   FormLabel,
@@ -13,16 +13,16 @@ import {
   TableContainer,
   TableBody,
 } from "@mui/material";
-import MaterialTable, { MTableToolbar } from "material-table";
-import { tableIcons } from "../../config/tableIcons";
+import MaterialTable, { MTableToolbar, MTableBodyRow } from "material-table";
+import { tableIcons } from "@/config/tableIcons";
 import { Add, Delete, Refresh } from "@mui/icons-material";
 import PublishIcon from "@mui/icons-material/Publish";
 import PropTypes from "prop-types";
 import { Button } from "@mui/material";
-import { readXLSX } from "../../config/readXLSX";
-import { readCSV } from "../../config/readCSV";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { alertError } from "../../context/actions/globalAlertActions";
+import { readXLSX } from "@/config/readXLSX";
+import { readCSV } from "@/config/readCSV";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError } from "@/context/actions/globalAlertActions";
 import CustomTableTitle from "../custom/CustomTableTitle";
 import EmptyDataContainer from "../EmptyDataContainer";
 
@@ -52,6 +52,7 @@ function CustomizedMaterialTable({
   importButtonText,
   showRowShadow,
   autoCompleteComponent,
+  tableRef,
 }) {
   const modifiedColumns = columns.map((column) => {
     return { ...column };
@@ -121,6 +122,7 @@ function CustomizedMaterialTable({
       }}
     >
       <MaterialTable
+        tableRef={tableRef}
         isLoading={isPending}
         icons={tableIcons}
         columns={modifiedColumns}
@@ -171,7 +173,8 @@ function CustomizedMaterialTable({
           },
 
           rowStyle: {
-            boxShadow: showRowShadow ? "0 1px 2px rgba(0,0,0,0.15)" : "none",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.12)",
+            // boxShadow: showRowShadow ? "0 1px 2px rgba(0,0,0,0.15)" : "none",
 
             // paddingBlock: 2,
           },
@@ -296,20 +299,24 @@ function CustomizedMaterialTable({
         }}
         localization={{
           body: {
-            emptyDataSourceMessage: isPending ? (
-              <Typography>Please Wait...</Typography>
-            ) : (
-              <>
-                {data && data?.length === 0 && (
-                  <EmptyDataContainer
-                    img={addButtonImg}
-                    message={addButtonMessage}
-                    buttonText={addButtonText}
-                    onClick={onAddButtonClicked}
-                    showAddButton={showAddButton}
-                  />
+            emptyDataSourceMessage: (
+              <MTableBodyRow>
+                {isPending ? (
+                  <Typography>Please Wait...</Typography>
+                ) : (
+                  <>
+                    {data && data?.length === 0 && (
+                      <EmptyDataContainer
+                        img={addButtonImg}
+                        message={addButtonMessage}
+                        buttonText={addButtonText}
+                        onClick={onAddButtonClicked}
+                        showAddButton={showAddButton}
+                      />
+                    )}
+                  </>
                 )}
-              </>
+              </MTableBodyRow>
             ),
           },
         }}
@@ -345,8 +352,13 @@ CustomizedMaterialTable.propTypes = {
 export default CustomizedMaterialTable;
 
 const TableSkeleton = () => {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("md"));
+
   return (
-    <TableContainer sx={{ border: "1px solid lightgray", borderRadius: 1 }}>
+    <TableContainer
+      sx={{ border: "1px solid lightgray", borderRadius: "12px" }}
+    >
       <TableHead>
         <TableRow>
           {/* Placeholders for table headers */}
@@ -356,21 +368,26 @@ const TableSkeleton = () => {
           <TableCell>
             <Skeleton variant="text" />
           </TableCell>
-          <TableCell>
-            <Skeleton variant="text" />
-          </TableCell>
-          <TableCell>
-            <Skeleton variant="text" />
-          </TableCell>
-          <TableCell>
-            <Skeleton variant="text" />
-          </TableCell>
+
+          {matches && (
+            <>
+              <TableCell>
+                <Skeleton variant="text" />
+              </TableCell>
+              <TableCell>
+                <Skeleton variant="text" />
+              </TableCell>
+              <TableCell>
+                <Skeleton variant="text" />
+              </TableCell>
+            </>
+          )}
           {/* Add more table cells for additional headers */}
         </TableRow>
       </TableHead>
       <TableBody>
         {/* Placeholder table rows */}
-        {[...Array(8)].map((_, index) => (
+        {[...Array(10)].map((_, index) => (
           <TableRow key={index}>
             <TableCell sx={{ width: "10%" }}>
               <Skeleton variant="text" width={100} />
@@ -378,15 +395,19 @@ const TableSkeleton = () => {
             <TableCell sx={{ width: "10%" }}>
               <Skeleton variant="text" width={100} />
             </TableCell>
-            <TableCell sx={{ width: "10%" }}>
-              <Skeleton variant="text" width={100} />
-            </TableCell>
-            <TableCell sx={{ width: "10%" }}>
-              <Skeleton variant="text" width={100} />
-            </TableCell>
-            <TableCell sx={{ width: "10%" }}>
-              <Skeleton variant="text" width={100} />
-            </TableCell>
+            {matches && (
+              <>
+                <TableCell sx={{ width: "10%" }}>
+                  <Skeleton variant="text" width={100} />
+                </TableCell>
+                <TableCell sx={{ width: "10%" }}>
+                  <Skeleton variant="text" width={100} />
+                </TableCell>
+                <TableCell sx={{ width: "10%" }}>
+                  <Skeleton variant="text" width={100} />
+                </TableCell>
+              </>
+            )}
 
             {/* Add more table cells for additional columns */}
           </TableRow>

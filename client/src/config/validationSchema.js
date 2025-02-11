@@ -26,7 +26,10 @@ export const assignLevelValidationSchema = object().shape({
     _id: string().required('Required*'),
     type: string().required('Required*'),
   }),
-  subject: string().required('Required*'),
+  subject: object({
+    _id: string().required('Required*'),
+    name: string().required('Required*'),
+  }),
 });
 
 export const studentValidationSchema = object().shape({
@@ -87,7 +90,8 @@ export const teacherValidationSchema = object().shape({
 });
 
 export const userValidationSchema = object().shape({
-  fullname: string().required('Required*'),
+  firstname: string().required('Required*'),
+  lastname: string().required('Required*'),
   username: string().required('Required*'),
 
   // dateofbirth: date()
@@ -213,6 +217,21 @@ export const examsScoreValidationSchema = object().shape({
     _id: string().required('Required*'),
     name: string().required('Required*'),
   }),
+  classScore: number()
+    .required('Subject is Required*')
+    .min(0, 'Class Score should be between 0-50')
+    .max(50, 'Class Score should be between 0-50'),
+  examsScore: number()
+    .required('Subject is Required*')
+    .min(0, 'Exams Score should be between 0-50')
+    .max(50, 'Exams Score should be between 0-50'),
+});
+
+export const addExamsScoreValidationSchema = object().shape({
+
+  _id: string().required('Required*'),
+  subject: string().required('Required*'),
+
   classScore: number()
     .required('Subject is Required*')
     .min(0, 'Class Score should be between 0-50')

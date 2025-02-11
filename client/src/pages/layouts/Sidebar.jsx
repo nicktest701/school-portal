@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-
+import _ from "lodash";
 import {
   Avatar,
   Box,
@@ -21,7 +21,7 @@ import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import BedroomBabyRoundedIcon from "@mui/icons-material/BedroomBabyRounded";
 import DataThresholdingRoundedIcon from "@mui/icons-material/DataThresholdingRounded";
-import DrawerItem from "../../components/DrawerItem";
+import DrawerItem from "@/components/DrawerItem";
 import {
   BookRounded,
   ExitToAppSharp,
@@ -35,7 +35,7 @@ import {
   AnnouncementRounded,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import { UserContext } from "../../context/providers/UserProvider";
+import { UserContext } from "@/context/providers/UserProvider";
 
 const Sidebar = () => {
   const school_info = JSON.parse(localStorage.getItem("@school_info"));
@@ -54,11 +54,16 @@ const Sidebar = () => {
         pt: 2,
         height: "100dvh",
         display: { xs: "none", sm: "inline-flex" },
-        transition: "all 0.4s ease-in-out",
         bgcolor: "primary.main",
+        overflow: "hidden",
       }}
     >
-      <Box sx={{ width: toggleWidth ? 80 : { xs: 0, sm: 80, md: 220 } }}>
+      <Box
+        sx={{
+          width: toggleWidth ? 70 : { xs: 0, sm: 70, md: 250 },
+          transition: "width 300ms ease-in-out",
+        }}
+      >
         <Stack alignItems={{ xs: "left", sm: "center" }} pb={2} spacing={2}>
           <IconButton
             edge="end"
@@ -69,18 +74,19 @@ const Sidebar = () => {
           >
             {toggleWidth ? <ArrowForwardIos /> : <ArrowBackIos />}
           </IconButton>
-          {school_info?.badge ? (
+          {!_.isEmpty(school_info?.badge) ? (
             <Avatar
               alt="school logo"
               loading="lazy"
-              srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                school_info?.badge
-              }`}
+              srcSet={school_info?.badge}
               sx={{
-                width: 64,
-                height: 64,
+                width: 48,
+                height: 48,
+                bgcolor:'var(--secondary)'
               }}
-            />
+            >
+              {school_info?.name[0]}
+            </Avatar>
           ) : (
             <SchoolRounded sx={{ width: 64, height: 64 }} />
           )}
@@ -113,6 +119,7 @@ const Sidebar = () => {
                 icon={<GridViewRoundedIcon />}
                 to="/"
               />
+
               <DrawerItem
                 title={toggleWidth ? "" : "Sessions"}
                 icon={<ArticleRoundedIcon />}
@@ -161,13 +168,16 @@ const Sidebar = () => {
                 to="/uploads"
               />
 
-              <>
-                <DrawerItem
-                  title={toggleWidth ? "" : "Users"}
-                  icon={<PeopleAltRoundedIcon />}
-                  to="/users"
-                />
-              </>
+              <DrawerItem
+                title={toggleWidth ? "" : "Users"}
+                icon={<PeopleAltRoundedIcon />}
+                to="/users"
+              />
+              <DrawerItem
+                title={toggleWidth ? "" : "Notifications & Activites"}
+                icon={<NotificationsSharp />}
+                to="/notifications"
+              />
               <DrawerItem
                 title={toggleWidth ? "" : "Settings"}
                 icon={<SettingsRoundedIcon />}
@@ -176,18 +186,30 @@ const Sidebar = () => {
             </>
           ) : (
             <>
-              {/* <DrawerItem
-              title='Perfomance Index'
-              icon={<StarsSharp />}
-              to='/course';
-            /> */}
               <DrawerItem
-                title={toggleWidth ? "" : "Levels & Courses"}
+                title={toggleWidth ? "" : "Dashboard"}
+                icon={<GridViewRoundedIcon />}
+                to="/"
+              />
+
+              <DrawerItem
+                title={toggleWidth ? "" : "Summary"}
                 icon={<BookRounded />}
                 to="/course"
               />
+              <DrawerItem
+                title={toggleWidth ? "" : "Levels"}
+                icon={<BedroomBabyRoundedIcon />}
+                to="/course/level"
+              />
+              <DrawerItem
+                title={toggleWidth ? "" : "Courses"}
+                icon={<BookRounded />}
+                to="/course/assign"
+              />
             </>
           )}
+
           <DrawerItem
             title={toggleWidth ? "" : "Profile"}
             icon={<PeopleAltRoundedIcon />}
@@ -203,12 +225,6 @@ const Sidebar = () => {
             title={toggleWidth ? "" : "Announcements"}
             icon={<AnnouncementRounded />}
             to="/announcements"
-          />
-
-          <DrawerItem
-            title={toggleWidth ? "" : "Notifications & Activites"}
-            icon={<NotificationsSharp />}
-            to="/notifications"
           />
 
           <DrawerItem

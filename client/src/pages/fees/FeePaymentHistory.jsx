@@ -2,16 +2,16 @@ import React, { useContext, useMemo, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import { useQuery } from "@tanstack/react-query";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { getAllCurrentFeesPaymentHistoryByDate } from "../../api/currentFeeAPI";
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { getAllCurrentFeesPaymentHistoryByDate } from "@/api/currentFeeAPI";
+import CustomDatePicker from "@/components/inputs/CustomDatePicker";
 import moment from "moment";
 import _ from "lodash";
-import { currencyFormatter } from "../../config/currencyFormatter";
-import { UserContext } from "../../context/providers/UserProvider";
-import fee_icon from "../../assets/images/header/fee_ico.svg";
-// import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
+import { currencyFormatter } from "@/config/currencyFormatter";
+import { UserContext } from "@/context/providers/UserProvider";
+import fee_icon from "@/assets/images/header/fee_ico.svg";
+// import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
 
 function FeePaymentHistory() {
   const {

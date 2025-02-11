@@ -168,8 +168,7 @@ export const SCHOOL_LEVELS = [
           }}
           to={`/teacher/${teacher?._id}`}
         >
-          {teacher?.fullName ||  "N/A"}
-
+          {teacher?.fullName || "N/A"}
         </Link>
       ) : (
         ""
@@ -748,15 +747,7 @@ export const USERS_COLUMNS = [
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar
-          src={
-            rowData.profile === undefined || rowData.profile === ""
-              ? null
-              : `${import.meta.env.VITE_BASE_URL}/images/users/${
-                  rowData.profile
-                }`
-          }
-        />
+        <Avatar src={rowData.profile} />
         <ListItemText
           primary={
             <Typography
@@ -933,7 +924,7 @@ export const ASSIGNED_COURSE_COLUMNS = [
     hidden: true,
   },
   {
-    field: "subject",
+    field: "subject.name",
     title: "Asigned Course",
   },
   {

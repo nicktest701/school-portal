@@ -45,7 +45,7 @@ const MoreEvents = () => {
     setSearchTerm(event.target.value.toLowerCase());
   const handlePageChange = (_, value) => setPage(value);
 
-  console.log(events);
+
 
   // Filter events based on date
   const filterEventsByDate = () => {
@@ -160,9 +160,15 @@ const MoreEvents = () => {
                   <Typography variant="caption" color="textSecondary">
                     {event.createdAt}
                   </Typography>
-                  <Typography variant="body2" mt={1}>
+                  <div
+                    style={{ overflow: "hidden" }}
+                    dangerouslySetInnerHTML={{
+                      __html: event.description.substring(0, 50) + "...",
+                    }}
+                  ></div>
+                  {/* <Typography variant="body2" mt={1}>
                     {event.description.substring(0, 50)}...
-                  </Typography>
+                  </Typography> */}
                 </CardContent>
               </Card>
             </Grid>

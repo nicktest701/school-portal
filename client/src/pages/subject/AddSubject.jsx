@@ -182,7 +182,7 @@ const AddSubject = ({ open, setOpen }) => {
               Add
             </Button>
           </Stack>
-          <Button sx={{ bgcolor: "var(--secondary)", width: 280 }}>
+          <Button sx={{ bgcolor: "var(--secondary)" }}>
             <FormLabel
               htmlFor="studentFile"
               title="Import Subjects from File"
@@ -199,7 +199,7 @@ const AddSubject = ({ open, setOpen }) => {
             >
               <NoteRounded htmlColor="#fff" />
               <Typography variant="caption" color="#fff">
-                Import Subjects from File (.xlsx,.xls,.csv)
+                Import Subjects (.xlsx,.xls,.csv)
               </Typography>
 
               <Input

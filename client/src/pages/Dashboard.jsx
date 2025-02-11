@@ -1,8 +1,6 @@
 import React, { useContext, useState } from "react";
 import Calendar from "react-calendar";
 import { Box, Stack, Typography, Avatar } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import { generateNewCurrentLevelDetailsFromLevels } from "@/api/levelAPI";
 import DashboardSwiper from "@/components/swiper/DashboardSwiper";
 import Birthday from "@/components/items/Birthday";
 import "react-calendar/dist/Calendar.css";
@@ -24,21 +22,6 @@ const Dashboard = () => {
 
   const [value, onChange] = useState(new Date());
 
-  //check if current level details exists
-  useQuery({
-    queryKey: [
-      "generate-current-level-details",
-      session?.sessionId,
-      session?.termId,
-    ],
-    queryFn: () =>
-      generateNewCurrentLevelDetailsFromLevels({
-        sessionId: session?.sessionId,
-        termId: session?.termId,
-      }),
-    enabled: !!session?.sessionId && !!session?.termId,
-  });
-
   return (
     <>
       <Box
@@ -46,8 +29,6 @@ const Dashboard = () => {
           width: "100%",
           display: "flex",
           justifyContent: "space-between",
-          // alignItems: "start",
-          // overscrollBehaviorInline: "contain",
           gap: 2,
           p: 2,
         }}
@@ -96,9 +77,6 @@ const Dashboard = () => {
             titleVariant="h2"
           />
 
-          {/* <Typography variant="h2" paragraph>
-            Dashboard
-          </Typography> */}
           <DashboardCardsContainer />
 
           {/* <Divider /> */}

@@ -1,23 +1,23 @@
-import React, { useContext, useState } from 'react';
-import { Edit, MessageRounded } from '@mui/icons-material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
-import PropTypes from 'prop-types';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
-import ProfileItem from '../../../components/typo/ProfileItem';
-import { getParentByStudentId } from '../../../api/parentAPI';
-import { SchoolSessionContext } from '../../../context/providers/SchoolSessionProvider';
-import CustomDialogTitle from '../../../components/dialog/CustomDialogTitle';
-import { StudentContext } from '../../../context/providers/StudentProvider';
-import ParentEdit from './ParentEdit';
-import { Typography } from '@mui/material';
-import ParentNew from './ParentNew';
+import React, { useContext, useState } from "react";
+import { Add, Edit, MessageRounded } from "@mui/icons-material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import PropTypes from "prop-types";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import ProfileItem from "../../../components/typo/ProfileItem";
+import { getParentByStudentId } from "../../../api/parentAPI";
+import { SchoolSessionContext } from "../../../context/providers/SchoolSessionProvider";
+import CustomDialogTitle from "../../../components/dialog/CustomDialogTitle";
+import { StudentContext } from "../../../context/providers/StudentProvider";
+import ParentEdit from "./ParentEdit";
+import { Typography } from "@mui/material";
+import ParentNew from "./ParentNew";
 
 const ViewParent = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -29,8 +29,8 @@ const ViewParent = ({ open, setOpen }) => {
   //CLOSE view User Info
   const handleClose = () => setOpen(false);
 
-  const { isFetching, data } = useQuery({
-    queryKey: ['parent'],
+  const { isPending, data } = useQuery({
+    queryKey: ["parent"],
     queryFn: () => getParentByStudentId(studentId),
     enabled: !!studentId,
   });
@@ -38,7 +38,7 @@ const ViewParent = ({ open, setOpen }) => {
   // OPEN Quick Message
   const openQuickMessage = (phonenumber, email) => {
     schoolSessionDispatch({
-      type: 'sendQuickMessage',
+      type: "sendQuickMessage",
       payload: {
         open: true,
         data: {
@@ -52,7 +52,7 @@ const ViewParent = ({ open, setOpen }) => {
   //EDIT Student Info
   const openParentEdit = (parent) => {
     studentDispatch({
-      type: 'editParent',
+      type: "editParent",
       payload: {
         open: true,
         data: parent,
@@ -64,10 +64,10 @@ const ViewParent = ({ open, setOpen }) => {
 
   return (
     <>
-      <Dialog open={open} maxWidth='sm' fullWidth onClose={handleClose}>
-        <CustomDialogTitle title='Parent Information' onClose={handleClose} />
-        <DialogContent>
-          {isFetching && <Typography>Loading....</Typography>}
+      <Dialog open={open} maxWidth="sm" fullWidth onClose={handleClose}>
+        <CustomDialogTitle title="Parent Information" onClose={handleClose} />
+        <DialogContent sx={{ p: 1 }}>
+          {isPending && <Typography>Loading....</Typography>}
 
           {data?.length > 0 ? (
             data?.map((parent, index) => {
@@ -76,40 +76,40 @@ const ViewParent = ({ open, setOpen }) => {
                   <Divider flexItem>
                     <Chip
                       label={`Parent /Guardian ${index + 1}`}
-                      color='primary'
+                      color="primary"
                     />
                   </Divider>
 
                   <ProfileItem
-                    label='Name'
+                    label="Name"
                     text={`${parent?.firstname} ${parent?.surname}`}
                   />
 
                   <ProfileItem
-                    label='Relationship'
+                    label="Relationship"
                     text={parent?.relationship}
                   />
-                  <ProfileItem label='Gender' text={parent?.gender} />
-                  <ProfileItem label='Email Address' text={parent?.email} />
+                  <ProfileItem label="Gender" text={parent?.gender} />
+                  <ProfileItem label="Email Address" text={parent?.email} />
                   <ProfileItem
-                    label='Telephone No.'
+                    label="Telephone No."
                     text={parent?.phonenumber}
                   />
-                  <ProfileItem label='Address' text={parent?.address} />
-                  <ProfileItem label='Residence' text={parent?.residence} />
-                  <ProfileItem label='Nationality' text={parent?.nationality} />
+                  <ProfileItem label="Address" text={parent?.address} />
+                  <ProfileItem label="Residence" text={parent?.residence} />
+                  <ProfileItem label="Nationality" text={parent?.nationality} />
                   <Box
-                    display='flex'
-                    flexDirection='column'
-                    justifyContent='center'
-                    alignItems='center'
-                    width='100%'
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    width="100%"
                     paddingY={2}
                     gap={1}
                   >
-                    <Stack direction='row' spacing={2} flexWrap='wrap'>
+                    <Stack direction="row" spacing={2} flexWrap="wrap">
                       <Button
-                        size='small'
+                        size="small"
                         startIcon={<MessageRounded />}
                         onClick={() =>
                           openQuickMessage(parent?.phonenumber, parent?.email)
@@ -118,7 +118,7 @@ const ViewParent = ({ open, setOpen }) => {
                         Send Message
                       </Button>
                       <Button
-                        size='small'
+                        size="small"
                         endIcon={<Edit />}
                         onClick={() => openParentEdit(parent)}
                       >
@@ -131,13 +131,13 @@ const ViewParent = ({ open, setOpen }) => {
             })
           ) : (
             <Box
-              display='flex'
-              flexDirection='column'
-              justifyContent='center'
-              alignItems='center'
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
             >
               <Typography>No Parent info available</Typography>
-              <Button onClick={() => setOpenNewParent(true)}>Add New</Button>
+              <Button startIcon={<Add/>} onClick={() => setOpenNewParent(true)}>Add New</Button>
             </Box>
           )}
         </DialogContent>

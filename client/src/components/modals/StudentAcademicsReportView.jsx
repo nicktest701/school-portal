@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -10,15 +10,15 @@ import {
   Divider,
   useTheme,
   Avatar,
-} from '@mui/material';
-import { StudentContext } from '../../context/providers/StudentProvider';
-import ReactToPrint from 'react-to-print';
-import _ from 'lodash';
-import ExamsItem from '../list/ExamsItem';
-import { Box } from '@mui/system';
-import ReportItem from '../list/ReportItem';
-import ReportItemUnderline from '../list/ReportItemUnderline';
-import Transition from '../../components/animations/Transition';
+} from "@mui/material";
+import { StudentContext } from "../../context/providers/StudentProvider";
+import ReactToPrint from "react-to-print";
+import _ from "lodash";
+import ExamsItem from "../list/ExamsItem";
+import { Box } from "@mui/system";
+import ReportItem from "../list/ReportItem";
+import ReportItemUnderline from "../list/ReportItemUnderline";
+import Transition from "../../components/animations/Transition";
 
 const StudentAcademicsReportView = () => {
   const { palette } = useTheme();
@@ -33,7 +33,7 @@ const StudentAcademicsReportView = () => {
   //close dialog
   const handleClose = () => {
     studentDispatch({
-      type: 'showCurrentStudentAcademicsReportView',
+      type: "showCurrentStudentAcademicsReportView",
       payload: {
         show: false,
         examsDetails: {},
@@ -46,7 +46,7 @@ const StudentAcademicsReportView = () => {
       open={open}
       onClose={handleClose}
       fullWidth
-      maxWidth='md'
+      maxWidth="md"
       TransitionComponent={Transition}
     >
       <DialogTitle>Report Card</DialogTitle>
@@ -55,23 +55,23 @@ const StudentAcademicsReportView = () => {
 
         <Stack spacing={1}>
           {/* school details */}
-          <Stack justifyContent='center' alignItems='center'>
+          <Stack justifyContent="center" alignItems="center">
             {/* <StyleOutlined sx={{ width: 40, height: 40 }} /> */}
-            <Typography variant='h4'>
+            <Typography variant="h4">
               Christ Goodness International School
             </Typography>
-            <Typography sx={{ fontSize: '14px' }}>
+            <Typography sx={{ fontSize: "14px" }}>
               Post Office Box KS 134
             </Typography>
-            <Typography sx={{ fontSize: '14px' }}>Kumasi</Typography>
+            <Typography sx={{ fontSize: "14px" }}>Kumasi</Typography>
             <Typography
               sx={{
-                textAlign: 'center',
-                textDecoration: 'underline',
+                textAlign: "center",
+                textDecoration: "underline",
                 borderTop: `solid 5px ${palette.secondary.main}`,
-                bgcolor: 'primary.main',
-                color: 'primary.contrastText',
-                width: '100%',
+                bgcolor: "primary.main",
+                color: "primary.contrastText",
+                width: "100%",
                 padding: 1,
               }}
             >
@@ -80,65 +80,55 @@ const StudentAcademicsReportView = () => {
           </Stack>
 
           {/* avatar */}
-          <Stack justifyContent='center' alignItems='center'>
-            <Avatar
-              src={
-                student?.profile === '' ||
-                student?.profile === undefined ||
-                student?.profile === null
-                  ? null
-                  : student?.profile
-              }
-              // :  `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
-              sx={{ width: 65, height: 65 }}
-            />
+          <Stack justifyContent="center" alignItems="center">
+            <Avatar src={student?.profile} sx={{ width: 65, height: 65 }} />
           </Stack>
 
           {/* name section */}
 
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
             <Box>
               <table>
                 <tbody>
-                  <ReportItem title='Full Name' text={student?.fullName} />
-                  <ReportItem title='Class' text={`${student?.level}`} />
-                  <ReportItem title='No. On Roll' text={student?.rollNumber} />
-                  <ReportItem title='Grade' text='35' />
-                  <ReportItem title='Promoted' text='Six(6)' />
+                  <ReportItem title="Full Name" text={student?.fullName} />
+                  <ReportItem title="Class" text={`${student?.level}`} />
+                  <ReportItem title="No. On Roll" text={student?.rollNumber} />
+                  <ReportItem title="Grade" text="35" />
+                  <ReportItem title="Promoted" text="Six(6)" />
                 </tbody>
               </table>
             </Box>
             <Box
               sx={{
                 flexGrow: 1,
-                alignItems: 'center',
-                textAlign: 'center',
+                alignItems: "center",
+                textAlign: "center",
                 paddingRight: 4,
               }}
             >
               <p>Position</p>
-              <Typography variant='h5'>6</Typography>
+              <Typography variant="h5">6</Typography>
             </Box>
             <Box>
               <table>
                 <tbody>
                   <ReportItem
-                    title='Academic Year'
+                    title="Academic Year"
                     text={student?.academicYear}
                   />
-                  <ReportItem title='Term' text={student?.term} />
+                  <ReportItem title="Term" text={student?.term} />
                   <ReportItem
-                    title='Vacation Date'
+                    title="Vacation Date"
                     text={student?.vacationDate}
                   />
                   <ReportItem
-                    title='Reopening Date'
+                    title="Reopening Date"
                     text={student?.reOpeningDate}
                   />
                 </tbody>
@@ -149,8 +139,8 @@ const StudentAcademicsReportView = () => {
           {/* results section */}
           <Stack>
             <table
-              style={{ textAlign: 'center', borderCollapse: 'collapse' }}
-              border='1'
+              style={{ textAlign: "center", borderCollapse: "collapse" }}
+              border="1"
             >
               <thead
                 style={{
@@ -177,8 +167,8 @@ const StudentAcademicsReportView = () => {
                 ) : (
                   <tr>
                     <td
-                      colSpan='7'
-                      style={{ padding: '3px 1px', fontSize: '20px' }}
+                      colSpan="7"
+                      style={{ padding: "3px 1px", fontSize: "20px" }}
                     >
                       No Student Record Available
                     </td>
@@ -187,12 +177,12 @@ const StudentAcademicsReportView = () => {
               </tbody>
               <tfoot
                 style={{
-                  textAlign: 'center',
-                  textDecoration: 'underline',
+                  textAlign: "center",
+                  textDecoration: "underline",
                   borderTop: `solid 5px ${palette.secondary.main}`,
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
-                  width: '100%',
+                  bgcolor: "primary.main",
+                  color: "primary.contrastText",
+                  width: "100%",
                   padding: 1,
                 }}
               >
@@ -200,7 +190,7 @@ const StudentAcademicsReportView = () => {
                   <th>Overall Score</th>
                   <th></th>
                   <th></th>
-                  <th>{_.sumBy(student?.scores, 'totalScore')}</th>
+                  <th>{_.sumBy(student?.scores, "totalScore")}</th>
                   <th></th>
                   <th></th>
                   <th></th>
@@ -211,50 +201,50 @@ const StudentAcademicsReportView = () => {
 
           {/* conduct */}
           <Box>
-            <table width='100%'>
+            <table width="100%">
               <tbody>
                 <tr>
                   <td
-                    width='100%'
+                    width="100%"
                     style={{
-                      display: 'flex',
-                      gap: '10px',
-                      justifyContent: 'flex-end',
+                      display: "flex",
+                      gap: "10px",
+                      justifyContent: "flex-end",
                     }}
                   >
-                    <ReportItem title='Attendance' text='11' />
+                    <ReportItem title="Attendance" text="11" />
                     <ReportItem
-                      title='Out Of'
+                      title="Out Of"
                       text={student?.totalLevelAttendance}
                     />
                   </td>
                 </tr>
                 <tr>
-                  <td width='50%'>
+                  <td width="50%">
                     <ReportItemUnderline
-                      title='Conduct & Attitude'
-                      text='Hardworking'
+                      title="Conduct & Attitude"
+                      text="Hardworking"
                     />
                   </td>
                 </tr>
                 <tr>
-                  <td width='50%'>
-                    <ReportItemUnderline title='Interest' text='Hardworking' />
+                  <td width="50%">
+                    <ReportItemUnderline title="Interest" text="Hardworking" />
                   </td>
                 </tr>
                 <tr>
-                  <td width='100%'>
+                  <td width="100%">
                     <ReportItemUnderline
                       title="Class Teacher's Remarks"
-                      text='Excellent Performance Keep it up!'
+                      text="Excellent Performance Keep it up!"
                     />
                   </td>
                 </tr>
                 <tr>
-                  <td width='100%'>
+                  <td width="100%">
                     <ReportItemUnderline
                       title="Headmaster's Remarks"
-                      text='Proud of her performance.'
+                      text="Proud of her performance."
                     />
                   </td>
                 </tr>
@@ -262,12 +252,12 @@ const StudentAcademicsReportView = () => {
             </table>
           </Box>
           <Divider />
-          <Stack justifyContent='center' alignItems='center'>
+          <Stack justifyContent="center" alignItems="center">
             <Typography>Bill</Typography>
             <table
-              width='60%'
-              border='1'
-              style={{ borderCollapse: 'collapse' }}
+              width="60%"
+              border="1"
+              style={{ borderCollapse: "collapse" }}
             >
               <thead>
                 <tr>
@@ -278,21 +268,21 @@ const StudentAcademicsReportView = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td style={{ paddingLeft: '5px', fontSize: '14px' }}>
+                  <td style={{ paddingLeft: "5px", fontSize: "14px" }}>
                     Tuition Fee
                   </td>
                   <td></td>
                   <td></td>
                 </tr>
                 <tr>
-                  <td style={{ paddingLeft: '5px', fontSize: '14px' }}>
+                  <td style={{ paddingLeft: "5px", fontSize: "14px" }}>
                     Others
                   </td>
                   <td></td>
                   <td></td>
                 </tr>
                 <tr>
-                  <td style={{ paddingLeft: '5px', fontSize: '14px' }}>
+                  <td style={{ paddingLeft: "5px", fontSize: "14px" }}>
                     Arreas
                   </td>
                   <td></td>
@@ -310,8 +300,8 @@ const StudentAcademicsReportView = () => {
           </Stack>
           <Typography
             style={{
-              fontSize: '10px',
-              fontStyle: 'italic',
+              fontSize: "10px",
+              fontStyle: "italic",
             }}
           >
             Powered by FrebbyTech Consults (0543772591)
@@ -323,7 +313,7 @@ const StudentAcademicsReportView = () => {
 
         <ReactToPrint
           pageStyle={'width:8.5in";min-height:11in"; margin:auto",padding:8px;'}
-          trigger={() => <Button variant='contained'>Print Report</Button>}
+          trigger={() => <Button variant="contained">Print Report</Button>}
           content={() => componentRef.current}
         />
       </DialogActions>

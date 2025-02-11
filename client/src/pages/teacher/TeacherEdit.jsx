@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
 import Avatar from "@mui/material/Avatar";
 import DialogActions from "@mui/material/DialogActions";
-import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -13,10 +12,7 @@ import { Formik } from "formik";
 import { getTeacher, putTeacher } from "@/api/teacherAPI";
 import CustomFormControl from "@/components/inputs/CustomFormControl";
 import { teacherValidationSchema } from "@/config/validationSchema";
-import {
-  alertError,
-  alertSuccess,
-} from "@/context/actions/globalAlertActions";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { uploadProfileImage } from "@/api/sessionAPI";
 import moment from "moment";
@@ -26,7 +22,7 @@ import { TOWNS } from "@/mockup/data/towns";
 import { NATIONALITY } from "@/mockup/data/nationality";
 import CustomImageChooser from "@/components/inputs/CustomImageChooser";
 import Loader from "@/config/Loader";
-import { Box,Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
@@ -36,8 +32,7 @@ const TeacherEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [dob, setDob] = useState(null);
-  const [profileImage, setProfileImage] = useState(null);
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
 
   const teacher = useQuery({
     queryKey: ["teacher", id],
@@ -50,9 +45,7 @@ const TeacherEdit = () => {
 
   useEffect(() => {
     setDob(moment(teacher?.data?.dateofbirth));
-    setProfileImage(
-      `${import.meta.env.VITE_BASE_URL}/images/users/${teacher?.data?.profile}`
-    );
+   
   }, [teacher?.data]);
 
   //Put teacher
@@ -78,7 +71,10 @@ const TeacherEdit = () => {
     });
   };
 
-  const uploadProfile = async (e) => {
+  const changeProfile = useMutation({
+    mutationFn: uploadProfileImage,
+  });
+  const uploadProfile = (e) => {
     const profile = e.target?.files[0];
     const info = {
       _id: id,
@@ -86,14 +82,18 @@ const TeacherEdit = () => {
       type: "teachers",
     };
 
-    try {
-      const data = await uploadProfileImage(info);
-      schoolSessionDispatch(alertSuccess(data));
-      setProfileImage(URL.createObjectURL(profile));
-    } catch (error) {
-      schoolSessionDispatch(alertError(error));
-    }
-    queryClient.invalidateQueries(["teachers"]);
+    changeProfile.mutateAsync(info, {
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: ["teachers"] });
+        queryClient.invalidateQueries({ queryKey: ["teacher", id] });
+      },
+      onSuccess: () => {
+        schoolSessionDispatch(alertSuccess("Profile Updated!"));
+      },
+      onError: (error) => {
+        schoolSessionDispatch(alertError("An unknown error has occurred!"));
+      },
+    });
   };
 
   const handleClose = () => {
@@ -113,7 +113,6 @@ const TeacherEdit = () => {
         color="primary.main"
       />
 
-      <Divider />
       <Formik
         initialValues={teacher?.data}
         onSubmit={onSubmit}
@@ -130,14 +129,18 @@ const TeacherEdit = () => {
         }) => {
           return (
             <>
-              <Box sx={{ bgcolor: "#fff" }}>
+              <Box sx={{ bgcolor: "#fff", borderRadius: "12px" }}>
                 <Stack padding={2} spacing={1}>
                   <Stack alignSelf="center">
                     <CustomImageChooser handleImageUpload={uploadProfile}>
-                      <Avatar
-                        srcSet={profileImage}
-                        sx={{ width: 100, height: 100, alignSelf: "center" }}
-                      />
+                      {changeProfile.isPending ? (
+                        <div className="spinner"></div>
+                      ) : (
+                        <Avatar
+                          srcSet={teacher?.data?.profile}
+                          sx={{ width: 100, height: 100, alignSelf: "center" }}
+                        />
+                      )}
                     </CustomImageChooser>
                   </Stack>
                   <Typography
@@ -299,7 +302,7 @@ const TeacherEdit = () => {
                       loading={isPending}
                       variant="contained"
                       color="primary"
-                      sx={{ minWidth: { xs: 100, sm: 150 } }}
+                     
                       onClick={handleSubmit}
                     >
                       Save Changes

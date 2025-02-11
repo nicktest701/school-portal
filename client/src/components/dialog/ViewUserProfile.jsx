@@ -33,9 +33,7 @@ function ViewUserProfile({ open, setOpen }) {
           <Stack sx={{ position: 'relative' }}>
             <Avatar
               src={
-                `${import.meta.env.VITE_BASE_URL}/images/users/${
-                  user?.profile
-                }` 
+                user?.profile 
               }
               sx={{ height: 75, width: 75 }}
             />

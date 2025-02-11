@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllUsers } from "../../api/userAPI";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { USERS_COLUMNS } from "../../mockup/columns/sessionColumns";
-import users_icon from "../../assets/images/header/users_ico.svg";
-import { EMPTY_IMAGES } from "../../config/images";
+import { getAllUsers } from "@/api/userAPI";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { USERS_COLUMNS } from "@/mockup/columns/sessionColumns";
+import users_icon from "@/assets/images/header/users_ico.svg";
+import { EMPTY_IMAGES } from "@/config/images";
 import { useNavigate } from "react-router-dom";
 function UserTab() {
   const navigate = useNavigate();
@@ -11,8 +11,10 @@ function UserTab() {
   const users = useQuery({
     queryKey: ["users"],
     queryFn: () => getAllUsers(),
-    initialData: [],
+    // initialData: [],
   });
+
+
 
   const handleAddNewUser = () => {
     navigate("/users/new");
@@ -41,8 +43,6 @@ function UserTab() {
         showRowShadow={true}
         handleRefresh={users?.refetch}
       />
-
-   
     </>
   );
 }

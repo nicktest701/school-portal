@@ -1,0 +1,145 @@
+import React, { useContext, useState } from "react";
+
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Stack,
+  Autocomplete,
+  TextField,
+  List,
+  Typography,
+  ListItem,
+  Checkbox,
+  ListItemText,
+} from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import _ from "lodash";
+
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { assignGradeToLevel } from "@/api/levelAPI";
+import { useParams, useSearchParams } from "react-router-dom";
+import { getGrades } from "@/api/gradeAPI";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import Swal from "sweetalert2";
+import GradeTable from "@/components/tables/GradeTable";
+
+const AssignLevelGrade = () => {
+  const { levelId, level } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+  const [selectedGrade, setSelectedGrade] = useState({
+    _id: "",
+    name: "",
+    ratings: "",
+  });
+
+  const grades = useQuery({
+    queryKey: ["grades"],
+    queryFn: () => getGrades("", ""),
+  });
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: assignGradeToLevel,
+  });
+
+  const handleAssignGrade = () => {
+    const info = {
+      grade: selectedGrade._id,
+      levels: [levelId],
+    };
+
+    Swal.fire({
+      title: "Assign Grade",
+      text: `Do yow wish to assign ${selectedGrade?.name} to ${level}?`,
+      showCancelButton: true,
+      backdrop: false,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        mutateAsync(info, {
+          onSettled: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["exams-details", levelId],
+            });
+          },
+          onSuccess: (data) => {
+            handleClose();
+            schoolSessionDispatch(alertSuccess(data));
+          },
+          onError: (error) => {
+            schoolSessionDispatch(alertError(error));
+          },
+        });
+      }
+    });
+  };
+
+  const handleClose = () => {
+    setSearchParams((params) => {
+      params.delete("assign_grade");
+
+      return params;
+    });
+
+    setSelectedGrade({
+      _id: "",
+      name: "",
+      ratings: "",
+    });
+  };
+
+  // console.log(levelsOption);
+
+  return (
+    <Dialog
+      open={searchParams.get("assign_grade") !== null}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+    >
+      <CustomDialogTitle
+        title="Assign Grade"
+        subtitle={`Select a grading system and add to ${level}`}
+        onClose={handleClose}
+      />
+      <DialogContent sx={{ p: 1 }}>
+        <Stack spacing={2} paddingY={2}>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Autocomplete
+              fullWidth
+              defaultValue={selectedGrade}
+              loading={grades.isPending}
+              loadingText="Loading Grades.."
+              options={grades?.data}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option?.name || ""}
+              value={selectedGrade}
+              onChange={(e, value) => setSelectedGrade(value)}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Grade" size="small" />
+              )}
+            />
+          </Stack>
+          {selectedGrade?._id && <GradeTable data={selectedGrade?.ratings} />}
+        </Stack>
+      </DialogContent>
+      <DialogActions sx={{ padding: 2 }}>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button
+          disabled={!selectedGrade?._id}
+          variant="contained"
+          onClick={handleAssignGrade}
+          loading={isPending}
+        >
+          {isPending ? "Please wait" : "Assign Grade"}
+        </Button>
+      </DialogActions>
+      {isPending && <LoadingSpinner value="Please Wait.." />}
+    </Dialog>
+  );
+};
+
+export default AssignLevelGrade;

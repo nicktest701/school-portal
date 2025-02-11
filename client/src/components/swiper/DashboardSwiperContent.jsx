@@ -1,6 +1,7 @@
 import { Button, Typography } from "@mui/material";
 import { SwiperSlide } from "swiper/react";
 import { useNavigate } from "react-router-dom";
+import { ArrowForward } from "@mui/icons-material";
 
 function DashboardSwiperContent({ id, title, img }) {
   const navigate = useNavigate();
@@ -11,10 +12,15 @@ function DashboardSwiperContent({ id, title, img }) {
 
   return (
     <SwiperSlide className="swiper-slide">
-      <div className="swiper-content">
+      <div
+        className="swiper-content"
+        style={{
+          pointerEvents: "none",
+        }}
+      >
         <Typography
           paddingBottom={2}
-          variant="h3"
+          variant="h4"
           // sx={{ fontSize: { xs: 36, md: 48, lg: 60 } }}
         >
           {title}
@@ -24,16 +30,24 @@ function DashboardSwiperContent({ id, title, img }) {
         </Typography> */}
         {id && (
           <Button
-            variant="contained"
-            color="secondary"
+            variant="text"
+            color="#fff"
             onClick={handleViewEvent}
-            size='small'
+            endIcon={<ArrowForward />}
+            sx={{ textDecoration: "underline" }}
           >
-            Read More...
+            Read More
           </Button>
         )}
       </div>
-      <img src={img} alt="swiper-img" />
+      <img
+        src={img || "/images/event.jpg"}
+        alt="swiper-img"
+        onClick={id ? handleViewEvent : null}
+        style={{
+          cursor: "pointer",
+        }}
+      />
     </SwiperSlide>
   );
 }

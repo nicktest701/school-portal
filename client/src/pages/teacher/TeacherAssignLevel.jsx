@@ -10,21 +10,23 @@ import Button from "@mui/material/Button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Formik } from "formik";
-import { assignTeacherLevel } from "../../api/levelAPI";
-import { currentLevelValidationSchema } from "../../config/validationSchema";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import useLevel from "../../components/hooks/useLevel";
-import CustomTitle from "../../components/custom/CustomTitle";
-import Back from "../../components/Back";
-import { getTeacher } from "../../api/teacherAPI";
+import { assignTeacherLevel } from "@/api/levelAPI";
+import { currentLevelValidationSchema } from "@/config/validationSchema";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import useLevel from "@/components/hooks/useLevel";
+import CustomTitle from "@/components/custom/CustomTitle";
+import Back from "@/components/Back";
+import { getTeacher } from "@/api/teacherAPI";
 import TeacherLevels from "./TeacherLevels";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import Swal from "sweetalert2";
+import { UserContext } from "@/context/providers/UserProvider";
 
 const TeacherAssignLevel = () => {
+  const {
+    userState: { session },
+  } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [currentLevel, setCurrentLevel] = useState({
@@ -48,25 +50,36 @@ const TeacherAssignLevel = () => {
     mutationFn: assignTeacherLevel,
   });
   const onSubmit = (values, options) => {
-    const info = {
-      _id: values?._id,
-      teacher: {
-        _id: id,
-        fullName: teacher?.data?.fullName,
-      },
-    };
+    Swal.fire({
+      title: "Assign Level",
+      text: "Proceed with Level Assignment?",
+      showCancelButton: true,
+      backdrop: false,
+    }).then((data) => {
+      if (data.isConfirmed) {
+        const info = {
+          _id: values?._id,
+          teacher: {
+            _id: id,
+            fullName: teacher?.data?.fullName,
+          },
+        };
 
-    mutateAsync(info, {
-      onSettled: () => {
-        queryClient.invalidateQueries(["levels"]);
-        options.setSubmitting(false);
-      },
-      onSuccess: (data) => {
-        schoolSessionDispatch(alertSuccess(data));
-      },
-      onError: (error) => {
-        schoolSessionDispatch(alertError(error));
-      },
+        mutateAsync(info, {
+          onSettled: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["levels", session.sessionId, session.termId],
+            });
+            options.setSubmitting(false);
+          },
+          onSuccess: (data) => {
+            schoolSessionDispatch(alertSuccess(data));
+          },
+          onError: (error) => {
+            schoolSessionDispatch(alertError(error));
+          },
+        });
+      }
     });
   };
 
@@ -95,8 +108,8 @@ const TeacherAssignLevel = () => {
                   mt: 4,
                   py: 4,
                   px: 2,
-                  border: "1px solid lightgray",
-                  // borderRadius: 2,
+                  // border: "1px solid lightgray",
+                  borderRadius: "12px",
                   bgcolor: "#fff",
                 }}
               >

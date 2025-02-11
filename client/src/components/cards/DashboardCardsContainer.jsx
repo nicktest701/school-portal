@@ -140,7 +140,11 @@ function DashboardCardsContainer() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: {
+              xs: "repeat(auto-fit,minmax(250px,1fr))",
+              md: "1fr 1fr",
+            },
+
             gap: 2,
           }}
         >

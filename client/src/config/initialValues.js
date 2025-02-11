@@ -96,6 +96,25 @@ export const userInitialValues = {
   confirmPassword: '',
 };
 
+
+// export const userInitialValues = {
+
+//   "profile": null,
+//   "firstname": "jane",
+//   "lastname": "doe",
+//   "username": "yyy",
+//   "dateofbirth": "02/03/2025",
+//   "gender": "male",
+//   "email": "nicktest701@gmail.com",
+//   "role": "administrator",
+//   "phonenumber": "0543772591",
+//   "address": "Plot 15,Block D,Kumasi",
+//   "residence": "Abdulaikrom",
+//   "nationality": "Anguillan",
+
+// }
+
+
 //parent
 export const parentInitialValues = {
   parent1: {

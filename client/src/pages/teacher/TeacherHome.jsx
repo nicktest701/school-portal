@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Add, PersonRounded } from "@mui/icons-material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Container, Tab } from "@mui/material";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import TeacherAdd from "./TeacherAdd";
-import { TEACHERS_COLUMN } from "../../mockup/columns/teacherColumn";
+import { TEACHERS_COLUMN } from "@/mockup/columns/teacherColumn";
 import { useQuery } from "@tanstack/react-query";
-import { getAllTeachers } from "../../api/teacherAPI";
-import { EMPTY_IMAGES } from "../../config/images";
-import teacher_icon from "../../assets/images/header/teacher_ico.svg";
-import CustomTitle from "../../components/custom/CustomTitle";
+import { getAllTeachers } from "@/api/teacherAPI";
+import { EMPTY_IMAGES } from "@/config/images";
+import teacher_icon from "@/assets/images/header/teacher_ico.svg";
+import CustomTitle from "@/components/custom/CustomTitle";
 import { useNavigate } from "react-router-dom";
 
 const TeacherHome = () => {
@@ -59,7 +59,7 @@ const TeacherHome = () => {
             icon={teacher_icon}
             isPending={teachers.isPending}
             columns={TEACHERS_COLUMN}
-            data={teachers.data ? teachers.data : []}
+            data={teachers.data}
             actions={[]}
             onRowClick={viewTeacherInfo}
             showAddButton={true}

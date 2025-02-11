@@ -1,21 +1,21 @@
 import React, { useContext } from "react";
-import { examsScoreValidationSchema } from "../../config/validationSchema";
+import { addExamsScoreValidationSchema } from "@/config/validationSchema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { generateCustomGrade } from "../../config/generateCustomGrade";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { updateExams } from "../../api/ExaminationAPI";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
+import { generateCustomGrade } from "@/config/generateCustomGrade";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { updateExams } from "@/api/ExaminationAPI";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { Formik } from "formik";
 import { Dialog, DialogContent, Stack, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
-import { UserContext } from "../../context/providers/UserProvider";
-import LoadingSpinner from "../../components/spinners/LoadingSpinner";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { UserContext } from "@/context/providers/UserProvider";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { useParams, useSearchParams } from "react-router-dom";
 
 function AddStudentRecord() {
+  const [searchParams] = useSearchParams();
+  const { levelId } = useParams();
   const {
     userState: { session },
   } = useContext(UserContext);
@@ -33,17 +33,15 @@ function AddStudentRecord() {
   });
   const onSubmit = (values) => {
     const total = Number(values.classScore) + Number(values.examsScore);
-    const summary = generateCustomGrade(total, grade);
+    const summary = generateCustomGrade(total, grade?.ratings);
 
     const result = {
       session: {
-        sessionId: session?.sessionId,
-        termId: session?.termId,
-        levelId: session?.levelId,
-        studentId: values?._id,
+        examsId: data?._id,
       },
       scores: [
         {
+          _id: data?.course?._id,
           subject: values?.subject,
           classScore: values?.classScore,
           examsScore: values?.examsScore,
@@ -53,16 +51,11 @@ function AddStudentRecord() {
       ],
     };
 
-    // console.log(result);
-
     mutateAsync(result, {
       onSettled: () => {
-        queryClient.invalidateQueries(["student-records"]);
-        queryClient.invalidateQueries(["exams-scores"]);
-        queryClient.invalidateQueries(["exams-details"]);
-        queryClient.invalidateQueries(["exams-reports"]);
-        queryClient.invalidateQueries(["exams-by-id"]);
-        queryClient.invalidateQueries(["subject-score"]);
+        queryClient.invalidateQueries({
+          queryKey: ["subject-score", levelId, searchParams.get("sub")],
+        });
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -98,8 +91,8 @@ function AddStudentRecord() {
       <CustomDialogTitle title="Add Record" onClose={handleClose} />
       <DialogContent>
         <Formik
-          initialValues={data}
-          validationSchema={examsScoreValidationSchema}
+          initialValues={data?.course}
+          validationSchema={addExamsScoreValidationSchema}
           onSubmit={onSubmit}
         >
           {({ values, errors, touched, handleChange, handleSubmit }) => {
@@ -113,6 +106,7 @@ function AddStudentRecord() {
                     onChange={handleChange("subject")}
                     error={Boolean(errors.subject)}
                     helperText={touched.subject && errors.subject}
+                    disabled
                   />
 
                   <TextField

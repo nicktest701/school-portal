@@ -132,9 +132,7 @@ const Login = () => {
                 <Avatar
                   alt="school logo"
                   loading="lazy"
-                  srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                    school_info?.badge
-                  }`}
+                  srcSet={school_info?.badge}
                   sx={{
                     width: 80,
                     height: 80,

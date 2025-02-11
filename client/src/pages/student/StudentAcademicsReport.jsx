@@ -68,12 +68,7 @@ const StudentAcademicsReport = () => {
         <Stack paddingY={2} justifyContent="center" alignItems="center">
           <Avatar
             src={
-              student?.profile === "" ||
-              student?.profile === undefined ||
-              student?.profile === null
-                ? null
-                :student?.profile
-                // :  `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
+              student?.profile
             }
             sx={{ width: 80, height: 80 }}
           />

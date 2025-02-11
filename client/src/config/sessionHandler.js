@@ -8,6 +8,8 @@ export const getUser = () => {
     return {
       id: "",
       profile: "",
+      firstname: "", lastname: "",
+      username: "",
       name: "",
       email: "",
       phonenumber: "",
@@ -55,9 +57,9 @@ export const getRefreshToken = () => {
 };
 
 
-export const saveToken = (accessToken,refreshToken) => {
+export const saveToken = (accessToken, refreshToken) => {
 
-  if (accessToken === 'undefined' || accessToken === undefined||refreshToken === 'undefined' || refreshToken === undefined) {
+  if (accessToken === 'undefined' || accessToken === undefined || refreshToken === 'undefined' || refreshToken === undefined) {
     return;
   }
   localStorage.setItem("@user", accessToken);
@@ -72,7 +74,7 @@ export const saveAccessToken = (accessToken) => {
     return;
   }
   localStorage.setItem("@user", accessToken);
- 
+
 
 
 };

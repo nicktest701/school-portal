@@ -7,6 +7,7 @@ const Level = require('../models/levelModel');
 const {
   Types: { ObjectId },
 } = require('mongoose');
+const { isWeekend } = require('../config/helper');
 
 //@GET All school Attendance
 router.get(
@@ -61,6 +62,8 @@ router.get(
     const { id } = req.params;
     const { date } = req.query;
 
+
+
     const attendance = await Attendance.findOne({
       level: new ObjectId(id),
       date,
@@ -73,6 +76,16 @@ router.get(
         path: 'students',
         match: { active: true },
       });
+
+
+      if (isWeekend(new Date(date))) {
+
+        return res.status(200).json({
+          level: id,
+          date,
+          status: [],
+        });
+      }
 
       const students = level.students.map((student) => {
 

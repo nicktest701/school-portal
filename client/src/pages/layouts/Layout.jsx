@@ -6,8 +6,8 @@ import Footer from "./Footer";
 function Layout({ children }) {
   return (
     <>
-      <main style={{ backgroundColor: "whitesmoke" }}>{children}</main>
-      <Footer />
+      {/* <main style={{ backgroundColor: "whitesmoke" }}>{children}</main>
+      <Footer /> */}
     </>
   );
 }

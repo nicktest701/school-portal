@@ -35,7 +35,7 @@ const SchoolSession = () => {
       if (user?.role === "administrator") {
         return sessions;
       } else {
-        return sessions.filter((session) => !session.active);
+        return sessions.filter((session) => session.active);
       }
     },
   });

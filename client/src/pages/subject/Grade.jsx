@@ -15,20 +15,26 @@ import EditGrade from "./EditGrade";
 import AssignGrade from "./AssignGrade";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { useSearchParams } from "react-router-dom";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function Grade() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [openAddGrade, setOpenAddGrade] = useState(false);
-  const handleOpenAddGrade = () => setOpenAddGrade(true);
 
   const queryClient = useQueryClient();
+  const {
+    userState: { session },
+  } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const grades = useQuery({
-    queryKey: ["grades"],
-    queryFn: getGrades,
-    initialData: [],
+    queryKey: ["grades", session?.sessionId, session?.termId],
+    queryFn: () => getGrades(session?.sessionId, session?.termId),
+    enabled: !!session?.sessionId && !!session?.termId,
+    // initialData: [],
   });
+
+  const handleOpenAddGrade = () => setOpenAddGrade(true);
 
   const updateGrade = (grade) => {
     schoolSessionDispatch({
@@ -57,6 +63,7 @@ function Grade() {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: deleteGrade,
   });
+
   const removeGrade = (id) => {
     Swal.fire({
       title: "Removing Grade",
@@ -91,30 +98,26 @@ function Grade() {
       title: "Name",
     },
     {
-      field: null,
-      title: "View Grade",
-      render: (row) => (
-        <Button
-          sx={{
-            bgcolor: "info.lighter",
-            color: "info.darker",
+      field: "assignedLevels",
+      title: "Assigned Levels",
+      render: (rowData) => (
+        <div
+          style={{
+            width: "300px",
           }}
-          onClick={() => viewGrade(row?.ratings)}
         >
-          View
-        </Button>
-      ),
-    },
-    {
-      field: null,
-      title: "Assign",
-      render: (data) => (
-        <Link
-          sx={{ cursor: "pointer" }}
-          onClick={() => handleOpenAssignGrade(data)}
-        >
-          Assign
-        </Link>
+          {rowData?.assignedLevels?.map((level) => (
+            <span
+              key={level?._id}
+              style={{
+                textDecoration: "underline",
+              }}
+            >
+              {level?.levelName}
+              {" ,"}
+            </span>
+          ))}
+        </div>
       ),
     },
 
@@ -124,6 +127,21 @@ function Grade() {
       render: (rowData) => {
         return (
           <Stack direction="row" spacing={2}>
+            <Link
+              sx={{
+                color: "info.darker",
+              }}
+              onClick={() => viewGrade(rowData?.ratings)}
+            >
+              View
+            </Link>
+            <Link
+              sx={{ cursor: "pointer" }}
+              onClick={() => handleOpenAssignGrade(rowData)}
+            >
+              Assign
+            </Link>
+
             <Edit
               className="ico"
               onClick={() => updateGrade(rowData)}
@@ -154,7 +172,7 @@ function Grade() {
         showAddButton={true}
         addButtonImg={EMPTY_IMAGES.session}
         addButtonMessage="😑 No Grading system available!.Create a new one!"
-        addButtonText="New Grades"
+        addButtonText="New Grade"
         onAddButtonClicked={handleOpenAddGrade}
         handleRefresh={grades.refetch}
         options={{

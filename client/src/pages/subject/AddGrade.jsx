@@ -8,9 +8,6 @@ import {
   Divider,
   FormLabel,
   Input,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
   Stack,
   TextField,
   Typography,
@@ -21,7 +18,6 @@ import React, { useContext, useState } from "react";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import { Formik } from "formik";
 import { gradesValidationSchema } from "@/config/validationSchema";
-import GradeItem from "./GradeItem";
 import { GRADES, REMARKS } from "@/mockup/columns/sessionColumns";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postGrades } from "@/api/gradeAPI";
@@ -30,6 +26,7 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import _ from "lodash";
 import { Download, NoteRounded } from "@mui/icons-material";
 import { downloadTemplate } from "@/api/userAPI";
+import GradeTable from "@/components/tables/GradeTable";
 
 function AddGrade({ open, setOpen }) {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -123,7 +120,7 @@ function AddGrade({ open, setOpen }) {
         onClose={() => setOpen(false)}
       />
 
-      <DialogContent>
+      <DialogContent sx={{ px: 1.5 }}>
         <Stack spacing={3} py={2}>
           <TextField
             label="Name of Grading System"
@@ -180,8 +177,6 @@ function AddGrade({ open, setOpen }) {
                         {...params}
                         label="Grade"
                         size="small"
-                        // value={values.grade}
-                        // onChange={handleChange('grade')}
                         error={Boolean(touched.grade && errors.grade)}
                         helperText={touched.grade && errors.grade}
                       />
@@ -200,8 +195,6 @@ function AddGrade({ open, setOpen }) {
                         {...params}
                         label="remarks"
                         size="small"
-                        // value={values.remarks}
-                        // onChange={handleChange('remarks')}
                         error={Boolean(touched.remarks && errors.remarks)}
                         helperText={touched.remarks && errors.remarks}
                       />
@@ -218,7 +211,7 @@ function AddGrade({ open, setOpen }) {
               );
             }}
           </Formik>
-          <Button sx={{ bgcolor: "var(--secondary)", width: 260 }}>
+          <Button sx={{ bgcolor: "var(--secondary)" }}>
             <FormLabel
               htmlFor="studentFile"
               title="Import Grade from File"
@@ -234,8 +227,12 @@ function AddGrade({ open, setOpen }) {
               }}
             >
               <NoteRounded htmlColor="#fff" />
-              <Typography variant="caption" color="#fff">
-                Import Grade from File (.xlsx,.xls,.csv)
+              <Typography
+                variant="caption"
+                color="#fff"
+                textTransform="capitalize"
+              >
+                Import Grade(.xlsx,.xls,.csv)
               </Typography>
 
               <Input
@@ -271,31 +268,8 @@ function AddGrade({ open, setOpen }) {
             <Chip label="Grades" />
           </Divider>
         </Stack>
-        <List>
-          <ListItem divider>
-            <Stack
-              direction="row"
-              spacing={2}
-              justifyContent="space-between"
-              width="80%"
-            >
-              <FormLabel>Highest Mark</FormLabel>
-              <FormLabel>Lowest Mark</FormLabel>
-              <FormLabel>Grade</FormLabel>
-              <FormLabel>Remarks</FormLabel>
-              <ListItemSecondaryAction>
-                <FormLabel>Action</FormLabel>
-              </ListItemSecondaryAction>
-            </Stack>
-          </ListItem>
-          {grades.map((item) => (
-            <GradeItem
-              key={item?.id}
-              {...item}
-              removeGrade={handleRemoveGrade}
-            />
-          ))}
-        </List>
+
+        <GradeTable data={grades} removeGrade={handleRemoveGrade} />
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setOpen(false)}>Cancel</Button>

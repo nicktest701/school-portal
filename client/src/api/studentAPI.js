@@ -160,12 +160,20 @@ export const postStudent = async ({ student, parent }) => {
   }
 };
 
-export const postNewStudent = async (data) => {
+export const postNewStudent = async ({ photo, details }) => {
+  const formData = new FormData();
+  //Student
+  formData.append('profile', photo);
+  formData.append('details', JSON.stringify(details));
+
   try {
     const res = await api({
       method: 'POST',
       url: `/students`,
-      data,
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
 
     return res.data;

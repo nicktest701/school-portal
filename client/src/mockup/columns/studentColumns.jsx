@@ -53,12 +53,7 @@ export const STUDENTS_COLUMN = [
       >
         <Avatar
           src={
-            rowData.profile === undefined || rowData.profile === ""
-              ? null
-              : // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                //     rowData.profile
-                //   }`
-                rowData?.profile
+            rowData.profile 
           }
         />
         <ListItemText
@@ -214,12 +209,7 @@ export const RECENT_STUDENTS_COLUMN = [
       >
         <Avatar
           src={
-            rowData.profile === undefined || rowData.profile === ""
-              ? null
-              : // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-                //     rowData.profile
-                //   }`
-                rowData?.profile
+            rowData.profile
           }
         />
         <ListItemText
@@ -292,12 +282,7 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
     render: (rowData) => (
       <Avatar
         src={
-          rowData.profile === undefined || rowData.profile === ""
-            ? null
-            : rowData?.profile
-          // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-          //     rowData.profile
-          //   }`
+          rowData.profile 
         }
       />
     ),
@@ -363,12 +348,7 @@ export const STUDENTS_EXAMS_COLUMN = [
       >
         <Avatar
           src={
-            rowData.profile === undefined || rowData.profile === ""
-              ? null
-              : rowData?.profile
-            // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-            //     rowData.profile
-            //   }`
+            rowData.profile
           }
         />
         <ListItemText

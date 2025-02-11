@@ -50,6 +50,9 @@ const FeeNew = lazy(() => import("../fees/FeeNew"));
 const LevelExamScoreInput = lazy(() =>
   import("../examination/LevelExamScoreInput")
 );
+const UploadStudentResult = lazy(() =>
+  import("../examination/UploadStudentResult")
+);
 const ExamsHome = lazy(() => import("../examination/ExamsHome"));
 const ExamsLevel = lazy(() => import("../examination/ExamsLevel"));
 const ViewExamsReports = lazy(() => import("../examination/ViewExamsReports"));
@@ -184,7 +187,7 @@ const Root = () => {
               path="attendance/:id/:type/history"
               element={
                 <Suspense fallback={<Loader />}>
-                  <AttendanceHistory />
+                  <AttendanceHistory section="level" />
                 </Suspense>
               }
             />
@@ -473,7 +476,7 @@ const Root = () => {
               path="attendance/:id/:type/history"
               element={
                 <Suspense fallback={<Loader />}>
-                  <AttendanceHistory />
+                  <AttendanceHistory section="course" />
                 </Suspense>
               }
             />
@@ -500,6 +503,15 @@ const Root = () => {
             <Route
               path="level/:levelId/:level"
               element={<ExamsLevel type="examination" />}
+            />
+
+            <Route
+              path="course/:levelId/:level/upload"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <UploadStudentResult />
+                </Suspense>
+              }
             />
 
             <Route

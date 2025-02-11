@@ -16,7 +16,7 @@ function MedicalAllergy({ title, value, setValue }) {
       spacing={3}
     >
       <Typography
-        fontSize={12}
+        fontSize={13}
         sx={{ fontWeight: 'bold', width: '40%' }}
       >
         {title}
@@ -37,7 +37,7 @@ function MedicalAllergy({ title, value, setValue }) {
           slotProps={{
             typography: {
               sx: {
-                fontSize: 11,
+                fontSize: 12,
               },
             },
           }}
@@ -49,7 +49,7 @@ function MedicalAllergy({ title, value, setValue }) {
           slotProps={{
             typography: {
               sx: {
-                fontSize: 11,
+                fontSize: 12,
               },
             },
           }}

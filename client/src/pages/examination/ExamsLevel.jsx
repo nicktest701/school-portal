@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react";
 import * as XLSX from "xlsx";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   Box,
@@ -20,8 +20,6 @@ import {
   IconButton,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import GroupIcon from "@mui/icons-material/Group";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
@@ -33,6 +31,8 @@ import {
   List,
   ChevronRight,
   RefreshRounded,
+  Note,
+  Book,
 } from "@mui/icons-material";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { STUDENTS_EXAMS_COLUMN } from "@/mockup/columns/studentColumns";
@@ -45,15 +45,25 @@ import exams_icon from "@/assets/images/header/exams_ico.svg";
 import { UserContext } from "@/context/providers/UserProvider";
 import Back from "@/components/Back";
 import { gradeColor } from "@/config/gradeColor";
+import GradePopover from "../level/GradePopover";
+import SubjectPopover from "../level/SubjectPopOver";
+import useLevelById from "@/components/hooks/useLevelById";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import AssignLevelGrade from "../subject/AssignLevelGrade";
 
 const ExamsLevel = ({ type }) => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
   const {
+    user,
     userState: { session },
   } = useContext(UserContext);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { levelId, level } = useParams();
+
+  //Get Students in Current Level id
+  const { gradeSystem, subjects } = useLevelById(levelId);
 
   //GET All Details about exams
 
@@ -80,26 +90,6 @@ const ExamsLevel = ({ type }) => {
   });
 
   const handleViewExamsDetails = (rowData) => {
-    // setSearchParams((params) => {
-    //   params.set("exams_id", rowData?._id);
-    //   params.set("student_id", rowData?.studentId);
-
-    //   return params;
-
-    // });
-    // schoolSessionDispatch({
-    //   type: "openAddExamsScore",
-    //   payload: {
-    //     open: true,
-    //     data: {
-    //       levelId,
-    //       studentId: rowData.studentId,
-    //       sessionId: session.sessionId,
-    //       termId: session.termId,
-    //     },
-    //   },
-    // });
-
     navigate(
       `/examination/level/${levelId}/student?eid=${rowData?._id}&sid=${rowData?.studentId}`,
       {
@@ -169,12 +159,19 @@ const ExamsLevel = ({ type }) => {
     });
   }, [examDetails?.data?.students]);
 
+  const handleShowAssignGrade = () => {
+    setSearchParams((params) => {
+      params.set("assign_grade", true);
+      return params;
+    });
+  };
   return (
     <>
-      <Back
-        to={type === "course" ? "/course/level" : `/examination`}
-        color="primary.main"
-      />
+      {user?.role === "administrator" ? (
+        <Back to={`/examination`} color="primary.main" />
+      ) : (
+        <Back to={"/course/level"} color="primary.main" />
+      )}
 
       <Container
         sx={{
@@ -223,7 +220,7 @@ const ExamsLevel = ({ type }) => {
           color="info"
         />
         <ExamsHomeCard
-          title="Highest Marks"
+          title="Highest Score"
           value={examDetails.data?.highestMarks}
           icon={<BookmarksOutlinedIcon sx={iconStyle} />}
           color="success"
@@ -235,7 +232,7 @@ const ExamsLevel = ({ type }) => {
           color='info'
         /> */}
         <ExamsHomeCard
-          title="Lowest Marks"
+          title="Lowest Score"
           value={examDetails.data?.lowestMarks}
           icon={<DoNotDisturbOnTotalSilenceOutlinedIcon sx={iconStyle} />}
           color="warning"
@@ -264,7 +261,16 @@ const ExamsLevel = ({ type }) => {
             justifyContent="space-between"
             width="100%"
           >
-            <Box display="flex" alignItems="center" gap={2} flex={1}>
+            <Box
+              display="flex"
+              flexDirection={{
+                xs: "column",
+                md: "row",
+              }}
+              alignItems="center"
+              gap={2}
+              flex={1}
+            >
               {/* Circular Progress with Text */}
               <Box>
                 <Box
@@ -383,34 +389,48 @@ const ExamsLevel = ({ type }) => {
 
           {/* Statistics Section */}
           <Grid2 container spacing={2}>
-            <Grid2 size={4}>
+            <Grid2 size={{ xs: 6, md: 2.5 }}>
               <Box textAlign="center">
-                <GroupIcon color="primary" />
-                <Typography variant="h6">33</Typography>
+                <Note color="info" />
+                <Typography variant="h6" color="info">
+                  {subjects?.length ?? 0}
+                </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Teachers
+                  Subjects <SubjectPopover subjects={subjects} />
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 item size={4}>
+            <Grid2 size={{ xs: 6, md: 2.5 }}>
               <Box textAlign="center">
-                <GroupIcon color="primary" />
-                <Typography variant="h6">311</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Students
+                <Book color="success" />
+                <Typography variant="h6" color="success">
+                  {gradeSystem?.name || "N/A"}
                 </Typography>
-              </Box>
-            </Grid2>
-            <Grid2 item size={4}>
-              <Box textAlign="center">
-                <AssignmentTurnedInIcon color="primary" />
-                <Typography variant="h6">314</Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Assigned
+                  Grade System{" "}
+                  {gradeSystem?.name ? (
+                    <GradePopover grades={gradeSystem?.ratings} />
+                  ) : (
+                    <button
+                      style={{
+                        border: "1px solid var(--primary)",
+                        backgroundColor: "transparent",
+                        padding: "4px",
+                        borderRadius: "2px",
+                        color: "var(--primary)",
+                        fontSize: "12px",
+                      }}
+                      onClick={handleShowAssignGrade}
+                    >
+                      Assign Grade
+                    </button>
+                  )}
                 </Typography>
               </Box>
             </Grid2>
           </Grid2>
+
+          
         </CardContent>
       </Card>
 
@@ -431,7 +451,7 @@ const ExamsLevel = ({ type }) => {
               gap: 2,
             }}
           >
-            <ButtonGroup size="small">
+            <ButtonGroup >
               <Button startIcon={<NoteOutlined />} onClick={downloadSheet}>
                 {matches ? " Download Assessment Sheet" : ""}
               </Button>
@@ -452,6 +472,9 @@ const ExamsLevel = ({ type }) => {
         addButtonMessage="😑 No Students results available !!!!"
         onRowClick={(rowData) => handleViewExamsDetails(rowData)}
       />
+      {examDetails.isPending && <LoadingSpinner value="Please Waiting.." />}
+
+      <AssignLevelGrade />
     </>
   );
 };

@@ -20,7 +20,10 @@ const CourseSchema = new mongoose.Schema(
       ref: 'Level',
     },
 
-    subject: String,
+    subject: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Subject',
+    },
     active: {
       type: Boolean,
       default: true,

@@ -1,42 +1,59 @@
-import React, { useContext, useRef } from "react";
+import React, { useRef } from "react";
 import {
   Dialog,
   DialogContent,
   DialogActions,
   Button,
   Stack,
-  useTheme,
   Typography,
 } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 import { useReactToPrint } from "react-to-print";
-import Transition from "@/components/animations/Transition";
 import PropTypes from "prop-types";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import { useQuery } from "@tanstack/react-query";
-import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { getExams } from "@/api/ExaminationAPI";
-import ExamsItem from "@/components/list/ExamsItem";
 import ReportCard from "./ReportCard";
+import { useSearchParams } from "react-router-dom";
+import { gradeColor } from "@/config/gradeColor";
 
+const ExamsItem = ({ item }) => (
+  <TableRow>
+    <TableCell sx={{ fontSize: 12 }}>{item.subject}</TableCell>
+    <TableCell sx={{ fontSize: 12 }}>{item.classScore}</TableCell>
+    <TableCell sx={{ fontSize: 12 }}>{item.examsScore}</TableCell>
+    <TableCell sx={{ color: "#b72338", fontSize: "12px", fontWeight: "bold" }}>
+      {item.totalScore}
+    </TableCell>
+    <TableCell sx={{ fontSize: 12, color: gradeColor(item.totalScore).color }}>
+      {item.grade}
+    </TableCell>
+    <TableCell sx={{ fontSize: 12 }}>{item.remarks}</TableCell>
+  </TableRow>
+);
 const ViewExamsRecord = () => {
-  const { palette } = useTheme();
   const componentRef = useRef();
-  const {
-    schoolSessionDispatch,
-    schoolSessionState: { examsRecord },
-  } = useContext(SchoolSessionContext);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { data: student } = useQuery({
-    queryKey: ["student-exams-records", examsRecord.id],
-    queryFn: () => getExams(examsRecord.id),
-    enabled: !!examsRecord.id,
+    queryKey: ["student-exams-records", searchParams.get("report")],
+    queryFn: () => getExams(searchParams.get("report")),
+    enabled: !!searchParams.get("report"),
   });
 
   //close dialog
   const handleClose = () => {
-    schoolSessionDispatch({
-      type: "openViewExamsRecord",
-      payload: { open: false, id: "" },
+    setSearchParams((params) => {
+      params.delete("report");
+      return params;
     });
   };
 
@@ -48,39 +65,38 @@ const ViewExamsRecord = () => {
   return (
     <>
       <Dialog
-        open={examsRecord.open}
+        open={searchParams.get("report") !== null}
         onClose={handleClose}
         maxWidth="md"
         fullWidth
-        TransitionComponent={Transition}
       >
-        <CustomDialogTitle title="Exams Details" onClose={handleClose} />
+        <CustomDialogTitle
+          title={`${student?.level}-${student?.term}`}
+          onClose={handleClose}
+        />
         <DialogActions>
-          <Button onClick={() => reactToPrintFn()}>Print Report</Button>
+          <Button variant="contained" onClick={() => reactToPrintFn()}>
+            Print Report
+          </Button>
         </DialogActions>
         <DialogContent>
-          <Stack direction="row" spacing={2}>
-            <Typography variant="h5">
-              {student?.level}-{student?.term}
-            </Typography>
-          </Stack>
           <Stack>
-            <table
-              style={{ textAlign: "center", borderCollapse: "collapse" }}
-              // border='1'
-            >
+            <Typography variant="h5">
+              TOTAL SCORE - {student?.overallScore}
+            </Typography>
+            {/* <table style={{ textAlign: "left", borderCollapse: "collapse" }}>
               <thead>
-                <tr>
-                  <th>Subject</th>
-                  <th> Class Score (50%)</th>
-                  <th> Exams Score (50%)</th>
-                  <th>Total Score (100%)</th>
-                  {/* <th>Position</th> */}
-                  <th>Grade</th>
-                  <th>Remarks</th>
+                <tr style={{ fontSize: "12px" }}>
+                  <th>SUBJECT</th>
+                  <th> CLASS SCORE (50%)</th>
+                  <th> EXAMS SCORE(50%)</th>
+                  <th>TOTAL SCORE (100%)</th>
+
+                  <th>GRADE</th>
+                  <th>REMARKS</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={{ width: "100%" }}>
                 {student?.scores !== undefined ? (
                   student?.scores.length !== 0 &&
                   student?.scores.map((item) => (
@@ -97,29 +113,48 @@ const ViewExamsRecord = () => {
                   </tr>
                 )}
               </tbody>
-              <tfoot
-                style={{
-                  textAlign: "center",
-                  textDecoration: "underline",
-                  borderTop: `solid 5px ${palette.secondary.main}`,
-                  bgcolor: "primary.main",
-                  color: "primary.contrastText",
-                  width: "100%",
-                  padding: 1,
-                }}
-              >
-                <tr>
-                  <th>Overall Score</th>
-                  <th></th>
-                  <th></th>
-                  <th>{student?.overallScore}</th>
-                  <th></th>
-                  <th></th>
-                  <th></th>
-                </tr>
-              </tfoot>
-            </table>
+            </table> */}
           </Stack>
+
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="student scores table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>SUBJECT</TableCell>
+                  <TableCell>CLASS SCORE (50%)</TableCell>
+                  <TableCell>EXAMS SCORE (50%)</TableCell>
+                  <TableCell>TOTAL SCORE (100%)</TableCell>
+                  <TableCell>GRADE</TableCell>
+                  <TableCell>REMARKS</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {student?.scores !== undefined ? (
+                  student.scores.length !== 0 ? (
+                    student.scores.map((item) => (
+                      <ExamsItem key={item.subject} item={item} />
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={6} align="center">
+                        <Typography variant="body1">
+                          No Student Record Available
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center">
+                      <Typography variant="body1">
+                        No Student Record Available
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </DialogContent>
       </Dialog>
       <div className="print-container" ref={componentRef}>

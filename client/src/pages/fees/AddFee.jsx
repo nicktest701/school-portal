@@ -12,24 +12,22 @@ import {
   FormHelperText,
   InputAdornment,
   Divider,
+  Box,
 } from "@mui/material";
 import _ from "lodash";
 import { Formik } from "formik";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Button from "@mui/material/Button";
-import { FEES_OPTIONS } from "../../mockup/columns/sessionColumns";
-import { getAllFees, postFee } from "../../api/feeAPI";
+import { FEES_OPTIONS } from "@/mockup/columns/sessionColumns";
+import { getAllFees, postFee } from "@/api/feeAPI";
 import FeesItem from "./FeeItem";
-import { feeValidationSchema } from "../../config/validationSchema";
-import { currencyFormatter } from "../../config/currencyFormatter";
-import useLevel from "../../components/hooks/useLevel";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
-import { UserContext } from "../../context/providers/UserProvider";
+import { feeValidationSchema } from "@/config/validationSchema";
+import { currencyFormatter } from "@/config/currencyFormatter";
+import useLevel from "@/components/hooks/useLevel";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { UserContext } from "@/context/providers/UserProvider";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const AddFee = ({ open, setOpen }) => {
@@ -40,7 +38,6 @@ const AddFee = ({ open, setOpen }) => {
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [currentLevel, setCurrentLevel] = useState({ _id: "", type: "" });
-  const [allFees, setAllFees] = useState("");
 
   const [fee, setFee] = useState("");
   const [feeList, setFeeList] = useState([]);
@@ -53,11 +50,10 @@ const AddFee = ({ open, setOpen }) => {
   //Find all existing level
   const { levelsOption } = useLevel();
 
-  useQuery( {
-    queryKey:["fees"],
+  const allFees = useQuery({
+    queryKey: ["fees", session?.sessionId],
     queryFn: () => getAllFees(session),
     enabled: !!session?.sessionId,
-    onSuccess: (fees) => setAllFees(fees),
   });
 
   const initialValues = {
@@ -90,12 +86,9 @@ const AddFee = ({ open, setOpen }) => {
     });
   };
 
-  const totalFees = useMemo(
-    () => currencyFormatter(_.sumBy(feeList, "amount")),
-    [feeList]
-  );
+  const totalFees = currencyFormatter(_.sumBy(feeList, "amount"));
 
-  const { mutateAsync } = useMutation(postFee);
+  const { mutateAsync, isPending } = useMutation({ mutationFn: postFee });
 
   const onSubmit = (values, options) => {
     setMsg({ text: "" });
@@ -109,7 +102,9 @@ const AddFee = ({ open, setOpen }) => {
     };
 
     //Check if fees for class already exist
-    const isLevelAvailable = allFees.find(({ _id }) => _id === newValues.level);
+    const isLevelAvailable = allFees?.data.find(
+      ({ _id }) => _id === newValues.level
+    );
 
     if (!_.isEmpty(isLevelAvailable)) {
       setMsg({
@@ -122,7 +117,7 @@ const AddFee = ({ open, setOpen }) => {
     // //console.log(newValues);
     mutateAsync(newValues, {
       onSettled: () => {
-        queryClient.invalidateQueries(["fees"]);
+        queryClient.invalidateQueries({ queryKey: ["fees", session] });
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
@@ -134,9 +129,10 @@ const AddFee = ({ open, setOpen }) => {
       },
     });
   };
+  const handleClose = () => setOpen(false);
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs">
-      <CustomDialogTitle title="New Fees" onClose={() => setOpen(false)} />
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <CustomDialogTitle title="New Fees" onClose={handleClose} />
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
@@ -149,7 +145,7 @@ const AddFee = ({ open, setOpen }) => {
               {msg.text && (
                 <Alert
                   sx={{
-                    marginY: 1,
+                    my: 1,
                   }}
                   severity={msg.severity}
                   onClose={() =>
@@ -211,36 +207,54 @@ const AddFee = ({ open, setOpen }) => {
                       />
                     )}
                   />
-                  <TextField
-                    type="number"
-                    label="Enter Fee Amount"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">GHS</InputAdornment>
-                      ),
-
-                      endAdornment: (
-                        <InputAdornment position="end">p</InputAdornment>
-                      ),
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    error={Boolean(touched?.fee && errors?.fee)}
-                    helperText={touched?.fee && errors?.fee && "Required*"}
-                  />
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={handleAddFee}
                   >
-                    Add
-                  </Button>
+                    <TextField
+                      type="number"
+                      label="Enter Fee Amount"
+                      size="small"
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              GHS
+                            </InputAdornment>
+                          ),
 
-                  <List sx={{ maxHeight: 400 }}>
-                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                      Fees
-                    </Typography>
+                          endAdornment: (
+                            <InputAdornment position="end">p</InputAdornment>
+                          ),
+                        },
+                      }}
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      error={Boolean(touched?.fee && errors?.fee)}
+                      helperText={touched?.fee && errors?.fee && "Required*"}
+                      disabled={_.isEmpty(fee)}
+                    />
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={handleAddFee}
+                      disabled={_.isEmpty(amount)}
+                    >
+                      Add
+                    </Button>
+                  </Box>
+
+                  <List
+                    sx={{ maxHeight: 400 }}
+                    subheader={
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                        Fees
+                      </Typography>
+                    }
+                  >
                     {_.isEmpty(feeList) ? (
                       <Typography>No Fee Available</Typography>
                     ) : (
@@ -272,15 +286,19 @@ const AddFee = ({ open, setOpen }) => {
                 </Stack>
               </DialogContent>
               <DialogActions sx={{ padding: 2 }}>
+                <Button onClick={handleClose}>Cancel</Button>
                 <Button
-                  loading={isSubmitting}
+                  loading={isSubmitting || isPending}
                   variant="contained"
                   onClick={handleSubmit}
+                  disabled={_.isEmpty(feeList)}
                 >
-                  Save
+                  Save Fee
                 </Button>
               </DialogActions>
-              {isSubmitting && <LoadingSpinner value="Adding New Fee..." />}
+              {(isPending || isSubmitting) && (
+                <LoadingSpinner value="Adding New Fee..." />
+              )}
             </>
           );
         }}

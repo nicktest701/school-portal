@@ -1,12 +1,12 @@
 import React, { useContext, useMemo } from 'react';
-import CustomTitle from '../../components/custom/CustomTitle';
-import CustomizedMaterialTable from '../../components/tables/CustomizedMaterialTable';
+import CustomTitle from '@/components/custom/CustomTitle';
+import CustomizedMaterialTable from '@/components/tables/CustomizedMaterialTable';
 import { Button, Stack } from '@mui/material';
-import { EMPTY_IMAGES } from '../../config/images';
+import { EMPTY_IMAGES } from '@/config/images';
 import { SchoolRounded } from '@mui/icons-material';
-import { COURSE_LEVEL_COLUMNS } from '../../mockup/columns/sessionColumns';
-import { UserContext } from '../../context/providers/UserProvider';
-import useLevel from '../../components/hooks/useLevel';
+import { COURSE_LEVEL_COLUMNS } from '@/mockup/columns/sessionColumns';
+import { UserContext } from '@/context/providers/UserProvider';
+import useLevel from '@/components/hooks/useLevel';
 import { useNavigate } from 'react-router-dom';
 
 function CourseLevel() {
@@ -55,7 +55,7 @@ function CourseLevel() {
     <>
       <CustomTitle
         title='Assigned Levels'
-        subtitle='Track,manage and control level activities'
+        subtitle='Track,manage and control assigned level activities'
         icon={<SchoolRounded color='primary' />}
         color='primary.main'
       />

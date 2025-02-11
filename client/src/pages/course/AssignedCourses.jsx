@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
-import CustomTitle from "../../components/custom/CustomTitle";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import CustomTitle from "@/components/custom/CustomTitle";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { Button } from "@mui/material";
-import { EMPTY_IMAGES } from "../../config/images";
+import { EMPTY_IMAGES } from "@/config/images";
 import { SchoolRounded } from "@mui/icons-material";
-import { ASSIGNED_COURSE_COLUMNS } from "../../mockup/columns/sessionColumns";
-import { UserContext } from "../../context/providers/UserProvider";
+import { ASSIGNED_COURSE_COLUMNS } from "@/mockup/columns/sessionColumns";
+import { UserContext } from "@/context/providers/UserProvider";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getCourseByTeacher } from "../../api/courseAPI";
+import { getCourseByTeacher } from "@/api/courseAPI";
 
 function AssignCourses() {
   const navigate = useNavigate();
@@ -27,8 +27,10 @@ function AssignCourses() {
       }),
   });
 
+ 
+
   const viewStudents = ({ _id, levelId, subject, level }) =>
-    navigate(`/course/assign/${levelId}/${level}?sub=${subject}`, {
+    navigate(`/course/assign/${levelId}/${level}?sub=${subject?.name}`, {
       state: {
         id: _id,
         subject,

@@ -12,24 +12,31 @@ import {
 import { PropTypes } from "prop-types";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getAttendanceHistory } from "../../api/attendanceAPI";
+import { getAttendanceHistory } from "@/api/attendanceAPI";
 import moment from "moment";
-import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
-import LoadingSpinner from "../../components/spinners/LoadingSpinner";
+import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
-function AttendanceHistory() {
+function AttendanceHistory({ section }) {
   const { id, type } = useParams();
 
   const attendanceHistory = useQuery({
-    queryKey: ["attendance-history"],
+    queryKey: ["attendance-history", id],
     queryFn: () => getAttendanceHistory(id),
     enabled: !!id,
   });
 
   return (
     <Container>
-      <Back to={`/level/attendance/${id}/${type}`} color="primary.main" />
+      <Back
+        to={
+          section === "level"
+            ? `/level/attendance/${id}/${type}`
+            : `/course/attendance/${id}/${type}`
+        }
+        color="primary.main"
+      />
       <CustomTitle
         title="Attendance History"
         subtitle="Review past attendance records to analyze trends, identify issues, and ensure comprehensive tracking of student and staff presence."
@@ -95,8 +102,6 @@ function AttendanceHistory() {
                   width: 130,
                 },
               }}
-
-              
             />
             <ListItemText
               primary={_.sumBy(attendanceHistory.data, "present")}

@@ -1,39 +1,36 @@
 import React, { useState } from "react";
-import { useContext } from "react";
+import { use } from "react";
 import { Container } from "@mui/material";
 import _ from "lodash";
 import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import session_icon from "../../assets/images/header/session_ico.svg";
-import { SCHOOL_SESSION_COLUMN } from "../../mockup/columns/sessionColumns";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import session_icon from "@/assets/images/header/session_ico.svg";
+import { SCHOOL_SESSION_COLUMN } from "@/mockup/columns/sessionColumns";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import {
   deleteManyTerms,
   deleteTerm,
   disableSessionAccount,
   getAllTerms,
-} from "../../api/termAPI";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { EMPTY_IMAGES } from "../../config/images";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import CustomTitle from "../../components/custom/CustomTitle";
-import GlobalSpinner from "../../components/spinners/GlobalSpinner";
+} from "@/api/termAPI";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { EMPTY_IMAGES } from "@/config/images";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import CustomTitle from "@/components/custom/CustomTitle";
+import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Sessions = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [selectedSessions, setSelectedSessions] = useState([]);
 
   const sessions = useQuery({
     queryKey: ["terms"],
     queryFn: () => getAllTerms(),
-    initialData: [],
+    // initialData: [],
   });
 
   ///Delete session by id
@@ -171,8 +168,6 @@ const Sessions = () => {
           color="primary.main"
         />
 
-        {/* <SessionHome /> */}
-
         <>
           <CustomizedMaterialTable
             title="Sessions"
@@ -204,7 +199,6 @@ const Sessions = () => {
         </>
       </Container>
 
-     
       {isPending && <GlobalSpinner />}
     </>
   );

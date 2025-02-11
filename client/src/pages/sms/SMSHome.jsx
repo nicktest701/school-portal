@@ -1,13 +1,13 @@
 import { useContext } from "react";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { useNavigate } from "react-router-dom";
-import { MESSAGE_COLUMNS } from "../../mockup/columns/sessionColumns";
+import { MESSAGE_COLUMNS } from "@/mockup/columns/sessionColumns";
 import { useQuery } from "@tanstack/react-query";
-import { getAllMessages } from "../../api/messageAPI";
-import { EMPTY_IMAGES } from "../../config/images";
-import CustomTitle from "../../components/custom/CustomTitle";
-import sms_icon from "../../assets/images/header/sms_ico.svg";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { getAllMessages } from "@/api/messageAPI";
+import { EMPTY_IMAGES } from "@/config/images";
+import CustomTitle from "@/components/custom/CustomTitle";
+import sms_icon from "@/assets/images/header/sms_ico.svg";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import SMSView from "./SMSView";
 
 const SMSHome = () => {

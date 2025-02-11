@@ -3,27 +3,21 @@ import { Formik } from "formik";
 import React, { useContext, useState } from "react";
 
 import Button from "@mui/material/Button";
-import CustomImageChooser from "../../components/inputs/CustomImageChooser";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
+import CustomImageChooser from "@/components/inputs/CustomImageChooser";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { putSchoolInfo, updateSchoolLogo } from "../../api/userAPI";
-import { UserContext } from "../../context/providers/UserProvider";
+import { putSchoolInfo, updateSchoolLogo } from "@/api/userAPI";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function SchoolSettingsTab() {
   const school_info = JSON.parse(localStorage.getItem("@school_info"));
-  const {
-    userDispatch,
-  } = useContext(UserContext);
+  const { userDispatch } = useContext(UserContext);
 
-  const [badge, setBadge] = useState(
-    `${import.meta.env.VITE_BASE_URL}/images/users/${school_info?.badge}`
-  );
+  const [badge, setBadge] = useState(school_info?.badge);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
+
   const { mutateAsync } = useMutation({
     mutationFn: putSchoolInfo,
   });
@@ -51,9 +45,9 @@ function SchoolSettingsTab() {
     try {
       const updatedBadge = await updateSchoolLogo(badge);
       schoolSessionDispatch(alertSuccess("School Image Uploaded"));
-
+      console.log(updatedBadge);
       queryClient.invalidateQueries(["school"]);
-      setBadge(`${import.meta.env.VITE_BASE_URL}/images/users/${updatedBadge}`);
+      setBadge(updatedBadge);
       school_info.badge = updatedBadge;
       localStorage.setItem("@school_info", JSON.stringify(school_info));
     } catch (error) {
@@ -62,7 +56,7 @@ function SchoolSettingsTab() {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" className="container-bg">
       <Formik
         initialValues={school_info}
         onSubmit={onSubmit}
@@ -94,8 +88,8 @@ function SchoolSettingsTab() {
                   <Avatar
                     src={badge}
                     sx={{
-                      width: 120,
-                      height: 120,
+                      width: 100,
+                      height: 100,
                       justifySelf: "center",
                       alignSelf: "center",
                     }}
@@ -145,7 +139,7 @@ function SchoolSettingsTab() {
                   error={Boolean(touched.email && errors.email)}
                   helperText={touched.email && errors.email}
                 />
-                  <TextField
+                <TextField
                   label="Website"
                   placeholder="Website"
                   type="text"

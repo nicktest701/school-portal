@@ -45,7 +45,8 @@ const GlobalAlert = () => {
           bgcolor: "#fff",
           borderRadius: 0,
           color:
-            alertData?.severity === "info" ? "success.darker" : "error.darker",
+            // alertData?.severity === "info" ? "success.darker" : "error.darker",
+            color,
           borderBottom: `2px solid ${color}`,
           py: 2,
         }}

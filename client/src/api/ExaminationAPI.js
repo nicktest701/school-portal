@@ -154,6 +154,7 @@ export const getCurrentExams = async (session) => {
 
 //Add new Exams
 export const postExamsRemarks = async (comments) => {
+
   try {
     const res = await api({
       method: 'PUT',

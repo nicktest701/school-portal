@@ -18,18 +18,15 @@ import Swal from "sweetalert2";
 import React, { useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
-import { deleteTeacher, getTeacher } from "../../api/teacherAPI";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
+import { deleteTeacher, getTeacher } from "@/api/teacherAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
 import TeacherProfile from "./TeacherProfile";
-import CustomTitle from "../../components/custom/CustomTitle";
-import Back from "../../components/Back";
-import LoadingSpinner from "../../components/spinners/LoadingSpinner";
-// import Back from "../../components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
+import Back from "@/components/Back";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+// import Back from "@/components/Back";
 
 const TeacherView = () => {
   const queryClient = useQueryClient();
@@ -68,7 +65,8 @@ const TeacherView = () => {
       if (data.isConfirmed) {
         mutateAsync(id, {
           onSuccess: (data) => {
-            queryClient.invalidateQueries(["teachers"]);
+            navigate(`/teachers`);
+            queryClient.invalidateQueries({ queryKey: ["teachers"] });
             schoolSessionDispatch(alertSuccess(data));
           },
           onError: (error) => {
@@ -116,14 +114,13 @@ const TeacherView = () => {
         <Box
           sx={{
             bgcolor: "#fff",
+            borderRadius: "12px",
             py: 4,
             px: 2,
-            my: 4,
+            my: 2,
           }}
         >
-          <Typography paragraph variant="h5">
-            Profile Details
-          </Typography>
+          <Typography variant="h5">Profile</Typography>
           <Stack>
             <Button
               sx={{ alignSelf: "flex-end" }}
@@ -138,11 +135,11 @@ const TeacherView = () => {
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
               justifyContent: { xs: "center", md: "space-evenly" },
-              alignItems: "center",
+              alignItems: { xs: "center", md: "start" },
               gap: 2,
             }}
           >
-            <Stack alignItems="center" spacing={1}>
+            <Stack alignItems={{ xs: "center", md: "start" }} spacing={1}>
               <Box
                 sx={{
                   p: 1,
@@ -151,10 +148,11 @@ const TeacherView = () => {
                 }}
               >
                 <Avatar
-                  src={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                    teacher?.data?.profile
-                  }`}
-                  sx={{ width: 100, height: 100 }}
+                  src={teacher?.data?.profile}
+                  sx={{
+                    width: { xs: 120, md: 200 },
+                    height: { xs: 120, md: 200 },
+                  }}
                 />
               </Box>
 
@@ -164,7 +162,7 @@ const TeacherView = () => {
               <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
                 Send Message
               </Button>
-              <ButtonGroup variant="contained">
+              <ButtonGroup variant="contained" size="small">
                 <Button
                   color="secondary"
                   endIcon={<Person />}

@@ -1,4 +1,4 @@
-import { use, useState, Fragment } from "react";
+import { use, useState } from "react";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -7,7 +7,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { UserContext } from "@/context/providers/UserProvider";
@@ -28,21 +27,18 @@ export default function AccountDropdown() {
     setAnchorEl(null);
   };
   return (
-    <Fragment>
+    <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
             size="small"
-            sx={{ ml: 2 }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
             <Avatar
-              src={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                user?.profile
-              }`}
+              src={ user?.profile}
               sx={{ width: 30, height: 30, cursor: "pointer" }}
             >
               M
@@ -90,16 +86,8 @@ export default function AccountDropdown() {
         <MenuItem onClick={() => handleClose("/profile")}>
           <Avatar /> <span>Profile</span>
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
-        </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
+
         <MenuItem onClick={() => handleClose("/settings")}>
           <ListItemIcon>
             <Settings fontSize="small" />
@@ -113,6 +101,6 @@ export default function AccountDropdown() {
           Logout
         </MenuItem>
       </Menu>
-    </Fragment>
+    </>
   );
 }

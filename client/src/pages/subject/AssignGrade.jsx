@@ -126,8 +126,8 @@ const AssignGrade = () => {
       />
       <DialogContent>
         <Stack spacing={2} paddingY={2}>
-          <Typography variant="h6" color="secondary">
-            {grade?.data?.name}
+          <Typography variant="h6" color="primary">
+            Grade - <span style={{color:'var(--secondary)'}}>{grade?.data?.name}</span>
           </Typography>
 
           <Stack direction="row" spacing={2} alignItems="center">

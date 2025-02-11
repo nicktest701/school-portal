@@ -72,11 +72,12 @@ export const deleteSession = async (id) => {
   }
 };
 
-export const uploadProfileImage = async ({ _id, profile, type }) => {
+export const uploadProfileImage = async ({ _id, profile, type, user }) => {
   const formData = new FormData();
   //Teacher
   formData.append('profile', profile);
   formData.append('_id', _id);
+  formData.append('user', user || "");
   formData.append('school', '456-456');
 
   try {
@@ -98,14 +99,27 @@ export const uploadProfileImage = async ({ _id, profile, type }) => {
 
 
 
-export const putBulkData = async ({ dataCategory, dataType, data }) => {
+export const putBulkData = async ({ dataCategory, dataType, data, onProgress }) => {
   let config;
 
   if (dataType === 'photos') {
+    const formData = new FormData();
+
+    data?.students?.forEach((file) => {
+      formData.append('profile', file);
+    })
+
     config = {
       method: 'PUT',
       url: `/${dataCategory}/bulk-profile`,
-      data
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        onProgress(percentCompleted);
+      },
     }
   }
   else if (["students", 'teachers'].includes(dataCategory) && dataType === 'personal-data') {
@@ -126,7 +140,13 @@ export const putBulkData = async ({ dataCategory, dataType, data }) => {
 
   try {
 
-    const res = await api(config);
+    const res = await api({
+      ...config,
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        onProgress(percentCompleted);
+      },
+    });
 
     return res.data;
   } catch (error) {

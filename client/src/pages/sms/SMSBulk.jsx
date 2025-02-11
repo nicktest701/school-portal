@@ -11,18 +11,16 @@ import {
   Radio,
   MenuItem,
   Typography,
+  Box,
 } from "@mui/material";
 import { Formik } from "formik";
 import { useMutation } from "@tanstack/react-query";
-import { bulkMessageInitialValues } from "../../config/initialValues";
-import { postMessage } from "../../api/messageAPI";
-import { bulksmsValidationSchema } from "../../config/validationSchema";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import TextEditor from "../../components/custom/TextEditor";
+import { bulkMessageInitialValues } from "@/config/initialValues";
+import { postMessage } from "@/api/messageAPI";
+import { bulksmsValidationSchema } from "@/config/validationSchema";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import TextEditor from "@/components/custom/TextEditor";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const SMSBulk = () => {
@@ -50,7 +48,7 @@ const SMSBulk = () => {
   };
 
   return (
-    <>
+    <Box sx={{ bgcolor: "#fff", borderRadius: "12px", p: 2 }}>
       <Formik
         initialValues={bulkMessageInitialValues}
         onSubmit={onSubmit}
@@ -157,7 +155,7 @@ const SMSBulk = () => {
                 variant="contained"
                 onClick={handleSubmit}
                 endIcon={<SendRounded />}
-                sx={{ alignSelf: "flex-end" }}
+                sx={{ alignSelf: "flex-end", py: 1.5 }}
               >
                 Send Message
               </Button>
@@ -167,7 +165,7 @@ const SMSBulk = () => {
       </Formik>
 
       {isPending && <LoadingSpinner value="Sending Message..." />}
-    </>
+    </Box>
   );
 };
 

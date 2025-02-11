@@ -18,6 +18,7 @@ function CustomNotificationItem({
   link,
   createdAt,
   closeDrawer,
+  index,
 }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ function CustomNotificationItem({
       initial={{ opacity: 0, x: -100 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 100 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.5, delay: index * 0.15 }}
       className="notification-item"
       style={{
         padding: "0 16px 0 16px",
@@ -64,8 +65,10 @@ function CustomNotificationItem({
       }}
     >
       <div onClick={handleItemClick}>
-        <Stack direction="row" justifyContent="space-between" py={2}>
-          <Typography variant="h6">{title}</Typography>
+        <Stack direction="row" justifyContent="space-between" py={1}>
+          <Typography variant="body2" fontWeight="bold">
+            {title}
+          </Typography>
           {!isRead?.includes(_id) && <Label htmlColor="green" />}
         </Stack>
         {album && (
@@ -96,7 +99,7 @@ function CustomNotificationItem({
               display: "block",
               width: "100%",
               textAlign: "right",
-              fontSize: "14px",
+              fontSize: "12px",
             }}
           >
             Read More
@@ -111,7 +114,7 @@ function CustomNotificationItem({
           paddingTop: "4px",
         }}
       >
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" >
           {isRead?.includes(_id) ? (
             <Tooltip title="Mark as read">
               <IconButton>

@@ -1,13 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { use, useState } from "react";
 import { Box, Link, Stack } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import _ from "lodash";
 import AddLevel from "./AddLevel";
 import { SCHOOL_LEVELS } from "@/mockup/columns/sessionColumns";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { useNavigate } from "react-router-dom";
-import { deleteLevel, deleteManyLevels, getAllLevels } from "@/api/levelAPI";
+import { deleteLevel, deleteManyLevels } from "@/api/levelAPI";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { EMPTY_IMAGES } from "@/config/images";
 import { UserContext } from "@/context/providers/UserProvider";
@@ -17,41 +17,21 @@ import EditLevel from "./EditLevel";
 import ViewLevel from "./ViewLevel";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import useLevel from "@/components/hooks/useLevel";
 
 const LevelTab = () => {
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
   const [selectedLevels, setSelectedLevels] = useState([]);
 
   const {
     userState: { session },
-  } = useContext(UserContext);
+  } = use(UserContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [openAddCurrentLevel, setOpenAddCurrentLevel] = useState(false);
   //Get Session id
 
-  const levels = useQuery({
-    queryKey: ["levels", session.sessionId, session.termId],
-    queryFn: () => getAllLevels(session.sessionId, session.termId),
-    enabled: !!session.sessionId && !!session?.termId,
-    initialData: [],
-    select: (levels) => {
-      const modifiedLevels = levels?.map(
-        ({ _id, level, students, subjects, teacher }) => {
-          return {
-            _id,
-            level,
-            type: `${level?.name}${level?.type}`,
-            noOfStudents: students?.length,
-            noOfSubjects: subjects?.length,
-            teacher,
-          };
-        }
-      );
-
-      return modifiedLevels;
-    },
-  });
+  const { levelLoading, levelRefetch, levelsOption } = useLevel();
 
   const { mutateAsync, isPending } = useMutation({ mutationFn: deleteLevel });
 
@@ -222,16 +202,16 @@ const LevelTab = () => {
         title="Levels"
         icon={level_icon}
         search={true}
-        isPending={levels.isPending}
+        isPending={levelLoading}
         columns={newLevelColumns}
-        data={levels.data}
+        data={levelsOption}
         actions={[]}
         showAddButton={true}
         addButtonText="New Level"
         addButtonImg={EMPTY_IMAGES.level}
         addButtonMessage="😑 Oops! It seems you don't have any level at the moment.Create a new one"
         onAddButtonClicked={() => setOpenAddCurrentLevel(true)}
-        handleRefresh={levels.refetch}
+        handleRefresh={levelRefetch}
         onSelectionChange={handleSelectionChange}
         onDeleteClicked={handleMultipleDeleteSession}
       />

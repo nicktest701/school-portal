@@ -1,25 +1,20 @@
 import React, { useContext, useRef } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Stack,
-} from "@mui/material";
+import { Avatar, Box, Button, Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
-import { getStudentFeeHistory } from "../../api/currentFeeAPI";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import ReactToPrint from "react-to-print";
-import { STUDENT_FEES_HISTORY_COLUMNS } from "../../mockup/columns/sessionColumns";
+import { getStudentFeeHistory } from "@/api/currentFeeAPI";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { useReactToPrint } from "react-to-print";
+import { STUDENT_FEES_HISTORY_COLUMNS } from "@/mockup/columns/sessionColumns";
 import PropTypes from "prop-types";
-import { UserContext } from "../../context/providers/UserProvider";
+import { UserContext } from "@/context/providers/UserProvider";
 import { PrintRounded } from "@mui/icons-material";
-import history_icon from "../../assets/images/header/history_ico.svg";
+import history_icon from "@/assets/images/header/history_ico.svg";
 import FeeReport from "./FeeReport";
-import CustomTitle from "../../components/custom/CustomTitle";
+import CustomTitle from "@/components/custom/CustomTitle";
 import { useSearchParams } from "react-router-dom";
-import Back from "../../components/Back";
-import GlobalSpinner from "../../components/spinners/GlobalSpinner";
+import Back from "@/components/Back";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const StudentFeesHistory = () => {
   const {
@@ -28,7 +23,6 @@ const StudentFeesHistory = () => {
   const { state } = useLocation();
   const [searchParams] = useSearchParams();
   const componentRef = useRef();
-
 
   const studentFee = useQuery({
     queryKey: [
@@ -47,7 +41,10 @@ const StudentFeesHistory = () => {
     enabled: !!searchParams.get("_id") && !!searchParams.get("level_id"),
   });
 
-  
+  const reactToPrintFn = useReactToPrint({
+    documentTitle: studentFee?.data?.fullName,
+    contentRef: componentRef,
+  });
 
   return (
     <>
@@ -58,13 +55,8 @@ const StudentFeesHistory = () => {
         color="primary.main"
         icon={
           <Avatar
-            srcSet={
-              studentFee?.data?.profile === undefined ||
-              studentFee?.data?.profile === ""
-                ? null
-                : studentFee?.data?.profile
-            }
-            sx={{ width: 70, height: 70 }}
+            srcSet={studentFee?.data?.profile}
+            sx={{ width: 60, height: 60 }}
           />
         }
       />
@@ -85,20 +77,13 @@ const StudentFeesHistory = () => {
             actions={[]}
             handleRefresh={studentFee.refetch}
             autoCompleteComponent={
-              <Stack direction='row' spacing={1}>
-                {/* <Button color='success' startIcon={<PrintRounded />} variant="contained">
-                  Export PDF
-                </Button> */}
-                <ReactToPrint
-                  // pageStyle={'width:8.5in";min-height:11in"; margin:auto",padding:8px;'}
-                  trigger={() => (
-                    <Button startIcon={<PrintRounded />} variant="contained">
-                      Print Report
-                    </Button>
-                  )}
-                  content={() => componentRef.current}
-                />
-              </Stack>
+              <Button
+                startIcon={<PrintRounded />}
+                variant="contained"
+                onClick={() => reactToPrintFn()}
+              >
+                Print Report
+              </Button>
             }
             options={{
               paging: false,
@@ -114,7 +99,9 @@ const StudentFeesHistory = () => {
       <div ref={componentRef} className="print-container">
         <FeeReport student={studentFee?.data} />
       </div>
-      {studentFee.isPending && <GlobalSpinner />}
+      {studentFee.isPending && (
+        <LoadingSpinner value="Loading Fee History..." />
+      )}
     </>
   );
 };

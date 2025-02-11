@@ -2,7 +2,6 @@ import {
   Button,
   List,
   ListItem,
-  ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
   Typography,
@@ -14,16 +13,17 @@ import Swal from "sweetalert2";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import React, { useContext, useMemo } from "react";
-import { DeleteRounded, RefreshRounded } from "@mui/icons-material";
-import useLevel from "../../components/hooks/useLevel";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { unassignTeacherLevel } from "../../api/levelAPI";
+import { RefreshRounded } from "@mui/icons-material";
+import useLevel from "@/components/hooks/useLevel";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { unassignTeacherLevel } from "@/api/levelAPI";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function TeacherLevels() {
+  const {
+    userState: { session },
+  } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const { id } = useParams();
@@ -46,8 +46,12 @@ function TeacherLevels() {
     }).then((data) => {
       if (data.isConfirmed) {
         unassignTeacher(id, {
+          onSettled: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["levels", session.sessionId, session.termId],
+            });
+          },
           onSuccess: (data) => {
-            queryClient.invalidateQueries(["levels"]);
             schoolSessionDispatch(alertSuccess(data));
           },
           onError: (error) => {
@@ -81,7 +85,7 @@ function TeacherLevels() {
             }}
           />
           <Tooltip title="Refresh Levels">
-            <IconButton >
+            <IconButton>
               <RefreshRounded />
             </IconButton>
           </Tooltip>
@@ -94,20 +98,20 @@ function TeacherLevels() {
     >
       {assigned?.length > 0 ? (
         assigned?.map((level) => (
-          <ListItem key={level?._id} divider>
-            <ListItemText primary={level?.type} />
-
-            <ListItemSecondaryAction>
+          <ListItem
+            key={level?._id}
+            divider
+            secondaryAction={
               <Button
                 title="Remove Level"
                 color="error"
-                size="small"
-                endIcon={<DeleteRounded />}
                 onClick={() => handleUnassignTeacher(level?._id)}
               >
                 Remove
               </Button>
-            </ListItemSecondaryAction>
+            }
+          >
+            <ListItemText primary={level?.type} />
           </ListItem>
         ))
       ) : (

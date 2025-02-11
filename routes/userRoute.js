@@ -9,6 +9,8 @@ const { verifyJWT, verifyRefreshJWT } = require("../middlewares/verifyJWT");
 const User = require("../models/userModel");
 const Teacher = require("../models/teacherModel");
 const School = require("../models/schoolModel");
+const { isValidObjectId } = require("mongoose");
+const { uploadFile } = require("../config/uploadFile");
 
 const Storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -52,8 +54,9 @@ router.get(
     const users = await User.find({})
       .select("-password")
       .sort({ createdAt: -1 });
+    // console.log(users)
 
-    res.json(users);
+    res.status(200).json(users);
   })
 );
 
@@ -150,6 +153,7 @@ router.get(
 
     const user = await User.findById(id).select("-password");
 
+
     // const info = await knex("users").where("userId", id).select("*");
 
     // const result = {
@@ -204,14 +208,22 @@ router.post(
         );
     }
 
+    // console.log(user)
 
-    loggedInUser = {
+    const refreshData = {
+      id: user[0]._id?.toString(),
+
+    };
+    const loggedInUser = {
+      _id: user[0]._id?.toString(),
       id: user[0]._id?.toString(),
       profile: user[0].profile,
       firstname: user[0].firstname,
       lastname: user[0].lastname,
       fullname: user[0].fullname,
       username: user[0].username,
+      dateofbirth: user[0].dateofbirth,
+      gender: user[0].gender,
       email: user[0].email,
       phonenumber: user[0].phonenumber,
       role: user[0].role,
@@ -223,7 +235,7 @@ router.post(
       expiresIn: "15m",
     });
 
-    const refresh_token = jwt.sign(loggedInUser, process.env.JWT_REFRESH_SECRET, {
+    const refresh_token = jwt.sign(refreshData, process.env.JWT_REFRESH_SECRET, {
       expiresIn: "30d",
     });
 
@@ -250,7 +262,7 @@ router.post(
 
     if (!_.isEmpty(itExists)) {
       return res
-        .status(404)
+        .status(400)
         .json("An account with this Username already exits!");
     }
 
@@ -265,7 +277,15 @@ router.post(
 
     const hashedPassword = await bcrypt.hash(newUser.password, 10);
     newUser.password = hashedPassword;
-    newUser.profile = req.file?.filename;
+
+
+    let userPhoto = "https://firebasestorage.googleapis.com/v0/b/fir-system-54b99.appspot.com/o/download.png?alt=media&token=c3f23cd6-8973-4681-9900-98dbadc93d2a"
+    if (req.file) {
+      const filename = req.file?.filename;
+      userPhoto = await uploadFile(filename, 'users/');
+      newUser.profile = userPhoto
+    }
+
 
     const user = await User.create(newUser);
     // await knex('users').insert(newUser);
@@ -283,16 +303,22 @@ router.put(
   "/",
   verifyJWT,
   asyncHandler(async (req, res) => {
-    const { _id, password } = req.body;
+    const { _id, password, isOnlyUpdate, iat, exp, ...rest } = req.body;
+
+
 
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
-      req.body.password = hashedPassword;
+      rest.password = hashedPassword;
     } else {
       delete req.body.password;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(_id, req.body, {
+
+    const updatedUser = await User.findByIdAndUpdate(_id, {
+      $set: rest
+    }, {
+
       new: true,
     });
     // const updatedUser = await knex("users").where("_id", _id).update(req.body);
@@ -301,14 +327,48 @@ router.put(
       return res.status(404).json("Error updating user info.Try Again Later.");
     }
 
-    await Teacher.findByIdAndUpdate(_id, req.body, {
-      new: true,
-    });
+    if (rest?.role === 'teacher') {
+
+      await Teacher.findByIdAndUpdate(_id, {
+        $set: {
+          ...rest,
+          surname: rest.lastname
+        }
+      }, {
+        new: true,
+      });
+    }
+    if (isOnlyUpdate) {
+      return res.status(404).json("Profile Updated!!!");
+    }
     // const updatedTeacher = await knex("teachers")
     //   .where("_id", _id)
     //   .update(req.body);
 
-    res.status(200).json("User info updated successfully !!!");
+    // console.log(updatedUser)
+    // return res.status(400).json('error');
+
+    const loggedInUser = {
+      id: updatedUser._id?.toString(),
+      profile: updatedUser.profile,
+      firstname: updatedUser.firstname,
+      lastname: updatedUser.lastname,
+      fullname: updatedUser.fullname,
+      username: updatedUser.username,
+      dateofbirth: updatedUser.dateofbirth,
+      gender: updatedUser.gender,
+      email: updatedUser.email,
+      phonenumber: updatedUser.phonenumber,
+      role: updatedUser.role,
+      active: updatedUser.active,
+    };
+
+
+    const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+
+    res.status(200).json({ token });
   })
 );
 
@@ -318,11 +378,21 @@ router.put(
   verifyJWT,
   upload.single("profile"),
   asyncHandler(async (req, res) => {
-    const { _id } = req.body;
+    const { _id, user } = req.body;
+
+
+
+    if (_.isEmpty(req.file)) {
+      return res.status(400).json("Please upload a file");
+    }
+
+
+    const filename = req.file?.filename;
+    const userPhoto = await uploadFile(filename, 'users/');
 
     const updatedUser = await User.findByIdAndUpdate(_id, {
       $set: {
-        profile: req.file?.filename,
+        profile: userPhoto
       },
     });
 
@@ -338,11 +408,14 @@ router.put(
         .json("Error updating profile image.Try again later.");
     }
 
-    await Teacher.findByIdAndUpdate(_id, {
-      $set: {
-        profile: req.file?.filename,
-      },
-    });
+    if (updatedUser.role === 'teacher') {
+
+      await Teacher.findByIdAndUpdate(_id, {
+        $set: {
+          profile: userPhoto
+        },
+      });
+    }
 
     // const updatedUser = await knex("teachers")
     //   .where({ _id })
@@ -350,7 +423,32 @@ router.put(
     //     profile: req.file ? req.file.filename : knex.raw("profile"),
     //   });
 
-    res.status(201).json("Profile image updated!!!");
+    if (!_.isEmpty(user)) {
+
+      const loggedInUser = {
+        _id: updatedUser._id,
+        id: updatedUser._id?.toString(),
+        profile: updatedUser.profile,
+        firstname: updatedUser.firstname,
+        lastname: updatedUser.lastname,
+        fullname: updatedUser.fullname,
+        username: updatedUser.username,
+        dateofbirth: updatedUser.dateofbirth,
+        gender: updatedUser.gender,
+        email: updatedUser.email,
+        phonenumber: updatedUser.phonenumber,
+        role: updatedUser.role,
+        active: updatedUser.active,
+      };
+
+
+      const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
+        expiresIn: "30d",
+      });
+
+      return res.status(200).json({ token });
+    }
+    res.status(201).json("Profile Updated");
   })
 );
 
@@ -554,7 +652,7 @@ router.delete(
     const id = req.params.id;
 
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!isValidObjectId(id)) {
       return res.status(401).json("Invalid User information");
     }
 
@@ -609,13 +707,25 @@ router.put(
   verifyJWT,
   upload.single("badge"),
   asyncHandler(async (req, res) => {
+
+
+    if (_.isEmpty(req.file)) {
+      return res.status(400).json("Please upload a badge");
+    }
+
+
+    const filename = req.file?.filename;
+    const badge = await uploadFile(filename, 'users/');
+
+
+
     const updatedBadge = await School.findOneAndUpdate(
       {
         unique: "school-info",
       },
       {
         $set: {
-          badge: req.file?.filename,
+          badge
         },
       },
       {
@@ -628,7 +738,7 @@ router.put(
       return res.status(400).json("Error updating logo.Try again later.");
     }
 
-    return res.status(200).json(req.file?.filename);
+    return res.status(200).json(badge);
   })
 );
 

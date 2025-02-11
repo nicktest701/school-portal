@@ -51,8 +51,6 @@ function ExamsScore() {
     enabled: !!searchParams.get("eid"),
   });
 
- 
-
   //OPEN Report
   const handleOpenReport = () => {
     schoolSessionDispatch({
@@ -146,7 +144,7 @@ function ExamsScore() {
                       <Typography>Performance </Typography>
                     </Box>
                     <Box>
-                      <Typography variant="h3">
+                      <Typography variant="h4">
                         {exams?.data?.fullName}
                         <Badge
                           color="success"
@@ -157,8 +155,12 @@ function ExamsScore() {
                           <Person color="success" />
                         </Badge>
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" textTransform='uppercase'>
-                        {exams.data.indexnumber} | {exams.data?.level}
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        textTransform="uppercase"
+                      >
+                        {exams.data?.indexnumber} | {exams.data?.level}
                       </Typography>
                     </Box>
                   </Box>
@@ -225,10 +227,10 @@ function ExamsScore() {
 
                 {/* Statistics Section */}
                 <Grid2 container spacing={2}>
-                  <Grid2 size={4}>
+                  <Grid2 size={{ xs: 12, md: 4 }}>
                     <Box textAlign="center">
                       <GroupIcon color="info" />
-                      <Typography variant="h6" color="info.main">
+                      <Typography variant="body1" color="info.main">
                         {_.sumBy(exams?.data?.scores, "totalScore") ?? 0}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -236,10 +238,10 @@ function ExamsScore() {
                       </Typography>
                     </Box>
                   </Grid2>
-                  <Grid2 item size={4}>
+                  <Grid2 item size={{ xs: 6, md: 4 }}>
                     <Box textAlign="center">
                       <GroupIcon color="success" />
-                      <Typography variant="h6" color="success">
+                      <Typography variant="body1" color="success">
                         {exams.data.entry?.bestScoreSubject?.subject}(
                         {exams.data.entry?.bestScoreSubject?.totalScore})
                       </Typography>
@@ -248,10 +250,10 @@ function ExamsScore() {
                       </Typography>
                     </Box>
                   </Grid2>
-                  <Grid2 item size={4}>
+                  <Grid2 item size={{ xs: 6, md: 4 }}>
                     <Box textAlign="center">
                       <AssignmentTurnedInIcon color="error" />
-                      <Typography variant="h6" color="error">
+                      <Typography variant="body1" color="error">
                         {exams.data.entry?.worstScoreSubject?.subject}(
                         {exams.data.entry?.worstScoreSubject?.totalScore})
                       </Typography>

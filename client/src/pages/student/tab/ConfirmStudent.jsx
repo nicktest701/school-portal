@@ -13,15 +13,12 @@ import _ from "lodash";
 import { StudentContext } from "@/context/providers/StudentProvider";
 import MedicalAllergyItem from "@/components/items/MedicalAllergyItem";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
-import ReactToPrint from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 import moment from "moment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postNewStudent } from "@/api/studentAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "@/context/actions/globalAlertActions";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolRounded } from "@mui/icons-material";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 
@@ -43,13 +40,16 @@ function ConfirmStudent({ open, setOpen, setMode }) {
     mutationFn: postNewStudent,
   });
   const onSubmit = () => {
-    personal.profile = photo?.profile;
+    // personal.profile = photo?.image;
 
     const studentData = {
-      personal,
-      medical,
-      parent,
-      academic,
+      photo: photo?.image,
+      details: {
+        personal,
+        medical,
+        parent,
+        academic,
+      },
     };
 
     mutateAsync(studentData, {
@@ -62,7 +62,7 @@ function ConfirmStudent({ open, setOpen, setMode }) {
           schoolSessionDispatch(alertSuccess("New Student Added"));
           setHideSaveBtn(true);
           setId(data);
-          localStorage.removeItem("@student");
+          // localStorage.removeItem("@student");
         }
       },
       onError: (error) => {
@@ -84,6 +84,11 @@ function ConfirmStudent({ open, setOpen, setMode }) {
       setOpen(false);
     }
   };
+
+  const reactToPrintFn = useReactToPrint({
+    documentTitle: "Admission Form",
+    contentRef: componentRef,
+  });
 
   const primaryStyle = { fontSize: 12, color: "primary", fontWeight: "700" };
   const secondaryStyle = { fontSize: 10 };
@@ -112,14 +117,9 @@ function ConfirmStudent({ open, setOpen, setMode }) {
         pt={2}
       >
         {/* {hideSaveBtn ? ( */}
-        <ReactToPrint
-          // pageStyle={
-          //   'width:8.5in";min-height:11in"; margin:auto",padding:4px;'
-          // }
-          trigger={() => <Button variant="outlined">Print Form</Button>}
-          content={() => componentRef.current}
-          documentTitle="Admission"
-        />
+        <Button variant="contained" onClick={() => reactToPrintFn()}>
+          Print Form
+        </Button>
         {/* // ) : ( */}
         <Button
           loading={isPending}
@@ -158,9 +158,9 @@ function ConfirmStudent({ open, setOpen, setMode }) {
               <Avatar
                 alt="school logo"
                 loading="lazy"
-                srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
+                srcSet={
                   school_info?.badge
-                }`}
+                }
                 sx={{
                   width: 100,
                   height: 100,
@@ -247,7 +247,7 @@ function ConfirmStudent({ open, setOpen, setMode }) {
                   primaryTypographyProps={primaryStyle}
                   secondaryTypographyProps={secondaryStyle}
                 />
-            
+
                 <ListItemText
                   secondary="Date of Birth"
                   primary={moment(new Date(personal?.dateofbirth)).format("LL")}

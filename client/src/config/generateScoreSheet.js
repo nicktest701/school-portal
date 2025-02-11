@@ -3,10 +3,11 @@ import _ from 'lodash';
 export const getColumns = (subjects) => {
   const customColumns = subjects.map((subject) => {
     return {
-      title: subject,
-      field: _.camelCase(subject),
+      title: subject?.name,
+      field: _.camelCase(subject?.name),
     };
   });
+
 
   return [
     {
@@ -14,18 +15,19 @@ export const getColumns = (subjects) => {
       render: (rowData) => rowData.tableData.id + 1,
     },
     {
-      title: 'Student Name',
+      title: 'STUDENT NAME',
       field: 'fullName',
       cellStyle: {
         width: 400,
-        color: 'blue',
+        // color: 'blue',
+        fontWeight:'bold',
         whiteSpace: 'nowrap',
         minWidth: 300,
       },
     },
     ...customColumns,
     {
-      title: 'Overall Score',
+      title: 'OVERALL SCORE',
       field: 'overallScore',
       cellStyle: {
         color: 'red',
@@ -33,7 +35,7 @@ export const getColumns = (subjects) => {
       },
     },
     {
-      title: 'Grade',
+      title: 'GRADE',
       field: 'grade',
       cellStyle: {
         color: 'blue',
@@ -41,7 +43,7 @@ export const getColumns = (subjects) => {
       },
     },
     {
-      title: 'Position',
+      title: 'POSITION',
       field: 'position',
       cellStyle: {
         color: 'green',
@@ -55,7 +57,7 @@ export const getColumns = (subjects) => {
 export const getResults = (results, subjects) => {
   const customSubjects = subjects.map((subject) => {
     return {
-      [_.camelCase(subject)]: 0,
+      [_.camelCase(subject?.name)]: 0,
     };
   });
 

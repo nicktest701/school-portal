@@ -7,34 +7,31 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import _ from "lodash";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getSubjectsForLevel } from "../../api/levelAPI";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   useLocation,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { readXLSX } from "../../config/readXLSX";
-import { readCSV } from "../../config/readCSV";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { readXLSX } from "@/config/readXLSX";
+import { readCSV } from "@/config/readCSV";
 import { NoteRounded } from "@mui/icons-material";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { EMPTY_IMAGES } from "../../config/images";
-import { postBulkExams } from "../../api/ExaminationAPI";
-import { generateCustomGrade } from "../../config/generateCustomGrade";
-import { UserContext } from "../../context/providers/UserProvider";
-import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
-import LoadingSpinner from "../../components/spinners/LoadingSpinner";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { EMPTY_IMAGES } from "@/config/images";
+import { postBulkExams } from "@/api/ExaminationAPI";
+import { generateCustomGrade } from "@/config/generateCustomGrade";
+import { UserContext } from "@/context/providers/UserProvider";
+import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import useLevelById from "@/components/hooks/useLevelById";
 
 const LevelExamScoreInput = () => {
   const CSV_FILE_TYPE = "text/csv";
@@ -55,35 +52,13 @@ const LevelExamScoreInput = () => {
   const [isPending, setIsLoading] = useState(false);
   const [fieldError, setFieldError] = useState("");
   const [mainError, setMainError] = useState("");
-  const [subject, setSubject] = useState(searchParams.get("sub"));
+  const [subject, setSubject] = useState({ _id: "", name: "" });
 
-  const levelOptions = useQuery({
-    queryKey: ["subjects", levelId],
-    queryFn: () => getSubjectsForLevel(levelId),
-    enabled: !!levelId,
-    select: ({ subjects, grades }) => {
-      return {
-        subjects,
-        grades,
-      };
-    },
-  });
-
-  useEffect(() => {
-    if (data?.length > 0) {
-      const modifiedData = data?.map((item) => {
-        return {
-          ...item,
-          subject,
-        };
-      });
-      setData(modifiedData);
-    }
-  }, [subject]);
+  const { levelLoading, subjects, gradeSystem } = useLevelById(levelId);
 
   //LOAD Results from file excel,csv
   function handleLoadFile(e) {
-    if (subject === "") {
+    if (subject?._id === "") {
       setFieldError("Please select a Subject!");
       setIsLoading(false);
       return;
@@ -109,7 +84,7 @@ const LevelExamScoreInput = () => {
           results = readCSV(event.target.result);
         }
 
-        // console.log(results)
+        // console.log(results);
         if (results.length !== 0) {
           const modifiedResults = results.map((item) => {
             const classScore = Number(Object.values(item)[2] || 0);
@@ -127,20 +102,19 @@ const LevelExamScoreInput = () => {
             return {
               indexnumber: _.toString(Object.values(item)[0]),
               student: Object.values(item)[1],
-              subject,
+              _id: subject?._id,
+              subject: subject?.name,
               classScore,
               examsScore,
               ...generateCustomGrade(
                 Number(+classScore + +examsScore),
-                levelOptions?.data?.grades
+                gradeSystem?.ratings
               ),
-              // session: session?.sessionId,
-              // term: session?.termId,
-              // level: levelId,
             };
           });
 
           const values = await Promise.all(modifiedResults);
+          // console.log(values);
           setData(values);
         }
       };
@@ -151,21 +125,6 @@ const LevelExamScoreInput = () => {
     }
   }
 
-  // //CLOSE File Dialog
-  // const discardChanges = () => {
-  //   Swal.fire({
-  //     title: "Discarding",
-  //     text: "Discard Changes?",
-  //     showCancelButton: true,
-  //     backdrop: false,
-  //     // background:'#ccc'
-  //   }).then(({ isConfirmed }) => {
-  //     if (isConfirmed) {
-  //       setData([]);
-  //     }
-  //   });
-  // };
-
   const { mutateAsync } = useMutation({
     mutationFn: postBulkExams,
   });
@@ -175,7 +134,7 @@ const LevelExamScoreInput = () => {
 
     Swal.fire({
       title: "Importing results",
-      text: `Do you want to import results in ${subject}?`,
+      text: `Do you want to import results in ${subject?.name}?`,
       showCancelButton: true,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
@@ -208,6 +167,7 @@ const LevelExamScoreInput = () => {
       }
     });
   };
+
   const columns = [
     {
       title: "Index Number",
@@ -220,7 +180,6 @@ const LevelExamScoreInput = () => {
     {
       title: "Subject",
       field: "subject",
-      hidden: subject || searchParams.get("sub"),
     },
     {
       title: "Class Score(50%)",
@@ -260,17 +219,15 @@ const LevelExamScoreInput = () => {
         </Typography>
         <Stack direction="row" spacing={3} pt={2}>
           <Autocomplete
-            options={
-              searchParams.get("sub") !== null
-                ? [searchParams.get("sub")]
-                : levelOptions?.data?.subjects
-            }
-            loading={levelOptions?.isPending}
-            getOptionLabel={(option) => option || ""}
+            options={subjects}
+            loading={levelLoading}
+            getOptionLabel={(option) => option?.name || ""}
             isOptionEqualToValue={(option, value) =>
-              value === undefined || value === "" || value === option
+              value?._id === undefined ||
+              value?._id === "" ||
+              value?._id === option?._id
             }
-            defaultValue={searchParams.get("sub")}
+            // defaultValue={searchParams.get("sub")}
             value={subject}
             onChange={(e, value) => setSubject(value)}
             sx={{ minWidth: 300 }}
@@ -282,9 +239,11 @@ const LevelExamScoreInput = () => {
                 error={fieldError !== ""}
                 helperText={fieldError}
                 required
-                FormHelperTextProps={{
-                  sx: {
-                    color: "error.main",
+                slotProps={{
+                  formHelperText: {
+                    sx: {
+                      color: "error.main",
+                    },
                   },
                 }}
               />
@@ -334,9 +293,9 @@ const LevelExamScoreInput = () => {
           <CustomizedMaterialTable
             icon={EMPTY_IMAGES.score}
             search={true}
-            exportFileName={`${subject} - `}
+            exportFileName={`${subject?.name} - `}
             isPending={isPending}
-            title={subject}
+            title={subject?.name}
             columns={columns}
             data={data}
             actions={[]}
@@ -345,10 +304,7 @@ const LevelExamScoreInput = () => {
                 {data?.length > 0 && (
                   <Stack direction="row" spacing={3} justifyContent="flex-end">
                     <Button>Cancel</Button>
-                    <Button
-                      variant="contained"
-                      onClick={handlePostResults}
-                    >
+                    <Button variant="contained" onClick={handlePostResults}>
                       Save Results
                     </Button>
                   </Stack>

@@ -18,6 +18,7 @@ const LevelSchema = new mongoose.Schema(
     fee: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Fee',
+   
     },
     level: Object,
     subjects: [

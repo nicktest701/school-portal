@@ -1,14 +1,43 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const Grade = require('../models/gradeModel');
+const Level = require('../models/levelModel');
 const _ = require('lodash');
 
 //@GET All school grades
 router.get(
   '/',
   asyncHandler(async (req, res) => {
+    const { session, term } = req.query
+   
     const grades = await Grade.find();
-    res.status(200).json(grades);
+
+    if (!session) {
+      return res.status(200).json(grades);
+
+    }
+    const modifiedGrades = grades.map(async (grade) => {
+
+      const assignedLevels = await Level.find({
+        session,
+        term,
+        grades: grade?._id
+      }).select('level')
+
+
+      return {
+        ...grade?._doc,
+        assignedLevels: _.map(assignedLevels, ({ levelName, _id }) => {
+          return { levelName, _id }
+        })
+
+      }
+    })
+
+    const selectedGrades = await Promise.all(modifiedGrades)
+
+    res.status(200).json(selectedGrades);
+
   })
 );
 
@@ -17,7 +46,7 @@ router.get(
   '/:id',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-   
+
     const grade = await Grade.findById(id);
 
     res.status(200).json(grade);
@@ -44,7 +73,7 @@ router.post(
 router.put(
   '/',
   asyncHandler(async (req, res) => {
- 
+
     const modifiedGrade = await Grade.findByIdAndUpdate(
       req.body._id,
       {

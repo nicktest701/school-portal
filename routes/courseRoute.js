@@ -106,7 +106,7 @@ router.get(
         };
       }
     );
-   
+
 
     // console.log(_.values(_.merge(_.keyBy(weeklyGroup, 'date'))));
 
@@ -140,7 +140,7 @@ router.get(
       teacher: new ObjectId(teacher),
     })
       .populate('level')
-      .select('subject');
+      .populate("subject");
 
     if (_.isEmpty(courses)) {
       return res.status(200).send([]);
@@ -164,7 +164,7 @@ router.get(
 router.get(
   '/:id',
   asyncHandler(async (req, res) => {
-    const course = await Course.findById(req.params.id);
+    const course = await Course.findById(req.params.id).populate("subject");
     res.status(200).json(course);
   })
 );
@@ -173,13 +173,28 @@ router.get(
 router.post(
   '/',
   asyncHandler(async (req, res) => {
+    const { subject, level, term, session } = req.body
+ 
+  
+    const courses = await Course.find({
+      session: new ObjectId(session),
+      term: new ObjectId(term),
+      level: new ObjectId(level),
+      subject: new ObjectId(subject),
+    })
+
+    if (!_.isEmpty(courses)) {
+      return res.status(400).json('Course already assigned to teacher');
+    }
+
     //Create new Course
     const course = await Course.create(req.body);
+
     if (!course) {
-      return res.status(404).send('Error creating new course.Try again later');
+      return res.status(404).json('Error creating new course.Try again later');
     }
     //console.log(course);
-    res.status(201).send('New Course assigned!');
+    res.status(201).json('New Course assigned!');
   })
 );
 
@@ -193,10 +208,10 @@ router.put(
     );
 
     if (!modifiedCourse) {
-      return res.status(404).send('Error updating course info.Try again later');
+      return res.status(404).json('Error updating course info.Try again later');
     }
 
-    res.send(modifiedCourse);
+    res.json(modifiedCourse);
   })
 );
 
@@ -206,7 +221,7 @@ router.delete(
     const id = req.params.id;
     await Course.findByIdAndDelete(id);
 
-    res.send(204).send('Course Removed!');
+    res.status(204).json('Course Removed!');
   })
 );
 

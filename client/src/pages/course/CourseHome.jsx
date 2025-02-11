@@ -1,10 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Divider,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Divider, Grid, Typography } from "@mui/material";
 import React, { useContext } from "react";
 import { UserContext } from "../../context/providers/UserProvider";
 import CourseStudentCard from "./CourseStudentCard";
@@ -55,25 +49,6 @@ function CourseHome() {
 
   return (
     <>
-      <CustomTitle
-        title={user?.fullname?.toUpperCase()}
-        subtitle="We hope your having a great day!"
-        color="white"
-        bgColor="primary.main"
-        icon={
-          <Avatar
-            loading="lazy"
-            srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
-              user?.profile
-            }`}
-            sx={{
-              width: 80,
-              height: 80,
-            }}
-          />
-        }
-      />
-
       {/* student cards  */}
       {/* <Typography>Students</Typography>
         <Divider /> */}

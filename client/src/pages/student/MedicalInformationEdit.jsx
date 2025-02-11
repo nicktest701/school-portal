@@ -1,22 +1,19 @@
-import React, { useContext } from 'react';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import React, { useContext } from "react";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { Formik } from 'formik';
-import { Dialog, DialogContent, TextField } from '@mui/material';
-import { SaveAs } from '@mui/icons-material';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import CustomFormControl from '../../components/inputs/CustomFormControl';
-import MedicalAllergy from '../../components/items/MedicalAllergy';
-import { medicalValidationSchema } from '../../config/validationSchema';
-import { useSearchParams } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateStudentMedicalHistory } from '../../api/studentAPI';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import {
-  alertError,
-  alertSuccess,
-} from '../../context/actions/globalAlertActions';
+import { Formik } from "formik";
+import { Dialog, DialogContent, TextField } from "@mui/material";
+import { SaveAs } from "@mui/icons-material";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import MedicalAllergy from "@/components/items/MedicalAllergy";
+import { medicalValidationSchema } from "@/config/validationSchema";
+import { useSearchParams } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateStudentMedicalHistory } from "@/api/studentAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
 const MedicalInformationEdit = ({ medical }) => {
   const queryClient = useQueryClient();
@@ -32,7 +29,7 @@ const MedicalInformationEdit = ({ medical }) => {
 
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(['student-by-id']);
+        queryClient.invalidateQueries(["student-by-id"]);
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
@@ -47,18 +44,18 @@ const MedicalInformationEdit = ({ medical }) => {
 
   const handleClose = () =>
     setSearchParams({
-      open: 'false',
+      open: "false",
     });
 
   return (
     <Dialog
-      open={searchParams.get('open') === 'true'}
-      maxWidth='sm'
+      open={searchParams.get("open") === "true"}
+      maxWidth="sm"
       fullWidth
       onClose={handleClose}
     >
-      <CustomDialogTitle title='Medical History' onClose={handleClose} />
-      <DialogContent>
+      <CustomDialogTitle title="Medical History" onClose={handleClose} />
+      <DialogContent sx={{ p: 1 }}>
         <Formik
           initialValues={medical}
           onSubmit={onSubmit}
@@ -75,11 +72,11 @@ const MedicalInformationEdit = ({ medical }) => {
           }) => {
             return (
               <Stack padding={2} spacing={1}>
-                <Stack direction='row' justifyContent='flex-end' spacing={2}>
+                <Stack direction="row" justifyContent="flex-end" spacing={2}>
                   <Button
                     loading={isSubmitting || isPending}
-                    variant='contained'
-                    color='primary'
+                    variant="contained"
+                    color="primary"
                     onClick={handleSubmit}
                     endIcon={<SaveAs />}
                   >
@@ -97,75 +94,75 @@ const MedicalInformationEdit = ({ medical }) => {
                   (Kindly note that this section, even though required, will not
                   affect your child’s admission into the school).
                 </Typography> */}
-                <Stack width={{ xs: '100%', md: '80%' }} py={5}>
+                <Stack width={{ xs: "100%", md: "80%" }} py={5}>
                   <div
                     style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))',
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
                     }}
                   >
                     <MedicalAllergy
-                      title='1. Heart Disease'
+                      title="1. Heart Disease"
                       value={values?.heartDisease}
-                      setValue={handleChange('heartDisease')}
+                      setValue={handleChange("heartDisease")}
                     />
                     <MedicalAllergy
-                      title='2. Visual Impairment'
+                      title="2. Visual Impairment"
                       value={values?.visualImpairment}
-                      setValue={handleChange('visualImpairment')}
+                      setValue={handleChange("visualImpairment")}
                     />
                   </div>
                   <div
                     style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))',
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
                     }}
                   >
                     <MedicalAllergy
-                      title='3. Asthma'
+                      title="3. Asthma"
                       value={values?.asthma}
-                      setValue={handleChange('asthma')}
+                      setValue={handleChange("asthma")}
                     />
                     <MedicalAllergy
-                      title='4. Hearing Impairment'
+                      title="4. Hearing Impairment"
                       value={values?.hearingImpairment}
-                      setValue={handleChange('hearingImpairment')}
+                      setValue={handleChange("hearingImpairment")}
                     />
                   </div>
                   <div
                     style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))',
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
                     }}
                   >
                     <MedicalAllergy
-                      title='5. Siezures'
+                      title="5. Siezures"
                       value={values?.siezures}
-                      setValue={handleChange('siezures')}
+                      setValue={handleChange("siezures")}
                     />
                     <MedicalAllergy
-                      title='6. Physical Disability'
+                      title="6. Physical Disability"
                       value={values?.physicalDisability}
-                      setValue={handleChange('physicalDisability')}
+                      setValue={handleChange("physicalDisability")}
                     />
                   </div>
                 </Stack>
                 <Stack py={2} spacing={1}>
                   <Typography
-                    variant='body2'
-                    color='primary.main'
-                    sx={{ fontWeight: 'bold' }}
+                    variant="body2"
+                    color="primary.main"
+                    sx={{ fontWeight: "bold" }}
                   >
                     Emergency Contact
                   </Typography>
                   <CustomFormControl>
                     <TextField
-                      label='Fullname'
-                      type='text'
+                      label="Fullname"
+                      type="text"
                       fullWidth
-                      size='small'
+                      size="small"
                       value={values?.emergencyContact?.fullname}
-                      onChange={handleChange('emergencyContact.fullname')}
+                      onChange={handleChange("emergencyContact.fullname")}
                       error={Boolean(
                         touched?.emergencyContact?.fullname &&
                           errors?.emergencyContact?.fullname
@@ -176,13 +173,13 @@ const MedicalInformationEdit = ({ medical }) => {
                       }
                     />
                     <TextField
-                      label='Telephone No.'
-                      inputMode='tel'
-                      type='tel'
+                      label="Telephone No."
+                      inputMode="tel"
+                      type="tel"
                       fullWidth
-                      size='small'
+                      size="small"
                       value={values?.emergencyContact?.phonenumber}
-                      onChange={handleChange('emergencyContact.phonenumber')}
+                      onChange={handleChange("emergencyContact.phonenumber")}
                       error={Boolean(
                         touched?.emergencyContact?.phonenumber &&
                           errors?.emergencyContact?.phonenumber
@@ -196,13 +193,13 @@ const MedicalInformationEdit = ({ medical }) => {
 
                   <CustomFormControl>
                     <TextField
-                      label='Address'
+                      label="Address"
                       fullWidth
-                      size='small'
+                      size="small"
                       row={3}
                       maxRows={3}
                       value={values?.emergencyContact?.address}
-                      onChange={handleChange('emergencyContact.address')}
+                      onChange={handleChange("emergencyContact.address")}
                       error={Boolean(
                         touched?.emergencyContact?.address &&
                           errors?.emergencyContact?.address

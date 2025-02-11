@@ -5,9 +5,13 @@ import api from './customAxios';
 export const getAllFees = async (session) => {
   try {
     const res = await api({
-      method: "POST",
+      method: "GET",
       url: `/fees/all`,
       data: session,
+      params: {
+        sessionId: session?.sessionId,
+        termId: session?.termId,
+      }
     });
 
     return res.data;

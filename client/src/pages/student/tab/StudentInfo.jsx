@@ -9,9 +9,9 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import { useMediaQuery, useTheme } from "@mui/material";
 import PublishIcon from "@mui/icons-material/Publish";
 
-import { SchoolSessionContext } from "../../../context/providers/SchoolSessionProvider";
-import { readCSV } from "../../../config/readCSV";
-import { readXLSX } from "../../../config/readXLSX";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { readCSV } from "@/config/readCSV";
+import { readXLSX } from "@/config/readXLSX";
 import PreviousSession from "../PreviousSession";
 import { ArrowBackRounded, NoteRounded, School } from "@mui/icons-material";
 import PersonalInformation from "./PersonalInformation";
@@ -20,10 +20,10 @@ import MedicalInformation from "./MedicalInformation";
 import AcademicInformation from "./AcademicInformation";
 import PhotoUpload from "./PhotoUpload";
 import { Box, IconButton } from "@mui/material";
-import CustomStepper from "../../../components/custom/CustomStepper";
-import CustomTitle from "../../../components/custom/CustomTitle";
-import { downloadTemplate } from "../../../api/userAPI";
-import LoadingSpinner from "../../../components/spinners/LoadingSpinner";
+import CustomStepper from "@/components/custom/CustomStepper";
+import CustomTitle from "@/components/custom/CustomTitle";
+import { downloadTemplate } from "@/api/userAPI";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const CSV_FILE_TYPE = "text/csv";
 const XLSX_FILE_TYPE =
@@ -116,7 +116,7 @@ const StudentInfo = () => {
   return (
     <>
       {/* <Prompt when={true} message={confirmMessage} /> */}
-      <>
+      <Container>
         <CustomTitle
           title="New Student"
           subtitle="  Track,manage and control academic and class activities"
@@ -135,7 +135,13 @@ const StudentInfo = () => {
         </Box>
 
         <Container
-          sx={{ py: 4, mb: 4, border: "1px solid lightgray", bgcolor: "#fff" }}
+          sx={{
+            py: 4,
+            mb: 4,
+
+            bgcolor: "#fff",
+            borderRadius: "12px",
+          }}
         >
           <ButtonGroup
             variant="contained"
@@ -214,7 +220,7 @@ const StudentInfo = () => {
             <AcademicInformation setMode={setMode} />
           )}
         </Container>
-      </>
+      </Container>
       <PreviousSession
         open={openPreviousSession}
         setOpen={setOpenPreviousSession}

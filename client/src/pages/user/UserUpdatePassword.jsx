@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -9,14 +9,10 @@ import Button from "@mui/material/Button";
 import Swal from "sweetalert2";
 import { Formik } from "formik";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { userResetPasswordValidationSchema } from "../../config/validationSchema";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
-import { PasswordRounded } from "@mui/icons-material";
-import { updateUserPassword } from "../../api/userAPI";
+import { userResetPasswordValidationSchema } from "@/config/validationSchema";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { updateUserPassword } from "@/api/userAPI";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
@@ -85,7 +81,7 @@ function UserUpdatePassword({ open, setOpen }) {
         {({ values, errors, touched, handleChange, handleSubmit }) => {
           return (
             <>
-              <DialogContent>
+              <DialogContent sx={{ p: 1 }}>
                 <Stack padding={2} spacing={1}>
                   <TextField
                     type="password"
@@ -120,7 +116,6 @@ function UserUpdatePassword({ open, setOpen }) {
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
-                  startIcon={<PasswordRounded />}
                 >
                   Update Password
                 </Button>

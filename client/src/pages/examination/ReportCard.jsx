@@ -7,6 +7,7 @@ import {
   Avatar,
   Box,
   Link,
+  Button,
 } from "@mui/material";
 import ExamsItem from "@/components/list/ExamsItem";
 import ReportItem from "@/components/list/ReportItem";
@@ -20,9 +21,11 @@ function ReportCard({ student, style, ref }) {
   const school_info = JSON.parse(localStorage.getItem("@school_info"));
   const { palette } = useTheme();
   const [openRemarks, setOpenRemarks] = useState(false);
+
   return (
     <>
       <Stack
+        className="report-card"
         ref={ref}
         spacing={1}
         sx={{
@@ -32,6 +35,12 @@ function ReportCard({ student, style, ref }) {
           margin: "auto",
           padding: "16px",
           border: "1px solid lightgray",
+          position: "relative",
+          background: ` linear-gradient(
+            rgba(255, 255, 255, 0.96),
+            rgba(255, 255, 255, 0.96)
+          ),
+          url("${school_info?.badge}")`,
         }}
         // style={style}
       >
@@ -41,9 +50,7 @@ function ReportCard({ student, style, ref }) {
             <Avatar
               alt="school logo"
               loading="lazy"
-              srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                school_info?.badge
-              }`}
+              srcSet={school_info?.badge}
               sx={{
                 width: 70,
                 height: 70,
@@ -65,21 +72,6 @@ function ReportCard({ student, style, ref }) {
               {school_info?.phonenumber}
             </Typography>
           </Stack>
-          {school_info?.badge ? (
-            <Avatar
-              alt="school logo"
-              loading="lazy"
-              srcSet={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                school_info?.badge
-              }`}
-              sx={{
-                width: 70,
-                height: 70,
-              }}
-            />
-          ) : (
-            <SchoolRounded sx={{ width: 50, height: 50 }} />
-          )}
         </Stack>
         <Typography
           sx={{
@@ -99,16 +91,7 @@ function ReportCard({ student, style, ref }) {
         {/* avatar */}
         <Stack justifyContent="center" alignItems="center">
           <Avatar
-            src={
-              student?.profile === "" ||
-              student?.profile === undefined ||
-              student?.profile === null
-                ? null
-                : student?.profile
-              // : `${import.meta.env.VITE_BASE_URL}/images/students/${
-              //     student?.profile
-              //   }`
-            }
+            src={student?.profile}
             sx={{ width: 60, height: 60, alignSelf: "center" }}
           />
         </Stack>
@@ -167,7 +150,7 @@ function ReportCard({ student, style, ref }) {
             border="1"
           >
             <thead>
-              <tr>
+              <tr style={{ fontSize: "14px" }}>
                 <th>Subject</th>
                 <th> Class Score (50%)</th>
                 <th> Exams Score (50%)</th>
@@ -198,15 +181,22 @@ function ReportCard({ student, style, ref }) {
               style={{
                 textAlign: "center",
                 textDecoration: "underline",
-                borderTop: `solid 5px ${palette.secondary.main}`,
-                bgcolor: "primary.main",
-                color: "primary.contrastText",
+                borderTop: `solid 2px ${palette.primary.main}`,
                 width: "100%",
                 padding: 1,
               }}
             >
               <tr>
-                <th>Overall Score</th>
+                <th
+                  style={{
+                    textAlign: "left",
+                    paddingLeft: "2px",
+                    fontSize: "12px",
+                    fontWeight: "bolder",
+                  }}
+                >
+                  OVERALL SCORE
+                </th>
                 <th></th>
                 <th></th>
                 <th>{student?.overallScore}</th>
@@ -239,36 +229,36 @@ function ReportCard({ student, style, ref }) {
             <Stack>
               <ReportItemUnderline
                 title="Conduct & Attitude"
-                text={student?.comments?.conduct || "Hardworking"}
+                text={student?.comments?.conduct}
               />
 
               <ReportItemUnderline
                 title="Interest"
-                text={student?.comments?.interest || "Hardworking"}
+                text={student?.comments?.interest}
               />
 
               <ReportItemUnderline
                 title="Class Teacher's Remarks"
-                text={
-                  student?.comments?.teachersComments ||
-                  "Excellent Performance Keep it up!"
-                }
+                text={student?.comments?.teachersComments}
               />
 
               <ReportItemUnderline
                 title="Headmaster's Remarks"
-                text={
-                  student?.comments?.headteachersComments || "Good job done!"
-                }
+                text={student?.comments?.headteachersComments}
               />
             </Stack>
-            <Link
+            <Button
+              variant="contained"
               className="add-remarks-btn"
               onClick={() => setOpenRemarks(true)}
-              sx={{ cursor: "pointer" }}
+              sx={{
+                alignSelf: "flex-start",
+                cursor: "pointer",
+                zIndex: "99999999",
+              }}
             >
               Add Remarks
-            </Link>
+            </Button>
           </Stack>
         </Box>
         <Divider />
@@ -320,11 +310,40 @@ function ReportCard({ student, style, ref }) {
         >
           Powered by FrebbyTech Consults (0543772591)
         </Typography>
+
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "grid",
+            placeItems: "center",
+          }}
+        >
+          <img
+            className="report-logo"
+            // src={"/images/logo.PNG"}
+            src={school_info?.badge}
+            alt="school logo"
+            style={{
+              opacity: 0.03,
+              width: "6in",
+              height: "5.5in",
+            }}
+          />
+        </div>
+        {/* <Link
+              className="add-remarks-btn"
+              onClick={() => setOpenRemarks(true)}
+              sx={{ cursor: "pointer" ,zIndex:'99999999'}}
+            >
+              Add Remarks
+            </Link> */}
       </Stack>
       <AddRemarks
         open={openRemarks}
         setOpen={setOpenRemarks}
         id={student?._id}
+        remark={student?.comments}
       />
     </>
   );

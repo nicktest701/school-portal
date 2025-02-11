@@ -3,7 +3,10 @@ import Swal from "sweetalert2";
 import UserReducer from "../reducers/UserReducer";
 import PropTypes from "prop-types";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAllLevels } from "@/api/levelAPI";
+import {
+  generateNewCurrentLevelDetailsFromLevels,
+  getAllLevels,
+} from "@/api/levelAPI";
 import { getSchoolInfo, logOut } from "@/api/userAPI";
 import { getAllNotifications } from "@/api/notificationAPI";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +14,7 @@ import Loader from "@/config/Loader";
 import { getUser, parseJwt } from "@/config/sessionHandler";
 import { getItem, saveItem } from "@/config/helper";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import useLevel from "@/components/hooks/useLevel";
 export const UserContext = React.createContext();
 
 const UserProvider = ({ children }) => {
@@ -30,7 +34,7 @@ const UserProvider = ({ children }) => {
 
   const schoolInfo = useQuery({
     queryKey: ["school-info"],
-    queryFn: () => getSchoolInfo(),
+    queryFn: getSchoolInfo,
     initialData: {
       unique: "school-info",
       badge: "",
@@ -46,10 +50,24 @@ const UserProvider = ({ children }) => {
     },
   });
 
+  const {levelLoading, students } = useLevel();
+
+  //check if current level details exists
   useQuery({
-    queryKey: ["levels", session?.sessionId, session?.termId],
-    queryFn: () => getAllLevels(session?.sessionId, session?.termId),
-    enabled: !!session?.sessionId && !!session?.termId,
+    queryKey: [
+      "generate-current-level-details",
+      session?.sessionId,
+      session?.termId,
+    ],
+    queryFn: () =>
+      generateNewCurrentLevelDetailsFromLevels({
+        sessionId: session?.sessionId,
+        termId: session?.termId,
+      }),
+    enabled:
+      !!session?.sessionId &&
+      !!session?.termId &&
+      !!user?.role === "administrator",
   });
 
   const notifications = useQuery({
@@ -136,10 +154,12 @@ const UserProvider = ({ children }) => {
         logOutUser,
         school_info: schoolInfo?.data,
         userDispatch,
+        students
       }}
     >
       {children}
       {isPending && <LoadingSpinner value="Signing Out" />}
+      {levelLoading && <LoadingSpinner  />}
     </UserContext>
   );
 };

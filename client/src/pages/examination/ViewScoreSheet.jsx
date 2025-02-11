@@ -1,37 +1,23 @@
-import { Button, Dialog, DialogActions, DialogContent } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { StudentContext } from "../../context/providers/StudentProvider";
-import score_icon from "../../assets/images/header/score_ico.svg";
-import { getColumns, getResults } from "../../config/generateScoreSheet";
-import CustomTitle from "../../components/custom/CustomTitle";
+import { Dialog, DialogContent, IconButton } from "@mui/material";
+import React, { useMemo } from "react";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import score_icon from "@/assets/images/header/score_ico.svg";
+import { getColumns, getResults } from "@/config/generateScoreSheet";
+import CustomTitle from "@/components/custom/CustomTitle";
+import { Close } from "@mui/icons-material";
 
-const ViewScoreSheet = ({ open, setOpen }) => {
-  const {
-    studentState: { studentReportDetails },
-  } = useContext(StudentContext);
-
-  const [columns, setColumns] = useState([]);
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
+const ViewScoreSheet = ({ open, setOpen, reportDetails }) => {
+  const details = useMemo(() => {
     //Get dynamic table colums from subjects
-    if (studentReportDetails?.subjects) {
-      const columns = getColumns(studentReportDetails.subjects);
 
-      setColumns(columns);
-    }
+    const columns = getColumns(reportDetails?.subjects);
+    const data = getResults(reportDetails?.results, reportDetails?.subjects);
 
-    //Generate score sheet
-    if (studentReportDetails?.results) {
-      const scoreSheet = getResults(
-        studentReportDetails?.results,
-        studentReportDetails?.subjects
-      );
-
-      setData(scoreSheet);
-    }
-  }, [studentReportDetails]);
+    return {
+      columns,
+      data,
+    };
+  }, [reportDetails]);
 
   const handleClose = () => {
     setOpen(false);
@@ -43,18 +29,25 @@ const ViewScoreSheet = ({ open, setOpen }) => {
         title="Score Sheet"
         subtitle="Show details of student performance"
         color="primary.main"
+        right={
+          <IconButton
+            size="large"
+           
+            onClick={handleClose}
+          >
+            <Close  sx={{ width: 36, height: 36 }}/>
+          </IconButton>
+        }
       />
-<DialogActions>
-  <Button onClick={handleClose}>Close</Button>
-</DialogActions>
+
       <DialogContent>
         <CustomizedMaterialTable
           icon={score_icon}
-          title="Exams Score Sheet"
           exportFileName="Score Sheet"
-          columns={columns}
-          data={data}
+          columns={details?.columns}
+          data={details?.data}
           actions={[]}
+          search={true}
           options={{
             pageSize: 10,
           }}

@@ -9,8 +9,9 @@ export default function Button(theme) {
         disableElevation: true,
         sx: {
           borderRadius: 1,
-          py: '12px',
-   
+          py: '10px',
+          px: 4
+
         },
       },
       styleOverrides: {

@@ -1,4 +1,5 @@
 import {
+  Button,
   Divider,
   Link,
   ListItem,
@@ -6,23 +7,24 @@ import {
   ListItemText,
 } from "@mui/material";
 import React from "react";
-import { currencyFormatter } from "../../config/currencyFormatter";
+import { currencyFormatter } from "@/config/currencyFormatter";
 
 const FeeItem = ({ data, removeFee }) => {
   return (
     <>
-      <ListItem>
-        <ListItemText secondary={data?.fee} />
-        <ListItemText secondary={currencyFormatter(data.amount)} />
-        <ListItemSecondaryAction>
-          <Link
+      <ListItem
+        secondaryAction={
+          <Button
             size="small"
             sx={{ cursor: "pointer" }}
             onClick={() => removeFee(data?.fee)}
           >
             Remove
-          </Link>
-        </ListItemSecondaryAction>
+          </Button>
+        }
+      >
+        <ListItemText secondary={data?.fee} />
+        <ListItemText secondary={currencyFormatter(data.amount)} />
       </ListItem>
       <Divider />
     </>

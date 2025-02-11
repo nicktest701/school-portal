@@ -5,7 +5,7 @@ const Level = require("../models/levelModel");
 const CurrentFee = require("../models/currentFeeModel");
 const _ = require("lodash");
 const {
-  Types: {  ObjectId },
+  Types: { ObjectId },
 } = require("mongoose");
 const { currencyConverter } = require("../config/currencyConverter");
 
@@ -29,11 +29,13 @@ router.get(
   })
 );
 
+
+
 //@GET All school fees by session
-router.post(
+router.get(
   "/all",
   asyncHandler(async (req, res) => {
-    const { sessionId, termId } = req.body;
+    const { sessionId, termId } = req.query;
 
     const fees = await Fee.find({
       session: new ObjectId(sessionId),
@@ -51,7 +53,7 @@ router.post(
         noOfStudents,
         amount,
         levelId: level._id,
-        level: `${level?.level?.name}${level?.level?.type}`,
+        level: level?.levelName,
         fee: total,
         fees: currencyConverter(total),
         totalFees: currencyConverter(total * noOfStudents),
@@ -88,32 +90,7 @@ router.post(
   })
 );
 
-//@GET  school fees by current level
-router.post(
-  "/current-level/all",
-  asyncHandler(async (req, res) => {
-    const { session, term } = req.body;
 
-    const fees = await Fee.find({
-      session: new ObjectId(session),
-      term: new ObjectId(term),
-    }).populate("level");
-
-    //Check if null
-    if (_.isEmpty(fees)) return res.status(200).json([]);
-
-    const modifiedFee = fees.map(({ _id, level, amount }) => {
-      return {
-        feesId: _id,
-        levelId: level?._id,
-        levelType: level?.levelName,
-        fees: _.sumBy(amount, "amount"),
-      };
-    });
-
-    res.status(200).json(modifiedFee);
-  })
-);
 
 //@GET School Fees by id
 router.get(

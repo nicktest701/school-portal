@@ -2,7 +2,7 @@
 import React, {
   memo,
   useCallback,
-  useContext,
+  use,
   useEffect,
   useRef,
   useState,
@@ -26,20 +26,20 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { generateReports, publishReports } from "@/api/ExaminationAPI";
 import { UserContext } from "@/context/providers/UserProvider";
 import ViewScoreSheet from "./ViewScoreSheet";
-import { StudentContext } from "@/context/providers/StudentProvider";
 import { ArrowBack, Note, Search } from "@mui/icons-material";
-import Loader from "@/config/Loader";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import CustomTitle from "@/components/custom/CustomTitle";
 import ReportCard from "./ReportCard";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { StudentContext } from "@/context/providers/StudentProvider";
 
 const ViewExamsReports = () => {
   const {
     userState: { session },
-  } = useContext(UserContext);
+  } = use(UserContext);
   const [isPending, startTransition] = useTransition();
-  const { studentDispatch } = useContext(StudentContext);
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  const { studentDispatch } = use(StudentContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [openScoreSheet, setOpenScoreSheet] = useState(false);
@@ -57,6 +57,7 @@ const ViewExamsReports = () => {
     enabled: !!levelId && !!session.sessionId && !!session.termId,
     initialData: [],
   });
+
 
   useEffect(() => {
     studentDispatch({ type: "getReportDetails", payload: reports?.data });
@@ -115,8 +116,8 @@ const ViewExamsReports = () => {
     });
   };
 
-  const generatedReports = memo(({ data, index, isScrolling, style }) => {
-    return <ReportCard key={index} student={data[index]} style={style} />;
+  const generatedReports = memo(({ data, index, style }) => {
+    return <ReportCard key={index} student={data[index]} />;
   });
 
   const reportCard = useCallback(
@@ -146,7 +147,7 @@ const ViewExamsReports = () => {
 
       setFilteredData(results);
     });
-  },[])
+  }, []);
 
   return (
     <>
@@ -159,24 +160,19 @@ const ViewExamsReports = () => {
           subtitle="Show details of student performance"
           color="primary.main"
         />
-        <Stack
-          py={2}
-          // direction={{ xs: "column", md: "row" }}
-          // spacing={2}
-          // alignItems="center"
-          // justifyContent="center"
-        >
+        <Stack py={2}>
           <ButtonGroup
             variant="contained"
             sx={{
               mb: 4,
               display: "flex",
+              flexDirection: { xs: "column", md: "row" },
               alignItems: "center",
               justifyContent: "center",
               boxShadow: "none",
             }}
           >
-            <Button variant="outlined" onClick={handlOpenScoreSheet}>
+            <Button color="info" onClick={handlOpenScoreSheet}>
               View Score Sheet
             </Button>
 
@@ -206,7 +202,7 @@ const ViewExamsReports = () => {
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    {isPending &&<div className="spinner-loader"></div>}
+                    {isPending && <div className="spinner-loader"></div>}
                   </InputAdornment>
                 ),
               },
@@ -215,7 +211,6 @@ const ViewExamsReports = () => {
         </Stack>
       </Container>
 
-      {reports.isPending && <Loader />}
       {reports.isError && (
         <Typography>Error loading report info.....</Typography>
       )}
@@ -232,6 +227,7 @@ const ViewExamsReports = () => {
         itemData={filteredData}
         style={{
           marginInline: "auto",
+          backgroundColor: "#fff",
         }}
       >
         {generatedReports}
@@ -242,8 +238,10 @@ const ViewExamsReports = () => {
           return reportCard(report);
         })}
       </div>
-      <ViewScoreSheet open={openScoreSheet} setOpen={setOpenScoreSheet} />
-      {/* {isPending && <LoadingSpinner value="Please Wait..." />} */}
+      <ViewScoreSheet open={openScoreSheet} setOpen={setOpenScoreSheet} reportDetails={reports?.data} />
+      {reports.isPending && (
+        <LoadingSpinner value="Loading Reports.Please Wait..." />
+      )}
     </>
   );
 };

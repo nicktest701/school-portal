@@ -9,10 +9,11 @@ function CustomDatePicker({
   helperText,
   disableFuture,
   style,
+  shouldDisableWeekends,
 }) {
   // Function to disable weekends
   const disableWeekends = (date) => {
-    if (!date) return false;
+    if (!date || !shouldDisableWeekends) return false;
     const day = date.day(); // day() returns 0 for Sunday and 6 for Saturday
     return day === 0 || day === 6;
   };

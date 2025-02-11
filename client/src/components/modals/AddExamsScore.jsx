@@ -16,11 +16,11 @@ import { Formik } from "formik";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import Button from "@mui/material/Button";
 import ExamsScoreItem from "../list/ExamsScoreItem";
-import { generateGrade } from "../../config/generateGrade";
+import { generateGrade } from "@/config/generateGrade";
 import { useParams } from "react-router-dom";
-import { getSubjectsForLevel } from "../../api/levelAPI";
-import { postExams } from "../../api/ExaminationAPI";
-import { examsScoreValidationSchema } from "../../config/validationSchema";
+import { getSubjectsForLevel } from "@/api/levelAPI";
+import { postExams } from "@/api/ExaminationAPI";
+import { examsScoreValidationSchema } from "@/config/validationSchema";
 import CustomDialogTitle from "../dialog/CustomDialogTitle";
 const AddExamsScore = ({ open, setOpen, levelId }) => {
   const { examsId } = useParams();

@@ -11,22 +11,19 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
-import { putStudent } from "../../api/studentAPI";
-import CustomFormControl from "../../components/inputs/CustomFormControl";
-import { studentEditValidationSchema } from "../../config/validationSchema";
-import { StudentContext } from "../../context/providers/StudentProvider";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
+import { putStudent } from "@/api/studentAPI";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { studentEditValidationSchema } from "@/config/validationSchema";
+import { StudentContext } from "@/context/providers/StudentProvider";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
+import CustomDatePicker from "@/components/inputs/CustomDatePicker";
 import moment from "moment";
-import { NATIONALITY } from "../../mockup/data/nationality";
-import { TOWNS } from "../../mockup/data/towns";
-import CustomImageChooser from "../../components/inputs/CustomImageChooser";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
+import { NATIONALITY } from "@/mockup/data/nationality";
+import { TOWNS } from "@/mockup/data/towns";
+import CustomImageChooser from "@/components/inputs/CustomImageChooser";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 
 const StudentEdit = () => {
   const queryClient = useQueryClient();
@@ -43,10 +40,6 @@ const StudentEdit = () => {
 
   useEffect(() => {
     setDob(moment(student?.dateofbirth));
-    // setProfileImage(
-    //   `${import.meta.env.VITE_BASE_URL}/images/students/${student?.profile}`
-    // );
-
     setProfileImage(student?.profile);
   }, [student]);
 
@@ -112,7 +105,7 @@ const StudentEdit = () => {
   };
 
   return (
-    <Dialog open={editStudentData.open} maxWidth="lg" fullWidth>
+    <Dialog open={editStudentData.open} maxWidth="md" fullWidth>
       <CustomDialogTitle
         title="Edit Student Information"
         onClose={handleClose}
@@ -134,8 +127,10 @@ const StudentEdit = () => {
         }) => {
           return (
             <>
-              <DialogContent sx={{ display: "flex", justifyContent: "center" }}>
-                <Stack padding={2} spacing={1}>
+              <DialogContent
+                sx={{ p: 1, display: "flex", justifyContent: "center" }}
+              >
+                <Stack  spacing={1}>
                   <Stack alignSelf="center">
                     <CustomImageChooser handleImageUpload={uploadProfile}>
                       <Avatar
@@ -155,7 +150,7 @@ const StudentEdit = () => {
                     label="Student ID"
                     type="text"
                     // fullWidth
-                    sx={{ maxWidth: 300 }}
+                    sx={{ maxWidth: 240 }}
                     size="small"
                     value={values.indexnumber}
                     onChange={handleChange("indexnumber")}

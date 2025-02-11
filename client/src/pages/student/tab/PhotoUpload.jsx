@@ -17,7 +17,7 @@ const PhotoUpload = ({ setMode }) => {
   } = useContext(StudentContext);
   const [profile, setProfile] = useState(photo?.profile);
 
-  const { getRootProps, getInputProps, open } = useDropzone({
+  const { getRootProps, getInputProps, open,acceptedFiles } = useDropzone({
     // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
@@ -50,12 +50,13 @@ const PhotoUpload = ({ setMode }) => {
   }, []);
 
   const onSubmit = () => {
-    // console.log(profile);
+    console.log(profile);
 
     studentDispatch({
       type: "addNewStudent",
       payload: {
         photo: {
+          image: acceptedFiles[0],
           profile,
           isCompleted: true,
         },

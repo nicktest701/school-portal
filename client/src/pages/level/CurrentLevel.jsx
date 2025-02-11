@@ -1,8 +1,8 @@
 import SchoolIcon from "@mui/icons-material/School";
 import { Typography } from "@mui/material";
 import CurrentLevelTab from "./CurrentLevelTab";
-import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
+import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
 import { useParams } from "react-router-dom";
 
 const CurrentLevel = () => {

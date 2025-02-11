@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Dialog from "@mui/material/Dialog";
+import { FormControlLabel, Checkbox } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import Stack from "@mui/material/Stack";
@@ -10,38 +11,37 @@ import Typography from "@mui/material/Typography";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
 import PropTypes from "prop-types";
-import { putUser } from "../../api/userAPI";
-import CustomFormControl from "../../components/inputs/CustomFormControl";
-import { updateProfileValidationSchema } from "../../config/validationSchema";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import { uploadProfileImage } from "../../api/sessionAPI";
+import { putUser } from "@/api/userAPI";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { updateProfileValidationSchema } from "@/config/validationSchema";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { uploadProfileImage } from "@/api/sessionAPI";
 
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
-import CustomImageChooser from "../../components/inputs/CustomImageChooser";
-import { UserContext } from "../../context/providers/UserProvider";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import CustomImageChooser from "@/components/inputs/CustomImageChooser";
+import { UserContext } from "@/context/providers/UserProvider";
 import { useSearchParams } from "react-router-dom";
+import LoadingSpinner from "../spinners/LoadingSpinner";
 
 const UpdateUserProfile = () => {
-  const { user } = useContext(UserContext);
+  const { user, logInUser } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queryClient = useQueryClient();
+  const [showPassword, setShowPassword] = useState(false);
   const [confirmPasswordErr, setConfirmPasswordError] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   useEffect(() => {
-    setProfileImage(
-      `${import.meta.env.VITE_BASE_URL}/images/users/${user?.profile}`
-    );
+    setProfileImage(user?.profile);
   }, [user]);
 
   //PUT user
-  const { mutateAsync } = useMutation(putUser);
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: putUser,
+  });
   const onSubmit = (values, options) => {
     if (values.confirmPassword !== values.password) {
       setConfirmPasswordError("Passwords do not match");
@@ -59,33 +59,42 @@ const UpdateUserProfile = () => {
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
-        schoolSessionDispatch(alertSuccess(data));
+        logInUser(data?.token);
+        schoolSessionDispatch(alertSuccess("Changes Saved!!!"));
         handleClose();
       },
       onError: (error) => {
-        schoolSessionDispatch(alertError(error));
+        console.log(error);
+        schoolSessionDispatch(alertError("An unknown error has occurred!"));
       },
     });
 
     // options.setSubmitting(false);
   };
 
-  const uploadProfile = async (e) => {
+  const changeProfile = useMutation({
+    mutationFn: uploadProfileImage,
+  });
+  const uploadProfile = (e) => {
     const profile = e.target?.files[0];
     const info = {
       _id: user?.id,
       profile,
       type: "users",
+      user: true,
     };
 
-    try {
-      const data = await uploadProfileImage(info);
-      schoolSessionDispatch(alertSuccess(data));
-      setProfileImage(URL.createObjectURL(profile));
-    } catch (error) {
-      schoolSessionDispatch(alertError(error));
-    }
-    queryClient.invalidateQueries(["user"]);
+    changeProfile.mutateAsync(info, {
+      onSuccess: (data) => {
+        logInUser(data?.token);
+        schoolSessionDispatch(alertSuccess("Profile Updated!"));
+        setProfileImage(URL.createObjectURL(profile));
+      },
+      onError: (error) => {
+        console.log(error);
+        schoolSessionDispatch(alertError("An unknown error has occurred!"));
+      },
+    });
   };
 
   const handleClose = () => {
@@ -93,6 +102,10 @@ const UpdateUserProfile = () => {
       params.delete("e_p");
       return params;
     });
+  };
+
+  const handleToggle = () => {
+    setShowPassword((prev) => !prev);
   };
 
   return (
@@ -119,115 +132,130 @@ const UpdateUserProfile = () => {
         }) => {
           return (
             <>
-              <DialogContent>
-                <Stack
-                  direction={{ xs: "column", md: "row" }}
-                  justifyContent="center"
-                  columnGap={3}
-                >
-                  <Stack>
+              <DialogContent sx={{ p: 0 }}>
+                <Stack padding={2} spacing={2}>
+                  <Stack alignSelf="center">
                     <CustomImageChooser handleImageUpload={uploadProfile}>
-                      <Avatar
-                        srcSet={profileImage}
-                        sx={{ width: 100, height: 100, alignSelf: "center" }}
-                      />
+                      {changeProfile.isPending ? (
+                        <div className="spinner"></div>
+                      ) : (
+                        <Avatar
+                          srcSet={profileImage}
+                          sx={{ width: 100, height: 100, alignSelf: "center" }}
+                        />
+                      )}
                     </CustomImageChooser>
                   </Stack>
 
-                  <Stack padding={2} spacing={2}>
-                    <Typography
-                      variant="body2"
-                      color="primary.main"
-                      sx={{ fontWeight: "bold" }}
-                    >
-                      Personal information
-                    </Typography>
+                  <Typography
+                    variant="body2"
+                    color="primary.main"
+                    sx={{ fontWeight: "bold" }}
+                  >
+                    Personal information
+                  </Typography>
 
-                    <TextField
-                      label="Firstname"
-                      type="text"
-                      fullWidth
-                      size="small"
-                      value={values.firstname || ""}
-                      onChange={handleChange("firstname")}
-                      error={Boolean(touched.firstname && errors.firstname)}
-                      helperText={touched.firstname && errors.firstname}
-                    />
-                    <TextField
-                      label="Lastname"
-                      type="text"
-                      fullWidth
-                      size="small"
-                      value={values.lastname || ""}
-                      onChange={handleChange("lastname")}
-                      error={Boolean(touched.lastname && errors.lastname)}
-                      helperText={touched.lastname && errors.lastname}
-                    />
+                  <TextField
+                    label="Firstname"
+                    type="text"
+                    fullWidth
+                    size="small"
+                    value={values.firstname || ""}
+                    onChange={handleChange("firstname")}
+                    error={Boolean(touched.firstname && errors.firstname)}
+                    helperText={touched.firstname && errors.firstname}
+                  />
+                  <TextField
+                    label="Lastname"
+                    type="text"
+                    fullWidth
+                    size="small"
+                    value={values.lastname || ""}
+                    onChange={handleChange("lastname")}
+                    error={Boolean(touched.lastname && errors.lastname)}
+                    helperText={touched.lastname && errors.lastname}
+                  />
 
-                    <TextField
-                      label="Username"
-                      fullWidth
-                      size="small"
-                      value={values.username || ""}
-                      onChange={handleChange("username")}
-                      error={Boolean(touched.username && errors.username)}
-                      helperText={touched.username && errors.username}
-                    />
-                    <TextField
-                      label="Email"
-                      fullWidth
-                      size="small"
-                      row={3}
-                      maxRows={3}
-                      value={values.email || ""}
-                      onChange={handleChange("email")}
-                      error={Boolean(touched.email && errors.email)}
-                      helperText={touched.email && errors.email}
-                    />
+                  <TextField
+                    label="Username"
+                    fullWidth
+                    size="small"
+                    value={values.username || ""}
+                    onChange={handleChange("username")}
+                    error={Boolean(touched.username && errors.username)}
+                    helperText={touched.username && errors.username}
+                  />
+                  <TextField
+                    label="Email"
+                    fullWidth
+                    size="small"
+                    row={3}
+                    maxRows={3}
+                    value={values.email || ""}
+                    onChange={handleChange("email")}
+                    error={Boolean(touched.email && errors.email)}
+                    helperText={touched.email && errors.email}
+                  />
 
-                    <TextField
-                      label="Telephone No."
-                      inputMode="tel"
-                      type="tel"
-                      fullWidth
-                      size="small"
-                      value={values.phonenumber || ""}
-                      onChange={handleChange("phonenumber")}
-                      error={Boolean(touched.phonenumber && errors.phonenumber)}
-                      helperText={touched.phonenumber && errors.phonenumber}
-                    />
-                    <CustomFormControl>
-                      <TextField
-                        type="password"
-                        label="Password"
-                        fullWidth
-                        size="small"
-                        value={values.password}
-                        onChange={handleChange("password")}
-                        error={Boolean(touched.password && errors.password)}
-                        helperText={touched.password && errors.password}
+                  <TextField
+                    label="Telephone No."
+                    inputMode="tel"
+                    type="tel"
+                    fullWidth
+                    size="small"
+                    value={values.phonenumber || ""}
+                    onChange={handleChange("phonenumber")}
+                    error={Boolean(touched.phonenumber && errors.phonenumber)}
+                    helperText={touched.phonenumber && errors.phonenumber}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={showPassword}
+                        onChange={handleToggle}
+                        color="primary"
                       />
-                      <TextField
-                        type="password"
-                        label="Confirm Password"
-                        fullWidth
-                        size="small"
-                        value={values.confirmPassword}
-                        onChange={handleChange("confirmPassword")}
-                        error={Boolean(
-                          touched.confirmPassword && errors.confirmPassword
-                        )}
-                        helperText={
-                          confirmPasswordErr
-                            ? confirmPasswordErr
-                            : touched.confirmPassword && errors.confirmPassword
-                        }
-                        FormHelperTextProps={{
-                          color: "error.main",
-                        }}
-                      />
-                    </CustomFormControl>
-                  </Stack>
+                    }
+                    label="Update Password"
+                  />
+                  {showPassword && (
+                    <>
+                      <CustomFormControl>
+                        <TextField
+                          type="password"
+                          label="Password"
+                          fullWidth
+                          size="small"
+                          autoComplete="new-password"
+                          value={values.password}
+                          onChange={handleChange("password")}
+                          error={Boolean(touched.password && errors.password)}
+                          helperText={touched.password && errors.password}
+                        />
+                        <TextField
+                          type="password"
+                          label="Confirm Password"
+                          autoComplete="new-password"
+                          fullWidth
+                          size="small"
+                          value={values.confirmPassword}
+                          onChange={handleChange("confirmPassword")}
+                          error={Boolean(
+                            touched.confirmPassword && errors.confirmPassword
+                          )}
+                          helperText={
+                            confirmPasswordErr
+                              ? confirmPasswordErr
+                              : touched.confirmPassword &&
+                                errors.confirmPassword
+                          }
+                          FormHelperTextProps={{
+                            color: "error.main",
+                          }}
+                        />
+                      </CustomFormControl>
+                    </>
+                  )}
                 </Stack>
               </DialogContent>
               <DialogActions>
@@ -236,12 +264,12 @@ const UpdateUserProfile = () => {
                   loading={isSubmitting}
                   variant="contained"
                   color="primary"
-                  sx={{ minWidth: { xs: 100, sm: 150 } }}
                   onClick={handleSubmit}
                 >
                   Save Changes
                 </Button>
               </DialogActions>
+              {isPending && <LoadingSpinner value="Saving Changes.." />}
             </>
           );
         }}

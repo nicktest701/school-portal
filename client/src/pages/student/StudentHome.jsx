@@ -116,7 +116,7 @@ const StudentHome = () => {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+          gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
           gap: 2,
           py: 2,
         }}

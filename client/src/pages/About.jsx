@@ -6,10 +6,7 @@ const About = () => {
     <Container
       maxWidth="lg"
       sx={{
-        display: "grid",
-        gridTemplateRows: "auto 1fr auto",
-        height: "90svh",
-
+        minHeight: "100svh",
       }}
     >
       <Typography variant="h2">About Us</Typography>
@@ -48,14 +45,6 @@ const About = () => {
           streamline your operations and improve student outcomes!
         </Typography>
       </Stack>
-      {/* <div>
-        <Typography textAlign="center" fontWeight="bold">
-          All rights reserved | FrebbyTech Consults @ {new Date().getFullYear()}
-        </Typography>
-        <Typography textAlign="center" fontWeight="bold">
-          +233543772591
-        </Typography>
-      </div> */}
     </Container>
   );
 };

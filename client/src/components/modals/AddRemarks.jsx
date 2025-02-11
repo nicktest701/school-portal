@@ -9,32 +9,30 @@ import TextField from "@mui/material/TextField";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
 import { useContext } from "react";
-import { postExamsRemarks } from "../../api/ExaminationAPI";
-import { CONDUCT, INTEREST, TEACHERSREMARKS } from "../../config/remarks";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { postExamsRemarks } from "@/api/ExaminationAPI";
+import { CONDUCT, INTEREST, TEACHERSREMARKS } from "@/config/remarks";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import CustomDialogTitle from "../dialog/CustomDialogTitle";
 
-function AddRemarks({ open, setOpen, id }) {
+function AddRemarks({ open, setOpen, id, remark }) {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
 
   const initialValues = {
-    conduct: "",
-    interest: "",
-    teachersComments: "",
-    headteachersComments: "",
+    conduct: remark?.conduct,
+    interest: remark?.interest,
+    teachersComments: remark?.teachersComments,
+    headteachersComments: remark?.headteachersComments,
   };
 
   const handleCloseDialog = () => setOpen(false);
 
   const { mutateAsync, isPending } = useMutation({
-    mutationfn: postExamsRemarks,
+    mutationFn: postExamsRemarks,
   });
   const onSubmit = (values) => {
+    // return;
     const remarks = {
       _id: id,
       comments: values,
@@ -43,6 +41,7 @@ function AddRemarks({ open, setOpen, id }) {
       onSettled: () => {
         queryClient.invalidateQueries(["student-records"]);
         queryClient.invalidateQueries(["exams-scores"]);
+        queryClient.invalidateQueries(["exams-reports"]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -69,8 +68,24 @@ function AddRemarks({ open, setOpen, id }) {
               title="Add Remarks"
               onClose={handleCloseDialog}
             />
-            <DialogContent>
-              <Stack spacing={2} paddingY={2}>
+            <DialogContent sx={{ p: 1 }}>
+              <Stack spacing={2} py={2}>
+                <Autocomplete
+                  freeSolo
+                  options={CONDUCT}
+                  getOptionLabel={(option) => option || ""}
+                  value={values.conduct}
+                  onChange={(e, value) => setFieldValue("conduct", value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Conduct/Attitude"
+                      size="small"
+                      error={Boolean(errors.conduct)}
+                      helperText={touched.conduct && errors.conduct}
+                    />
+                  )}
+                />
                 <Autocomplete
                   freeSolo
                   options={INTEREST}
@@ -89,22 +104,6 @@ function AddRemarks({ open, setOpen, id }) {
                 />
                 <Autocomplete
                   freeSolo
-                  options={CONDUCT}
-                  getOptionLabel={(option) => option || ""}
-                  value={values.conduct}
-                  onChange={(e, value) => setFieldValue("conduct", value)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Conduct"
-                      size="small"
-                      error={Boolean(errors.conduct)}
-                      helperText={touched.conduct && errors.conduct}
-                    />
-                  )}
-                />
-                <Autocomplete
-                  freeSolo
                   options={TEACHERSREMARKS}
                   getOptionLabel={(option) => option || ""}
                   value={values.teachersComments}
@@ -114,7 +113,7 @@ function AddRemarks({ open, setOpen, id }) {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Teacher's Comments"
+                      label=" Class Teacher's Comments"
                       size="small"
                       error={Boolean(errors.teachersComments)}
                       helperText={

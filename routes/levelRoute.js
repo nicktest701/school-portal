@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
-const { randomUUID } = require("crypto");
 const Level = require('../models/levelModel');
 const Examination = require('../models/examinationModel');
 const CurrentLevelDetails = require('../models/currentLevelDetailModel');
@@ -13,6 +12,7 @@ const moment = require('moment');
 const {
   Types: { ObjectId },
 } = require('mongoose');
+
 
 
 const LEVEL_OPTIONS = [
@@ -53,6 +53,7 @@ router.get(
       match: { active: true },
     }).populate('subjects') // Populate subjects
       .populate('grades')   // Populate grades
+      .populate('fee')   // Populate fees
 
 
 
@@ -63,9 +64,81 @@ router.get(
         LEVEL_OPTIONS.indexOf(b?.level?.name)
     );
 
-    // console.log(levels)
+    if (_.isEmpty(modifiedLevels)) {
+      return res.status(200).json({
+        students: [],
+        levelsOption: [],
+        fees: [],
+        levelSummary: {
+          noOfLevels: 0,
+          noOfSubjects: 0,
+          noOfAssignedTeachers: 0
+        }
+      });
+    }
 
-    res.status(200).json(modifiedLevels);
+    const selectedLevels = modifiedLevels?.map(
+      ({ _id, level, fee, students, subjects, teacher }) => {
+
+        return {
+          _id,
+          level,
+          type: `${level?.name}${level?.type}`,
+          noOfStudents: students?.length,
+          noOfSubjects: subjects?.length,
+          teacher,
+          fee: _.isUndefined(fee) ? null : {
+            _id: fee?._id,
+            levelId: _id,
+            levelName: `${level?.name}${level?.type}`,
+            amount: fee?.amount || 0,
+            fees: _.sumBy(fee?.amount, (fees) => fees.amount),
+
+          }
+        };
+      }
+    );
+
+
+
+    // NUMBER OF LEVELS
+    const noOfLevels = levels.length;
+
+    //NUMBER OF ASSIGNED TEACHERS
+    const modifiedTeachers = _.filter(levels, "teacher");
+    const noOfAssignedTeachers = _.isEmpty(modifiedTeachers)
+      ? 0
+      : modifiedTeachers.length;
+
+    //SUBJECTS
+    const subjects = _.flatMap(levels, 'subjects')
+    //FEES
+    const fees = _.compact(_.map(selectedLevels, 'fee'))
+
+    //STUDENTS
+    const modifiedStudents = levels.flatMap(({ _id, students, level }) => {
+      return students.map((student) => {
+        return {
+          ...student._doc,
+          fullName: student.fullName,
+          levelId: _id,
+          levelName: `${level?.name}${level.type}`,
+        };
+      });
+    });
+
+
+
+    res.status(200).json({
+      students: modifiedStudents,
+      fees,
+      levelsOption: selectedLevels,
+      levelSummary: {
+        noOfLevels,
+        noOfSubjects: subjects?.length,
+        noOfAssignedTeachers,
+      },
+    });
   })
 );
 
@@ -344,13 +417,11 @@ router.post(
       match: { active: true },
     });
 
+
     const selectedLevels = previousLevels.map(
-      ({ level, subjects, students, grades }) => {
+      ({ level }) => {
         return {
-          level,
-          subjects,
-          students,
-          grades,
+
           levelName: `${level.name}${level.type}`,
         };
       }
@@ -363,10 +434,11 @@ router.post(
 
     //GENERATE New Level info
     const students = mergedLevels.map(
-      ({ level, subjects, students, grades }) => {
+      ({ level, teacher, subjects, students, grades }) => {
         return {
           session: new ObjectId(sessionId),
           term: new ObjectId(termId),
+          teacher,
           level,
           subjects,
           grades,
@@ -618,6 +690,19 @@ router.post(
 router.put(
   '/assign-teacher',
   asyncHandler(async (req, res) => {
+
+
+    const isLevelAssigned = await Level.find({
+      _id: new ObjectId(req.body?._id),
+      'teacher._id': new ObjectId(req.body?.teacher?._id)
+    });
+
+    if (!_.isEmpty(isLevelAssigned)) {
+
+      return res.status(400).json('Level already assigned!');
+    }
+
+
     const level = await Level.findByIdAndUpdate(
       req.body._id,
       {
@@ -631,7 +716,7 @@ router.put(
     );
 
     if (_.isEmpty(level)) {
-      return res.status(404).json('Error assigning Level.Try again later');
+      return res.status(400).json('Error assigning Level.Try again later');
     }
 
     res.status(201).json('Level has been assigned successfully!!!');

@@ -25,7 +25,8 @@ function DashboardSwiper() {
     initialData: [],
   });
 
- 
+
+
   return (
     <Swiper
       className="swiper"

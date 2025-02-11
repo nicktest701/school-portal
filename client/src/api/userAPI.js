@@ -1,6 +1,6 @@
 import axios from 'axios';
 import api from './customAxios';
-import { saveToken } from '../config/sessionHandler';
+import { saveAccessToken, saveToken } from '../config/sessionHandler';
 
 //Get all Users
 export const getAllUsers = async () => {
@@ -24,7 +24,7 @@ export const getUserAuth = async (userInfo) => {
       data: userInfo,
     });
 
-    saveToken(res.data?.token,res.data.refresh_token)
+    saveToken(res.data?.token, res.data.refresh_token)
 
     return res.data;
   } catch (error) {
@@ -44,7 +44,7 @@ export const verifyUser = async () => {
       },
     });
 
-    saveToken(res.data?.token,res.data.refresh_token)
+    saveToken(res.data?.token, res.data.refresh_token)
     return res.data;
   } catch (error) {
 
@@ -70,6 +70,8 @@ export const postUser = async (user) => {
   const formData = new FormData();
   //User
   formData.append('profile', user.profile);
+  formData.append('firstname', user.firstname);
+  formData.append('lastname', user.lastname);
   formData.append('fullname', user.fullname);
   formData.append('username', user.username);
   formData.append('dateofbirth', user.dateofbirth);
@@ -114,6 +116,7 @@ export const updateUserProfileImage = async ({ _id, profile }) => {
       },
     });
 
+    saveAccessToken(res.data.token)
     return res.data;
   } catch (error) {
     return error.response.data
@@ -142,9 +145,12 @@ export const putUser = async (updatedUser) => {
       data: updatedUser,
     });
 
+
+    saveAccessToken(res.data.token)
     return res.data;
   } catch (error) {
-    return error.response.data
+
+    return error?.response?.data
   }
 };
 

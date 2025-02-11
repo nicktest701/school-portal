@@ -1,5 +1,5 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { SendRounded } from '@mui/icons-material';
+import React, { useContext, useMemo, useState } from "react";
+import { SendRounded } from "@mui/icons-material";
 
 import {
   Stack,
@@ -11,19 +11,19 @@ import {
   Radio,
   DialogContent,
   Dialog,
-} from '@mui/material';
-import { Formik } from 'formik';
-import { useMutation } from '@tanstack/react-query';
-import CustomDialogTitle from '../dialog/CustomDialogTitle';
+} from "@mui/material";
+import { Formik } from "formik";
+import { useMutation } from "@tanstack/react-query";
+import CustomDialogTitle from "../dialog/CustomDialogTitle";
 import Button from "@mui/material/Button";
-import { postMessage } from '../../api/messageAPI';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import Transition from '../animations/Transition';
+import { postMessage } from "@/api/messageAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import Transition from "../animations/Transition";
 import {
   messageValidationSchema,
   onlyEmailValidationSchema,
   onlyPhoneValidationSchema,
-} from '../../config/validationSchema';
+} from "@/config/validationSchema";
 
 const QuickMessage = () => {
   const {
@@ -31,27 +31,27 @@ const QuickMessage = () => {
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
-  const [radioValue, setRadioValue] = useState('sms');
+  const [radioValue, setRadioValue] = useState("sms");
 
   const init = useMemo(() => {
     switch (radioValue) {
-      case 'sms':
+      case "sms":
         return {
           init: {
             type: radioValue,
             phonenumber: quickMessageData?.data?.phonenumber,
-            title: '',
-            message: '',
+            title: "",
+            message: "",
           },
           val: onlyPhoneValidationSchema,
         };
-      case 'email':
+      case "email":
         return {
           init: {
             type: radioValue,
             email: quickMessageData?.data?.email,
-            title: '',
-            message: '',
+            title: "",
+            message: "",
           },
           val: onlyEmailValidationSchema,
         };
@@ -62,8 +62,8 @@ const QuickMessage = () => {
             type: radioValue,
             email: quickMessageData?.data?.email,
             phonenumber: quickMessageData?.data?.phonenumber,
-            title: '',
-            message: '',
+            title: "",
+            message: "",
           },
           val: messageValidationSchema,
         };
@@ -72,7 +72,7 @@ const QuickMessage = () => {
 
   const { mutateAsync } = useMutation(postMessage);
   const onSubmit = (values, options) => {
-    values.rate = 'quick';
+    values.rate = "quick";
 
     mutateAsync(values, {
       onSettled: () => {
@@ -80,9 +80,9 @@ const QuickMessage = () => {
       },
       onSuccess: (data) => {
         schoolSessionDispatch({
-          type: 'showAlert',
+          type: "showAlert",
           payload: {
-            severity: 'info',
+            severity: "info",
             message: data,
           },
         });
@@ -90,9 +90,9 @@ const QuickMessage = () => {
       },
       onError: (error) => {
         schoolSessionDispatch({
-          type: 'showAlert',
+          type: "showAlert",
           payload: {
-            severity: 'error',
+            severity: "error",
             message: error,
           },
         });
@@ -103,7 +103,7 @@ const QuickMessage = () => {
   //CLOSE
   const handleClose = () => {
     schoolSessionDispatch({
-      type: 'sendQuickMessage',
+      type: "sendQuickMessage",
       payload: {
         open: false,
         data: {},
@@ -116,10 +116,10 @@ const QuickMessage = () => {
       open={quickMessageData.open}
       onClose={handleClose}
       fullWidth
-      maxWidth='xs'
+      maxWidth="xs"
       TransitionComponent={Transition}
     >
-      <CustomDialogTitle title='Send Message' onClose={handleClose} />
+      <CustomDialogTitle title="Send Message" onClose={handleClose} />
       <Formik
         initialValues={init.init}
         onSubmit={onSubmit}
@@ -136,105 +136,106 @@ const QuickMessage = () => {
         }) => {
           return (
             <>
-              <DialogContent>
+              <DialogContent sx={{ p: 1 }}>
                 <FormControl>
-                  <FormLabel id='message-type'>Select type</FormLabel>
+                  <FormLabel id="message-type">Select type</FormLabel>
                   <RadioGroup
                     row
-                    aria-labelledby='message-type'
-                    name='message-type'
+                    aria-labelledby="message-type"
+                    name="message-type"
                     value={radioValue}
                     onChange={(e, value) => setRadioValue(value)}
                   >
                     <FormControlLabel
-                      value='sms'
+                      value="sms"
                       control={<Radio />}
-                      label='SMS'
+                      label="SMS"
                     />
                     <FormControlLabel
-                      value='email'
+                      value="email"
                       control={<Radio />}
-                      label='Email'
+                      label="Email"
                     />
                     <FormControlLabel
-                      value='both'
+                      value="both"
                       control={<Radio />}
-                      label='Both'
+                      label="Both"
                     />
                   </RadioGroup>
                 </FormControl>
 
                 <Stack
                   spacing={2}
-                  justifyContent='center'
-                  alignItems='center'
-                  paddingY={2}
+                  justifyContent="center"
+                  alignItems="center"
+                  py={2}
                 >
-                  {(radioValue === 'sms' || radioValue === 'both') && (
+                  {(radioValue === "sms" || radioValue === "both") && (
                     <TextField
                       label="Recipient's Phone No"
                       required
-                      inputMode='tel'
-                      size='small'
-                      type='tel'
+                      inputMode="tel"
+                      size="small"
+                      type="tel"
                       fullWidth
-                      value={values.phonenumber || ''}
-                      onChange={handleChange('phonenumber')}
-                      hidden={radioValue === 'email' ? true : false}
+                      value={values.phonenumber || ""}
+                      onChange={handleChange("phonenumber")}
+                      hidden={radioValue === "email" ? true : false}
                       error={Boolean(touched.phonenumber && errors.phonenumber)}
                       helperText={touched.phonenumber && errors.phonenumber}
                     />
                   )}
 
-                  {(radioValue === 'email' || radioValue === 'both') && (
+                  {(radioValue === "email" || radioValue === "both") && (
                     <TextField
                       label="Recipient's Email Address"
-                      inputMode='email'
-                      type='email'
-                      size='small'
+                      inputMode="email"
+                      type="email"
+                      size="small"
                       required
                       fullWidth
-                      hidden={radioValue === 'sms' ? true : false}
-                      value={values.email || ''}
-                      onChange={handleChange('email')}
+                      hidden={radioValue === "sms" ? true : false}
+                      value={values.email || ""}
+                      onChange={handleChange("email")}
                       error={Boolean(touched.email && errors.email)}
                       helperText={touched.email && errors.email}
                     />
                   )}
 
                   <TextField
-                    label='Message Title'
+                    label="Message Title"
                     required
                     fullWidth
-                    size='small'
-                    value={values.title || ''}
-                    onChange={handleChange('title')}
+                    size="small"
+                    value={values.title || ""}
+                    onChange={handleChange("title")}
                     error={Boolean(touched.title && errors.title)}
                     helperText={touched.title && errors.title}
                   />
 
                   <TextField
-                    sx={{ textAlign: 'left' }}
-                    label='Message'
+                    sx={{ textAlign: "left" }}
+                    label="Message"
                     required
-                    size='small'
+                    size="small"
                     multiline
                     rows={4}
                     fullWidth
-                    value={values.message || ''}
-                    onChange={handleChange('message')}
+                    value={values.message || ""}
+                    onChange={handleChange("message")}
                     error={Boolean(touched.message && errors.message)}
                     helperText={touched.message && errors.message}
                   />
+                  <Button
+                    loading={isSubmitting}
+                    variant="contained"
+                    onClick={handleSubmit}
+                    endIcon={<SendRounded />}
+                    sx={{ alignSelf: "flex-end", py: 1.5 }}
+                  >
+                    Send Message
+                  </Button>
                 </Stack>
-                <Button
-                  loading={isSubmitting}
-                  variant='contained'
-                  onClick={handleSubmit}
-                  endIcon={<SendRounded />}
-                >
-                  Send Message
-                </Button>
               </DialogContent>
             </>
           );

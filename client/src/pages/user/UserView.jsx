@@ -1,4 +1,9 @@
-import { Edit, MessageRounded, PasswordRounded } from "@mui/icons-material";
+import {
+  Edit,
+  MessageRounded,
+  PasswordRounded,
+  RefreshRounded,
+} from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -6,25 +11,24 @@ import {
   ButtonGroup,
   Chip,
   Divider,
+  IconButton,
   Stack,
+  Tooltip,
 } from "@mui/material";
 
 import Swal from "sweetalert2";
 import React, { useContext, useEffect, useState } from "react";
-import ProfileItem from "../../components/typo/ProfileItem";
+import ProfileItem from "@/components/typo/ProfileItem";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteUser, enableOrDisableAccount, getUser } from "../../api/userAPI";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
+import { deleteUser, enableOrDisableAccount, getUser } from "@/api/userAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import moment from "moment";
 import UserUpdatePassword from "./UserUpdatePassword";
-import Back from "../../components/Back";
-import CustomTitle from "../../components/custom/CustomTitle";
+import Back from "@/components/Back";
+import CustomTitle from "@/components/custom/CustomTitle";
 import { useNavigate, useParams } from "react-router-dom";
-import LoadingSpinner from "../../components/spinners/LoadingSpinner";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const UserView = () => {
   const queryClient = useQueryClient();
@@ -47,9 +51,7 @@ const UserView = () => {
   });
 
   useEffect(() => {
-    setProfileImage(
-      `${import.meta.env.VITE_BASE_URL}/images/users/${user?.data?.profile}`
-    );
+    setProfileImage(user?.data?.profile);
   }, [user?.data]);
 
   const handleEditUser = () => {
@@ -58,7 +60,7 @@ const UserView = () => {
 
   //DISABLE User Account
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: enableOrDisableAccount,
   });
 
@@ -69,6 +71,7 @@ const UserView = () => {
         : "Do you want to enable this account?",
       text: user?.data?.active ? "Disabling Account" : "Enabling Account",
       showCancelButton: true,
+      backdrop: false,
     }).then((data) => {
       if (data.isConfirmed) {
         const info = {
@@ -81,47 +84,12 @@ const UserView = () => {
             queryClient.invalidateQueries(["users"]);
             queryClient.invalidateQueries(["user", id]);
             schoolSessionDispatch(alertSuccess(data));
-            handleClose();
           },
           onError: (error) => {
             schoolSessionDispatch(alertError(error));
           },
         });
       }
-    });
-  };
-
-  // //EDIT User Info
-  // const editPassword = () => {
-  //   schoolSessionDispatch({
-  //     type: 'editUser',
-  //     payload: {
-  //       open: true,
-  //       data: user,
-  //     },
-  //   });
-  //   handleClose();
-  // };
-  //EDIT User Info
-  // const editUserInfo = () => {
-  //   schoolSessionDispatch({
-  //     type: "editUser",
-  //     payload: {
-  //       open: true,
-  //       data: user,
-  //     },
-  //   });
-  //   handleClose();
-  // };
-
-  //CLOSE view User Info
-  const handleClose = () => {
-    schoolSessionDispatch({
-      type: "viewUser",
-      payload: {
-        open: false,
-        data: {},
-      },
     });
   };
 
@@ -142,9 +110,9 @@ const UserView = () => {
       if (data.isConfirmed) {
         deleteMutate(user?.data?._id, {
           onSuccess: (data) => {
-            queryClient.invalidateQueries(["users"]);
             schoolSessionDispatch(alertSuccess(data));
-            handleClose();
+            navigate(`/users`);
+            queryClient.invalidateQueries(["users"]);
           },
           onError: (error) => {
             schoolSessionDispatch(alertError(error));
@@ -156,7 +124,6 @@ const UserView = () => {
 
   //UPDATE User Password
   const handleOpenUpdatePassword = () => {
-    // handleClose();
     setOpenUpdatePassword(true);
   };
 
@@ -178,25 +145,31 @@ const UserView = () => {
   return (
     <>
       <>
-        <Back color="#012e54" />
+        <Back color="#012e54" to={"/users"} />
         <CustomTitle
           title="User Information"
           subtitle="Track,manage and control courses assigned to you"
           color="primary.main"
         />
 
-        <Box>
+        <Box sx={{ bgcolor: "white", borderRadius: "12px", p: 2 }}>
           <Stack width="100%" justifyContent="flex-end" alignItems="flex-end">
             <ButtonGroup>
-              <Button
-                endIcon={<PasswordRounded />}
-                onClick={handleOpenUpdatePassword}
-              >
-                Update Password
-              </Button>
-              <Button endIcon={<Edit />} onClick={handleEditUser}>
-                Edit
-              </Button>
+              <Tooltip title="Refresh User Profile Information">
+                <IconButton onClick={user.refetch}>
+                  <RefreshRounded />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Edit User Profile">
+                <IconButton onClick={handleEditUser}>
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Update user Password">
+                <IconButton onClick={handleOpenUpdatePassword}>
+                  <PasswordRounded />
+                </IconButton>
+              </Tooltip>
             </ButtonGroup>
           </Stack>
           <Box
@@ -217,9 +190,11 @@ const UserView = () => {
             >
               <Avatar srcSet={profileImage} sx={{ width: 100, height: 100 }} />
             </Box>
-            <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
-              Send Message
-            </Button>
+            <Tooltip title="Send Message to User">
+              <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
+                Send Message
+              </Button>
+            </Tooltip>
           </Box>
 
           <Divider flexItem>
@@ -262,16 +237,22 @@ const UserView = () => {
             justifyContent="flex-end"
             py={2}
           >
-            <Button
-              variant="contained"
-              color={user?.data?.active ? "primary" : "warning"}
-              onClick={disableUserAccount}
+            <Tooltip
+              title={user?.data?.active ? "Disable Account" : "Enable Account"}
             >
-              {user?.data?.active ? "Disable Account" : "Enable Account"}
-            </Button>
-            <Button variant="contained" color="error" onClick={handleDelete}>
-              Delete Account
-            </Button>
+              <Button
+                variant="contained"
+                color={user?.data?.active ? "primary" : "warning"}
+                onClick={disableUserAccount}
+              >
+                {user?.data?.active ? "Disable Account" : "Enable Account"}
+              </Button>
+            </Tooltip>
+            <Tooltip title="Remove User Account">
+              <Button variant="contained" color="error" onClick={handleDelete}>
+                Delete Account
+              </Button>
+            </Tooltip>
           </Stack>
         </Box>
       </>
@@ -280,6 +261,11 @@ const UserView = () => {
         setOpen={setOpenUpdatePassword}
       />
       {deleteIsLoading && <LoadingSpinner value="Removing user details" />}
+      {isPending && (
+        <LoadingSpinner
+          value={user?.data?.active ? "Disabling Account.Please Wait.." : "Enabling Account.Please Wait.."}
+        />
+      )}
     </>
   );
 };

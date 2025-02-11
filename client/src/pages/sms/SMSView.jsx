@@ -5,21 +5,21 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  IconButton,
   ListItemText,
   Stack,
   Tooltip,
 } from "@mui/material";
 import Swal from "sweetalert2";
 import moment from "moment/moment";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { deleteMessage, resendMessage } from "../../api/messageAPI";
-import Transition from "../../components/animations/Transition";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { deleteMessage, resendMessage } from "@/api/messageAPI";
+import Transition from "@/components/animations/Transition";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { DeleteForeverRounded, RefreshRounded } from "@mui/icons-material";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 function SMSView() {
   const queryClient = useQueryClient();
@@ -31,7 +31,7 @@ function SMSView() {
     schoolSessionDispatch,
   } = useContext(SchoolSessionContext);
 
-  const { mutateAsync, isPending } = useMutation(resendMessage);
+  const { mutateAsync, isPending } = useMutation({ mutationFn: resendMessage });
   const onSend = () => {
     const message = {
       id: data?._id,
@@ -100,7 +100,7 @@ function SMSView() {
     >
       <CustomDialogTitle title="Messages" onClose={handleClose} />
 
-      <DialogContent>
+      <DialogContent sx={{ p: 1.5 }}>
         <Stack
           direction="row"
           justifyContent="flex-end"
@@ -108,31 +108,20 @@ function SMSView() {
           spacing={1}
           py={1}
         >
+          <Tooltip title="Resend Message">
+            <IconButton onClick={onSend}>
+              <RefreshRounded />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Delete">
-            {/* <IconButton color='error' onClick={handleDelete}>
+            <IconButton onClick={handleDelete}>
               <DeleteForeverRounded />
-            </IconButton> */}
-            <Button
-              color="error"
-              loading={dLoading}
-              onClick={handleDelete}
-            >
+            </IconButton>
+            {/* <Button color="error" loading={dLoading} onClick={handleDelete}>
               Remove
-            </Button>
+            </Button> */}
           </Tooltip>
           {/* {!data.active && ( */}
-          <Tooltip title="Resend">
-            {/* <IconButton color='success' onClick={onSend}>
-              <RefreshRounded />
-            </IconButton> */}
-            <Button
-              loading={isPending}
-              variant="contained"
-              onClick={onSend}
-            >
-              Resend
-            </Button>
-          </Tooltip>
           {/* // )} */}
         </Stack>
         <Chip
@@ -145,8 +134,23 @@ function SMSView() {
           <ListItemText
             primary="Date of Issue"
             secondary={moment(new Date(data?.createdAt)).format("Do MMMM YYYY")}
+            slotProps={{
+              primary: {
+                color: "primary",
+                fontWeight: "bold",
+              },
+            }}
           />
-          <ListItemText primary="Type" secondary={data?.type} />
+          <ListItemText
+            primary="Type"
+            secondary={data?.type}
+            slotProps={{
+              primary: {
+                color: "primary",
+                fontWeight: "bold",
+              },
+            }}
+          />
           <ListItemText
             primary="Receipient"
             secondary={
@@ -154,21 +158,27 @@ function SMSView() {
                 ? data?.recipient?.email[0] || data?.recipient?.phonenumber[0]
                 : data?.recipient?.type
             }
+            slotProps={{
+              primary: {
+                color: "primary",
+                fontWeight: "bold",
+              },
+            }}
           />
 
           <ListItemText
             primary={data?.body?.title}
-            // secondary={data?.body?.message}
+            slotProps={{
+              primary: {
+                color: "primary",
+                fontWeight: "bold",
+              },
+            }}
           />
-          <div
-            style={{ padding: "16px" }}
-            dangerouslySetInnerHTML={{ __html: data?.body?.message }}
-          ></div>
+          <div dangerouslySetInnerHTML={{ __html: data?.body?.message }}></div>
         </Stack>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
+      {isPending && <LoadingSpinner value="Resending Message..." />}
     </Dialog>
   );
 }

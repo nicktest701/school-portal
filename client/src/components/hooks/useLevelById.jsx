@@ -1,6 +1,6 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getLevel } from "../../api/levelAPI";
 import { useMemo } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getLevel } from "@/api/levelAPI";
 
 function useLevelById(id) {
   const queryClient = useQueryClient();
@@ -14,7 +14,7 @@ function useLevelById(id) {
       ?.find((level) => level?._id === id),
   });
 
-  console.log(levels.data);
+  // console.log(levels.data);
 
   const levelData = useMemo(() => {
     if (levels.data) {

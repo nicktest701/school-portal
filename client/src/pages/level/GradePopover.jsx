@@ -46,10 +46,10 @@ export default function GradePopover({ grades = [] }) {
               }}
             />
           </ListItem>
-          {grades?.map((value) => (
+          {grades?.map((value, unique) => (
             <ListItem
               secondaryAction={value?.isCore ? <CheckBoxRounded /> : null}
-              key={value?._id}
+              key={unique}
             >
               <ListItemText
                 primary={`${value?.lowestMark} - ${value?.highestMark} - ${value?.grade}  - ${value?.remarks}`}

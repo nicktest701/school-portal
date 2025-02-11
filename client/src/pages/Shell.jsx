@@ -17,7 +17,14 @@ const Shell = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "flex-start",
+          // border: "1px solid red",
+          // minHeight: "100svh",
+        }}
+      >
         <Sidebar />
         <Box sx={{ flex: 1 }}>
           <Header />

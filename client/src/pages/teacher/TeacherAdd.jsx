@@ -11,21 +11,18 @@ import {
 import Button from "@mui/material/Button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik } from "formik";
-import CustomFormControl from "../../components/inputs/CustomFormControl";
-import { teacherInitialValues } from "../../config/initialValues";
-import { teacherValidationSchema } from "../../config/validationSchema";
-import { postTeacher } from "../../api/teacherAPI";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import CustomDatePicker from "../../components/inputs/CustomDatePicker";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { teacherInitialValues } from "@/config/initialValues";
+import { teacherValidationSchema } from "@/config/validationSchema";
+import { postTeacher } from "@/api/teacherAPI";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import CustomDatePicker from "@/components/inputs/CustomDatePicker";
 import moment from "moment";
-import { TOWNS } from "../../mockup/data/towns";
-import { NATIONALITY } from "../../mockup/data/nationality";
-import CustomImageChooser from "../../components/inputs/CustomImageChooser";
-import CustomTitle from "../../components/custom/CustomTitle";
+import { TOWNS } from "@/mockup/data/towns";
+import { NATIONALITY } from "@/mockup/data/nationality";
+import CustomImageChooser from "@/components/inputs/CustomImageChooser";
+import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const TeacherAdd = ({ setTab }) => {
@@ -63,8 +60,8 @@ const TeacherAdd = ({ setTab }) => {
     <>
       <Box
         sx={{
-          paddingY: 2,
           backgroundColor: "#fff",
+          borderRadius: "12px",
         }}
       >
         <CustomTitle
@@ -271,10 +268,10 @@ const TeacherAdd = ({ setTab }) => {
                   direction="row"
                   justifyContent="flex-end"
                   spacing={2}
-                  paddingY={4}
+                  py={4}
                 >
                   <Button
-                    sx={{ minWidth: { xs: 100, sm: 150 } }}
+                   
                     onClick={handleReset}
                   >
                     Cancel
@@ -283,10 +280,10 @@ const TeacherAdd = ({ setTab }) => {
                     loading={isPending}
                     variant="contained"
                     color="primary"
-                    sx={{ minWidth: { xs: 100, sm: 150 } }}
+                   
                     onClick={handleSubmit}
                   >
-                    Save
+                    Add Teacher
                   </Button>
                 </Stack>
               </Stack>

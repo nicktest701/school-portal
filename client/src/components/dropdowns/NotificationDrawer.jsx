@@ -9,10 +9,15 @@ import {
 } from "@mui/material";
 import _ from "lodash";
 import { AnimatePresence } from "framer-motion";
-import { Close, Notifications, Refresh } from "@mui/icons-material";
+import {
+  Close,
+  Notifications,
+  NotificationsRounded,
+  Refresh,
+} from "@mui/icons-material";
 import CustomNotificationItem from "../custom/CustomNotificationItem";
-import { saveItem } from "../../config/helper";
-import { UserContext } from "../../context/providers/UserProvider";
+import { saveItem } from "@/config/helper";
+import { UserContext } from "@/context/providers/UserProvider";
 
 const NotificationDrawer = ({ open, setOpen }) => {
   const { notifications } = useContext(UserContext);
@@ -58,8 +63,11 @@ const NotificationDrawer = ({ open, setOpen }) => {
           p={1}
         >
           <Notifications htmlColor="#fff" />
-          <Typography color="white" sx={{ pl: 1, flexGrow: 1 }}>
-            Notifications
+          <Typography
+            sx={{  flexGrow: 1, display: "flex", alignItems: "center" }}
+          >
+            <NotificationsRounded />
+            <span> Notifications</span>
           </Typography>
 
           <Tooltip title="Refresh Notifications">
@@ -106,12 +114,13 @@ const NotificationDrawer = ({ open, setOpen }) => {
         ) : (
           <AnimatePresence>
             <Stack spacing={1} height="90svh" overflow="auto">
-              {notifications?.map((notification) => {
+              {notifications?.map((notification, index) => {
                 return (
                   <CustomNotificationItem
                     key={notification?._id}
                     {...notification}
                     closeDrawer={setOpen}
+                    index={index}
                   />
                 );
               })}

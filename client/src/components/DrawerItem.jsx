@@ -28,7 +28,7 @@ const DrawerItem = ({ title, icon, to }) => {
           alignItems="center"
           sx={{
             py: { xs: 1, sm: "12px" },
-            px: 1,
+            px: { xs: 1, sm: "16px" },
             cursor: "pointer",
             width: { xs: "inherit", md: 150 },
 
@@ -40,13 +40,27 @@ const DrawerItem = ({ title, icon, to }) => {
           }}
           spacing={1}
         >
-          {icon}
+          <Tooltip
+            title={to?.split("/")[1]}
+            placement="right"
+            
+            slotProps={{
+              tooltip: {
+                sx: {
+                  textTransform: "capitalize",
+                },
+              },
+            }}
+          >
+            {icon}
+          </Tooltip>
           <Typography
             variant="caption"
             sx={{
-              display: { xs: "block", sm: "none", md: "block" },
+              display: { xs: "none", sm: "none", md: "block" },
               whiteSpace: "noWrap",
               // color: 'white',
+              transition: "all 300ms ease-in-out",
             }}
           >
             {title}

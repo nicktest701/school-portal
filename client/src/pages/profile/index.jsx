@@ -1,18 +1,18 @@
 import React, { useContext } from "react";
 import { Avatar, Container, Typography, Stack, Button } from "@mui/material";
-import { UserContext } from "../../context/providers/UserProvider";
-import CustomFormControl from "../../components/inputs/CustomFormControl";
-import FormDisplayItem from "../../components/inputs/FormDisplayItem";
+import { UserContext } from "@/context/providers/UserProvider";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import FormDisplayItem from "@/components/inputs/FormDisplayItem";
 import { Edit } from "@mui/icons-material";
-import CustomTitle from "../../components/custom/CustomTitle";
+import CustomTitle from "@/components/custom/CustomTitle";
 import { useSearchParams } from "react-router-dom";
-import UpdateUserProfile from "../../components/dialog/UpdateUserProfile";
+import UpdateUserProfile from "@/components/dialog/UpdateUserProfile";
 
 function Profile() {
   const { user } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // console.log(user)
+ 
 
   const handleOpenEdit = () => {
     setSearchParams((params) => {
@@ -57,9 +57,7 @@ function Profile() {
             sx={{ p: 1, border: "1px solid lightgray", borderRadius: "50%" }}
           >
             <Avatar
-              src={`${import.meta.env.VITE_BASE_URL}/images/users/${
-                user?.profile
-              }`}
+              src={user?.profile}
               sx={{ height: 120, width: 120 }}
             />
           </Stack>
@@ -83,7 +81,7 @@ function Profile() {
           <FormDisplayItem label="Username" value={user.username || ""} />
           <FormDisplayItem label="Email" value={user.email || ""} />
           <CustomFormControl>
-            <FormDisplayItem label="Date of Birth" value={user.dob || ""} />
+            <FormDisplayItem label="Date of Birth" value={user.dateofbirth || ""} />
 
             <FormDisplayItem label="Gender" value={user.gender || ""} />
           </CustomFormControl>

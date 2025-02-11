@@ -5,8 +5,9 @@ import {
   TextField,
   Autocomplete,
   Alert,
-  Grid,
+  Grid2,
   Typography,
+  Box,
 } from "@mui/material";
 import _ from "lodash";
 import { Formik } from "formik";
@@ -36,7 +37,6 @@ const ExamsScoreInput = ({ setTab }) => {
   });
 
   const [scoreList, setScoreList] = useState([]);
-
   const { gradeSystem, subjects } = useLevelById(levelId);
 
   const initialValues = {
@@ -105,6 +105,7 @@ const ExamsScoreInput = ({ setTab }) => {
         data: {},
       },
     });
+
   return (
     <Formik
       initialValues={initialValues}
@@ -138,27 +139,46 @@ const ExamsScoreInput = ({ setTab }) => {
                 {msgs.text}
               </Alert>
             )}
-            <>
-              <Stack spacing={2} direction="row" justifyContent="flex-end">
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button
-                  variant="contained"
-                  disabled={scoreList.length === 0}
-                  onClick={handleSaveResults}
-                  loading={isPending}
-                >
-                  Save Results
-                </Button>
-              </Stack>
-              <Grid
-                container
+            <Box sx={{ bgcolor: "#fff", borderRadius: "12px", p: 2 }}>
+              <Stack
                 spacing={2}
-                rowGap={2}
-                sx={{ minHeight: "60svh" }}
+                direction={{ xs: "column", md: "row" }}
+                justifyContent={{ xs: "flex-start", md: "flex-end" }}
+                pb={2}
               >
-                <Grid item xs={12} md={5} padding={2}>
-                  <Stack spacing={2} py={2}>
-                    <Typography>Add Subject Score</Typography>
+                <Typography
+                  variant="h6"
+                  color="primary.main"
+                  p={1}
+                  sx={{ fontWeight: "bold", width: "100%" }}
+                >
+                  Results Entry
+                </Typography>
+                <Stack direction="row">
+                  <Button onClick={handleClose}>Cancel</Button>
+                  <Button
+                    variant="contained"
+                    disabled={scoreList.length === 0}
+                    onClick={handleSaveResults}
+                    loading={isPending}
+                  >
+                    Save Results
+                  </Button>
+                </Stack>
+              </Stack>
+              <Grid2 container spacing={2} sx={{ minHeight: "60svh" }}>
+                <Grid2 size={{ xs: 12, md: 5 }}>
+                  <Stack spacing={2}>
+                    <Typography
+                      variant="h6"
+                      color="primary.main"
+                      bgcolor="lightgray"
+                      p={1}
+                      sx={{ fontWeight: "bold", width: "100%" }}
+                    >
+                      Add Subject Score
+                    </Typography>
+
                     <Autocomplete
                       // freeSolo
                       options={subjects}
@@ -202,16 +222,30 @@ const ExamsScoreInput = ({ setTab }) => {
                       Add Score
                     </Button>
                   </Stack>
-                </Grid>
-                <Grid item xs={12} md={7} padding={2}>
-                  <Typography>Scores Preview</Typography>
-                  <ExamsScoreTable
-                    data={scoreList || []}
-                    setData={setScoreList}
-                  />
-                </Grid>
-              </Grid>
-            </>
+                </Grid2>
+                <Grid2 size={{ xs: 12, md: 7 }}>
+                  <Typography
+                    variant="h6"
+                    color="primary.main"
+                    bgcolor="lightgray"
+                    p={1}
+                    // mb={2}
+                    sx={{ fontWeight: "bold", width: "100%" }}
+                  >
+                    Scores Preview
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      maxWidth: { xs: 300, sm: "100%" },
+                      overflowX: "auto",
+                    }}
+                  >
+                    <ExamsScoreTable data={scoreList} setData={setScoreList} />
+                  </Box>
+                </Grid2>
+              </Grid2>
+            </Box>
           </>
         );
       }}

@@ -13,18 +13,20 @@ import {
   FormHelperText,
   InputAdornment,
   Divider,
+  Box,
 } from "@mui/material";
 import _ from "lodash";
 import { Formik } from "formik";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Button from "@mui/material/Button";
-import { FEES_OPTIONS } from "../../mockup/columns/sessionColumns";
-import { putFee } from "../../api/feeAPI";
+import { FEES_OPTIONS } from "@/mockup/columns/sessionColumns";
+import { putFee } from "@/api/feeAPI";
 import FeesItem from "./FeeItem";
-import { currencyFormatter } from "../../config/currencyFormatter";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import Transition from "../../components/animations/Transition";
+import { currencyFormatter } from "@/config/currencyFormatter";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import Transition from "@/components/animations/Transition";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 const EditFee = () => {
   const queryClient = useQueryClient();
 
@@ -75,7 +77,7 @@ const EditFee = () => {
     [feeList]
   );
 
-  const { mutateAsync } = useMutation(putFee);
+  const { mutateAsync, isPending } = useMutation({ mutationFn: putFee });
 
   const onSubmit = (values, options) => {
     setMsg({ text: "" });
@@ -115,10 +117,10 @@ const EditFee = () => {
       open={feeEditData.open}
       onClose={handleClose}
       fullWidth
-      maxWidth="xs"
+      maxWidth="sm"
       TransitionComponent={Transition}
     >
-      <DialogTitle>Edit Fees</DialogTitle>
+      <CustomDialogTitle title="Edit Fees" onClose={handleClose} />
       <Formik
         initialValues={{
           _id: feeEditData?.data?._id,
@@ -152,8 +154,10 @@ const EditFee = () => {
                   <TextField
                     label=" Level"
                     size="small"
-                    InputProps={{
-                      readOnly: true,
+                    slotProps={{
+                      input: {
+                        readOnly: true,
+                      },
                     }}
                     value={
                       feeEditData?.data?.level !== undefined
@@ -186,36 +190,50 @@ const EditFee = () => {
                       />
                     )}
                   />
-                  <TextField
-                    type="number"
-                    label="Enter Fee Amount"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">GHS</InputAdornment>
-                      ),
-
-                      endAdornment: (
-                        <InputAdornment position="end">p</InputAdornment>
-                      ),
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    error={Boolean(touched?.fee && errors?.fee)}
-                    helperText={touched?.fee && errors?.fee && "Required*"}
-                  />
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={handleAddFee}
                   >
-                    Add
-                  </Button>
+                    <TextField
+                      type="number"
+                      label="Enter Fee Amount"
+                      size="small"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">GHS</InputAdornment>
+                        ),
 
-                  <List sx={{ maxHeight: 400 }}>
-                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                      Fees
-                    </Typography>
+                        endAdornment: (
+                          <InputAdornment position="end">p</InputAdornment>
+                        ),
+                      }}
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      error={Boolean(touched?.fee && errors?.fee)}
+                      helperText={touched?.fee && errors?.fee && "Required*"}
+                      disabled={_.isEmpty(fee)}
+                    />
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={handleAddFee}
+                      disabled={_.isEmpty(amount)}
+                    >
+                      Add
+                    </Button>
+                  </Box>
+
+                  <List
+                    sx={{ maxHeight: 400 }}
+                    subheader={
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                        Fees
+                      </Typography>
+                    }
+                  >
                     {_.isEmpty(feeList) ? (
                       <Typography>No Fee Available</Typography>
                     ) : (
@@ -252,11 +270,14 @@ const EditFee = () => {
                   loading={isSubmitting}
                   variant="contained"
                   onClick={handleSubmit}
+                  disabled={_.isEmpty(feeList)}
                 >
                   Save Changes
                 </Button>
               </DialogActions>
-              {isSubmitting && <LoadingSpinner value="Saving Changes..." />}
+              {(isPending || isSubmitting) && (
+                <LoadingSpinner value="Saving Changes..." />
+              )}
             </>
           );
         }}

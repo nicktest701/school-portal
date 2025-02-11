@@ -15,11 +15,12 @@ const EmptyDataContainer = ({
 }) => {
   return (
     <Container
-    maxWidth='xl'
+      maxWidth="xl"
       className="hide-on-pint"
       sx={{
+        borderRadius: "12px",
         backgroundColor: "#fff",
-        height: "70svh",
+        height: "100svh",
         display: "grid",
         placeItems: "center",
       }}

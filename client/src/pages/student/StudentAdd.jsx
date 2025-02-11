@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Alert } from "@mui/material";
 import StudentInfo from "./tab/StudentInfo";
-import AnimatedContainer from "../../components/animations/AnimatedContainer";
-import AddStudentFileDialog from "../../components/modals/AddStudentFileDialog";
+import AnimatedContainer from "@/components/animations/AnimatedContainer";
+import AddStudentFileDialog from "@/components/modals/AddStudentFileDialog";
 
 const StudentAdd = () => {
   const [msg, setMsg] = useState({

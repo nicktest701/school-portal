@@ -189,7 +189,7 @@ const CurrentLevelTab = () => {
 
           {/* Statistics Section */}
           <Grid2 container spacing={2}>
-            <Grid2 size={2.3}>
+            <Grid2 size={{ xs: 4, md: 2.3 }}>
               <Box textAlign="center">
                 <GroupIcon color="info" />
                 <Typography variant="h6" color="info.main">
@@ -200,7 +200,7 @@ const CurrentLevelTab = () => {
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 size={2.3}>
+            <Grid2 size={{ xs: 4, md: 2.3 }}>
               <Box textAlign="center">
                 <MaleRounded color="success" />
                 <Typography variant="h6" color="success">
@@ -211,7 +211,7 @@ const CurrentLevelTab = () => {
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 size={2.3}>
+            <Grid2 size={{ xs: 4, md: 2.3 }}>
               <Box textAlign="center">
                 <FemaleRounded color="error" />
                 <Typography variant="h6" color="error">
@@ -222,7 +222,7 @@ const CurrentLevelTab = () => {
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 size={2.3}>
+            <Grid2 size={{ xs: 4, md: 2.3 }}>
               <Box textAlign="center">
                 <Note color="error" />
                 <Typography variant="h6" color="error">
@@ -233,7 +233,7 @@ const CurrentLevelTab = () => {
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 size={2.3}>
+            <Grid2 size={{ xs: 4, md: 2.3 }}>
               <Box textAlign="center">
                 <FemaleRounded color="error" />
                 <Typography variant="h6" color="error">

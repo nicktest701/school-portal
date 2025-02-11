@@ -1,9 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import _ from "lodash";
 import {
@@ -30,17 +25,20 @@ import {
 } from "@/api/attendanceAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
-import student_icon from "@/assets/images/header/student_ico.svg";
+// import student_icon from "@/assets/images/header/student_ico.svg";
 import { SchoolRounded, SaveAsRounded } from "@mui/icons-material";
 import SaveAltRounded from "@mui/icons-material/SaveAltRounded";
 import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { isWeekend } from "@/config/helper";
+import { UserContext } from "@/context/providers/UserProvider";
 
-function NewAttendance({ to }) {
+function NewAttendance({ to = "/course" }) {
   const { id, type } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const [date, setDate] = useState(moment());
@@ -51,10 +49,13 @@ function NewAttendance({ to }) {
     queryKey: ["attendance", id, date],
     queryFn: () => getAttendance(id, date.format("L")),
     enabled: !!id && !!date,
+    // enabled: !!id && !!date && !isWeekend(date),
   });
 
   useEffect(() => {
-    setAllStudents(attendance?.data?.status);
+    if (!_.isEmpty(attendance?.data?.status)) {
+      setAllStudents(attendance?.data?.status);
+    }
   }, [attendance.data]);
 
   const completed = useMemo(() => {
@@ -136,10 +137,11 @@ function NewAttendance({ to }) {
 
   return (
     <>
-      <Back
-        to={to === "/course" ? "/course/level" : `${to}/${id}/${type}`}
-        color="primary.main"
-      />
+      {user?.role === "administrator" ? (
+        <Back to={`${to}/${id}/${type}`} color="primary.main" />
+      ) : (
+        <Back to={"/course/level"} color="primary.main" />
+      )}
 
       <CustomTitle
         title="Track Attendance Records"
@@ -169,8 +171,8 @@ function NewAttendance({ to }) {
 
       <CustomizedMaterialTable
         search={true}
-        isPending={attendance.isPending}
-        icon={student_icon}
+        // isPending={attendance.isPending}
+        // icon={student_icon}
         title={`Attendance for ${type}`}
         exportFileName={`Attendance for ${type} on ${date.format(
           "dddd,Do MMMM YYYY"
@@ -232,6 +234,7 @@ function NewAttendance({ to }) {
             ),
           },
         ]}
+        // data={[]}
         data={allstudents}
         actions={[]}
         autoCompleteComponent={
@@ -251,18 +254,22 @@ function NewAttendance({ to }) {
                 date={date}
                 setDate={setDate}
                 disableFuture={true}
+                shouldDisableWeekends={true}
               />
             </Box>
 
             <DialogActions sx={{ padding: 2 }}>
-              <Button
-                variant="contained"
-                startIcon={<SaveAsRounded />}
-                onClick={handleSaveAttendance}
-                loading={isPostingAttendance}
-              >
-                {isPostingAttendance ? "Saving" : "Save Attendance"}
-              </Button>
+              {!isWeekend(date) && (
+                <Button
+                  variant="contained"
+                  startIcon={<SaveAsRounded />}
+                  onClick={handleSaveAttendance}
+                  loading={isPostingAttendance}
+                >
+                  {isPostingAttendance ? "Saving" : "Save Attendance"}
+                </Button>
+              )}
+
               <Button variant="outlined" onClick={navigateToAttendanceHistory}>
                 View History
               </Button>

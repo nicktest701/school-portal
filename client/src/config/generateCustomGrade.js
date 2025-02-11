@@ -5,7 +5,7 @@ export const generateCustomGrade = (score, grades) => {
 
   return {
     totalScore: score,
-    grade: selected?.grade,
-    remarks: selected?.remarks,
+    grade: selected?.grade || "N/A",
+    remarks: selected?.remarks || "N/A",
   };
 };
