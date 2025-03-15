@@ -14,6 +14,7 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import Announcement from "@/components/calendar/Announcement";
 import Event from "@/components/calendar/Event";
 
+
 const Dashboard = () => {
   const {
     user,
@@ -21,6 +22,7 @@ const Dashboard = () => {
   } = useContext(UserContext);
 
   const [value, onChange] = useState(new Date());
+
 
   return (
     <>
@@ -89,7 +91,7 @@ const Dashboard = () => {
             </div>
             <div style={{ paddingBlock: "24px" }}>
               <Typography variant="h4" paragraph>
-                Event,Announcements & Activities
+                Events,Activities & Holidays
               </Typography>
               <CustomEvent />
             </div>

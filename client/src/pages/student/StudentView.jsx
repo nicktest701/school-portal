@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from "react";
-import { Autocomplete, Container, TextField } from "@mui/material";
+import { Autocomplete, Container, IconButton, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { STUDENTS_COLUMN } from "@/mockup/columns/studentColumns";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
@@ -7,6 +7,7 @@ import useLevel from "@/components/hooks/useLevel";
 import student_icon from "@/assets/images/header/student_ico.svg";
 import { EMPTY_IMAGES } from "@/config/images";
 import CustomTitle from "@/components/custom/CustomTitle";
+import { Refresh } from "@mui/icons-material";
 
 const StudentView = () => {
   const navigate = useNavigate();
@@ -55,6 +56,12 @@ const StudentView = () => {
         subtitle="  Track,manage and control academic and class activities"
         img={student_icon}
         color="primary.main"
+        right={
+          <IconButton>
+            {" "}
+            <Refresh sx={{ width: 32, height: 32 }} onClick={handleRefresh} />
+          </IconButton>
+        }
       />
 
       <CustomizedMaterialTable

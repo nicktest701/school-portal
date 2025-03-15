@@ -32,7 +32,7 @@ const Event = () => {
         <>
           <Grid2 container spacing={2} sx={{ minHeight: 400 }}>
             {_.take(events, 5).map((event) => (
-              <Grid2 item xs={12} key={event._id} sx={{ width: "100%" }}>
+              <Grid2 size={{xs:12}} key={event._id} sx={{ width: "100%" }}>
                 <Card
                   sx={{
                     borderTop: `2px solid #d4edda`,

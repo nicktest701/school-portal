@@ -39,7 +39,7 @@ const Announcement = () => {
         <>
           <Grid2 container spacing={2} pt={1} sx={{ minHeight: 400 }}>
             {_.take(announcements, 5).map((announcement) => (
-              <Grid2 item xs={12} key={announcement._id} sx={{ width: "100%" }}>
+              <Grid2 size={{xs:12}}  key={announcement._id} sx={{ width: "100%" }}>
                 <Card
                   sx={{
                     borderLeft: `2px solid ${announcement.bgColor}`,

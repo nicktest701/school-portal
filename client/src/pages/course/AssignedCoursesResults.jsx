@@ -30,6 +30,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import CustomTitle from "@/components/custom/CustomTitle";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { STUDENT_RESULT_COLUMNS } from "@/mockup/columns/studentColumns";
+import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getSubjectScore } from "@/api/ExaminationAPI";
 import useLevelById from "@/components/hooks/useLevelById";
@@ -37,22 +38,26 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import AddStudentRecord from "./AddStudentRecord";
 import { gradeColor } from "@/config/gradeColor";
 import { RefreshRounded } from "@mui/icons-material";
+import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
 
 function AssignedCoursesResults() {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [searchParams] = useSearchParams();
-  const { level, levelId } = useParams();
+  const { levelId } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  const { gradeSystem } = useLevelById(levelId);
+  const { levelLoading, gradeSystem, subjects, levelName } =
+    useLevelById(levelId);
+
+  const subject = subjects?.find((s) => s?._id === searchParams.get("_id"));
 
   const scores = useQuery({
-    queryKey: ["subject-score", levelId, searchParams.get("sub")],
+    queryKey: ["subject-score", levelId, subject?._id],
     queryFn: () =>
       getSubjectScore({
         id: levelId,
-        subject: searchParams.get("sub"),
+        subject: subject?._id,
       }),
     initialData: {
       results: [],
@@ -62,9 +67,8 @@ function AssignedCoursesResults() {
       performanceIndex: 0,
       completedResult: 0,
     },
-    enabled: !!levelId && !!searchParams.get("sub"),
+    enabled: !!levelId && !!subject?._id,
   });
-
 
   const downloadSheet = useCallback(() => {
     const columns = ["Index Number", "Student", "Class  Score", "Exams  Score"];
@@ -100,18 +104,11 @@ function AssignedCoursesResults() {
   }, [scores?.data?.results]);
 
   const handleImportResults = () => {
-    navigate(
-      `/examination/course/${levelId}/${level}/upload?sub=${searchParams.get(
-        "sub"
-      )}`,
-      {
-        state: {
-          prevPath: `/course/assign/${levelId}/${level}?sub=${searchParams.get(
-            "sub"
-          )}`,
-        },
-      }
-    );
+    navigate(`/course/assign/${levelId}/upload?_id=${subject?._id}`, {
+      state: {
+        prevPath: `/course/assign/${levelId}/upload?_id=${subject?._id}`,
+      },
+    });
   };
 
   const handleOpenAddResults = (rowData) => {
@@ -130,10 +127,6 @@ function AssignedCoursesResults() {
     });
   };
 
-  if (!levelId && !searchParams.get("sub")) {
-    return <Navigate to="/course/assign" />;
-  }
-
   const columns = [
     ...STUDENT_RESULT_COLUMNS,
     {
@@ -149,6 +142,14 @@ function AssignedCoursesResults() {
       ),
     },
   ];
+
+  if (levelLoading) {
+    return <RecordSkeleton />;
+  }
+
+  if (!levelId || _.isEmpty(subject?._id)) {
+    return <Navigate to={"/course/assign"} />;
+  }
 
   return (
     <>
@@ -233,7 +234,7 @@ function AssignedCoursesResults() {
               </Box>
               <Box>
                 <Typography variant="h6" fontWeight="bold">
-                  {level ?? "Students"}
+                  {levelName}
                   <Badge
                     color="success"
                     variant="dot"
@@ -244,7 +245,7 @@ function AssignedCoursesResults() {
                   </Badge>
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  | {searchParams.get("sub")} |
+                  | {subject?.name} |
                 </Typography>
               </Box>
             </Box>
@@ -275,7 +276,9 @@ function AssignedCoursesResults() {
             <LinearProgress
               variant="determinate"
               value={0}
-              color={gradeColor(scores?.data?.completedResult).bg?.split(".")[0]}
+              color={
+                gradeColor(scores?.data?.completedResult).bg?.split(".")[0]
+              }
               sx={{
                 height: 8,
                 borderRadius: 1,
@@ -327,14 +330,15 @@ function AssignedCoursesResults() {
       <CustomizedMaterialTable
         search={true}
         isPending={scores.isPending}
-        title={level}
-        subtitle={searchParams.get("sub")}
-        exportFileName={`${level}-${searchParams.get("sub")}` || ""}
+        title={levelName}
+        subtitle={subject?.name}
+        exportFileName={`${levelName}-${subject?.name}` || ""}
         columns={columns}
         data={scores?.data.results}
         actions={[]}
         icon={student_icon}
         handleRefresh={scores?.refetch}
+      
         autoCompleteComponent={
           <ButtonGroup>
             <Button variant="outlined" onClick={downloadSheet}>

@@ -5,7 +5,7 @@ import {
   Typography,
   Card,
   CardContent,
-  Grid,
+  Grid2 as Grid,
   Button,
   Modal,
   Select,
@@ -16,11 +16,15 @@ import {
   Pagination,
   IconButton,
   Checkbox,
+  Stack,
+  ToggleButtonGroup,
+  ToggleButton,
+  Container,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
+import {AnimatePresence, motion } from "framer-motion";
 import CustomTitle from "@/components/custom/CustomTitle";
 import exams_icon from "../../assets/images/header/exams_ico.svg";
 import { Add } from "@mui/icons-material";
@@ -37,11 +41,15 @@ import Swal from "sweetalert2";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
-import { AnimatePresence } from "framer-motion";
 import EditAnnouncementModal from "./EditAnnouncementModal";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
-const pageSize = 6;
+const pageSize = 10;
 const MoreAnnouncements = () => {
+  const [selectedColor, setSelectedColor] = useLocalStorage(
+    "announcement-text",
+    "#333"
+  );
   const { user } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
@@ -62,8 +70,6 @@ const MoreAnnouncements = () => {
     initialData: [],
   });
 
-  // const handleOpenModal = (announcement) =>
-  //   setSelectedAnnouncement(announcement);
   const handleCloseModal = () => setSelectedAnnouncement(null);
   const handleFilterChange = (event) => setFilter(event.target.value);
   const handleSearchChange = (event) =>
@@ -159,6 +165,8 @@ const MoreAnnouncements = () => {
       title: "Removing Announcements",
       text: `You are about to remove the selected announcements.Changes cannot be undone.`,
       showCancelButton: true,
+      backdrop: false,
+      // background: "rgba(255,255,255,0.2)",
     }).then(({ isConfirmed }) => {
       // const announcements = _.map(selectedAnnouncements, "_id");
 
@@ -210,7 +218,7 @@ const MoreAnnouncements = () => {
   };
 
   return (
-    <Box sx={{ px: 4 }}>
+    <Container maxWidth='lg' >
       <CustomTitle
         title="Announcements"
         subtitle="Organize and oversee exams, schedule, and results to ensure a fair and efficient examination process."
@@ -234,22 +242,23 @@ const MoreAnnouncements = () => {
       {/* MUI Select for Filtering */}
       <Box
         sx={{
-          py: 3,
+          pt: 2,
           display: "flex",
           flexDirection: { xs: "column", sm: "row" },
           justifyContent: "space-between",
+          alignItems: "center",
           gap: 2,
         }}
       >
         <TextField
           label="Search for announcement"
           variant="outlined"
-          // size=''
           fullWidth
           value={searchTerm}
           onChange={handleSearchChange}
           sx={{ flexGrow: 1, maxWidth: { xs: "100%", sm: 300 } }}
         />
+
         <FormControl
           sx={{
             minWidth: 200,
@@ -258,11 +267,7 @@ const MoreAnnouncements = () => {
           }}
         >
           <InputLabel>Sort by</InputLabel>
-          <Select
-            value={filter}
-            onChange={handleFilterChange}
-            // size="small"
-          >
+          <Select value={filter} onChange={handleFilterChange} >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="today">Today</MenuItem>
             <MenuItem value="yesterday">Yesterday</MenuItem>
@@ -272,26 +277,58 @@ const MoreAnnouncements = () => {
             <MenuItem value="lastMonth">Last Month</MenuItem>
           </Select>
         </FormControl>
-
+      </Box>
+      <Stack
+        width="100%"
+        alignItems="center"
+        justifyContent="flex-end"
+        direction="row"
+        p={2}
+        spacing={2}
+      >
         {user?.role === "administrator" && selectedAnnouncements.length > 0 && (
-          <Box
+          <IconButton onClick={handleDeleteAnnouncements} size="large">
+            <DeleteIcon sx={{ width: 32, height: 32 }} />
+          </IconButton>
+        )}
+        <ToggleButtonGroup
+          value={selectedColor}
+          exclusive
+          onChange={(e, value) => setSelectedColor(value)}
+          aria-label="color palette"
+          sx={{
+            mt: 6,
+          }}
+        >
+          <ToggleButton
+            value="#fff"
             sx={{
-              flex: 1,
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
+              backgroundColor: "#fff",
+              color: "#000",
             }}
           >
-            <IconButton
-              // color="error"
-              onClick={handleDeleteAnnouncements}
-              size="large"
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-        )}
-      </Box>
+            White
+          </ToggleButton>
+          <ToggleButton
+            value="#333"
+            sx={{
+              backgroundColor: "#ccc",
+              color: "#333",
+            }}
+          >
+            Gray
+          </ToggleButton>
+          <ToggleButton
+            value="#000"
+            sx={{
+              bgcolor: "#000",
+              color: "#fff",
+            }}
+          >
+            Black
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Stack>
 
       {/* Announcements List */}
       {selectedAnnouncements.length > 0 && (
@@ -300,20 +337,23 @@ const MoreAnnouncements = () => {
         </Typography>
       )}
       <AnimatePresence>
-        <Grid container spacing={2} sx={{ height: "60svh", overflowY: "auto" }}>
+        <Stack
+          spacing={2}
+          sx={{ minHeight: "50svh", mb: 10, overflowY: "auto" }}
+        >
           {sortedAnnouncement.announcements.length > 0 ? (
             sortedAnnouncement.announcements.map((announcement, index) => (
-              <Grid item xs={12} key={announcement._id}>
+              <Box key={announcement._id}>
                 <motion.div
                   initial={{ opacity: 0, x: -100 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 100 }}
-                  transition={{ duration: 0.5, delay: 0.1 * index }}
+                  transition={{ duration: 0.3, delay: 0.1 * index }}
                 >
                   <Card
                     sx={{
                       backgroundColor: announcement.bgColor,
-                      borderRadius: 0,
+                      borderRadius: "12px",
                       cursor: "pointer",
                       position: "relative",
                       overflow: "hidden",
@@ -334,13 +374,17 @@ const MoreAnnouncements = () => {
                       />
                     )}
                     <CardContent sx={{ px: 8 }}>
-                      <Typography variant="h6" fontWeight="bold">
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        color={selectedColor}
+                      >
                         {announcement.title}
                       </Typography>
                       <Typography variant="caption" color="textSecondary">
                         {dayjs(announcement.createdAt).format("D MMMM, YYYY")}
                       </Typography>
-                      <Typography variant="body2" mt={1}>
+                      <Typography variant="body2" mt={1} color={selectedColor}>
                         {announcement.description}
                       </Typography>
                     </CardContent>
@@ -380,7 +424,7 @@ const MoreAnnouncements = () => {
                     ) : null}
                   </Card>
                 </motion.div>
-              </Grid>
+              </Box>
             ))
           ) : (
             <Box
@@ -397,7 +441,7 @@ const MoreAnnouncements = () => {
               <Typography>No announcements found.</Typography>
             </Box>
           )}
-        </Grid>
+        </Stack>
       </AnimatePresence>
 
       {/* Pagination Component */}
@@ -459,7 +503,7 @@ const MoreAnnouncements = () => {
       {(multipleDeleteAnnouncements.isPending || isPending) && (
         <LoadingSpinner value="Removing Announcement.Please Wait.." />
       )}
-    </Box>
+    </Container>
   );
 };
 

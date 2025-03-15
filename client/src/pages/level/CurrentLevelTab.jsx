@@ -30,24 +30,34 @@ import {
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import SubjectPopover from "./SubjectPopOver";
 import GradePopover from "./GradePopover";
+import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
 
 const CurrentLevelTab = () => {
-  const { id, type } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
 
   //Get Students in Current Level id
-  const { students, gradeSystem, subjects, rollNumber, levelLoading, refetch } =
-    useLevelById(id);
+  const {
+    levelName,
+    students,
+    gradeSystem,
+    subjects,
+    rollNumber,
+    levelLoading,
+    refetch,
+  } = useLevelById(id);
 
   const handleOpenAttendance = () => {
-    navigate(`/level/attendance/${id}/${type}`);
+    navigate(`/level/${id}/attendance`);
   };
+  const handleOpenAddSubject = () => {
+    navigate(`/level/${id}/courses`);
+  };
+  const groupedStudents = _.groupBy(students, "gender");
 
   if (levelLoading) {
-    return <LoadingSpinner value="Loading Student Information" />;
+    return <RecordSkeleton />;
   }
-
-  const groupedStudents = _.groupBy(students, "gender");
 
   return (
     <Box>
@@ -118,7 +128,7 @@ const CurrentLevelTab = () => {
               </Box>
               <Box>
                 <Typography variant="h3">
-                  {type}
+                  {levelName}
                   <Badge
                     color="success"
                     variant="dot"
@@ -246,13 +256,20 @@ const CurrentLevelTab = () => {
             </Grid2>
           </Grid2>
           <Divider sx={{ my: 2 }} />
-          <Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
             <Button
               variant="contained"
               startIcon={<NoteAltRounded />}
               onClick={handleOpenAttendance}
             >
               Mark Attendance
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<NoteAltRounded />}
+              onClick={handleOpenAddSubject}
+            >
+              Add Subjects
             </Button>
           </Box>
         </CardContent>
@@ -261,9 +278,9 @@ const CurrentLevelTab = () => {
       <CustomizedMaterialTable
         search={true}
         isPending={levelLoading}
-        title={type}
+        title={levelName}
         subtitle={`${rollNumber} Students`}
-        exportFileName={type || ""}
+        exportFileName={levelName || ""}
         columns={STUDENTS_COLUMN}
         data={students}
         actions={[]}

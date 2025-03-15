@@ -13,13 +13,18 @@ const { currencyConverter } = require("../config/currencyConverter");
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const fees = await Fee.find().populate("level");
+    const fees = await Fee.find({
+      school: req.user.school,
+    }).populate({
+      path: "level",
+      select: "level"
+    });
     if (_.isEmpty(fees)) return res.status(200).json([]);
 
     const modifiedFees = fees.map(({ _id, level, amount }) => {
       return {
         _id,
-        level: level.type,
+        level: level.level,
         fees: currencyConverter(_.sumBy(amount, "amount")),
         amount,
       };
@@ -35,28 +40,31 @@ router.get(
 router.get(
   "/all",
   asyncHandler(async (req, res) => {
-    const { sessionId, termId } = req.query;
+    const { session, term } = req.query;
 
     const fees = await Fee.find({
-      session: new ObjectId(sessionId),
-      term: new ObjectId(termId),
-    }).populate("level");
+      session,
+      term,
+    }).populate({
+      path: "level",
+      select: ["level", 'levelName', 'students']
+    })
 
     //Check if null
     if (_.isEmpty(fees)) return res.status(200).json([]);
 
     const modifiedFees = fees.map(({ _id, level, amount }) => {
       const total = _.sumBy(amount, "amount");
-      const noOfStudents = level?.students?.length;
+
       return {
         _id,
-        noOfStudents,
+        noOfStudents: level?.noOfStudents,
         amount,
         levelId: level._id,
         level: level?.levelName,
         fee: total,
-        fees: currencyConverter(total),
-        totalFees: currencyConverter(total * noOfStudents),
+        fees: total,
+        totalFees: Number(total * level?.noOfStudents),
       };
     });
 

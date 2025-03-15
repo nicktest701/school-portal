@@ -21,10 +21,10 @@ export default function AccountDropdown() {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = (path) => {
+    setAnchorEl(null);
     if (path) {
       navigate(path);
     }
-    setAnchorEl(null);
   };
   return (
     <>
@@ -38,10 +38,15 @@ export default function AccountDropdown() {
             aria-expanded={open ? "true" : undefined}
           >
             <Avatar
-              src={ user?.profile}
-              sx={{ width: 30, height: 30, cursor: "pointer" }}
+              src={user?.profile}
+              sx={{
+                width: 30,
+                height: 30,
+                cursor: "pointer",
+                textTransform: "uppercase",
+              }}
             >
-              M
+              {user?.email[0]}
             </Avatar>
           </IconButton>
         </Tooltip>
@@ -80,20 +85,30 @@ export default function AccountDropdown() {
             },
           },
         }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={() => handleClose("/profile")}>
-          <Avatar /> <span>Profile</span>
+          <Avatar
+            src={user?.profile}
+            sx={{
+              width: 30,
+              height: 30,
+              cursor: "pointer",
+              textTransform: "uppercase",
+            }}
+          >
+            {user?.email[0]}
+          </Avatar>
+          <span>Profile</span>
         </MenuItem>
         <Divider />
-
-        <MenuItem onClick={() => handleClose("/settings")}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
+        {user.role === "administrator" && (
+          <MenuItem onClick={() => handleClose("/settings")}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+        )}
         <MenuItem onClick={logOutUser}>
           <ListItemIcon>
             <Logout fontSize="small" />

@@ -6,7 +6,7 @@ import moment from "moment";
 function TeacherProfile({ teacher }) {
   return (
     <Stack>
-      <ProfileItem label="Name" text={teacher?.fullName} />
+      <ProfileItem label="Name" text={teacher?.fullname} />
       <ProfileItem
         label="Date Of Birth"
         tex

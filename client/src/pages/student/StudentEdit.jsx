@@ -108,6 +108,7 @@ const StudentEdit = () => {
     <Dialog open={editStudentData.open} maxWidth="md" fullWidth>
       <CustomDialogTitle
         title="Edit Student Information"
+        subtitle='Make changes to student information'
         onClose={handleClose}
       />
 
@@ -127,10 +128,8 @@ const StudentEdit = () => {
         }) => {
           return (
             <>
-              <DialogContent
-                sx={{ p: 1, display: "flex", justifyContent: "center" }}
-              >
-                <Stack  spacing={1}>
+              <DialogContent sx={{ p: 1.5 }}>
+                <Stack spacing={1}>
                   <Stack alignSelf="center">
                     <CustomImageChooser handleImageUpload={uploadProfile}>
                       <Avatar
@@ -150,7 +149,8 @@ const StudentEdit = () => {
                     label="Student ID"
                     type="text"
                     // fullWidth
-                    sx={{ maxWidth: 240 }}
+                    sx={{ maxWidth: { xs: "100%", md: 240 } }}
+                    disabled={true}
                     size="small"
                     value={values.indexnumber}
                     onChange={handleChange("indexnumber")}

@@ -29,6 +29,7 @@ const FeeNew = () => {
     queryKey: ["fees", session?.sessionId],
     queryFn: () => getAllFees(session),
     enabled: !!session?.sessionId,
+    initialData:[]
   });
 
   const { mutateAsync, isPending } = useMutation({ mutationFn: deleteFee });
@@ -98,8 +99,9 @@ const FeeNew = () => {
           title="School Fees"
           icon={fee_icon}
           columns={SCHOOL_FEES_COLUMNS(handleView, handleEdit, handleDeleteFee)}
-          data={fees.data ? fees.data : []}
+          data={fees.data}
           isPending={fees.isPending}
+          handleRefresh={fees.refetch}
           actions={[]}
           search={true}
           // onRowClick={handleGetLevelFeeInfo}

@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useContext, useRef, useState } from "react";
+import React, { use, useRef, useState } from "react";
 import _ from "lodash";
 import { StudentContext } from "@/context/providers/StudentProvider";
 import MedicalAllergyItem from "@/components/items/MedicalAllergyItem";
@@ -21,17 +21,18 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolRounded } from "@mui/icons-material";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function ConfirmStudent({ open, setOpen, setMode }) {
   const queryClient = useQueryClient();
-  const school_info = JSON.parse(localStorage.getItem("@school_info"));
+  const { school_info } = use(UserContext);
   const {
     studentState: {
       newStudent: { personal, photo, medical, parent, academic },
       studentDispatch,
     },
-  } = useContext(StudentContext);
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  } = use(StudentContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
   const componentRef = useRef();
   const [id, setId] = useState("");
   const [hideSaveBtn, setHideSaveBtn] = useState(false);
@@ -158,9 +159,7 @@ function ConfirmStudent({ open, setOpen, setMode }) {
               <Avatar
                 alt="school logo"
                 loading="lazy"
-                srcSet={
-                  school_info?.badge
-                }
+                srcSet={school_info?.badge}
                 sx={{
                   width: 100,
                   height: 100,

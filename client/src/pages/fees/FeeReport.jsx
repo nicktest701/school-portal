@@ -13,13 +13,14 @@ import {
   Paper,
   ListItemText,
 } from "@mui/material";
-import React from "react";
+import React, { use } from "react";
 import _ from "lodash";
 
 import { currencyFormatter } from "@/config/currencyFormatter";
-const school_info = JSON.parse(localStorage.getItem("@school_info"));
+import { UserContext } from "@/context/providers/UserProvider";
 
 function FeeReport({ student }) {
+  const { school_info } = use(UserContext);
   return (
     <div>
       <Stack

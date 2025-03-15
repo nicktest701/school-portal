@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { use } from "react";
 import Alert from "@mui/material/Alert";
 import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
 import Snackbar from "@mui/material/Snackbar";
@@ -9,7 +9,7 @@ const GlobalAlert = () => {
   const {
     schoolSessionState: { alertData },
     schoolSessionDispatch,
-  } = useContext(SchoolSessionContext);
+  } = use(SchoolSessionContext);
 
   const handleClose = () => {
     schoolSessionDispatch({
@@ -22,8 +22,8 @@ const GlobalAlert = () => {
   return (
     <Snackbar
       anchorOrigin={{
-        horizontal: "right",
-        vertical: "top",
+        horizontal: "left",
+        vertical: "bottom",
       }}
       open={alertData?.message ? true : false}
       autoHideDuration={5000}
@@ -43,12 +43,12 @@ const GlobalAlert = () => {
         sx={{
           // width: "100%",
           bgcolor: "#fff",
-          borderRadius: 0,
+          // borderRadius: 0,
           color:
             // alertData?.severity === "info" ? "success.darker" : "error.darker",
             color,
           borderBottom: `2px solid ${color}`,
-          py: 2,
+          py: 1,
         }}
       >
         {alertData?.message}

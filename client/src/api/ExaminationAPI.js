@@ -19,6 +19,23 @@ export const getAllExams = async (id) => {
   }
 };
 
+//Get Exams by exams id
+export const getExam = async (examsId, publish = '') => {
+  try {
+    const res = await api({
+      method: 'GET',
+      url: `/examinations/${examsId}`,
+
+    });
+
+    return res.data;
+  } catch (error) {
+
+    throw error.response.data;
+  }
+};
+
+
 //Get all level exams details
 export const getExamsDetails = async (session) => {
   try {
@@ -67,12 +84,16 @@ export const generateReports = async (session) => {
 };
 
 //GENERATE REPORTS
-export const publishReports = async (session) => {
+export const publishReports = async ({ onProgress, ...session }) => {
   try {
     const res = await api({
       method: 'GET',
       url: `/examinations/publish`,
       params: session,
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        onProgress(percentCompleted);
+      },
     });
 
     return res.data;
@@ -83,12 +104,16 @@ export const publishReports = async (session) => {
 };
 
 //GENERATE REPORTS
-export const publishStudentReport = async (session) => {
+export const publishReport = async ({ id, onProgress }) => {
   try {
     const res = await api({
-      method: 'POST',
-      url: `/examinations/publish/student`,
-      data: session,
+      method: 'GET',
+      url: `/examinations/${id}?publish=true`,
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        onProgress(percentCompleted);
+      },
+
     });
 
     return res.data;
@@ -119,38 +144,22 @@ export const getStudentAcademics = async (session, student, level) => {
   }
 };
 
-//Get Exams by exams id
-export const getExams = async (examsId) => {
-  try {
-    const res = await api({
-      method: 'GET',
-      url: `/examinations/student`,
-      params: {
-        examsId,
-      },
-    });
 
-    return res.data;
-  } catch (error) {
+// //Get Exams by exams id
+// export const getCurrentExams = async (session) => {
+//   try {
+//     const res = await api({
+//       method: 'POST',
+//       url: `/examinations/student/current`,
+//       data: session,
+//     });
 
-    throw error.response.data;
-  }
-};
-//Get Exams by exams id
-export const getCurrentExams = async (session) => {
-  try {
-    const res = await api({
-      method: 'POST',
-      url: `/examinations/student/current`,
-      data: session,
-    });
+//     return res.data;
+//   } catch (error) {
 
-    return res.data;
-  } catch (error) {
-
-    throw error.response.data;
-  }
-};
+//     throw error.response.data;
+//   }
+// };
 
 //Add new Exams
 export const postExamsRemarks = async (comments) => {

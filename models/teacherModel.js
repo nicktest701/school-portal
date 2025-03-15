@@ -4,50 +4,34 @@ const db = require('../db/DBConnection');
 
 const TeacherSchema = new mongoose.Schema(
   {
-    profile: String,
-    firstname: {
-      type: String,
-      lowercase: true,
-      // required: true,
+    school: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "School",
     },
-    surname: {
-      type: String,
-      lowercase: true,
-      // required: true,
+    user: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
     },
-    othername: {
-      type: String,
-      lowercase: true,
-    },
-    username: {
-      type: String,
-    },
-    dateofbirth: String,
-    gender: String,
-    email: {
-      type: String,
-      lowercase: true,
-    },
-    phonenumber: String,
-    address: String,
-    residence: String,
-    nationality: String,
     active: {
       type: Boolean,
       default: true,
+    },
+    createdBy: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
     },
   },
   {
     timestamps: true,
     virtuals: {
-      fullName: {
-        get() {
-          const name = _.startCase(
-            `${this.surname} ${this.firstname}`
-          );
-          return name;
-        },
-      },
+      // fullName: {
+      //   get() {
+      //     const name = _.startCase(
+      //       `${this.surname} ${this.firstname}`
+      //     );
+      //     return name;
+      //   },
+      // },
     },
     toJSON: {
       virtuals: true,
@@ -57,4 +41,6 @@ const TeacherSchema = new mongoose.Schema(
     },
   }
 );
+TeacherSchema.index({ school: 1 });
+TeacherSchema.index({ createdBy: 1 });
 module.exports = db.model('Teacher', TeacherSchema);

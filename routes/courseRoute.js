@@ -13,7 +13,9 @@ const moment = require('moment/moment');
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const courses = await Course.find();
+    const courses = await Course.find({
+      school: req.user.school,
+    });
     res.status(200).json(courses);
   })
 );
@@ -26,40 +28,38 @@ router.get(
 
     //Get course assigned to teacher
     const courses = await Course.find({
+      // school: req.user.school,
       session: new ObjectId(session),
       term: new ObjectId(term),
       teacher: new ObjectId(teacher),
     }).countDocuments();
 
+    //Get levels assigned to teacher
     const levels = await Level.find({
       session: new ObjectId(session),
       term: new ObjectId(term),
+      'teacher._id': teacher
     })
-      .select(['teacher', 'students', 'level'])
+      .select(['teacher', 'level'])
       .populate({
         path: 'students',
         match: { active: true },
       });
 
-    //Get levels assigned to teacher
-    const teacherLevel = levels.filter(
-      (level) => level?.teacher?._id === teacher
-    );
-
     //Get total students in each level
-    const studentInEachLevel = teacherLevel.map((level) => {
+    const studentInEachLevel = levels.map((level) => {
       return {
         level: level?.levelName,
-        students: level?.students?.length,
+        students: level?.noOfStudents
       };
     });
 
     // find males and females
-    const totalStudents = teacherLevel.flatMap(({ students }) => students);
+    const totalStudents = levels.flatMap(({ students }) => students);
     const groupedStudents = _.groupBy(totalStudents, 'gender');
 
     //Get attendance for today
-    const attendance = teacherLevel.flatMap(async (level) => {
+    const attendance = levels.flatMap(async (level) => {
       const attendance = await Attendance.findOne({
         level: new ObjectId(level?._id),
         date: moment().format('L'),
@@ -73,7 +73,7 @@ router.get(
     const groupedAttendance = _.groupBy(_.flatMap(a), 'status');
 
     //Get attendance for today
-    const weeklyAttendance = teacherLevel.map(async (level) => {
+    const weeklyAttendance = levels.map(async (level) => {
       const attendance = await Attendance.find({
         level: new ObjectId(level?._id),
       });
@@ -112,7 +112,7 @@ router.get(
 
     const dashboardInfo = {
       courses: courses ?? 0,
-      levels: teacherLevel?.length,
+      levels: levels?.length,
       students: totalStudents?.length,
       studentInEachLevel: studentInEachLevel,
       groupedStudents:
@@ -128,7 +128,7 @@ router.get(
   })
 );
 
-//@GET School Course by id
+//@GET School Course by teacher
 router.get(
   '/teacher',
   asyncHandler(async (req, res) => {
@@ -174,13 +174,11 @@ router.post(
   '/',
   asyncHandler(async (req, res) => {
     const { subject, level, term, session } = req.body
- 
-  
     const courses = await Course.find({
-      session: new ObjectId(session),
-      term: new ObjectId(term),
-      level: new ObjectId(level),
-      subject: new ObjectId(subject),
+      session,
+      term,
+      level,
+      subject,
     })
 
     if (!_.isEmpty(courses)) {
@@ -188,7 +186,7 @@ router.post(
     }
 
     //Create new Course
-    const course = await Course.create(req.body);
+    const course = await Course.create({ ...req.body, school: req.user.school, });
 
     if (!course) {
       return res.status(404).json('Error creating new course.Try again later');
@@ -202,9 +200,14 @@ router.post(
 router.put(
   '/',
   asyncHandler(async (req, res) => {
+    const { id, ...rest } = req.body;
     const modifiedCourse = await Course.findByIdAndUpdate(
-      req.body.id,
-      req.body
+      id,
+      {
+        $set: {
+          ...rest
+        }
+      }
     );
 
     if (!modifiedCourse) {

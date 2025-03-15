@@ -10,13 +10,13 @@ import {
   useTheme,
 } from "@mui/material";
 import { AddRounded,  ReportRounded } from "@mui/icons-material";
-import { StudentContext } from "../../context/providers/StudentProvider";
+import { StudentContext } from "@/context/providers/StudentProvider";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import AddExamsScore from "../../components/modals/AddExamsScore";
+import AddExamsScore from "@/components/modals/AddExamsScore";
 
-import StudentAcademicsReportView from "../../components/modals/StudentAcademicsReportView";
-import { getExams } from "../../api/ExaminationAPI";
+import StudentAcademicsReportView from "@/components/modals/StudentAcademicsReportView";
+import { getExam } from "@/api/ExaminationAPI";
 
 const StudentAcademicsReport = () => {
   const { examsId } = useParams();
@@ -29,7 +29,7 @@ const StudentAcademicsReport = () => {
 
   const { data: student } = useQuery(
     ["student-records", examsId],
-    () => getExams(examsId),
+    () => getExam(examsId),
     {
       enabled: !!examsId,
       onSuccess: (studentRecords) => {

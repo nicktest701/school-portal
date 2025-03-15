@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import _ from "lodash";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  Navigate,
   useLocation,
   useNavigate,
   useParams,
@@ -30,7 +31,7 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLevelById from "@/components/hooks/useLevelById";
 
-const UploadStudentResult = () => {
+const UploadSingleSubject = () => {
   const uploadedData = sessionStorage.getItem("course-upload-data");
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
@@ -49,12 +50,15 @@ const UploadStudentResult = () => {
   const [fieldError, setFieldError] = useState("");
   const [mainError, setMainError] = useState("");
 
-  const { gradeSystem, subjects } = useLevelById(levelId);
+  const { levelLoading, levelName, gradeSystem, subjects } =
+    useLevelById(levelId);
+
+  const subject = subjects?.find((s) => s?._id === searchParams.get("_id"));
 
   //LOAD Results from file excel,csv
   function handleLoadFile(e) {
     setIsLoading(true);
-    if (searchParams.get("sub") === null) {
+    if (subject?.name === "") {
       setFieldError("Please select a Subject!");
       setIsLoading(false);
       return;
@@ -73,10 +77,6 @@ const UploadStudentResult = () => {
             const sheet = workbook.Sheets[sheetName];
             const results = XLSX.utils.sheet_to_json(sheet, { header: 0 });
 
-            const selectedSubject = subjects?.find(
-              (sub) => sub?.name === searchParams.get("sub")
-            );
-
             if (results.length !== 0) {
               const modifiedResults = results.map((item) => {
                 const classScore = Number(Object.values(item)[2] || 0);
@@ -94,8 +94,8 @@ const UploadStudentResult = () => {
                 return {
                   indexnumber: _.toString(Object.values(item)[0]),
                   student: Object.values(item)[1],
-                  _id: selectedSubject?._id,
-                  subject: searchParams.get("sub") || selectedSubject?.name,
+                  _id: subject?._id,
+                  subject: subject?.name,
                   classScore,
                   examsScore,
                   ...generateCustomGrade(
@@ -133,7 +133,7 @@ const UploadStudentResult = () => {
 
     Swal.fire({
       title: "Importing results",
-      text: `Do you want to import results in ${searchParams.get("sub")}?`,
+      text: `Do you want to import ${subject?.name} results for ${levelName} ?`,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
@@ -152,7 +152,7 @@ const UploadStudentResult = () => {
             queryClient.invalidateQueries([
               "subject-score",
               levelId,
-              searchParams.get("sub"),
+              subject?._id,
             ]);
             setIsLoading(false);
           },
@@ -221,23 +221,29 @@ const UploadStudentResult = () => {
     },
   ];
 
+  if (!levelId || _.isEmpty(subject?._id)) {
+    return <Navigate to={"/course/assign"} />;
+  }
+
   return (
     <>
-      <Back to={state?.prevPath} color="primary.main" />
+      <Back to={-1} color="primary.main" />
       <CustomTitle
         title="Exams Scores"
-        subtitle="Import Student exams results from excel or csv files."
+        subtitle={`Import ${subject?.name} exams results from excel or csv files.`}
         color="primary.main"
+        right={<Typography variant="h6">{subject?.name}</Typography>}
       />
 
       <Stack spacing={2} py={4} px={2} my={4} border="1px solid lightgray">
         <Typography>
-          Select an <b>EXCEL</b> OR <b>CSV</b> file containing student results
-          information. Make sure the columns matches the accepted fields.
+          Select an <b>EXCEL</b> OR <b>CSV</b> file containing students'{" "}
+          {subject?.name} results information. Make sure the columns matches the
+          accepted fields.
         </Typography>
         <Stack direction="row" spacing={3} pt={2}>
           <TextField
-            value={searchParams.get("sub")}
+            value={subject?.name}
             contentEditable={false}
             error={fieldError !== ""}
             helperText={fieldError}
@@ -318,4 +324,4 @@ const UploadStudentResult = () => {
   );
 };
 
-export default UploadStudentResult;
+export default UploadSingleSubject;

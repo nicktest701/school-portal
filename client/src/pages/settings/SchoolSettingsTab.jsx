@@ -1,25 +1,28 @@
-import { Avatar, Box, Container, Stack, TextField } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Formik } from "formik";
 import React, { useContext, useState } from "react";
-
 import Button from "@mui/material/Button";
-import CustomImageChooser from "@/components/inputs/CustomImageChooser";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { putSchoolInfo, updateSchoolLogo } from "@/api/userAPI";
 import { UserContext } from "@/context/providers/UserProvider";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { putSchool } from "@/api/schoolAPI";
 
 function SchoolSettingsTab() {
-  const school_info = JSON.parse(localStorage.getItem("@school_info"));
-  const { userDispatch } = useContext(UserContext);
-
-  const [badge, setBadge] = useState(school_info?.badge);
+  const { userDispatch, school_info } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation({
-    mutationFn: putSchoolInfo,
+    mutationFn: putSchool,
   });
 
   const onSubmit = (values, options) => {
@@ -39,24 +42,20 @@ function SchoolSettingsTab() {
     });
   };
 
-  const uploadProfile = async (e) => {
-    const badge = e.target?.files[0];
-
-    try {
-      const updatedBadge = await updateSchoolLogo(badge);
-      schoolSessionDispatch(alertSuccess("School Image Uploaded"));
-      console.log(updatedBadge);
-      queryClient.invalidateQueries(["school"]);
-      setBadge(updatedBadge);
-      school_info.badge = updatedBadge;
-      localStorage.setItem("@school_info", JSON.stringify(school_info));
-    } catch (error) {
-      schoolSessionDispatch(alertError("Error updating school logo"));
-    }
-  };
-
   return (
-    <Container maxWidth="md" className="container-bg">
+    <Container
+      sx={{
+        borderRadius: "12px",
+        bgcolor: "#fff",
+        p: 2,
+      }}
+    >
+      <Box sx={{ placeSelf: "start" }}>
+        <Typography variant="h6" color="primary">
+          Basic Information
+        </Typography>
+        <Typography variant="body2">Update School Logo</Typography>
+      </Box>
       <Formik
         initialValues={school_info}
         onSubmit={onSubmit}
@@ -74,35 +73,13 @@ function SchoolSettingsTab() {
         }) => {
           return (
             <>
-              <Box
-                sx={{
-                  position: "relative",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-
-                  marginY: 2,
-                }}
-              >
-                <CustomImageChooser handleImageUpload={uploadProfile}>
-                  <Avatar
-                    src={badge}
-                    sx={{
-                      width: 100,
-                      height: 100,
-                      justifySelf: "center",
-                      alignSelf: "center",
-                    }}
-                  />
-                </CustomImageChooser>
-              </Box>
-
               <Stack spacing={3} pt={4}>
                 <TextField
                   label="School Name"
                   placeholder="School Name"
                   type="text"
                   fullWidth
+                  size="small"
                   value={values?.name}
                   onChange={handleChange("name")}
                   error={Boolean(touched.name && errors.name)}
@@ -113,6 +90,7 @@ function SchoolSettingsTab() {
                   placeholder="Address"
                   type="text"
                   fullWidth
+                  size="small"
                   value={values?.address}
                   onChange={handleChange("address")}
                   error={Boolean(touched.address && errors.address)}
@@ -123,37 +101,43 @@ function SchoolSettingsTab() {
                   placeholder="Location"
                   type="text"
                   fullWidth
+                  size="small"
                   value={values?.location}
                   onChange={handleChange("location")}
                   error={Boolean(touched.location && errors.location)}
                   helperText={touched.location && errors.location}
                 />
-                <TextField
-                  label="Email Address"
-                  placeholder="Email Address"
-                  type="email"
-                  inputMode="email"
-                  fullWidth
-                  value={values?.email}
-                  onChange={handleChange("email")}
-                  error={Boolean(touched.email && errors.email)}
-                  helperText={touched.email && errors.email}
-                />
-                <TextField
-                  label="Website"
-                  placeholder="Website"
-                  type="text"
-                  fullWidth
-                  value={values?.website}
-                  onChange={handleChange("website")}
-                  error={Boolean(touched.website && errors.website)}
-                  helperText={touched.website && errors.website}
-                />
+                <CustomFormControl>
+                  <TextField
+                    label="Email Address"
+                    placeholder="Email Address"
+                    type="email"
+                    inputMode="email"
+                    fullWidth
+                    size="small"
+                    value={values?.email}
+                    onChange={handleChange("email")}
+                    error={Boolean(touched.email && errors.email)}
+                    helperText={touched.email && errors.email}
+                  />
+                  <TextField
+                    label="Website"
+                    placeholder="Website"
+                    type="text"
+                    fullWidth
+                    size="small"
+                    value={values?.website}
+                    onChange={handleChange("website")}
+                    error={Boolean(touched.website && errors.website)}
+                    helperText={touched.website && errors.website}
+                  />
+                </CustomFormControl>
                 <TextField
                   label="Phone Number"
                   placeholder="e.g. 0244192831-0233847287"
                   type="text"
                   fullWidth
+                  size="small"
                   value={values?.phonenumber}
                   onChange={handleChange("phonenumber")}
                   error={Boolean(touched.phonenumber && errors.phonenumber)}
@@ -168,6 +152,7 @@ function SchoolSettingsTab() {
                   placeholder="Motto"
                   type="text"
                   fullWidth
+                  size="small"
                   value={values?.motto}
                   onChange={handleChange("motto")}
                   error={Boolean(touched.motto && errors.motto)}

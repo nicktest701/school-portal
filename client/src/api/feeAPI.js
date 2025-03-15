@@ -9,8 +9,8 @@ export const getAllFees = async (session) => {
       url: `/fees/all`,
       data: session,
       params: {
-        sessionId: session?.sessionId,
-        termId: session?.termId,
+        session: session?.sessionId,
+        term: session?.termId,
       }
     });
 

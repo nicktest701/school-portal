@@ -1,16 +1,16 @@
 import { Avatar, Box, Divider, Grid, Typography } from "@mui/material";
 import React, { useContext } from "react";
-import { UserContext } from "../../context/providers/UserProvider";
+import { UserContext } from "@/context/providers/UserProvider";
 import CourseStudentCard from "./CourseStudentCard";
-import CustomCard from "../../components/cards/CustomCard";
-import Circle from "../../components/custom/Circle";
-import RadarChart from "../../components/charts/RadarChart";
-import LineChart from "../../components/charts/LineChart";
-import BarCharts from "../../components/charts/BarCharts";
+import CustomCard from "@/components/cards/CustomCard";
+import Circle from "@/components/custom/Circle";
+import RadarChart from "@/components/charts/RadarChart";
+import LineChart from "@/components/charts/LineChart";
+import BarCharts from "@/components/charts/BarCharts";
 import { useQuery } from "@tanstack/react-query";
-import { getCourseDashboardInfo } from "../../api/courseAPI";
+import { getCourseDashboardInfo } from "@/api/courseAPI";
 import CourseAttendanceCard from "./CourseAttendanceCard";
-import CustomTitle from "../../components/custom/CustomTitle";
+import CustomTitle from "@/components/custom/CustomTitle";
 
 function CourseHome() {
   const {

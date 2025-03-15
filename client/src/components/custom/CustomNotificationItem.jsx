@@ -6,24 +6,34 @@ import React from "react";
 import { motion } from "framer-motion";
 import moment from "moment";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getItem, saveItem } from "../../config/helper";
-import { useQueryClient } from "@tanstack/react-query";
+
+import { useDeleteNotification, useMarkAsRead } from "@/hooks/useNotifications";
 
 function CustomNotificationItem({
   _id,
   type,
   title,
   album,
+  active,
   description,
   link,
   createdAt,
   closeDrawer,
   index,
 }) {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const isRead = getItem("r_no");
+
+  const markAsRead = useMarkAsRead();
+  const deleteNotification = useDeleteNotification();
+
+  const handleMarkAsRead = () => {
+    markAsRead.mutate(_id);
+  };
+
+  const handleRemove = () => {
+    deleteNotification.mutate(_id);
+  };
 
   const handleItemClick = () => {
     closeDrawer(false);
@@ -37,39 +47,26 @@ function CustomNotificationItem({
     handleMarkAsRead();
   };
 
-  const handleMarkAsRead = () => {
-    const readNotifications = getItem("r_no");
-    const update = [...readNotifications, _id];
-    saveItem("r_no", update);
-    queryClient.invalidateQueries(["notifications"]);
-  };
-
-  const handleRemove = () => {
-    const readNotifications = getItem("d_no");
-    const update = [...readNotifications, _id];
-    saveItem("d_no", update);
-    queryClient.invalidateQueries(["notifications"]);
-  };
-
   return (
     <motion.div
-      initial={{ opacity: 0, x: -100 }}
+      initial={{ opacity: 0, x: -80 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 100 }}
-      transition={{ duration: 0.5, delay: index * 0.15 }}
+      exit={{ opacity: 0, x: 80 }}
+      transition={{ duration: 0.3, delay: index * 0.15 }}
       className="notification-item"
       style={{
         padding: "0 16px 0 16px",
+        borderRadius: "12px",
         cursor: "pointer",
-        backgroundColor: isRead?.includes(_id) ? "#fff" : "rgba(1, 46, 84,0.1)",
+        backgroundColor: active ? "rgba(255, 192, 159, 0.1)" : "#fff",
       }}
     >
       <div onClick={handleItemClick}>
         <Stack direction="row" justifyContent="space-between" py={1}>
-          <Typography variant="body2" fontWeight="bold">
+          <Typography variant="body2" color='secondary' fontWeight="bold">
             {title}
           </Typography>
-          {!isRead?.includes(_id) && <Label htmlColor="green" />}
+          {active && <Label htmlColor="green" />}
         </Stack>
         {album && (
           <img
@@ -114,17 +111,25 @@ function CustomNotificationItem({
           paddingTop: "4px",
         }}
       >
-        <Stack direction="row" >
-          {isRead?.includes(_id) ? (
-            <Tooltip title="Mark as read">
-              <IconButton>
-                <LocalLibraryOutlinedIcon />
-              </IconButton>
-            </Tooltip>
-          ) : (
+        <Typography
+          variant="caption"
+          fontStyle="italic"
+          color="primary"
+          fontWeight="bold"
+        >
+          {moment(new Date(createdAt)).format("LLL")}
+        </Typography>
+        <Stack direction="row">
+          {active ? (
             <Tooltip title="Mark as unread">
               <IconButton onClick={handleMarkAsRead}>
                 <LocalLibraryRoundedIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Mark as read">
+              <IconButton>
+                <LocalLibraryOutlinedIcon />
               </IconButton>
             </Tooltip>
           )}
@@ -135,14 +140,6 @@ function CustomNotificationItem({
             </IconButton>
           </Tooltip>
         </Stack>
-        <Typography
-          variant="caption"
-          fontStyle="italic"
-          color="primary"
-          fontWeight="bold"
-        >
-          {moment(new Date(createdAt)).format("LLL")}
-        </Typography>
       </div>
       <Divider />
     </motion.div>

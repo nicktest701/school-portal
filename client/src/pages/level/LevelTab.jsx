@@ -124,14 +124,12 @@ const LevelTab = () => {
     });
   };
 
-  const handleOpenSubject = ({ _id, type }) => {
-    const currentLevel = encodeURIComponent(type);
-
-    navigate(`/level/course?_id=${_id}&type=${currentLevel}`);
+  const handleOpenSubject = ({ _id,  }) => {
+    navigate(`/level/${_id}/courses`);
   };
 
   const handleOpenLevel = ({ _id, type }) => {
-    navigate(`/level/current/${_id}/${type}`, {
+    navigate(`/level/${_id}`, {
       replace: true,
       state: {
         levelId: _id,

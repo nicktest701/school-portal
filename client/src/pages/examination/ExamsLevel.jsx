@@ -55,15 +55,13 @@ const ExamsLevel = ({ type }) => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
-  const {
-    user,
-    userState: { session },
-  } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { levelId, level } = useParams();
+  const { levelId } = useParams();
+  const level = searchParams.get("level");
 
   //Get Students in Current Level id
-  const { gradeSystem, subjects } = useLevelById(levelId);
+  const { gradeSystem, subjects, levelName } = useLevelById(levelId);
 
   //GET All Details about exams
 
@@ -71,11 +69,9 @@ const ExamsLevel = ({ type }) => {
     queryKey: ["exams-details", levelId],
     queryFn: () =>
       getExamsDetails({
-        sessionId: session.sessionId,
-        termId: session.termId,
-        levelId,
+        level: levelId,
       }),
-    enabled: !!levelId && !!session.sessionId && !!session.termId,
+    enabled: !!levelId,
     initialData: {
       noOfStudents: 0,
       highestMarks: 0,
@@ -91,10 +87,10 @@ const ExamsLevel = ({ type }) => {
 
   const handleViewExamsDetails = (rowData) => {
     navigate(
-      `/examination/level/${levelId}/student?eid=${rowData?._id}&sid=${rowData?.studentId}`,
+      `/${type}/${levelId}/student?eid=${rowData?._id}&sid=${rowData?.studentId}`,
       {
         state: {
-          prevPath: `/examination/level/${levelId}/${level}`,
+          prevPath: `/${type}/${levelId}`,
         },
       }
     );
@@ -114,16 +110,16 @@ const ExamsLevel = ({ type }) => {
   const iconStyle = { width: 28, height: 28 };
 
   const handleImportResults = () => {
-    navigate(`/examination/level/${levelId}/${level}/upload`, {
+    navigate(`/${type}/${levelId}/upload`, {
       state: {
-        prevPath: `/examination/level/${levelId}/${level}`,
+        prevPath: `/${type}/${levelId}`,
       },
     });
   };
 
   //Generate reports for whole level
   const handleGenerateReports = () => {
-    navigate(`/${type}/reports/${levelId}`);
+    navigate(`/${type}/${levelId}/reports`);
   };
 
   const downloadSheet = useCallback(() => {
@@ -196,7 +192,7 @@ const ExamsLevel = ({ type }) => {
           variant="h5"
           whiteSpace="nowrap"
         >
-          {level}
+          { levelName}
         </Typography>
       </Container>
 
@@ -429,8 +425,6 @@ const ExamsLevel = ({ type }) => {
               </Box>
             </Grid2>
           </Grid2>
-
-          
         </CardContent>
       </Card>
 
@@ -451,7 +445,7 @@ const ExamsLevel = ({ type }) => {
               gap: 2,
             }}
           >
-            <ButtonGroup >
+            <ButtonGroup>
               <Button startIcon={<NoteOutlined />} onClick={downloadSheet}>
                 {matches ? " Download Assessment Sheet" : ""}
               </Button>

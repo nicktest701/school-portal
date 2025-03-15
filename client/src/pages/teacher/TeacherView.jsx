@@ -44,6 +44,7 @@ const TeacherView = () => {
     enabled: !!id,
   });
 
+
   //EDIT Teacher Info
   const editTeacherInfo = () => {
     navigate(`/teacher/${id}/edit`);
@@ -156,13 +157,14 @@ const TeacherView = () => {
                 />
               </Box>
 
-              <Typography paragraph variant="h5">
-                {teacher?.data?.fullName}
+              <Typography variant="h5">
+                {teacher?.data?.fullname}
               </Typography>
               <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
                 Send Message
               </Button>
-              <ButtonGroup variant="contained" size="small">
+             
+              <ButtonGroup variant="contained" >
                 <Button
                   color="secondary"
                   endIcon={<Person />}

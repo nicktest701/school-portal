@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useRef, useState } from "react";
 import {
   Stack,
   Typography,
@@ -6,27 +6,32 @@ import {
   useTheme,
   Avatar,
   Box,
-  Link,
   Button,
 } from "@mui/material";
 import ExamsItem from "@/components/list/ExamsItem";
 import ReportItem from "@/components/list/ReportItem";
 import ReportItemUnderline from "@/components/list/ReportItemUnderline";
 import AddRemarks from "@/components/modals/AddRemarks";
-import moment from "moment";
 import _ from "lodash";
 import { SchoolRounded } from "@mui/icons-material";
+import { UserContext } from "@/context/providers/UserProvider";
+import { useReactToPrint } from "react-to-print";
 
 function ReportCard({ student, style, ref }) {
-  const school_info = JSON.parse(localStorage.getItem("@school_info"));
+  const componentRef = useRef();
+  const { school_info } = use(UserContext);
   const { palette } = useTheme();
   const [openRemarks, setOpenRemarks] = useState(false);
 
+  const reactToPrintFn = useReactToPrint({
+    documentTitle: student?.fullName,
+    contentRef: componentRef,
+  });
   return (
     <>
       <Stack
         className="report-card"
-        ref={ref}
+        ref={componentRef}
         spacing={1}
         sx={{
           ...style,
@@ -41,9 +46,23 @@ function ReportCard({ student, style, ref }) {
             rgba(255, 255, 255, 0.96)
           ),
           url("${school_info?.badge}")`,
+          mb: 1,
         }}
         // style={style}
       >
+        <Button
+          className="print-btn"
+          variant="text"
+          sx={{
+            position: "absolute",
+            top: 3,
+            right: 3,
+            zIndex: 999999999,
+          }}
+          onClick={() => reactToPrintFn()}
+        >
+          Print
+        </Button>
         {/* school details */}
         <Stack direction="row" justifyContent="center" alignItems="center">
           {school_info?.badge ? (
@@ -54,14 +73,18 @@ function ReportCard({ student, style, ref }) {
               sx={{
                 width: 70,
                 height: 70,
+                bgcolor:
+                  school_info?.badge === null ? "var(--primary)" : "whitesmoke",
               }}
-            />
+            >
+              {school_info?.name[0]}
+            </Avatar>
           ) : (
             <SchoolRounded sx={{ width: 50, height: 50 }} />
           )}
           <Stack justifyContent="center" alignItems="center" flexGrow={1}>
             <Typography variant="h4" color="primary">
-              {_.startCase(school_info?.name)}
+              {_.upperCase(school_info?.name)}
             </Typography>
             <Typography variant="caption">{school_info?.address}</Typography>
             <Typography variant="caption">{school_info?.location}</Typography>
@@ -131,13 +154,10 @@ function ReportCard({ student, style, ref }) {
             <Stack>
               <ReportItem title="Academic Year" text={student?.academicYear} />
               <ReportItem title="Term/Semester" text={student?.term} />
-              <ReportItem
-                title="Vacation Date"
-                text={moment(student?.vacationDate).format("Do MMMM,YYYY")}
-              />
+              <ReportItem title="Vacation Date" text={student?.vacationDate} />
               <ReportItem
                 title="Reopening Date"
-                text={moment(student?.reOpeningDate).format("Do MMMM,YYYY")}
+                text={student?.reOpeningDate}
               />
             </Stack>
           </Box>
@@ -248,13 +268,14 @@ function ReportCard({ student, style, ref }) {
               />
             </Stack>
             <Button
-              variant="contained"
+              variant="text"
               className="add-remarks-btn"
               onClick={() => setOpenRemarks(true)}
               sx={{
                 alignSelf: "flex-start",
                 cursor: "pointer",
                 zIndex: "99999999",
+                textDecoration: "underline",
               }}
             >
               Add Remarks

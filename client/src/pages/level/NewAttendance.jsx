@@ -33,9 +33,10 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { isWeekend } from "@/config/helper";
 import { UserContext } from "@/context/providers/UserProvider";
+import useLevelById from "@/components/hooks/useLevelById";
 
-function NewAttendance({ to = "/course" }) {
-  const { id, type } = useParams();
+function NewAttendance({ to }) {
+  const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useContext(UserContext);
@@ -43,6 +44,9 @@ function NewAttendance({ to = "/course" }) {
 
   const [date, setDate] = useState(moment());
   const [allstudents, setAllStudents] = useState([]);
+
+  const { levelName } = useLevelById(id);
+  console.log(id)
 
   //GET attendance by level id and date
   const attendance = useQuery({
@@ -132,15 +136,21 @@ function NewAttendance({ to = "/course" }) {
   };
 
   const navigateToAttendanceHistory = () => {
-    navigate(`/level/attendance/${id}/${type}/history`);
+    navigate(
+      user?.role === "administrator"
+        ? `/level/${id}/history`
+        : `/${to}/${id}/history`
+    );
   };
 
   return (
     <>
-      {user?.role === "administrator" ? (
-        <Back to={`${to}/${id}/${type}`} color="primary.main" />
-      ) : (
-        <Back to={"/course/level"} color="primary.main" />
+      {user?.role === "administrator" && (
+        <Back to={`/level/${id}`} color="primary.main" />
+      )}
+
+      {user?.role === "teacher" && (
+        <Back to={`/course/level`} color="primary.main" />
       )}
 
       <CustomTitle
@@ -148,6 +158,11 @@ function NewAttendance({ to = "/course" }) {
         subtitle=" Monitor and manage student and staff attendance to ensure accurate record-keeping and identify patterns or issues promptly."
         icon={<SchoolRounded color="inherit" sx={{ width: 50, height: 50 }} />}
         color="primary.main"
+        right={
+          <Button variant="outlined" onClick={navigateToAttendanceHistory}>
+            View History
+          </Button>
+        }
       />
 
       <Box sx={{ bgcolor: "#fff", p: 2 }}>
@@ -173,8 +188,8 @@ function NewAttendance({ to = "/course" }) {
         search={true}
         // isPending={attendance.isPending}
         // icon={student_icon}
-        title={`Attendance for ${type}`}
-        exportFileName={`Attendance for ${type} on ${date.format(
+        title={`Attendance for ${levelName}`}
+        exportFileName={`Attendance for ${levelName} on ${date.format(
           "dddd,Do MMMM YYYY"
         )}`}
         columns={[
@@ -288,10 +303,5 @@ function NewAttendance({ to = "/course" }) {
     </>
   );
 }
-
-NewAttendance.propTypes = {
-  open: PropTypes.bool,
-  setOpen: PropTypes.func,
-};
 
 export default NewAttendance;

@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const createError = require('http-errors');
 const db = require('./db/DBConnection');
+const schoolRoute = require('./routes/schoolRoute');
 const sessionRoute = require('./routes/sessionRoute');
 const termRoute = require('./routes/termRoute');
 const gradeRoute = require('./routes/gradeRoute');
@@ -25,6 +26,8 @@ const messageRoute = require('./routes/messageRoute');
 const eventRoute = require('./routes/eventRoute');
 const announcementRoute = require('./routes/announcementRoute');
 const notificationRoute = require('./routes/notificationRoute');
+const holidayRoute = require('./routes/holidayRoute');
+const noteRoute = require('./routes/noteRoute');
 const userRoute = require('./routes/userRoute');
 const attendanceRoute = require('./routes/attendanceRoute');
 const { verifyJWT } = require('./middlewares/verifyJWT');
@@ -81,9 +84,6 @@ const corsOptions = {
 
 
 
-
-
-
 // middlewares
 app.use(cookieParser());
 app.use(cors(corsOptions));
@@ -116,6 +116,7 @@ app.use('/api/frebbys/v1/templates', express.static(path.join(__dirname, 'templa
 //routes
 
 app.use('/api/frebbys/v1/users', userRoute);
+app.use('/api/frebbys/v1/schools', schoolRoute);
 
 app.use(verifyJWT);
 app.use('/api/frebbys/v1/sessions', sessionRoute);
@@ -135,6 +136,9 @@ app.use('/api/frebbys/v1/events', eventRoute);
 app.use('/api/frebbys/v1/notifications', notificationRoute);
 app.use('/api/frebbys/v1/attendances', attendanceRoute);
 app.use('/api/frebbys/v1/announcements', announcementRoute);
+app.use('/api/frebbys/v1/holidays', holidayRoute);
+app.use('/api/frebbys/v1/notes', noteRoute);
+
 
 // /airtime/template
 app.get(

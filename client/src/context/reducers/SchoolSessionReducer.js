@@ -151,6 +151,11 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         ...state,
         generalAlert: payload,
       };
+    case 'closeGeneralAlert':
+      return {
+        ...state,
+        generalAlert: { message: '', severity: "", },
+      };
 
     case 'viewLevel':
       return {

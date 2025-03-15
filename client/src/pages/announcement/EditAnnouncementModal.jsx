@@ -1,5 +1,5 @@
 // EditAnnouncementModal.tsx
-import React from "react";
+import React, { use } from "react";
 import {
   Box,
   Button,
@@ -18,7 +18,8 @@ import * as Yup from "yup";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAnnouncement, putAnnouncement } from "@/api/announcementAPI";
-
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
 // Validation Schema
 const validationSchema = Yup.object().shape({
@@ -30,6 +31,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const EditAnnouncementModal = ({ onClose }) => {
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
   const [searchParams] = useSearchParams();
   const announcementId = searchParams.get("_id");
   const navigate = useNavigate();
@@ -44,14 +46,26 @@ const EditAnnouncementModal = ({ onClose }) => {
     queryKey: ["announcement", announcementId],
     queryFn: () => getAnnouncement(announcementId),
     enabled: !!announcementId, // Fetch only if id exists
+    initialData: queryClient.getQueryData(
+      ["announcements"].find((ann) => ann._id === announcementId)
+    ),
   });
 
   // Mutation for updating the announcement
   const mutation = useMutation({
     mutationFn: putAnnouncement,
     onSuccess: () => {
+      onClose();
       queryClient.invalidateQueries({ queryKey: ["announcements"] });
-      navigate("/announcements");
+      schoolSessionDispatch(alertSuccess("Announcement Updated!"));
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries(["announcements"]);
+    },
+
+    onError: (error) => {
+      schoolSessionDispatch(alertError(error));
     },
   });
 
@@ -99,7 +113,7 @@ const EditAnnouncementModal = ({ onClose }) => {
           transform: "translate(-50%, -50%)",
           bgcolor: "background.paper",
           boxShadow: 24,
-          p: 4,
+          p: 2,
           borderRadius: 2,
           width: { xs: 300, md: 500 },
         }}
@@ -177,9 +191,11 @@ const EditAnnouncementModal = ({ onClose }) => {
               {/* Submit Button */}
               <Box sx={{ textAlign: "right", mt: 2 }}>
                 <Button
+                  color="secondary"
                   variant="outlined"
                   onClick={() => navigate("/announcements")}
                   sx={{ mr: 2 }}
+                  disabled={mutation.isPending}
                 >
                   Cancel
                 </Button>
@@ -188,9 +204,8 @@ const EditAnnouncementModal = ({ onClose }) => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={mutation.isPending}
                 >
-                  {mutation.isPending ? "Updating..." : "Update Announcement"}
+                  {mutation.isPending ? "Updating..." : "Save Changes"}
                 </Button>
               </Box>
             </form>

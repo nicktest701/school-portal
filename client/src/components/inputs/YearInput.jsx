@@ -3,10 +3,7 @@ import { Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import Datetime from "react-datetime";
 import moment from "moment";
-import '../../theme/react-datetime.css';
-
-
-
+import "../../theme/react-datetime.css";
 
 const YearPicker = Datetime.default ? Datetime.default : Datetime;
 const YearInput = ({ name, control, label, rules }) => {
@@ -26,7 +23,6 @@ const YearInput = ({ name, control, label, rules }) => {
           onChange={(date) => {
             onChange(date.format("YYYY"));
           }}
-
           renderInput={(params) => (
             <TextField
               {...params}

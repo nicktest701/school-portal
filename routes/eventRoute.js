@@ -1,17 +1,21 @@
 const router = require('express').Router();
 const _ = require('lodash');
 const asyncHandler = require('express-async-handler');
+const User = require('../models/userModel');
 const Event = require('../models/eventModel');
 const Notification = require('../models/notificationModel');
-const sendMail = require('../config/mail/mailer');
-const sendSMS = require('../config/sms/messenger');
+// const sendMail = require('../config/mail/mailer');
+// const sendSMS = require('../config/sms/messenger');
 const { truncateWords } = require('../config/helper');
 
 //GET event
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const events = await Event.find({}).sort({ createdAt: -1 });
+    const events = await Event.find({
+      school: req.user.school
+    }).populate('createdBy', ['firstname', 'lastname', 'profile']).sort({ createdAt: -1 });
+    // console.log(events)
 
     res.status(200).json(events);
   })
@@ -22,7 +26,7 @@ router.get(
   '/:id',
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const event = await Event.findById(id);
+    const event = await Event.findById(id).populate('createdBy', ['firstname', 'lastname', 'profile'])
     res.status(200).json(event);
   })
 );
@@ -35,7 +39,11 @@ router.post(
   asyncHandler(async (req, res) => {
     const newEvent = req.body;
 
-    const event = await Event.create(newEvent);
+    const event = await Event.create({
+      ...newEvent,
+      school: req.user.school,
+      createdBy: req.user.id
+    });
 
     if (_.isEmpty(event)) {
       return res
@@ -43,14 +51,25 @@ router.post(
         .json('Couldnt create event.Please try again later...');
     }
 
-    await Notification.create({
+
+    const users = await User.find({}, "_id"); // Get all user IDs
+
+    const notifications = users.map((user) => ({
+      user: user._id,
+      school: req.user.school,
+      session: newEvent?.session,
+      term: newEvent?.term,
       type: 'Event',
       title: newEvent?.title,
       description: truncateWords(newEvent?.caption, 20),
-      album: newEvent?.album,
-      link: `/events/${event._id}`
-    })
+      album: null,
+      // album: newEvent?.album,
+      link: `/events/${event._id}`,
+      createdBy: req.user.id,
+    }));
 
+
+    await Notification.insertMany(notifications);
 
     res.status(200).json('Event Created!');
 

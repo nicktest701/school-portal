@@ -1,10 +1,10 @@
-import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import React from "react";
 import Add from "@mui/icons-material/Add";
-import { EMPTY_IMAGES } from "../config/images";
+import Empty from "./svg/Empty";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 
 const EmptyDataContainer = ({
   onClick,
@@ -13,35 +13,29 @@ const EmptyDataContainer = ({
   message,
   showAddButton,
 }) => {
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("md"));
+
   return (
-    <Container
+    <Box
       maxWidth="xl"
       className="hide-on-pint"
       sx={{
         borderRadius: "12px",
         backgroundColor: "#fff",
-        height: "100svh",
-        display: "grid",
-        placeItems: "center",
+        width: "100%",
+        height: "80svh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <Stack
-        justifyContent="center"
-        alignItems="center"
-        spacing={3}
-        paddingY={4}
-      >
-        <img
-          loading="lazy"
-          src={img || EMPTY_IMAGES.student}
-          alt="empty_image"
-          style={{
-            width: 250,
-            height: 250,
-            objectFit: "contain",
-          }}
-        />
-        <Typography variant="body2" color="primary" textAlign="center">
+      
+        <Empty width={matches ? 100 : 200} />
+      
+      <Stack zIndex={9999999} pt={12}>
+        <Typography variant="h6" color="primary" textAlign="center">
           {message || "No data available !"}
         </Typography>
         {showAddButton && (
@@ -50,7 +44,7 @@ const EmptyDataContainer = ({
           </Button>
         )}
       </Stack>
-    </Container>
+    </Box>
   );
 };
 

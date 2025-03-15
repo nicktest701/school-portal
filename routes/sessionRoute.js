@@ -7,7 +7,9 @@ const _ = require("lodash");
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const sessions = await Session.find();
+    const sessions = await Session.find({
+      school: req.session?.user.school,
+    });
 
     // const sessions_ = await knex("sessions").select("*");
 
@@ -34,14 +36,18 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     //Create new Session
-    const session = await Session.create(req.body);
+    const session = await Session.create({
+      ...req.body,
+      school: req.session?.user.school,
+      createdBy: req.session?.user.createdBy,
+    });
 
     // const sessionID = randomUUID();
     // const session_ = await knex("sessions").insert({
     //   _id: sessionID,
     //   ...req.body,
     // });
-  
+
 
     if (!session) {
       return res.status(404).send("Error creating new session.Try again later");
@@ -60,7 +66,7 @@ router.put(
     // const modifiedSession_ = await knex("sessions")
     //   .where("_id", id)
     //   .update(rest);
-  
+
 
     if (!modifiedSession) {
       return res

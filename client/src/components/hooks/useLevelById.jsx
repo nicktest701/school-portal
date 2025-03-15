@@ -23,6 +23,7 @@ function useLevelById(id) {
         gradeSystem: levels?.data?.grades,
         subjects: levels?.data?.subjects,
         rollNumber: levels?.data?.students?.length,
+        levelName: `${levels?.data?.level?.name} ${levels?.data?.level?.type}`,
       };
     } else {
       return {

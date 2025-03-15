@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { use } from "react";
 import {
   Stack,
   Dialog,
@@ -6,7 +6,7 @@ import {
   DialogActions,
   TextField,
   Autocomplete,
-  Button
+  Button,
 } from "@mui/material";
 import _ from "lodash";
 import { Formik } from "formik";
@@ -14,28 +14,25 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   LEVEL_OPTIONS,
   LEVEL_TYPE_OPTIONS,
-} from "../../mockup/columns/sessionColumns";
-import { levelValidationSchema } from "../../config/validationSchema";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import useLevel from "../../components/hooks/useLevel";
-import { postLevel } from "../../api/levelAPI";
-import { levelInitialValues } from "../../config/initialValues";
-import CustomDialogTitle from "../../components/dialog/CustomDialogTitle";
-import { UserContext } from "../../context/providers/UserProvider";
-import { getAllTeachers } from "../../api/teacherAPI";
+} from "@/mockup/columns/sessionColumns";
+import { levelValidationSchema } from "@/config/validationSchema";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import useLevel from "@/components/hooks/useLevel";
+import { postLevel } from "@/api/levelAPI";
+import { levelInitialValues } from "@/config/initialValues";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { UserContext } from "@/context/providers/UserProvider";
+import { getAllTeachers } from "@/api/teacherAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const AddLevel = ({ open, setOpen }) => {
   const {
     userState: { session },
-  } = useContext(UserContext);
+  } = use(UserContext);
 
   const queryClient = useQueryClient();
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
   const { levelsOption } = useLevel();
 
   const teachers = useQuery({
@@ -46,7 +43,7 @@ const AddLevel = ({ open, setOpen }) => {
       const modifiedTeachers = teachers?.map((teacher) => {
         return {
           _id: teacher?._id,
-          fullName: teacher?.fullName,
+          fullName: teacher?.fullname,
         };
       });
       // console.log(modifiedTeachers);
@@ -164,7 +161,9 @@ const AddLevel = ({ open, setOpen }) => {
         }}
       </Formik>
 
-      {isPending && <LoadingSpinner value="Creating New Level. Please wait..." />}
+      {isPending && (
+        <LoadingSpinner value="Creating New Level. Please wait..." />
+      )}
     </Dialog>
   );
 };

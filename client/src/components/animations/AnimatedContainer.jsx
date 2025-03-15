@@ -1,15 +1,15 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import PropTypes from 'prop-types';
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import PropTypes from "prop-types";
 
 const AnimatedContainer = ({ children }) => {
   return (
-    <AnimatePresence mode='wait'>
+    <AnimatePresence mode="wait">
       <motion.div
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -10, opacity: 0 }}
-        transition={{ duration: 0.2 }}
+        initial={{ opacity: 0, y: 20 }} // Start fully transparent and 50px below
+        animate={{ opacity: 1, y: 0 }} // Fade in and move to the original position
+        transition={{ duration: 0.3, ease: "easeOut" }} // Smooth transition
+        exit={{ y: -20, opacity: 0 }}
         // className='hide-on-print'
       >
         {children}

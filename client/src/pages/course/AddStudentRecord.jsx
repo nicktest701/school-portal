@@ -9,16 +9,12 @@ import { Formik } from "formik";
 import { Dialog, DialogContent, Stack, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
-import { UserContext } from "@/context/providers/UserProvider";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { useParams, useSearchParams } from "react-router-dom";
 
 function AddStudentRecord() {
   const [searchParams] = useSearchParams();
   const { levelId } = useParams();
-  const {
-    userState: { session },
-  } = useContext(UserContext);
 
   const {
     schoolSessionState: {
@@ -54,7 +50,7 @@ function AddStudentRecord() {
     mutateAsync(result, {
       onSettled: () => {
         queryClient.invalidateQueries({
-          queryKey: ["subject-score", levelId, searchParams.get("sub")],
+          queryKey: ["subject-score", levelId, searchParams.get("_id")],
         });
       },
       onSuccess: (data) => {

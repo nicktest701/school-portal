@@ -29,7 +29,7 @@ const verifyJWT = (req, res, next) => {
     if (err) {
       return res.status(403).json('Session has expired.Please login again');
     }
-   
+
 
     const authUser = await User.findById(user?.id).select('-password')
     if (_.isEmpty(authUser)) {
@@ -50,9 +50,11 @@ const verifyJWT = (req, res, next) => {
       phonenumber: authUser?.phonenumber,
       role: authUser?.role,
       active: authUser?.active,
+      school: authUser?.school
     };
+    // console.log(loggedInUser)
 
-    req.session.user = loggedInUser;
+    req.user = loggedInUser;
 
     next();
   });
@@ -88,10 +90,10 @@ const verifyRefreshJWT = (req, res, next) => {
       return res.status(403).json('Session has expired.Please login again');
 
     }
-    
+
 
     const authUser = await User.findById(user?.id).select('-password')
-  
+
     if (_.isEmpty(authUser)) {
       return res
         .status(401)
@@ -110,9 +112,10 @@ const verifyRefreshJWT = (req, res, next) => {
       phonenumber: authUser?.phonenumber,
       role: authUser?.role,
       active: authUser?.active,
+      school: authUser?.school
     };
 
-    req.session.user = loggedInUser;
+    req.user = loggedInUser;
 
     next();
   });
@@ -120,5 +123,5 @@ const verifyRefreshJWT = (req, res, next) => {
 
 
 module.exports = {
-  verifyJWT,verifyRefreshJWT
+  verifyJWT, verifyRefreshJWT
 };

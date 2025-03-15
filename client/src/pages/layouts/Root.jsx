@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useContext } from "react";
+import React, { lazy, Suspense, use } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Loader from "../../config/Loader";
@@ -9,6 +9,8 @@ import Announcements from "../announcement";
 import MoreAnnouncements from "../announcement/MoreAnnouncements";
 import MoreEvents from "../events/MoreEvents";
 import { UserContext } from "@/context/providers/UserProvider";
+import DashboardSkeleton from "@/components/skeleton/DashboardSkeleton";
+import EventSkeleton from "@/components/skeleton/EventSkeleton";
 
 //Session
 const Sessions = lazy(() => import("../session/Sessions"));
@@ -19,6 +21,7 @@ const LevelFeeInformation = lazy(() => import("../fees/LevelFeeInformation"));
 const Subject_Grade = lazy(() => import("../subject"));
 const NewAttendance = lazy(() => import("../level/NewAttendance"));
 
+const NotesBoard = lazy(() => import("../notes"));
 const Teacher = lazy(() => import("../teacher"));
 const TeacherView = lazy(() => import("../teacher/TeacherView"));
 const TeacherEdit = lazy(() => import("../teacher/TeacherEdit"));
@@ -50,8 +53,8 @@ const FeeNew = lazy(() => import("../fees/FeeNew"));
 const LevelExamScoreInput = lazy(() =>
   import("../examination/LevelExamScoreInput")
 );
-const UploadStudentResult = lazy(() =>
-  import("../examination/UploadStudentResult")
+const UploadSingleSubject = lazy(() =>
+  import("../examination/UploadSingleSubject")
 );
 const ExamsHome = lazy(() => import("../examination/ExamsHome"));
 const ExamsLevel = lazy(() => import("../examination/ExamsLevel"));
@@ -96,7 +99,7 @@ const AssignedCoursesResults = lazy(() =>
 );
 
 const Root = () => {
-  const { user } = useContext(UserContext);
+  const { user } = use(UserContext);
   // useEffect(() => {
   //   if (screenfull.isEnabled) {
   //     screenfull.request();
@@ -110,621 +113,675 @@ const Root = () => {
           <Route
             index
             element={
-              <Suspense fallback={<Loader />}>
+              <Suspense fallback={<DashboardSkeleton />}>
                 <Dashboard />
               </Suspense>
             }
           />
 
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Session />
-              </Suspense>
-            }
-            path="/session"
-          >
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <Sessions />
-                </Suspense>
-              }
-              index={true}
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <ViewSession />
-                </Suspense>
-              }
-              path=":id"
-            />
-          </Route>
+          {user.role === "administrator" && (
+            <>
+              {/* session */}
 
-          {/* Class and Subjects */}
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Level />
-              </Suspense>
-            }
-            path="level"
-          >
-            <Route
-              index
-              element={
-                <Suspense fallback={<Loader />}>
-                  <LevelDashboard />
-                </Suspense>
-              }
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AddCurrentSubjects />
-                </Suspense>
-              }
-              path="course"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <CurrentLevel />
-                </Suspense>
-              }
-              path="current/:id/:type"
-            />
-            <Route
-              path="attendance/:id/:type"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <NewAttendance to="/level/current" />
-                </Suspense>
-              }
-            />
-            <Route
-              path="attendance/:id/:type/history"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AttendanceHistory section="level" />
-                </Suspense>
-              }
-            />
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Session />
+                  </Suspense>
+                }
+                path="/session"
+              >
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <Sessions />
+                    </Suspense>
+                  }
+                  index={true}
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <ViewSession />
+                    </Suspense>
+                  }
+                  path=":id"
+                />
+              </Route>
 
-            {/* <Route
-          element={
-            <Suspense fallback={<Loader />}>
-              <AddStudentModal />
-            </Suspense>
-          }
-          path="student/new"
-        /> */}
-          </Route>
+              {/* Class and Subjects */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Level />
+                  </Suspense>
+                }
+                path="level"
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <LevelDashboard />
+                    </Suspense>
+                  }
+                />
 
-          <Route
-            path="subject"
-            element={
-              <Suspense fallback={<Loader />}>
-                <Subject_Grade />
-              </Suspense>
-            }
-          />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <CurrentLevel />
+                    </Suspense>
+                  }
+                  path=":id"
+                />
 
-          {/* Student */}
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Student />
-              </Suspense>
-            }
-            path="/student"
-          >
-            <Route
-              index
-              element={
-                <Suspense fallback={<Loader />}>
-                  <StudentHome />
-                </Suspense>
-              }
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <StudentAdd />
-                </Suspense>
-              }
-              path="new"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <StudentEdit />
-                </Suspense>
-              }
-              path="edit"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <StudentView />
-                </Suspense>
-              }
-              path="view"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <StudentDetails />
-                </Suspense>
-              }
-              path="profile/:id/:type/:studentId"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <StudentAcademicsReport />
-                </Suspense>
-              }
-              path="exam/:examsId"
-            />
-          </Route>
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <AddCurrentSubjects />
+                    </Suspense>
+                  }
+                  path=":id/courses"
+                />
+                <Route
+                  path=":id/attendance"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <NewAttendance to="/level/current" />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path=":id/history"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <AttendanceHistory section="level" />
+                    </Suspense>
+                  }
+                />
+              </Route>
 
-          {/* Teacher */}
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Teacher />
-              </Suspense>
-            }
-            path="/teacher"
-          >
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <TeacherHome />
-                </Suspense>
-              }
-              index
-            />
+              {/* subjects  */}
+              <Route
+                path="subject"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Subject_Grade />
+                  </Suspense>
+                }
+              />
 
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <TeacherView />
-                </Suspense>
-              }
-              path=":id"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <TeacherEdit />
-                </Suspense>
-              }
-              path=":id/edit"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <TeacherAssignLevel />
-                </Suspense>
-              }
-              path=":id/level"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <TeacherAssignCourse />
-                </Suspense>
-              }
-              path=":id/course"
-            />
-          </Route>
+              {/* Student */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Student />
+                  </Suspense>
+                }
+                path="/student"
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <StudentHome />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <StudentAdd />
+                    </Suspense>
+                  }
+                  path="new"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <StudentEdit />
+                    </Suspense>
+                  }
+                  path="edit"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <StudentView />
+                    </Suspense>
+                  }
+                  path="view"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <StudentDetails />
+                    </Suspense>
+                  }
+                  path="profile/:id/:type/:studentId"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <StudentAcademicsReport />
+                    </Suspense>
+                  }
+                  path="exam/:examsId"
+                />
+              </Route>
 
-          {/* Fees */}
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Fees />
-              </Suspense>
-            }
-            path="/fee"
-          >
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <FeeHome />
-                </Suspense>
-              }
-              index
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <FeeNew />
-                </Suspense>
-              }
-              path="new"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <FeeMakePayment />
-                </Suspense>
-              }
-              path="payment"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <FeePaymentHistory />
-                </Suspense>
-              }
-              path="payment/history"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <StudentFeesHistory />
-                </Suspense>
-              }
-              path="payment/student"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <LevelFeeInformation />
-                </Suspense>
-              }
-              path="level"
-            />
+              {/* Teacher */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Teacher />
+                  </Suspense>
+                }
+                path="/teacher"
+              >
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <TeacherHome />
+                    </Suspense>
+                  }
+                  index
+                />
 
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <FeeHistory />
-                </Suspense>
-              }
-              path="history"
-            />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <TeacherView />
+                    </Suspense>
+                  }
+                  path=":id"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <TeacherEdit />
+                    </Suspense>
+                  }
+                  path=":id/edit"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <TeacherAssignLevel />
+                    </Suspense>
+                  }
+                  path=":id/level"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <TeacherAssignCourse />
+                    </Suspense>
+                  }
+                  path=":id/course"
+                />
+              </Route>
+              {/* Examination */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Examination />
+                  </Suspense>
+                }
+                path="/examination"
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <ExamsHome />
+                    </Suspense>
+                  }
+                />
 
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <FeeSettings />
-                </Suspense>
-              }
-              path="settings"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <FeePrint />
-                </Suspense>
-              }
-              path="print"
-            />
-          </Route>
-          {/* Course */}
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Course />
-              </Suspense>
-            }
-            path="/course"
-          >
-            <Route
-              index
-              element={
-                <Suspense fallback={<Loader />}>
-                  <CourseHome />
-                </Suspense>
-              }
-            />
-            <Route
-              path="assign"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AssignedCourses />
-                </Suspense>
-              }
-            />
-            <Route
-              path="assign/:levelId/:level"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AssignedCoursesResults />
-                </Suspense>
-              }
-            />
-            <Route
-              path="level"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <CourseLevel />
-                </Suspense>
-              }
-            />
-            <Route
-              path="level/:levelId/:level"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <ExamsLevel type="course" />
-                </Suspense>
-              }
-            />
+                <Route
+                  path=":levelId"
+                  element={<ExamsLevel type="examination" />}
+                />
 
-            <Route
-              path="reports/:levelId"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <ViewExamsReports />
-                </Suspense>
-              }
-            />
-            <Route
-              path="attendance/:id/:type"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <NewAttendance to="/course" />
-                </Suspense>
-              }
-            />
-            <Route
-              path="attendance/:id/:type/history"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <AttendanceHistory section="course" />
-                </Suspense>
-              }
-            />
-          </Route>
+                <Route
+                  path=":levelId/student"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <ExamsScore />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path=":levelId/reports"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <ViewExamsReports />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path=":levelId/upload"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <LevelExamScoreInput />
+                    </Suspense>
+                  }
+                />
+              </Route>
 
-          {/* Examination */}
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Examination />
-              </Suspense>
-            }
-            path="/examination"
-          >
-            <Route
-              index
-              element={
-                <Suspense fallback={<Loader />}>
-                  <ExamsHome />
-                </Suspense>
-              }
-            />
+              {/* Fees */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Fees />
+                  </Suspense>
+                }
+                path="/fee"
+              >
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <FeeHome />
+                    </Suspense>
+                  }
+                  index
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <FeeNew />
+                    </Suspense>
+                  }
+                  path="new"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <FeeMakePayment />
+                    </Suspense>
+                  }
+                  path="payment"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <FeePaymentHistory />
+                    </Suspense>
+                  }
+                  path="payment/history"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <StudentFeesHistory />
+                    </Suspense>
+                  }
+                  path="payment/student"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <LevelFeeInformation />
+                    </Suspense>
+                  }
+                  path="level"
+                />
 
-            <Route
-              path="level/:levelId/:level"
-              element={<ExamsLevel type="examination" />}
-            />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <FeeHistory />
+                    </Suspense>
+                  }
+                  path="history"
+                />
 
-            <Route
-              path="course/:levelId/:level/upload"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <UploadStudentResult />
-                </Suspense>
-              }
-            />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <FeeSettings />
+                    </Suspense>
+                  }
+                  path="settings"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <FeePrint />
+                    </Suspense>
+                  }
+                  path="print"
+                />
+              </Route>
 
-            <Route
-              path="level/:levelId/:level/upload"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <LevelExamScoreInput defaultSubject="" />
-                </Suspense>
-              }
-            />
-            <Route
-              path="level/:levelId/student"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <ExamsScore />
-                </Suspense>
-              }
-            />
-            <Route
-              path="reports/:levelId"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <ViewExamsReports />
-                </Suspense>
-              }
-            />
-          </Route>
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <LevelExamScoreInput />
-              </Suspense>
-            }
-            path="/result"
-          />
+              {/* messages */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <SMS />
+                  </Suspense>
+                }
+                path="/messages"
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <SMSHome />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="new"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <SMSNew />
+                    </Suspense>
+                  }
+                />
+              </Route>
 
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <SMS />
-              </Suspense>
-            }
-            path="/sms"
-          >
-            <Route
-              index
-              element={
-                <Suspense fallback={<Loader />}>
-                  <SMSHome />
-                </Suspense>
-              }
-            />
-            <Route
-              path="new"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <SMSNew />
-                </Suspense>
-              }
-            />
-          </Route>
-          {/* Announcements */}
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Announcements />
-              </Suspense>
-            }
-            path="/announcements"
-          >
-            <Route
-              index
-              element={
-                <Suspense fallback={<Loader />}>
-                  <MoreAnnouncements />
-                </Suspense>
-              }
-            />
-            <Route
-              path="new"
-              element={
-                <Suspense fallback={<Loader />}>
-                  <SMSNew />
-                </Suspense>
-              }
-            />
-          </Route>
+              {/* uploads */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Uploads />
+                  </Suspense>
+                }
+                path="/uploads"
+              />
 
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Uploads />
-              </Suspense>
-            }
-            path="/uploads"
-          />
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Profile />
-              </Suspense>
-            }
-            path="/profile"
-          />
+              {/* settings */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Settings />
+                  </Suspense>
+                }
+                path="/settings"
+              />
 
-          {/* Teacher */}
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Event />
-              </Suspense>
-            }
-            path="/events"
-          >
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  {user?.role === "administrator" ? (
-                    <EventHome />
-                  ) : (
-                    <MoreEvents />
-                  )}
-                </Suspense>
-              }
-              index
-            />
+              {/* school sessions */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <SchoolSession />
+                  </Suspense>
+                }
+                path="/school-session"
+              />
 
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <NewEvent />
-                </Suspense>
-              }
-              path="new"
-            />
+              {/* users */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <User />
+                  </Suspense>
+                }
+                path="/users"
+              >
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <UserHome />
+                    </Suspense>
+                  }
+                  index
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <UserAdd />
+                    </Suspense>
+                  }
+                  path="new"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <UserView />
+                    </Suspense>
+                  }
+                  path=":id"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <UserEdit />
+                    </Suspense>
+                  }
+                  path=":id/edit"
+                />
+              </Route>
+            </>
+          )}
 
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <ViewEvent />
-                </Suspense>
-              }
-              path=":id"
-            />
+          {user.role === "teacher" && (
+            <>
+              {/* Course */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Course />
+                  </Suspense>
+                }
+                path="/course"
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <CourseHome />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="assign"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <AssignedCourses />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="assign/:levelId"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <AssignedCoursesResults />
+                    </Suspense>
+                  }
+                />
 
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <EditEvent />
-                </Suspense>
-              }
-              path=":id/edit"
-            />
-          </Route>
-          <Route
+                <Route
+                  path="assign/:levelId/upload"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <UploadSingleSubject />
+                    </Suspense>
+                  }
+                />
+
+                <Route
+                  path="level"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <CourseLevel />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="level/:levelId"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <ExamsLevel type="course/level" />
+                    </Suspense>
+                  }
+                />
+
+                <Route
+                  path="level/:levelId/reports"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <ViewExamsReports />
+                    </Suspense>
+                  }
+                />
+
+                <Route
+                  path="level/:levelId/student"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <ExamsScore />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="level/:levelId/upload"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <LevelExamScoreInput />
+                    </Suspense>
+                  }
+                />
+
+                <Route
+                  path="level/:id/attendance"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <NewAttendance to="course/level" />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="level/:id/history"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <AttendanceHistory section="course/level" />
+                    </Suspense>
+                  }
+                />
+              </Route>
+            </>
+          )}
+
+          {["administrator", "teacher"].includes(user?.role) && (
+            <>
+              {/* Announcements */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Announcements />
+                  </Suspense>
+                }
+                path="/announcements"
+              >
+                <Route
+                  index
+                  element={
+                    <Suspense fallback={<EventSkeleton />}>
+                      <MoreAnnouncements />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="new"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <SMSNew />
+                    </Suspense>
+                  }
+                />
+              </Route>
+
+              {/* profile */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Profile />
+                  </Suspense>
+                }
+                path="/profile"
+              />
+
+              {/* Events */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Event />
+                  </Suspense>
+                }
+                path="/events"
+              >
+                {user?.role === "administrator" ? (
+                  <Route
+                    element={
+                      <Suspense fallback={<Loader />}>
+                        <EventHome />
+                      </Suspense>
+                    }
+                    index
+                  />
+                ) : (
+                  <Route
+                    element={
+                      <Suspense fallback={<EventSkeleton />}>
+                        <MoreEvents />
+                      </Suspense>
+                    }
+                    index
+                  />
+                )}
+
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <NewEvent />
+                    </Suspense>
+                  }
+                  path="new"
+                />
+
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <ViewEvent />
+                    </Suspense>
+                  }
+                  path=":id"
+                />
+
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <EditEvent />
+                    </Suspense>
+                  }
+                  path=":id/edit"
+                />
+              </Route>
+
+              {/* notes */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <NotesBoard />
+                  </Suspense>
+                }
+                path="/notes"
+              />
+            </>
+          )}
+
+          {/* <Route
             element={
               <Suspense fallback={<Loader />}>
                 <Notifications />
               </Suspense>
             }
             path="/notifications"
-          />
-
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Settings />
-              </Suspense>
-            }
-            path="/settings"
-          />
-
-          <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <User />
-              </Suspense>
-            }
-            path="/users"
-          >
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <UserHome />
-                </Suspense>
-              }
-              index
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <UserAdd />
-                </Suspense>
-              }
-              path="new"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <UserView />
-                </Suspense>
-              }
-              path=":id"
-            />
-            <Route
-              element={
-                <Suspense fallback={<Loader />}>
-                  <UserEdit />
-                </Suspense>
-              }
-              path=":id/edit"
-            />
-          </Route>
+          /> */}
 
           <Route
             element={
@@ -736,14 +793,6 @@ const Root = () => {
           />
         </Route>
 
-        <Route
-          element={
-            <Suspense fallback={<Loader />}>
-              <SchoolSession />
-            </Suspense>
-          }
-          path="/school-session"
-        />
         <Route element={<Login />} path="/login" />
 
         <Route element={<PageNotFound />} path="*" />

@@ -1,10 +1,8 @@
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const Level = require('../models/levelModel');
+const User = require('../models/userModel');
 const Examination = require('../models/examinationModel');
-const CurrentLevelDetails = require('../models/currentLevelDetailModel');
-const CurrentLevel = require('../models/currentLevelModel');
-const Teacher = require('../models/teacherModel');
 const Student = require('../models/studentModel');
 const Attendance = require('../models/attendanceModel');
 const _ = require('lodash');
@@ -156,7 +154,9 @@ router.get(
 
 
     //No of teachers
-    const noOfTeachers = await Teacher.countDocuments({ active: true });
+    const noOfTeachers = await User.find({
+      role: 'teacher'
+    }).countDocuments({ active: true });
 
 
 
@@ -225,11 +225,6 @@ router.get(
         }
       });
     });
-
-
-
-
-
 
 
     if (_.isEmpty(levels)) {
@@ -341,8 +336,6 @@ router.get(
       .populate('subjects') // Populate subjects
       .populate('grades')   // Populate grades
 
-
-    console.log(levels)
     res.status(200).json(levels);
   })
 );
@@ -356,7 +349,6 @@ router.post(
       session: new ObjectId(sessionId),
       term: new ObjectId(termId),
     })
-      .populate('level')
       .populate({
         path: 'students',
         match: { active: true },
@@ -479,9 +471,10 @@ router.post(
   asyncHandler(async (req, res) => {
     const newLevel = req.body;
 
-    // //console.log(newLevel);
-
-    const level = await Level.create(newLevel);
+    const level = await Level.create({
+      ...newLevel,
+      createdBy: req.user?.id
+    });
 
     if (_.isEmpty(level)) {
       return res.status(404).json('Error creating new levels.Try again later');
@@ -554,31 +547,7 @@ router.delete(
     if (_.isEmpty(deletedLevel)) {
       return res.status(404).json('Error removing level info.Try again later');
     }
-    await CurrentLevelDetails.findOneAndUpdate(
-      {
-        session: new ObjectId(sessionId),
-        term: new ObjectId(termId),
-        level: new ObjectId(id),
-      },
-      {
-        $set: {
-          active: false,
-        },
-      }
-    );
-
-    await CurrentLevel.findOneAndUpdate(
-      {
-        session: new ObjectId(sessionId),
-        term: new ObjectId(termId),
-        level: new ObjectId(id),
-      },
-      {
-        $set: {
-          active: false,
-        },
-      }
-    );
+   
 
     res.status(201).json(' Level has been removed successfully!!!');
   })
@@ -603,30 +572,7 @@ router.get(
   })
 );
 
-// router.delete(
-//   "/",
-//   asyncHandler(async (req, res) => {
-//     const { sessionId, termId, id } = req.query;
-//     const deletedLevel = await Level.findByIdAndDelete(id);
 
-//     if (_.isEmpty(deletedLevel)) {
-//       return res.status(404).json("Error removing level info.Try again later");
-//     }
-//     await CurrentLevelDetails.findOneAndRemove({
-//       session: new ObjectId(sessionId),
-//       term: new ObjectId(termId),
-//       level: new ObjectId(id),
-//     });
-
-//     await CurrentLevel.findOneAndRemove({
-//       session: new ObjectId(sessionId),
-//       term: new ObjectId(termId),
-//       level: new ObjectId(id),
-//     });
-
-//     res.status(201).json(" Level has been removed successfully!!!");
-//   })
-// );
 
 router.post(
   '/delete/many',
@@ -757,6 +703,7 @@ router.get(
     const month = targetDate.getMonth();
     const day = targetDate.getDate();
 
+    return res.status(200).json([]);
 
     const students = await Student.find({
       $expr: {

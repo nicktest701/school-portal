@@ -40,7 +40,7 @@ const TeacherAdd = ({ setTab }) => {
     mutationFn: postTeacher,
   });
   const onSubmit = (values, options) => {
-    // //console.log(values);
+
     values.dateofbirth = moment(dob).format("L");
     mutateAsync(values, {
       onSuccess: (data) => {
@@ -125,10 +125,10 @@ const TeacherAdd = ({ setTab }) => {
                       label="Surname"
                       fullWidth
                       size="small"
-                      value={values.surname}
-                      onChange={handleChange("surname")}
-                      error={Boolean(touched.surname && errors.surname)}
-                      helperText={touched.surname && errors.surname}
+                      value={values.lastname}
+                      onChange={handleChange("lastname")}
+                      error={Boolean(touched.lastname && errors.lastname)}
+                      helperText={touched.lastname && errors.lastname}
                     />
                   </CustomFormControl>
                   <TextField
@@ -271,7 +271,8 @@ const TeacherAdd = ({ setTab }) => {
                   py={4}
                 >
                   <Button
-                   
+                    variant="outlined"
+                    color="secondary"
                     onClick={handleReset}
                   >
                     Cancel
@@ -280,7 +281,6 @@ const TeacherAdd = ({ setTab }) => {
                     loading={isPending}
                     variant="contained"
                     color="primary"
-                   
                     onClick={handleSubmit}
                   >
                     Add Teacher

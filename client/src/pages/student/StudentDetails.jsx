@@ -29,8 +29,12 @@ import Back from "@/components/Back";
 import { getStudentAcademics } from "@/api/ExaminationAPI";
 import { UserContext } from "@/context/providers/UserProvider";
 import { getStudentAllFeeHistory } from "@/api/currentFeeAPI";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 const StudentDetails = () => {
+  const [tab, setTab] = useLocalStorage("student_profile_tab", "1");
+
   const {
     userState: { session },
   } = useContext(UserContext);
@@ -41,10 +45,13 @@ const StudentDetails = () => {
 
   //States
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const [tab, setTab] = useState("1");
 
   ///
-  const { data: student, } = useQuery({
+  const {
+    data: student,
+    isPending,
+    refetch,
+  } = useQuery({
     queryKey: ["student-profile", studentId],
     queryFn: () => getStudent(studentId),
     enabled: !!studentId,
@@ -57,14 +64,15 @@ const StudentDetails = () => {
   const studentAcademics = useQuery({
     queryKey: ["student-academics", studentId],
     queryFn: () => getStudentAcademics(session, studentId, id),
+    initialData: [],
     enabled: !!studentId && !!id,
   });
-
 
   //Get Academic Terms for students
   const studentFees = useQuery({
     queryKey: ["student-fees", studentId],
     queryFn: () => getStudentAllFeeHistory(studentId),
+    initialData: [],
     enabled: !!studentId,
   });
 
@@ -81,6 +89,12 @@ const StudentDetails = () => {
         },
       },
     });
+  };
+
+  const handleRefresh = () => {
+    studentAcademics.refetch();
+    studentFees.refetch();
+    refetch();
   };
 
   return (
@@ -110,13 +124,11 @@ const StudentDetails = () => {
             minWidth: 300,
           }}
         >
-          <IconButton sx={{ alignSelf: "flex-end" }}>
+          <IconButton sx={{ alignSelf: "flex-end" }} onClick={handleRefresh}>
             <RefreshRounded />
           </IconButton>
           <Avatar
-            srcSet={
-              student?.profile 
-            }
+            srcSet={student?.profile}
             sx={{
               width: 100,
               height: 100,
@@ -177,6 +189,9 @@ const StudentDetails = () => {
           </TabContext>
         </Box>
       </Box>
+      {(isPending || studentAcademics.isPending || studentFees.isPending) && (
+        <LoadingSpinner value="Please Wait..." />
+      )}
     </Container>
   );
 };

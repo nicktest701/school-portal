@@ -11,6 +11,7 @@ import subject from '../assets/images/header/subject.svg';
 import hand from '../assets/images/hand.svg';
 import excel from '../assets/images/excel.png'
 import csv from '../assets/images/csv.png'
+import empty from '../assets/svg/empty.svg'
 
 //IMAGES
 export const EMPTY_IMAGES = {
@@ -24,7 +25,8 @@ export const EMPTY_IMAGES = {
   score,
   subject,
   grade,
-  hand
+  hand,
+  empty
 };
 
 export const IMAGES = {

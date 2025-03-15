@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import Stack from "@mui/material/Stack";
 import { NavLink } from "react-router-dom";
+import { getLastPathname } from "@/config/helper";
 
 const DrawerItem = ({ title, icon, to }) => {
   const { palette } = useTheme();
@@ -21,7 +22,7 @@ const DrawerItem = ({ title, icon, to }) => {
 
   return (
     <Tooltip title={title} placement="right">
-      <NavLink to={to} style={myLinkStyles}>
+      <NavLink to={to} style={myLinkStyles} end>
         <Stack
           direction="row"
           justifyContent="flex-start"
@@ -41,7 +42,7 @@ const DrawerItem = ({ title, icon, to }) => {
           spacing={1}
         >
           <Tooltip
-            title={to?.split("/")[1]}
+            title={getLastPathname(to)}
             placement="right"
             
             slotProps={{

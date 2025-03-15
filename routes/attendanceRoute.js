@@ -159,6 +159,7 @@ router.post(
         level,
         date,
         status: [status],
+        createdBy: req.user?.id
       };
 
       await Attendance.create(attendance);

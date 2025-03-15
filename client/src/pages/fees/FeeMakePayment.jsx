@@ -13,7 +13,7 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import React, { useContext, useMemo, useState } from "react";
+import React, { use, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useFormik } from "formik";
 import _ from "lodash";
@@ -45,8 +45,8 @@ const FeeMakePayment = () => {
   const {
     user,
     userState: { session },
-  } = useContext(UserContext);
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  } = use(UserContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [msg, setMsg] = useState({ severity: "", text: "" });
   const [studentInfo, setStudentInfo] = useState({

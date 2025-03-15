@@ -113,8 +113,15 @@ const Uploads = () => {
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-          const headers = jsonData[0].map((header) => _.camelCase(header));
-          const rows = jsonData.slice(1);
+          // Function to filter out empty or undefined rows
+          const filteredData = jsonData.filter((row) =>
+            Object.values(row).some(
+              (value) => value !== undefined && value !== ""
+            )
+          );
+
+          const headers = filteredData[0].map((header) => _.camelCase(header));
+          const rows = filteredData.slice(1);
 
           const results = rows.map((row) => {
             const rowData = {};
@@ -206,6 +213,7 @@ const Uploads = () => {
   });
 
   const onSubmit = () => {
+    
     Swal.fire({
       title: "Importing results",
       text: `You are about to import ${dataCategory} ${dataType}.Proceed with import?`,

@@ -2,38 +2,49 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from "@fullcalendar/list";
 // import CalendarEvent from "./CalendarEvent";
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getAllEvents } from "../../api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { Popover, Typography } from "@mui/material";
-import { useState } from "react";
+import { Typography } from "@mui/material";
+import { use, useState } from "react";
+import { UserContext } from "@/context/providers/UserProvider";
+import { getAllHolidays } from "@/api/holidayAPI";
 
 function CustomEvent() {
-  const session = JSON.parse(localStorage.getItem("@school_session"));
+  const { session } = use(UserContext);
   const navigate = useNavigate();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
+  // const [selectedEvent, setSelectedEvent] = useState(null);
 
   const events = useQuery({
     queryKey: ["events"],
     queryFn: () => getAllEvents(),
     initialData: [],
-    select: (events) => {
-      return events.map((event) => {
+  });
+
+  const holidays = useQuery({
+    queryKey: ["holidays"],
+    queryFn: () => getAllHolidays(""),
+    initialData: [],
+    select: (holidays) => {
+      return holidays.map((holiday) => {
         return {
-          _id: event?._id,
-          title: event?.title,
-          date: moment(event?.createdAt).format("YYYY-MM-DD"),
+          title: holiday.name,
+          start: holiday.date,
+          end: holiday.date,
+          type: "holiday",
         };
       });
     },
+    // staleTime: 1000 * 60 * 5, // 5 minutes cache
   });
 
   // const handleDateSelect = (selectInfo) => {
@@ -42,17 +53,16 @@ function CustomEvent() {
   //   // Add any other logic you need here, such as updating state or making an API call
   // };
   // Handle mouse hover to open popover
-  const handleEventMouseEnter = (info) => {
-    setAnchorEl(info.el);
-    setSelectedEvent(info.event);
-  };
+  // const handleEventMouseEnter = (info) => {
+  //   setAnchorEl(info.el);
+  //   setSelectedEvent(info.event);
+  // };
 
-  // Close the popover
-  const handleEventMouseLeave = () => {
-    setAnchorEl(null);
-    setSelectedEvent(null);
-  };
-
+  // // Close the popover
+  // const handleEventMouseLeave = () => {
+  //   setAnchorEl(null);
+  //   setSelectedEvent(null);
+  // };
 
   return (
     <Box
@@ -64,12 +74,14 @@ function CustomEvent() {
       }}
     >
       <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
           left: matches ? "prev,next,today" : "prev,next",
           center: "title",
-          right: matches ? "dayGridMonth,timeGridWeek,timeGridDay" : "",
+          right: matches
+            ? "dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+            : "",
         }}
         editable={true}
         selectable={true}
@@ -78,7 +90,8 @@ function CustomEvent() {
         dayMaxEvents={true}
         initialDate={moment().format("YYYY-MM-DD")}
         events={[
-          events?.data,
+          ...events?.data,
+          ...holidays.data,
           {
             _id: "1",
             title: `Start of ${session?.term} (${session?.academicYear})`,
@@ -95,28 +108,40 @@ function CustomEvent() {
             date: moment(session?.vacationDate).format("YYYY-MM-DD"),
           },
         ]}
-        eventBackgroundColor="transparent"
+        eventBackgroundColor="var(--primary)"
         eventBorderColor="white"
-        eventTextColor="#333"
+        // eventTextColor="#333"
         eventContent={(eventInfo) => (
-          <Box
-            sx={{
-              cursor: "pointer",
-              // width: "20ch",
-              whiteSpace: "wrap",
-              width: "12ch",
-              fontSize: "10px",
-              pl: 1,
-              bgcolor:'lightgray'
-              
+          <Tooltip
+            slotProps={{
+              tooltip: {
+                sx: { fontSize: 14, textTransform: "uppercase" },
+              },
             }}
+          
+            title={eventInfo?.event?.extendedProps?.type}
           >
-            <strong>{eventInfo?.event?.title}</strong>
-          </Box>
+            <Box
+              sx={{
+                cursor: "pointer",
+                // width: "20ch",
+                // whiteSpace: "wrap",
+                // width: "12ch",
+                // fontSize: "11px",
+                px: 1,
+                bgcolor:
+                  eventInfo?.event?.extendedProps?.type === "holiday"
+                    ? "var(--secondary)"
+                    : null,
+              }}
+            >
+              <Typography>{eventInfo?.event?.title}</Typography>
+            </Box>
+          </Tooltip>
         )}
-        eventMouseEnter={handleEventMouseEnter}
-        eventMouseLeave={handleEventMouseLeave}
-        eventClick={({ event: { extendedProps } }) => {
+        // eventMouseEnter={handleEventMouseEnter}
+        // eventMouseLeave={handleEventMouseLeave}
+        eventClick={({ event: { extendedProps, id } }) => {
           if (["1", "2", "3", "4"].includes(extendedProps?._id)) {
             return;
           }
@@ -125,11 +150,10 @@ function CustomEvent() {
         loading={events.isPending}
       />
 
-      <Popover
+      {/* <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleEventMouseLeave}
-     
       >
         {selectedEvent && (
           <Typography sx={{ p: 2 }}>
@@ -139,7 +163,7 @@ function CustomEvent() {
             {moment(selectedEvent.start).format("MMMM Do, YYYY")}
           </Typography>
         )}
-      </Popover>
+      </Popover> */}
     </Box>
   );
 }

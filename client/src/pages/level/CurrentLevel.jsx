@@ -4,9 +4,11 @@ import CurrentLevelTab from "./CurrentLevelTab";
 import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import { useParams } from "react-router-dom";
+import useLevelById from "@/components/hooks/useLevelById";
 
 const CurrentLevel = () => {
-  const { type } = useParams();
+  const { id } = useParams();
+  const { levelName } = useLevelById(id);
   return (
     <>
       <Back to="/level" color="primary.main" />
@@ -18,7 +20,7 @@ const CurrentLevel = () => {
         color="primary.main"
         right={
           <Typography variant="h5" whiteSpace="nowrap" pr={2}>
-            {type}
+            {levelName}
           </Typography>
         }
       />

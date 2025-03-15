@@ -65,7 +65,7 @@ router.get(
   "/verify",
   verifyRefreshJWT,
   asyncHandler(async (req, res) => {
-    const user = req.session.user;
+    const user = req.user;
 
 
     // const info = await knex("school_user_info").where("userId", id).select("*");
@@ -192,15 +192,15 @@ router.post(
     // .where('username', username)
     // .first();
 
-    if (_.isEmpty(user[0])) {
+    if (_.isEmpty(user)) {
       return res.status(404).json(" Username or Password is incorrect !");
     }
-    const isTrue = bcrypt.compareSync(req.body.password, user[0].password);
+    const isTrue = bcrypt.compareSync(req.body.password, user.password);
     if (!isTrue) {
       return res.status(404).json(" Username or Password is incorrect !");
     }
 
-    if (user[0].active === false) {
+    if (user.active === false) {
       return res
         .status(404)
         .json(
@@ -211,23 +211,23 @@ router.post(
     // console.log(user)
 
     const refreshData = {
-      id: user[0]._id?.toString(),
+      id: user._id?.toString(),
 
     };
     const loggedInUser = {
-      _id: user[0]._id?.toString(),
-      id: user[0]._id?.toString(),
-      profile: user[0].profile,
-      firstname: user[0].firstname,
-      lastname: user[0].lastname,
-      fullname: user[0].fullname,
-      username: user[0].username,
-      dateofbirth: user[0].dateofbirth,
-      gender: user[0].gender,
-      email: user[0].email,
-      phonenumber: user[0].phonenumber,
-      role: user[0].role,
-      active: user[0].active,
+      _id: user._id?.toString(),
+      id: user._id?.toString(),
+      profile: user.profile,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      fullname: user.fullname,
+      username: user.username,
+      dateofbirth: user.dateofbirth,
+      gender: user.gender,
+      email: user.email,
+      phonenumber: user.phonenumber,
+      role: user.role,
+      active: user.active,
     };
 
 
@@ -556,7 +556,7 @@ router.put(
   verifyJWT,
   asyncHandler(async (req, res) => {
 
-    req.session.user = null
+    req.user = null
     delete req.session
     res.sendStatus(204)
   })
@@ -701,45 +701,5 @@ router.put(
   })
 );
 
-//@POST Update User profile
-router.put(
-  "/school/profile",
-  verifyJWT,
-  upload.single("badge"),
-  asyncHandler(async (req, res) => {
-
-
-    if (_.isEmpty(req.file)) {
-      return res.status(400).json("Please upload a badge");
-    }
-
-
-    const filename = req.file?.filename;
-    const badge = await uploadFile(filename, 'users/');
-
-
-
-    const updatedBadge = await School.findOneAndUpdate(
-      {
-        unique: "school-info",
-      },
-      {
-        $set: {
-          badge
-        },
-      },
-      {
-        new: true,
-        upsert: true,
-      }
-    );
-
-    if (_.isEmpty(updatedBadge)) {
-      return res.status(400).json("Error updating logo.Try again later.");
-    }
-
-    return res.status(200).json(badge);
-  })
-);
 
 module.exports = router;

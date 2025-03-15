@@ -8,7 +8,7 @@ export const TEACHERS_COLUMN = [
     hidden: true,
   },
   {
-    field: "fullName",
+    field: "fullname",
     title: "FullName",
     hidden: true,
     export: true,
@@ -39,7 +39,7 @@ export const TEACHERS_COLUMN = [
                 fontWeight: "bold",
               }}
             >
-              {rowData.fullName}
+              {rowData.fullname}
             </Typography>
           }
           secondary={

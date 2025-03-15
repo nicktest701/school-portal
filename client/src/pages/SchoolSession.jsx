@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { use, useState } from "react";
 import { Add, ArrowForwardRounded, SchoolRounded } from "@mui/icons-material";
 import {
   Container,
@@ -17,8 +17,8 @@ import { UserContext } from "../context/providers/UserProvider";
 import AddSchoolSession from "./session/AddSchoolSession";
 
 const SchoolSession = () => {
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const { userDispatch, user } = useContext(UserContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
+  const { userDispatch, user, updateSession } = use(UserContext);
   const navigate = useNavigate();
   const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState("");
@@ -48,8 +48,9 @@ const SchoolSession = () => {
       return;
     }
     schoolSessionDispatch({ type: "setCurrentSession", payload: session });
-    localStorage.setItem("@school_session", JSON.stringify(session));
-    userDispatch({ type: "setSession", payload: session });
+    updateSession(session);
+    // localStorage.setItem("@school_session", JSON.stringify(session));
+    // userDispatch({ type: "setSession", payload: session });
 
     navigate("/", {
       replace: true,
@@ -58,9 +59,9 @@ const SchoolSession = () => {
 
   const handleOpenAddSession = () => setOpenAddSession(true);
 
-  if (_.isEmpty(user?.id)) {
-    return <Navigate to="/login" />;
-  }
+  // if (_.isEmpty(user?.id)) {
+  //   return <Navigate to="/login" />;
+  // }
 
   return (
     <Container

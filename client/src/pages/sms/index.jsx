@@ -9,6 +9,5 @@ const SMS = () => {
   );
 };
 
-SMS.propTypes = {};
 
 export default SMS;

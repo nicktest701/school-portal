@@ -17,23 +17,6 @@ function ViewEvent() {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const { id } = useParams();
-  // const [loaded, setLoaded] = useState(false);
-
-  //   useEffect(() => {
-  //     // Load the low-quality image initially
-  //     const backgroundDiv = document.getElementById("background-div");
-  //     backgroundDiv.style.background = `url(${EMPTY_IMAGES.level})`;
-
-  //     // Create an image object for the original image
-  //     const originalImage = new Image();
-  //     originalImage.src = EMPTY_IMAGES.level;
-
-  //     // Replace low-quality image with original image on load
-  //     originalImage.onload = () => {
-  //       backgroundDiv.style.backgroundImage = `url(${EMPTY_IMAGES.level})`;
-  //       setLoaded(true);
-  //     };
-  //   }, []);
 
   const event = useQuery({
     queryKey: ["event", id],
@@ -59,9 +42,9 @@ function ViewEvent() {
           mb: 4,
         }}
       >
-        <Typography variant="h4" color="primary" paragraph>
-          {event?.data?.title}
-        </Typography>
+        <div style={{ flexGrow: 1 }}>
+          <Back to={searchParams.get("redirect_to") || "/"} />
+        </div>
 
         <Box
           spacing={2}
@@ -71,9 +54,19 @@ function ViewEvent() {
           gap={2}
           width="100%"
         >
-          <div style={{ flexGrow: 1 }}>
-            <Back to={searchParams.get("redirect_to") || "/"} />
-          </div>
+          <ListItemText
+            primary={
+              <Typography variant="h3" color="primary">
+                {event?.data?.title}
+              </Typography>
+            }
+            secondary={
+              <Typography variant="subtitle" color="" paragraph>
+                {event?.data?.caption}
+              </Typography>
+            }
+            aria-autocomplete=""
+          />
 
           <Box
             display="flex"
@@ -81,15 +74,18 @@ function ViewEvent() {
             alignItems="center"
             gap={2}
           >
-            <Avatar />
+            <Avatar>{event?.data?.createdBy?.fullname[0]}</Avatar>
             <ListItemText
-              primary="Hello"
-              secondary={`${moment(event?.data?.createdAt)?.format("LLL")}`}
-              primaryTypographyProps={{
-                color: "secondary.main",
-              }}
-              secondaryTypographyProps={{
-                whiteSpace: "nowrap",
+              primary={event?.data?.createdBy?.fullname}
+              secondary={moment(event?.data?.createdAt)?.format("LLL")}
+              aria-autocomplete=""
+              slotProps={{
+                primary: {
+                  color: "secondary.main",
+                },
+                secondary: {
+                  whiteSpace: "nowrap",
+                },
               }}
             />
           </Box>

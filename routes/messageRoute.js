@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const _ = require('lodash');
 const asyncHandler = require('express-async-handler');
+const _ = require('lodash');
 const Student = require('../models/studentModel');
 const Teacher = require('../models/teacherModel');
 const Parent = require('../models/parentModel');

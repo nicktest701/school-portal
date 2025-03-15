@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import _ from "lodash";
 import {
   Container,
@@ -17,9 +17,11 @@ import moment from "moment";
 import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { UserContext } from "@/context/providers/UserProvider";
 
-function AttendanceHistory({ section }) {
-  const { id, type } = useParams();
+function AttendanceHistory() {
+  const { user } = use(UserContext);
+  const { id } = useParams();
 
   const attendanceHistory = useQuery({
     queryKey: ["attendance-history", id],
@@ -29,14 +31,14 @@ function AttendanceHistory({ section }) {
 
   return (
     <Container>
-      <Back
-        to={
-          section === "level"
-            ? `/level/attendance/${id}/${type}`
-            : `/course/attendance/${id}/${type}`
-        }
-        color="primary.main"
-      />
+      {user?.role === "administrator" && (
+        <Back to={`/level/${id}/attendance`} color="primary.main" />
+      )}
+
+      {user?.role === "teacher" && (
+        <Back to={`/course/level/${id}/attendance`} color="primary.main" />
+      )}
+
       <CustomTitle
         title="Attendance History"
         subtitle="Review past attendance records to analyze trends, identify issues, and ensure comprehensive tracking of student and staff presence."

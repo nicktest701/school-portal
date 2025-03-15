@@ -27,10 +27,8 @@ function AssignCourses() {
       }),
   });
 
- 
-
   const viewStudents = ({ _id, levelId, subject, level }) =>
-    navigate(`/course/assign/${levelId}/${level}?sub=${subject?.name}`, {
+    navigate(`/course/assign/${levelId}?_id=${subject?._id}`, {
       state: {
         id: _id,
         subject,

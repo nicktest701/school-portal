@@ -18,12 +18,13 @@ import { loginUserValidationSchema } from "../config/validationSchema";
 import { getUserAuth } from "../api/userAPI";
 import { UserContext } from "../context/providers/UserProvider";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import FindSchool from "./FindSchool";
 
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { school_info, logInUser } = useContext(UserContext);
+  const [showLogin, setShowLogin] = useState(false);
+  const {  school_info, logInUser } = useContext(UserContext);
   const initialValues = {
     username: "",
     password: "",
@@ -51,6 +52,11 @@ const Login = () => {
       },
     });
   };
+ 
+
+  if (!school_info?._id) {
+    return <FindSchool setValue={setShowLogin} />;
+  }
 
   return (
     <>
@@ -213,7 +219,6 @@ const Login = () => {
           (+233543772591)
         </Typography>
       </Box>
-      {/* <CustomParticle /> */}
     </>
   );
 };

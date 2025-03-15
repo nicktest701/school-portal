@@ -18,16 +18,16 @@ import useLevelById from "../hooks/useLevelById";
 import { Box, ListSubheader } from "@mui/material";
 import Back from "../Back";
 import CustomTitle from "../custom/CustomTitle";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const AddCurrentSubjects = () => {
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { id } = useParams();
   const [subject, setSubject] = useState([]);
   const [subjectList, setSubjectList] = useState([]);
 
-  const { subjects, levelLoading } = useLevelById(searchParams.get("_id"));
+  const { levelName, subjects, levelLoading } = useLevelById(id);
   // console.log(subjects)
 
   const subjectOptions = useQuery({
@@ -38,7 +38,7 @@ const AddCurrentSubjects = () => {
 
   useEffect(() => {
     setSubjectList(subjects);
-  }, [searchParams.get("_id"), subjects]);
+  }, [id, subjects]);
 
   //Add Subjects to subject list
   const handleAddSubject = () => {
@@ -72,14 +72,14 @@ const AddCurrentSubjects = () => {
   //Save subjects to db
   const handleSaveSubjects = () => {
     const values = {
-      levelId: searchParams.get("_id"),
+      levelId: id,
       subjects: _.map(subjectList, "_id"),
     };
 
     mutateAsync(values, {
       onSettled: () => {
         queryClient.invalidateQueries(["subjects"]);
-        queryClient.invalidateQueries(["level", searchParams.get("_id")]);
+        queryClient.invalidateQueries(["level", id]);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -92,9 +92,9 @@ const AddCurrentSubjects = () => {
 
   return (
     <>
-      <Back to="/level" color="primary.main" />
+      <Back to={-1} color="primary.main" />
       <CustomTitle
-        title={`Current Courses for ${searchParams.get("type")}`}
+        title={`Current Courses for ${levelName}`}
         subtitle="Add new subjects to the current level"
         color="primary.main"
       />

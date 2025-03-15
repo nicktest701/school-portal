@@ -21,6 +21,7 @@ const TeacherHome = () => {
     queryKey: ["teachers"],
     queryFn: getAllTeachers,
   });
+
   const isNotTeacher = teachers?.data?.length === 0;
 
   //VIEW Teacher Info

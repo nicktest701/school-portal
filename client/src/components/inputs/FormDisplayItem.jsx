@@ -6,17 +6,17 @@ function FormDisplayItem({ label, value }) {
       label={label}
       value={value}
       fullWidth
-      inputProps={{
-        style: {
-          backgroundColor: "whitesmoke",
-          // backgroundColor: "#D9DEEF",
-          color: "var(--primary)",
-          fontWeight: "bold",
-          textTransform: "capitalize",
+      slotProps={{
+        input: {
+          readOnly: true,
+          sx: {
+            backgroundColor: "whitesmoke",
+            // backgroundColor: "#D9DEEF",
+            color: "var(--primary)",
+            fontWeight: "bold",
+            textTransform: "capitalize",
+          },
         },
-      }}
-      InputProps={{
-        readOnly: true,
       }}
     />
   );

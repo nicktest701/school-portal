@@ -32,10 +32,11 @@ import {
 } from "@mui/icons-material";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getExams } from "@/api/ExaminationAPI";
+import { getExam } from "@/api/ExaminationAPI";
 import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import { gradeColor } from "@/config/gradeColor";
+import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
 
 function ExamsScore() {
   const { state } = useLocation();
@@ -46,8 +47,8 @@ function ExamsScore() {
   const [tab, setTab] = useState("1");
 
   const exams = useQuery({
-    queryKey: ["exams-by-id", searchParams.get("eid")],
-    queryFn: () => getExams(searchParams.get("eid")),
+    queryKey: ["exams-id", searchParams.get("eid")],
+    queryFn: () => getExam(searchParams.get("eid")),
     enabled: !!searchParams.get("eid"),
   });
 
@@ -61,23 +62,20 @@ function ExamsScore() {
   return (
     <>
       <>
-        <Back to={state?.prevPath} color="primary.main" />
-        <CustomTitle
-          title="Student Assessment"
-          subtitle="View and manipulate results of student"
-          color="primary.main"
-        />
-
         {exams.isPending ? (
-          <Stack justifyContent="center" alignItems="center">
-            <CircularProgress />
-          </Stack>
+          <RecordSkeleton />
         ) : exams?.isError ? (
           <Stack justifyContent="center" alignItems="center">
             <Typography>An error has occurred!</Typography>
           </Stack>
         ) : (
           <>
+            <Back to={state?.prevPath} color="primary.main" />
+            <CustomTitle
+              title="Student Assessment"
+              subtitle="View and manipulate results of student"
+              color="primary.main"
+            />
             {/* Dashboard hero  */}
             <Card sx={{ margin: "auto", padding: 2 }}>
               <CardContent>
@@ -238,7 +236,7 @@ function ExamsScore() {
                       </Typography>
                     </Box>
                   </Grid2>
-                  <Grid2 item size={{ xs: 6, md: 4 }}>
+                  <Grid2 size={{ xs: 6, md: 4 }}>
                     <Box textAlign="center">
                       <GroupIcon color="success" />
                       <Typography variant="body1" color="success">
@@ -250,7 +248,7 @@ function ExamsScore() {
                       </Typography>
                     </Box>
                   </Grid2>
-                  <Grid2 item size={{ xs: 6, md: 4 }}>
+                  <Grid2 size={{ xs: 6, md: 4 }}>
                     <Box textAlign="center">
                       <AssignmentTurnedInIcon color="error" />
                       <Typography variant="body1" color="error">

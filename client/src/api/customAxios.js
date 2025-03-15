@@ -71,6 +71,7 @@ api.interceptors.response.use(
           // Retry the original request with the new access token
           return api(originalRequest);
         } catch (refreshError) {
+        
           deleteUser();
           deleteToken();
           if (location.pathname !== "/login") {

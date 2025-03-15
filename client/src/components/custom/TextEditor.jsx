@@ -1,9 +1,9 @@
 import { FormHelperText, FormLabel } from "@mui/material";
 import React, { useRef } from "react";
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
-function TextEditor({ label, value, setValue, touched, errors }) {
+function TextEditor({ label, value, setValue, touched, errors, ...props }) {
   const quillRef = useRef(null);
   const toolbarOptions = [
     ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -50,7 +50,7 @@ function TextEditor({ label, value, setValue, touched, errors }) {
         placeholder={label}
         style={{
           width: "100%",
-        //   borderRadius: '8px',
+          //   borderRadius: '8px',
           // height: "250px",
           border: touched && errors ? "1px solid #B72136" : "none",
         }}
@@ -79,6 +79,7 @@ function TextEditor({ label, value, setValue, touched, errors }) {
             },
           },
         }}
+        {...props}
       />
       {touched && errors && (
         <FormHelperText

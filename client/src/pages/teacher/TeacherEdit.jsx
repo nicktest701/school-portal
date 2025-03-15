@@ -109,7 +109,7 @@ const TeacherEdit = () => {
       <Back to={`/teacher/${id}`} color="primary.main" />
       <CustomTitle
         title="Edit Teacher"
-        subtitle="Manage teachers profile"
+        subtitle="Manage changes to teachers profile"
         color="primary.main"
       />
 
@@ -165,10 +165,10 @@ const TeacherEdit = () => {
                       label="Surname"
                       fullWidth
                       size="small"
-                      value={values?.surname || ""}
-                      onChange={handleChange("surname")}
-                      error={Boolean(touched?.surname && errors?.surname)}
-                      helperText={touched?.surname && errors?.surname}
+                      value={values?.lastname || ""}
+                      onChange={handleChange("lastname")}
+                      error={Boolean(touched?.lastname && errors?.lastname)}
+                      helperText={touched?.lastname && errors?.lastname}
                     />
                   </CustomFormControl>
                   <TextField

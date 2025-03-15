@@ -110,6 +110,19 @@ input {
   display: none;
 }
 
+/* styles.css or App.css */
+.scroll-to-top-button {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  padding: 5px;
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 .sidebar::-webkit-scrollbar,
 .css-10vnudn-MuiTableCell-root-MuiTablePagination-root::-webkit-scrollbar {
   scrollbar-width: none;
@@ -124,12 +137,12 @@ input {
 
 .mini-drawer-link {
   padding-inline: 10px;
-  padding-block: 4px;
+  padding-block: 6px;
   text-decoration: none;
   color: #012e54;
 }
 .mini-drawer-link:hover {
-  background-color: #012e54;
+  background-color:rgba(1, 47, 84, 0.27) !important;
   color: #fff;
 }
 
@@ -349,7 +362,6 @@ tbody tr:hover svg {
 }
 
 .report-card {
-
   /* background: linear-gradient(
       rgba(255, 255, 255, 0.96),
       rgba(255, 255, 255, 0.96)
@@ -379,6 +391,9 @@ tbody tr:hover svg {
     margin: 0;
     padding: 0;
     border: 0;
+  }
+  .print-btn {
+    display: none;
   }
   .report {
     margin: 0;
@@ -787,8 +802,114 @@ tbody tr:hover svg {
 
 .notification-item {
   background-color: #fff;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
 .notification-item:hover {
-  background-color: lightgray !important;
+  background-color: rgba(0,0,0,0.05) !important;
+}
+
+.holiday-calendar {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.calendar-container {
+  margin-bottom: 20px;
+}
+
+.highlight {
+  background-color: #ffeb3b;
+  color: #000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* 
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.holiday-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.holiday-list th, .holiday-list td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.holiday-list th {
+  background-color: #f2f2f2;
+} */
+
+//
+.report-customization {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.template-selection {
+  margin-bottom: 20px;
+}
+
+.template-editor {
+  margin-bottom: 20px;
+}
+
+.editor-tools {
+  margin-bottom: 10px;
+}
+
+.editor-content {
+  border: 1px solid #ddd;
+  padding: 10px;
+  min-height: 200px;
+}
+
+.draggable-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.preview-section {
+  margin-bottom: 20px;
+}
+
+.preview-content {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.export-options {
+  display: flex;
+  gap: 10px;
 }

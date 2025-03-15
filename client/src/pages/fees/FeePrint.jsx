@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useRef } from "react";
+import React, { use, useRef } from "react";
 import _ from "lodash";
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
@@ -17,10 +17,12 @@ import { Navigate, useLocation } from "react-router-dom";
 
 import { currencyFormatter } from "@/config/currencyFormatter";
 import Back from "@/components/Back";
+import { UserContext } from "@/context/providers/UserProvider";
+
 
 function FeePrint() {
+  const { school_info } = use(UserContext);
   // const fee
-  const school_info = JSON.parse(localStorage.getItem("@school_info"));
   const componentRef = useRef();
   const { state } = useLocation();
 

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const _ = require('lodash');
 const asyncHandler = require('express-async-handler');
+const User = require('../models/userModel');
 const Announcement = require('../models/announcementModel');
 const Notification = require('../models/notificationModel');
 const { truncateWords } = require('../config/helper');
@@ -9,7 +10,9 @@ const { truncateWords } = require('../config/helper');
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const announcements = await Announcement.find({}).sort({ createdAt: -1 });
+    const announcements = await Announcement.find({
+      school: req.user.school
+    }).sort({ createdAt: -1 });
 
     res.status(200).json(announcements);
   })
@@ -33,7 +36,11 @@ router.post(
   asyncHandler(async (req, res) => {
     const newAnnouncement = req.body;
 
-    const announcement = await Announcement.create(newAnnouncement);
+    const announcement = await Announcement.create({
+      ...newAnnouncement,
+      school: req.user.school,
+      createdBy: req.user.id,
+    });
 
     if (_.isEmpty(announcement)) {
       return res
@@ -41,14 +48,23 @@ router.post(
         .json('Couldnt create announcement.Please try again later...');
     }
 
-    await Notification.create({
+    const users = await User.find({}, "_id"); // Get all user IDs
+  
+    const notifications = users.map((user) => ({
+      user: user._id,
+      school: req.user.school,
+      session: newAnnouncement?.session,
+      term: newAnnouncement?.term,
       type: 'Announcement',
       title: newAnnouncement?.title,
       description: truncateWords(newAnnouncement?.description, 20),
       album: null,
-      link: `/announcements?_title=${announcement.title}`
-    })
+      link: `/announcements?_title=${announcement.title}`,
+      createdBy: req.user.id,
+    }));
 
+
+    await Notification.insertMany(notifications);
 
     res.status(200).json('Announcement Created!');
 

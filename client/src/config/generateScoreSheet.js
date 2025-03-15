@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 export const getColumns = (subjects) => {
-  const customColumns = subjects.map((subject) => {
+ 
+  const customColumns = subjects?.map((subject) => {
     return {
       title: subject?.name,
       field: _.camelCase(subject?.name),
@@ -20,7 +21,7 @@ export const getColumns = (subjects) => {
       cellStyle: {
         width: 400,
         // color: 'blue',
-        fontWeight:'bold',
+        fontWeight: 'bold',
         whiteSpace: 'nowrap',
         minWidth: 300,
       },
@@ -54,17 +55,17 @@ export const getColumns = (subjects) => {
   ];
 };
 
-export const getResults = (results, subjects) => {
-  const customSubjects = subjects.map((subject) => {
+export const getResults = (results = [], subjects = []) => {
+  const customSubjects = subjects?.map((subject) => {
     return {
       [_.camelCase(subject?.name)]: 0,
     };
   });
 
-  const customData = results.map(
+  const customData = results?.map(
     ({ fullName, scores, overallScore, grade, position }) => {
       //extract total subject score
-      const items = scores.map(({ subject, totalScore }) => {
+      const items = scores?.map(({ subject, totalScore }) => {
         return {
           [_.camelCase(subject)]: totalScore,
         };

@@ -20,8 +20,10 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import TextEditor from "@/components/custom/TextEditor";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 const SMSQuick = () => {
+  const navigate = useNavigate();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const [radioValue, setRadioValue] = useState("sms");
@@ -40,6 +42,7 @@ const SMSQuick = () => {
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
+        navigate("/messages");
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));

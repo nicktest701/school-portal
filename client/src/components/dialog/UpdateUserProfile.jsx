@@ -181,6 +181,11 @@ const UpdateUserProfile = () => {
                     fullWidth
                     size="small"
                     value={values.username || ""}
+                    slotProps={{
+                      input: {
+                        readOnly: true,
+                      },
+                    }}
                     onChange={handleChange("username")}
                     error={Boolean(touched.username && errors.username)}
                     helperText={touched.username && errors.username}

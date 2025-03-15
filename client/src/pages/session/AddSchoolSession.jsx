@@ -14,19 +14,19 @@ import moment from 'moment';
 import { Formik } from 'formik';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Button from "@mui/material/Button";
-import { postTerm } from '../../api/termAPI';
-import { sessionValidationSchema } from '../../config/validationSchema';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
+import { postTerm } from '@/api/termAPI';
+import { sessionValidationSchema } from '@/config/validationSchema';
+import { SchoolSessionContext } from '@/context/providers/SchoolSessionProvider';
 import {
   alertError,
   alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import { sessionInitialValues } from '../../config/initialValues';
-import { SCHOOL_TERMS } from '../../mockup/columns/sessionColumns';
-import Transition from '../../components/animations/Transition';
-import CustomDatePicker from '../../components/inputs/CustomDatePicker';
-import CustomYearPicker from '../../components/inputs/CustomYearPicker';
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
+} from '@/context/actions/globalAlertActions';
+import { sessionInitialValues } from '@/config/initialValues';
+import { SCHOOL_TERMS } from '@/mockup/columns/sessionColumns';
+import Transition from '@/components/animations/Transition';
+import CustomDatePicker from '@/components/inputs/CustomDatePicker';
+import CustomYearPicker from '@/components/inputs/CustomYearPicker';
+import CustomDialogTitle from '@/components/dialog/CustomDialogTitle';
 
 const AddSchoolSession = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);

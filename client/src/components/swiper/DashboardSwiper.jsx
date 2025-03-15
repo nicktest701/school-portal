@@ -1,10 +1,19 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import React from "react";
-import { Navigation, Pagination, Autoplay, A11y, Scrollbar,EffectCards } from "swiper/modules";
+import React, { use } from "react";
+import {
+  Navigation,
+  Pagination,
+  Autoplay,
+  A11y,
+  Scrollbar,
+  EffectCards,
+} from "swiper/modules";
 import { getAllEvents } from "@/api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
 
 import DashboardSwiperContent from "./DashboardSwiperContent";
+import student4 from "../../assets/images/students/student4.jpg";
+import { UserContext } from "@/context/providers/UserProvider";
 
 // Styles must use direct files imports
 import "swiper/css/bundle";
@@ -13,19 +22,14 @@ import "swiper/css/navigation";
 import "swiper/css/scrollbar";
 import "swiper/css/pagination";
 
-// import student3 from "../../assets/images/students/student3.jpg";
-import student4 from "../../assets/images/students/student4.jpg";
-
 function DashboardSwiper() {
-  const school_info = JSON.parse(localStorage.getItem("@school_info"));
- 
+  const { school_info } = use(UserContext);
+
   const events = useQuery({
     queryKey: ["events"],
     queryFn: () => getAllEvents(),
     initialData: [],
   });
-
-
 
   return (
     <Swiper
@@ -35,7 +39,7 @@ function DashboardSwiper() {
       speed={2000}
       spaceBetween={30}
       centeredSlides={true}
-      loop
+      loop={events?.data?.length > 0}
       autoplay={{
         delay: 5000,
         // disableOnInteraction: false,

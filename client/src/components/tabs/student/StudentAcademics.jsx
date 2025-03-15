@@ -19,7 +19,7 @@ const StudentAcademics = ({ data }) => {
   };
 
   // Flatten and filter the data
-  const filteredItems = data.map((items) => {
+  const filteredItems = data?.map((items) => {
     const selectedItems = items[1].filter(
       (item) =>
         item.academicYear.toLowerCase().includes(searchTerm) ||

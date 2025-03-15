@@ -225,27 +225,7 @@ export const putSchoolInfo = async (schoolInfo) => {
   }
 };
 
-export const updateSchoolLogo = async (badge) => {
-  const formData = new FormData();
-  formData.append('unique', 'school-info');
-  formData.append('badge', badge);
 
-  try {
-    const res = await api({
-      method: 'PUT',
-      url: `/users/school/profile`,
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    return res.data;
-  } catch (error) {
-    return error.response.data
-
-  }
-};
 
 export const downloadTemplate = async (templateName) => {
   try {

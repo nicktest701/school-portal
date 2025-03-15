@@ -29,10 +29,19 @@ const CurrentFeeSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    createdBy: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,
   }
 
 );
+CurrentFeeSchema.index({ session: 1 });
+CurrentFeeSchema.index({ term: 1 });
+CurrentFeeSchema.index({ level: 1 });
+CurrentFeeSchema.index({ student: 1 });
+CurrentFeeSchema.index({ fee: 1 });
 module.exports = db.model("CurrentFee", CurrentFeeSchema);

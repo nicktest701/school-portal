@@ -17,10 +17,9 @@ import {
   Paper,
 } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
-import PropTypes from "prop-types";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import { useQuery } from "@tanstack/react-query";
-import { getExams } from "@/api/ExaminationAPI";
+import { getExam } from "@/api/ExaminationAPI";
 import ReportCard from "./ReportCard";
 import { useSearchParams } from "react-router-dom";
 import { gradeColor } from "@/config/gradeColor";
@@ -45,7 +44,7 @@ const ViewExamsRecord = () => {
 
   const { data: student } = useQuery({
     queryKey: ["student-exams-records", searchParams.get("report")],
-    queryFn: () => getExams(searchParams.get("report")),
+    queryFn: () => getExam(searchParams.get("report")),
     enabled: !!searchParams.get("report"),
   });
 
@@ -84,36 +83,6 @@ const ViewExamsRecord = () => {
             <Typography variant="h5">
               TOTAL SCORE - {student?.overallScore}
             </Typography>
-            {/* <table style={{ textAlign: "left", borderCollapse: "collapse" }}>
-              <thead>
-                <tr style={{ fontSize: "12px" }}>
-                  <th>SUBJECT</th>
-                  <th> CLASS SCORE (50%)</th>
-                  <th> EXAMS SCORE(50%)</th>
-                  <th>TOTAL SCORE (100%)</th>
-
-                  <th>GRADE</th>
-                  <th>REMARKS</th>
-                </tr>
-              </thead>
-              <tbody style={{ width: "100%" }}>
-                {student?.scores !== undefined ? (
-                  student?.scores.length !== 0 &&
-                  student?.scores.map((item) => (
-                    <ExamsItem key={item.subject} item={item} />
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan="7"
-                      style={{ padding: "3px 1px", fontSize: "20px" }}
-                    >
-                      No Student Record Available
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table> */}
           </Stack>
 
           <TableContainer component={Paper}>
@@ -163,9 +132,6 @@ const ViewExamsRecord = () => {
     </>
   );
 };
-ViewExamsRecord.propTypes = {
-  open: PropTypes.bool,
-  setOpen: PropTypes.func,
-};
+
 
 export default React.memo(ViewExamsRecord);

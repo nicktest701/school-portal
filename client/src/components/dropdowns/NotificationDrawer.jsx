@@ -9,45 +9,42 @@ import {
 } from "@mui/material";
 import _ from "lodash";
 import { AnimatePresence } from "framer-motion";
-import {
-  Close,
-  Notifications,
-  NotificationsRounded,
-  Refresh,
-} from "@mui/icons-material";
+import { Close, NotificationsRounded, Refresh } from "@mui/icons-material";
 import CustomNotificationItem from "../custom/CustomNotificationItem";
-import { saveItem } from "@/config/helper";
 import { UserContext } from "@/context/providers/UserProvider";
+import {
+  useDeleteAllNotifications,
+  useMarkAll,
+  useNotifications,
+} from "@/hooks/useNotifications";
 
 const NotificationDrawer = ({ open, setOpen }) => {
-  const { notifications } = useContext(UserContext);
-
+  const { user } = useContext(UserContext);
+  // console.log(user);
+  const { data, refetch } = useNotifications();
+  const markAllAsRead = useMarkAll();
+  const deleteNotification = useDeleteAllNotifications();
   const handleClose = () => setOpen(false);
 
   const handleMarkAllAsRead = () => {
-    const update = _.map(notifications, "_id");
-
-    saveItem("r_no", update);
+    markAllAsRead.mutate(user?.id);
   };
-
   const handleRemoveAll = () => {
-    const update = _.map(notifications, "_id");
-    saveItem("d_no", update);
+    deleteNotification.mutate(user?.id);
   };
-
-  // console.log(notifications)
 
   return (
     <Drawer
       open={open}
       onClose={handleClose}
-      sx={{ zIndex: 9999 }}
+      sx={{ zIndex: 99999999 }}
       anchor="right"
     >
       <Stack
         sx={{
           minHeight: "100vh",
-          width: { xs: 280, md: 500 },
+          width: "100%",
+          minWidth: { xs: 300, md: 500 },
           display: "grid",
           gridTemplateRows: "auto 1fr auto",
           pb: 1,
@@ -62,17 +59,18 @@ const NotificationDrawer = ({ open, setOpen }) => {
           alignItems="center"
           p={1}
         >
-          <Notifications htmlColor="#fff" />
-          <Typography
-            sx={{  flexGrow: 1, display: "flex", alignItems: "center" }}
+          <Stack
+            direction="row"
+            sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+            spacing={1}
           >
             <NotificationsRounded />
-            <span> Notifications</span>
-          </Typography>
+            <Typography variant="body1"> Notifications</Typography>
+          </Stack>
 
           <Tooltip title="Refresh Notifications">
             <IconButton>
-              <Refresh />
+              <Refresh onClick={refetch} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Close">
@@ -85,23 +83,22 @@ const NotificationDrawer = ({ open, setOpen }) => {
           direction="row"
           justifyContent="flex-end"
           alignItems="center"
-          pr={2}
-          spacing={2}
+          spacing={1}
         >
-          <Tooltip title="">
+          <Tooltip title="Mark all">
             <Button size="small" onClick={handleMarkAllAsRead}>
               Mark all as read
             </Button>
           </Tooltip>
 
-          <Tooltip title="">
+          <Tooltip title="Clear All">
             <Button size="small" onClick={handleRemoveAll}>
               Clear All
             </Button>
           </Tooltip>
         </Stack>
 
-        {notifications?.length === 0 ? (
+        {data?.length === 0 ? (
           <Stack
             spacing={2}
             height="80svh"
@@ -113,8 +110,8 @@ const NotificationDrawer = ({ open, setOpen }) => {
           </Stack>
         ) : (
           <AnimatePresence>
-            <Stack spacing={1} height="90svh" overflow="auto">
-              {notifications?.map((notification, index) => {
+            <Stack spacing={1} height="90svh" overflow="auto" px={1.5}>
+              {data?.map((notification, index) => {
                 return (
                   <CustomNotificationItem
                     key={notification?._id}

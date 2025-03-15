@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { use, useState } from "react";
 import _ from "lodash";
 import {
   Avatar,
@@ -25,7 +25,6 @@ import DrawerItem from "@/components/DrawerItem";
 import {
   BookRounded,
   ExitToAppSharp,
-  NotificationsSharp,
   NumbersSharp,
   SchoolRounded,
   Event,
@@ -33,15 +32,19 @@ import {
   ArrowBackIos,
   ArrowForwardIos,
   AnnouncementRounded,
+  DescriptionRounded,
+  Person,
+  ListAltSharp,
+  Person3Rounded,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import { UserContext } from "@/context/providers/UserProvider";
+import NavLinkItemCollapse from "@/components/dropdowns/NavLinkItemCollapse";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
-  const school_info = JSON.parse(localStorage.getItem("@school_info"));
   const [toggleWidth, setToggleWidth] = useState(false);
-  const { user, logOutUser } = useContext(UserContext);
-
+  const { user, logOutUser, school_info } = use(UserContext);
   const handleClose = () => {
     setToggleWidth(!toggleWidth);
   };
@@ -74,22 +77,24 @@ const Sidebar = () => {
           >
             {toggleWidth ? <ArrowForwardIos /> : <ArrowBackIos />}
           </IconButton>
-          {!_.isEmpty(school_info?.badge) ? (
-            <Avatar
-              alt="school logo"
-              loading="lazy"
-              srcSet={school_info?.badge}
-              sx={{
-                width: 48,
-                height: 48,
-                bgcolor:'var(--secondary)'
-              }}
-            >
-              {school_info?.name[0]}
-            </Avatar>
-          ) : (
-            <SchoolRounded sx={{ width: 64, height: 64 }} />
-          )}
+          <Link to="/">
+            {!_.isEmpty(school_info?.badge) ? (
+              <Avatar
+                alt="school logo"
+                loading="lazy"
+                srcSet={school_info?.badge}
+                sx={{
+                  width: 48,
+                  height: 48,
+                  bgcolor: "var(--secondary)",
+                }}
+              >
+                {school_info?.name[0]}
+              </Avatar>
+            ) : (
+              <SchoolRounded sx={{ width: 64, height: 64 }} />
+            )}
+          </Link>
 
           <Typography
             textAlign="center"
@@ -112,7 +117,7 @@ const Sidebar = () => {
             pb: 36,
           }}
         >
-          {user?.role === "administrator" ? (
+          {user?.role === "administrator" && (
             <>
               <DrawerItem
                 title={toggleWidth ? "" : "Dashboard"}
@@ -128,7 +133,7 @@ const Sidebar = () => {
 
               <DrawerItem
                 title={toggleWidth ? "" : "Levels "}
-                icon={<BedroomBabyRoundedIcon />}
+                icon={<ListAltSharp />}
                 to="/level"
               />
               <DrawerItem
@@ -158,25 +163,37 @@ const Sidebar = () => {
               />
 
               <DrawerItem
-                title={toggleWidth ? "" : "Messages"}
-                icon={<SmsRounded />}
-                to="/sms"
-              />
-              <DrawerItem
                 title={toggleWidth ? "" : "Data Uploads"}
                 icon={<ImportExportRounded />}
                 to="/uploads"
               />
 
               <DrawerItem
+                title={toggleWidth ? "" : "Messages"}
+                icon={<SmsRounded />}
+                to="/messages"
+              />
+
+              <DrawerItem
+                title={toggleWidth ? "" : "Events"}
+                icon={<Event />}
+                to="/events"
+              />
+              <DrawerItem
+                title={toggleWidth ? "" : "Announcements"}
+                icon={<AnnouncementRounded />}
+                to="/announcements"
+              />
+            
+              <DrawerItem
                 title={toggleWidth ? "" : "Users"}
                 icon={<PeopleAltRoundedIcon />}
                 to="/users"
               />
               <DrawerItem
-                title={toggleWidth ? "" : "Notifications & Activites"}
-                icon={<NotificationsSharp />}
-                to="/notifications"
+                title={toggleWidth ? "" : "Profile"}
+                icon={<Person3Rounded />}
+                to="/profile"
               />
               <DrawerItem
                 title={toggleWidth ? "" : "Settings"}
@@ -184,7 +201,9 @@ const Sidebar = () => {
                 to="/settings"
               />
             </>
-          ) : (
+          )}
+
+          {user?.role === "teacher" && (
             <>
               <DrawerItem
                 title={toggleWidth ? "" : "Dashboard"}
@@ -192,39 +211,51 @@ const Sidebar = () => {
                 to="/"
               />
 
-              <DrawerItem
-                title={toggleWidth ? "" : "Summary"}
-                icon={<BookRounded />}
+              <NavLinkItemCollapse
+                icon={<Person htmlColor="" />}
+                title={toggleWidth ? "" : "Manage Students"}
                 to="/course"
+                toggleWidth={toggleWidth}
+              >
+                <DrawerItem
+                  title={toggleWidth ? "" : "Home"}
+                  icon={<BedroomBabyRoundedIcon />}
+                  to="/course"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "Levels"}
+                  icon={<ListAltSharp />}
+                  to="/course/level"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "Courses"}
+                  icon={<BookRounded />}
+                  to="/course/assign"
+                />
+              </NavLinkItemCollapse>
+
+              <DrawerItem
+                title={toggleWidth ? "" : "Events"}
+                icon={<Event />}
+                to="/events"
               />
               <DrawerItem
-                title={toggleWidth ? "" : "Levels"}
-                icon={<BedroomBabyRoundedIcon />}
-                to="/course/level"
+                title={toggleWidth ? "" : "Announcements"}
+                icon={<AnnouncementRounded />}
+                to="/announcements"
               />
               <DrawerItem
-                title={toggleWidth ? "" : "Courses"}
-                icon={<BookRounded />}
-                to="/course/assign"
+                title={toggleWidth ? "" : "Profile"}
+                icon={<PeopleAltRoundedIcon />}
+                to="/profile"
               />
             </>
           )}
 
           <DrawerItem
-            title={toggleWidth ? "" : "Profile"}
-            icon={<PeopleAltRoundedIcon />}
-            to="/profile"
-          />
-
-          <DrawerItem
-            title={toggleWidth ? "" : "Events"}
-            icon={<Event />}
-            to="/events"
-          />
-          <DrawerItem
-            title={toggleWidth ? "" : "Announcements"}
-            icon={<AnnouncementRounded />}
-            to="/announcements"
+            title={toggleWidth ? "" : "Notes Board"}
+            icon={<DescriptionRounded />}
+            to="/notes"
           />
 
           <DrawerItem

@@ -32,15 +32,13 @@ function AddRemarks({ open, setOpen, id, remark }) {
     mutationFn: postExamsRemarks,
   });
   const onSubmit = (values) => {
-    // return;
     const remarks = {
       _id: id,
       comments: values,
     };
     mutateAsync(remarks, {
       onSettled: () => {
-        queryClient.invalidateQueries(["student-records"]);
-        queryClient.invalidateQueries(["exams-scores"]);
+        queryClient.invalidateQueries(["exams-id", id]);
         queryClient.invalidateQueries(["exams-reports"]);
       },
       onSuccess: (data) => {

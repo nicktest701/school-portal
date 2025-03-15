@@ -17,10 +17,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { currencyFormatter } from "../../config/currencyFormatter";
 import _ from "lodash";
 import { Link } from "react-router-dom";
-const session = JSON.parse(localStorage.getItem("@school_session"));
 
 export const SCHOOL_SESSION_COLUMN = (
   handleActive,
@@ -83,17 +81,17 @@ export const SCHOOL_SESSION_COLUMN = (
         </Button>
       ),
     },
-    {
-      field: "",
-      title: "Session ",
-      export: false,
-      render: (rowData) =>
-        rowData.termId === session?.termId ? (
-          <Button sx={{ color: "info.darker", bgcolor: "info.lighter" }}>
-            Current Session
-          </Button>
-        ) : null,
-    },
+    // {
+    //   field: "",
+    //   title: "Session ",
+    //   export: false,
+    //   render: (rowData) =>
+    //     rowData.termId === session?.termId ? (
+    //       <Button sx={{ color: "info.darker", bgcolor: "info.lighter" }}>
+    //         Current Session
+    //       </Button>
+    //     ) : null,
+    // },
     {
       title: "",
       field: null,
@@ -523,10 +521,22 @@ export const SCHOOL_FEES_COLUMNS = (handleView, handleEdit, handleDelete) => [
   {
     field: "fees",
     title: "Fees",
+    type: "currency",
+    currencySetting: {
+      currencyCode: "GHS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
   },
   {
     field: "amount",
     hidden: true,
+    type: "currency",
+    currencySetting: {
+      currencyCode: "GHS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
   },
   {
     title: "No. Of Students",
@@ -535,6 +545,12 @@ export const SCHOOL_FEES_COLUMNS = (handleView, handleEdit, handleDelete) => [
   {
     title: "Total Fees",
     field: "totalFees",
+    type: "currency",
+    currencySetting: {
+      currencyCode: "GHS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
   },
   {
     title: "Action",
@@ -583,17 +599,33 @@ export const STUDENT_FEES_HISTORY_COLUMNS = [
   {
     field: "paid",
     title: "Amount Paid",
-    render: ({ paid, balance }) => currencyFormatter(paid + balance),
+    type: "currency",
+    currencySetting: {
+      currencyCode: "GHS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
+    render: ({ paid, balance }) => Number(paid + balance),
   },
   {
     field: "outstanding",
     title: "Remaining Fees",
-    render: ({ outstanding }) => currencyFormatter(outstanding),
+    type: "currency",
+    currencySetting: {
+      currencyCode: "GHS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
   },
   {
     field: "balance",
     title: "Change",
-    render: ({ balance }) => currencyFormatter(balance),
+    type: "currency",
+    currencySetting: {
+      currencyCode: "GHS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
   },
   {
     field: "issuer",
@@ -608,6 +640,15 @@ export const MESSAGE_COLUMNS = [
   {
     field: "createdAt",
     title: "Date of Issue",
+    searchable: true,
+    customFilterAndSearch: (data, rowData) => {
+      const date = new Date(rowData?.createdAt).toDateString();
+      const time = new Date(rowData?.createdAt).toLocaleTimeString();
+      return (
+        date.toLowerCase().lastIndexOf(data.toLowerCase()) > -1 ||
+        time.toLowerCase().lastIndexOf(data.toLowerCase()) > -1
+      );
+    },
     render: (rowData) => {
       const date = new Date(rowData?.createdAt).toDateString();
       const time = new Date(rowData?.createdAt).toLocaleTimeString();
@@ -629,6 +670,10 @@ export const MESSAGE_COLUMNS = [
   {
     field: "type",
     title: "Type",
+    searchable: true,
+    customFilterAndSearch: (data, { type }) => {
+      return type.toLowerCase().lastIndexOf(data.toLowerCase()) > -1;
+    },
     render: ({ type }) => {
       return type === "sms" ? (
         <Chip label="sms" color="primary" size="small" />
@@ -645,6 +690,16 @@ export const MESSAGE_COLUMNS = [
   {
     field: "recipient",
     title: "Recipient",
+    searchable: true,
+    customFilterAndSearch: (data, { recipient }) => {
+      return (
+        recipient?.type?.toLowerCase().lastIndexOf(data.toLowerCase()) > -1 ||
+        recipient?.phonenumber[0]
+          ?.toLowerCase()
+          .lastIndexOf(data.toLowerCase()) > -1 ||
+        recipient?.email[0]?.toLowerCase().lastIndexOf(data.toLowerCase()) > -1
+      );
+    },
     render: (rowData) => {
       if (rowData.recipient?.type === "Individual") {
         return rowData.type === "sms"
@@ -661,6 +716,10 @@ export const MESSAGE_COLUMNS = [
   {
     field: "body",
     title: "Message",
+    searchable: true,
+    customFilterAndSearch: (data, { body }) => {
+      return body?.title?.toLowerCase().lastIndexOf(data.toLowerCase()) > -1;
+    },
     render: ({ body }) => {
       return (
         <>

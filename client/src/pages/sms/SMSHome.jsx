@@ -32,7 +32,7 @@ const SMSHome = () => {
   return (
     <>
       <CustomTitle
-        title="SMS & Notifications"
+        title="SMS & Mails"
         subtitle="Send, receive, and manage messages to facilitate effective communication within the school community."
         img={sms_icon}
         color="text.main"
@@ -44,7 +44,8 @@ const SMSHome = () => {
         icon={sms_icon}
         isPending={messages.isPending}
         columns={MESSAGE_COLUMNS}
-        data={messages.data}
+        data={messages.data ?? []}
+        // search={true}
         actions={[]}
         showAddButton={true}
         addButtonImg={EMPTY_IMAGES.sms}

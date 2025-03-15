@@ -2,14 +2,9 @@ const router = require('express').Router();
 const AsyncHandler = require('express-async-handler');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-const createError = require('http-errors');
 const bcrypt = require('bcryptjs');
-const {
-  Types: { ObjectId },
-} = require('mongoose');
 const _ = require('lodash');
 const multer = require('multer');
-const Teacher = require('../models/teacherModel');
 const User = require('../models/userModel');
 const { uploadFile } = require('../config/uploadFile');
 
@@ -32,9 +27,10 @@ const upload = multer({ storage: Storage });
 router.get(
   '/',
   AsyncHandler(async (req, res) => {
-    const teachers = await Teacher.find({
-      active: true,
-    }).sort({ createdAt: -1 });
+    const teachers = await User.find({
+      school: req.user.school,
+      role: 'teacher'
+    }).select('-password').sort({ createdAt: -1 });
 
     res.status(200).json(teachers);
   })
@@ -45,7 +41,8 @@ router.get(
   '/:id',
   AsyncHandler(async (req, res) => {
     const id = req.params.id;
-    const teacher = await Teacher.findById(id);
+    const teacher = await User.findById(id).select('-password')
+
     res.status(200).json(teacher);
   })
 );
@@ -57,18 +54,6 @@ router.post(
   AsyncHandler(async (req, res) => {
     const newTeacher = req.body;
     newTeacher.profile = req?.file?.filename;
-
-    const isTeacherUserNameExists = await Teacher.find({
-      username: newTeacher?.username,
-    });
-
-    if (!_.isEmpty(isTeacherUserNameExists)) {
-      return res
-        .status(400)
-        .json(
-          `Teacher with username '${newTeacher?.username}' already exists! `
-        );
-    }
 
     const isUserNameExists = await User.find({
       username: newTeacher?.username,
@@ -89,38 +74,32 @@ router.post(
       newTeacher.profile = teacherPhoto
     }
 
-
-    // console.log(newTeacher)
-    const teacher = await Teacher.create(newTeacher);
-
-    if (_.isEmpty(teacher)) {
-      return res.status(404).json('Couldnt save Teacher info.Try again.');
-    }
-
-    const hashedPassword = await bcrypt.hash(teacher?.phonenumber, 10);
-
-
+    const hashedPassword = await bcrypt.hash(newTeacher?.phonenumber, 10);
 
     const user = {
-      _id: teacher?._id,
+      school: req.user.school,
       profile: teacherPhoto,
       firstname: newTeacher?.firstname,
       lastname: newTeacher?.surname,
       fullname: _.startCase(`${newTeacher?.firstname} ${newTeacher?.surname}`),
-      username: teacher?.username,
-      dateofbirth: teacher?.dateofbirth,
-      email: teacher?.email,
-      gender: teacher?.gender,
+      username: newTeacher?.username,
+      dateofbirth: newTeacher?.dateofbirth,
+      email: newTeacher?.email,
+      gender: newTeacher?.gender,
       role: 'teacher',
-      phonenumber: teacher?.phonenumber,
-      address: teacher?.address,
-      residence: teacher?.residence,
-      nationality: teacher?.nationality,
+      phonenumber: newTeacher?.phonenumber,
+      address: newTeacher?.address,
+      residence: newTeacher?.residence,
+      nationality: newTeacher?.nationality,
       password: hashedPassword,
+      createdBy: req.user.id
     };
 
-    await User.create(user);
-
+    const userId = await User.create(user);
+    if (_.isEmpty(userId)) {
+      return res.status(404).json('Couldnt save Teacher info.Try again.');
+    }
+  
     res.status(201).json('New Teacher Added!!!');
   })
 );
@@ -133,7 +112,7 @@ router.post(
 
     const usernames = _.map(teachers, 'username');
 
-    const existingTeachers = await Teacher.find({
+    const existingTeachers = await User.find({
       username: {
         $in: usernames,
       },
@@ -146,9 +125,35 @@ router.post(
           `A teacher with the Username ${existingTeachers[0].username} already exists`
         );
     }
+    let teacherPhoto = "https://firebasestorage.googleapis.com/v0/b/fir-system-54b99.appspot.com/o/download.png?alt=media&token=c3f23cd6-8973-4681-9900-98dbadc93d2a"
+    const newTeachers = teachers.map(async (teacher) => {
 
-    const newTeachers = await Teacher.create(teachers);
-    if (_.isEmpty(newTeachers)) {
+      const hashedPassword = await bcrypt.hash(teacher?.phonenumber, 10);
+      const user = {
+        school: req.user.school,
+        profile: teacherPhoto,
+        firstname: teacher?.firstname,
+        lastname: teacher?.surname,
+        fullname: _.startCase(`${teacher?.firstname} ${teacher?.surname}`),
+        username: teacher?.username,
+        dateofbirth: teacher?.dateofbirth,
+        gender: teacher?.gender,
+        email: teacher?.email,
+        phonenumber: teacher?.phonenumber,
+        role: 'teacher',
+        address: teacher?.address,
+        residence: teacher?.residence,
+        nationality: teacher?.nationality,
+        password: hashedPassword,
+        createdBy: req.user.id,
+      };
+
+      const userId = await User.create(user)
+      return userId
+    })
+
+    const allTeachers = await Promise.all(newTeachers)
+    if (_.isEmpty(allTeachers)) {
       return res
         .status(404)
         .json('Error adding teachers info.Try again later.');
@@ -164,16 +169,19 @@ router.post(
 router.put(
   '/',
   AsyncHandler(async (req, res) => {
-    const id = req.body._id;
+    let { _id, ...rest } = req.body;
 
-    if (!mongoose.isValidObjectId(id)) {
+    if (!mongoose.isValidObjectId(_id)) {
       return res.status(400).json('Invalid Teacher id');
     }
 
-    let modifiedTeacher = req.body;
-    const updatedTeacher = await Teacher.findByIdAndUpdate(
-      id,
-      modifiedTeacher,
+    const updatedTeacher = await User.findByIdAndUpdate(
+      _id,
+      {
+        $set: {
+          ...rest
+        },
+      },
       {
         upsert: true,
         new: true,
@@ -184,11 +192,6 @@ router.put(
       return res.status(404).json('Couldnt update Teacher info.Try again.');
     }
 
-    modifiedTeacher.fullname = _.startCase(
-      `${updatedTeacher?.surname} ${updatedTeacher?.firstname}`
-    );
-
-    await User.findByIdAndUpdate(id, modifiedTeacher);
 
     res.status(201).json('Changes Saved!!!');
   })
@@ -210,7 +213,7 @@ router.put(
     const userPhoto = await uploadFile(filename, 'users/');
 
 
-    const updatedTeacher = await Teacher.findByIdAndUpdate(_id, {
+    const updatedTeacher = await User.findByIdAndUpdate(_id, {
       $set: {
         profile: userPhoto
       },
@@ -222,11 +225,6 @@ router.put(
         .json('Error updating profile image.Try again later.');
     }
 
-    await User.findByIdAndUpdate(_id, {
-      $set: {
-        profile: userPhoto
-      },
-    });
 
     res.status(201).json('Profile image updated!!!');
   })
@@ -247,7 +245,7 @@ router.put(
 
     const updatedTeachers = uploadedUrls?.map(async (teacher) => {
 
-      return await Teacher.findOneAndUpdate({
+      return await User.findOneAndUpdate({
         phonenumber: teacher?.indexnumber
       }, {
         $set: {
@@ -279,17 +277,13 @@ router.delete(
       return res.status(403).json('Invalid information provided.');
     }
 
-    const teacher = await Teacher.findByIdAndUpdate(id, {
+    const teacher = await User.findByIdAndUpdate(id, {
       $set: { active: false },
     });
 
     if (_.isEmpty(teacher)) {
       return res.status(400).json("Couldn't remove Teacher info.Try again.");
     }
-
-    await User.findByIdAndUpdate(id, {
-      $set: { active: false },
-    });
 
     res.status(200).json('Changes Saved!!!');
   })

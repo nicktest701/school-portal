@@ -59,6 +59,33 @@ export const putNotification = async (notification) => {
   }
 };
 
+export const markNotificationAsRead = async (id) => {
+  try {
+    const res = await api({
+      method: 'PUT',
+      url: `/notifications/${id}/read`,
+    });
+
+    return res.data;
+  } catch (error) {
+    return error.response.data
+  }
+};
+
+export const markAllNotificationAsRead = async (id) => {
+  try {
+    const res = await api({
+      method: 'PUT',
+      url: `/notifications/${id}/read-all`,
+    });
+
+    return res.data;
+  } catch (error) {
+    return error.response.data
+  }
+};
+
+
 export const deleteNotification = async (id) => {
   try {
     const res = await api({
@@ -71,12 +98,11 @@ export const deleteNotification = async (id) => {
     return error.response.data
   }
 };
-export const deleteNotifications = async (notifications) => {
+export const deleteNotifications = async (id) => {
   try {
     const res = await api({
-      method: 'PUT',
-      url: `/notifications/remove`,
-      data: notifications
+      method: 'DELETE',
+      url: `/notifications/${id}/all`,
     });
 
     return res.data;

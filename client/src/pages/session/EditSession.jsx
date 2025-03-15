@@ -8,10 +8,10 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
+import Button from "@mui/material/Button";
 import { useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Button from "@mui/material/Button";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { getTerm, putTerm } from "@/api/termAPI";
 import { alertSuccess, alertError } from "@/context/actions/globalAlertActions";
@@ -114,6 +114,7 @@ const EditSession = () => {
                 fullWidth
                 margin="normal"
                 size="small"
+                
               />
               <DateInputPicker
                 label="Start of Academic Term"

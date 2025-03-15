@@ -13,7 +13,7 @@ const ExamsHome = () => {
   const { levelsOption, levelLoading } = useLevel();
 
   const handleRowClick = (levelId, type) => {
-    navigate(`level/${levelId}/${type}`, {
+    navigate(`${levelId}?level=${type}`, {
       state: {
         level: type,
       },

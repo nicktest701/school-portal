@@ -1,5 +1,5 @@
 // AddAnnouncementModal.tsx
-import React, { useContext } from "react";
+import React, { use } from "react";
 import {
   Modal,
   Box,
@@ -18,7 +18,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { postAnnouncement } from "@/api/announcementAPI";
-
+import { UserContext } from "@/context/providers/UserProvider";
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -34,7 +34,8 @@ const validationSchema = Yup.object({
 
 const AddAnnouncementModal = ({ open, onClose }) => {
   const queryClient = useQueryClient();
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+  const { session } = use(UserContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: postAnnouncement,
@@ -52,6 +53,8 @@ const AddAnnouncementModal = ({ open, onClose }) => {
         {
           ...values,
           bgColor: getPriorityColor(values.priority),
+          session: session?.sessionId,
+          term: session?.termId,
         },
         {
           onSettled: () => {
@@ -96,7 +99,7 @@ const AddAnnouncementModal = ({ open, onClose }) => {
           transform: "translate(-50%, -50%)",
           bgcolor: "background.paper",
           boxShadow: 24,
-          p: 4,
+          p: 2,
           borderRadius: 2,
           width: { xs: 300, md: 500 },
         }}
@@ -182,7 +185,12 @@ const AddAnnouncementModal = ({ open, onClose }) => {
               gap: 2,
             }}
           >
-            <Button onClick={onClose} variant="outlined">
+            <Button
+              onClick={onClose}
+              disabled={isPending}
+              color="secondary"
+              variant="outlined"
+            >
               Cancel
             </Button>
             <Button

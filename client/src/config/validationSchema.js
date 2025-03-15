@@ -1,5 +1,11 @@
 import { object, number, string, array, ref } from 'yup';
 
+export const findSchoolValidationSchema = object().shape({
+  code: string()
+    .required('Required*')
+    .min(6, 'School Code should be 6 digit ')
+    .max(6, 'School Code should be 6 digit '),
+});
 export const loginUserValidationSchema = object().shape({
   username: string().required('Required*').trim(),
   password: string()
