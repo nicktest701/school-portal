@@ -11,8 +11,8 @@
     "lint": "eslint --max-warnings=0"
   },
   "engines": {
-    "node": ">=16.0.0 <20.0.0",
-    "npm": ">=8.0.0 <9.0.0"
+    "node": ">=20.17.0 <22.9.0",
+    "npm": ">=9.0.0"
   },
   "keywords": [],
   "author": "",
