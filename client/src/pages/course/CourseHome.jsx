@@ -15,7 +15,7 @@ import CustomTitle from "@/components/custom/CustomTitle";
 function CourseHome() {
   const {
     user,
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   const dashboardInfo = useQuery({

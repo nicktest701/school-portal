@@ -14,27 +14,51 @@ const {
 
 
 const LEVEL_OPTIONS = [
-  'Day Care',
-  'Creche',
-  'Nursery 1',
-  'Nursery 2',
-  'Kindergarten 1',
-  'Kindergarten 2',
-  'Basic 1',
-  'Basic 2',
-  'Basic 3',
-  'Basic 4',
-  'Basic 5',
-  'Basic 6',
-  'Basic 7',
-  'Basic 8',
-  'Basic 9',
-  'Basic 10',
-  'Basic 11',
-  'Basic 12',
-  'J.H.S 1',
-  'J.H.S 2',
-  'J.H.S 3',
+  "Day Care",
+  "Creche",
+  "Nursery 1",
+  "Nursery 2",
+  "Kindergarten 1",
+  "Kindergarten 2",
+  "Basic 1",
+  "Basic 2",
+  "Basic 3",
+  "Basic 4",
+  "Basic 5",
+  "Basic 6",
+  "Basic 7",
+  "Basic 8",
+  "Basic 9",
+  "Basic 10",
+  "Basic 11",
+  "Basic 12",
+  "Class 1",
+  "Class 2",
+  "Class 3",
+  "Class 4",
+  "Class 5",
+  "Class 6",
+  "Class 7",
+  "Class 8",
+  "Class 9",
+  "Class 10",
+  "Class 11",
+  "Class 12",
+  "Stage 1",
+  "Stage 2",
+  "Stage 3",
+  "Stage 4",
+  "Stage 5",
+  "Stage 6",
+  "Stage 7",
+  "Stage 8",
+  "Stage 9",
+  "Stage 10",
+  "Stage 11",
+  "Stage 12",
+  "J.H.S 1",
+  "J.H.S 2",
+  "J.H.S 3",
 ];
 
 //@GET all current level by current school session
@@ -52,8 +76,9 @@ router.get(
     }).populate('subjects') // Populate subjects
       .populate('grades')   // Populate grades
       .populate('fee')   // Populate fees
-
-
+      .populate({
+        path: 'teacher', select: ['firstname', "lastname", 'profile']
+      })   // Populate Teacher
 
 
     const modifiedLevels = levels.sort(
@@ -84,7 +109,7 @@ router.get(
           type: `${level?.name}${level?.type}`,
           noOfStudents: students?.length,
           noOfSubjects: subjects?.length,
-          teacher,
+          teacher: { _id: teacher?._id, fullName: teacher?.fullname, profile: teacher?.profile },
           fee: _.isUndefined(fee) ? null : {
             _id: fee?._id,
             levelId: _id,
@@ -332,11 +357,18 @@ router.get(
   '/:id',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const levels = await Level.findById(id)
-      .populate('subjects') // Populate subjects
+    const level = await Level.findById(id)
+      .populate({
+        path: 'students',
+        match: { active: true },
+      }).populate('subjects') // Populate subjects
       .populate('grades')   // Populate grades
+      .populate('fee')   // Populate fees
+      .populate({
+        path: 'teacher', select: ['firstname', "lastname", 'profile']
+      })   // Populate Teacher
 
-    res.status(200).json(levels);
+    res.status(200).json(level);
   })
 );
 
@@ -372,8 +404,6 @@ router.post(
     res.status(200).json(modifiedStudents);
   })
 );
-
-
 
 //Generate next term level details if not exists
 router.post(
@@ -483,6 +513,31 @@ router.post(
     res.status(201).json('New Level created successfully!!!');
   })
 );
+//@POST add new level to current school session
+router.post(
+  '/many',
+  asyncHandler(async (req, res) => {
+    const { session, term, levels } = req.body;
+
+
+    const modifiedLevels = levels.map((level) => {
+      return {
+        level,
+        session,
+        term,
+        createdBy: req.user?.id
+      };
+    });
+
+    const level = await Level.insertMany(modifiedLevels);
+
+    if (_.isEmpty(level)) {
+      return res.status(404).json('Error creating new levels.Try again later');
+    }
+
+    res.status(201).json('News Level created successfully!!!');
+  })
+);
 
 router.put(
   '/',
@@ -547,7 +602,7 @@ router.delete(
     if (_.isEmpty(deletedLevel)) {
       return res.status(404).json('Error removing level info.Try again later');
     }
-   
+
 
     res.status(201).json(' Level has been removed successfully!!!');
   })
@@ -636,24 +691,22 @@ router.post(
 router.put(
   '/assign-teacher',
   asyncHandler(async (req, res) => {
+    const { _id, teacher } = req.body
 
+    const isLevelAssigned = await Level.findById(_id).populate({
+      path: 'teacher', select: ['firstname', "lastname", 'profile']
+    })
 
-    const isLevelAssigned = await Level.find({
-      _id: new ObjectId(req.body?._id),
-      'teacher._id': new ObjectId(req.body?.teacher?._id)
-    });
+    if (!_.isEmpty(isLevelAssigned.teacher)) {
 
-    if (!_.isEmpty(isLevelAssigned)) {
-
-      return res.status(400).json('Level already assigned!');
+      return res.status(400).json(`Level already assigned to ${isLevelAssigned.teacher?.fullname}`);
     }
 
-
     const level = await Level.findByIdAndUpdate(
-      req.body._id,
+      _id,
       {
         $set: {
-          teacher: req.body.teacher,
+          teacher
         },
       },
       {

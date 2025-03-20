@@ -1,13 +1,20 @@
 const router = require("express").Router();
 const _ = require("lodash");
 const asyncHandler = require("express-async-handler");
-const { randomUUID } = require("crypto");
+const Level = require("../models/levelModel");
+const Student = require("../models/studentModel");
+const Grade = require("../models/gradeModel");
 const Term = require("../models/termModel");
 const Session = require("../models/sessionModel");
+const Examination = require("../models/examinationModel");
+const CurrentFee = require("../models/currentFeeModel");
 const {
+  startSession,
+
   Types: { ObjectId },
 } = require("mongoose");
 const { verifyJWT } = require("../middlewares/verifyJWT");
+const moment = require("moment/moment");
 // const knex = require("../db/knex");
 
 //@GET All school Terms
@@ -20,69 +27,46 @@ router.get(
     let terms = [];
     if (session) {
       terms = await Term.find({
+        school: req.user.school,
         session: new ObjectId(session),
       }).populate("session");
 
-      // const terms_ = await knex("session_term_info")
-      //   .select(
-      //     "termId",
-      //     "sessionId",
-      //     "academicYear",
-      //     "term",
-      //     "from",
-      //     "to",
-      //     "vacationDate",
-      //     "reopeningDate as reOpeningDate",
-      //     "termActive as active",
-      //     "termCreatedAt as createdAt",
-      //     "userName as createdBy"
-      //   )
-      //   .where({
-      //     sessionId: session,
-      //     sessionSchoolId: "d8705acb-b88e-4ebb-adc3-54feea43ceed",
-      //   })
-      //   .orderByRaw("academicYear,term");
-    } else {
-      terms = await Term.find().populate("session");
 
-      // const terms_2 = await knex("session_term_info")
-      // .select(
-      //   "termId",
-      //   "sessionId",
-      //   "academicYear",
-      //   "term",
-      //   "from",
-      //   "to",
-      //   "vacationDate",
-      //   "reopeningDate as reOpeningDate",
-      //   "termActive as active",
-      //   "termCreatedAt as createdAt",
-      //   "userName as createdBy"
-      // )
-      // .where({
-      //   sessionSchoolId: "d8705acb-b88e-4ebb-adc3-54feea43ceed",
-      // })
-      // .orderByRaw("academicYear,term");
+    } else {
+      terms = await Term.find({
+        school: req.user.school,
+      }).populate("session");
+
     }
-    // const terms = await Term.find({ active: true }).populate('session');
+
 
     if (_.isEmpty(terms)) {
       return res.status(200).json([]);
     }
-
     const modifiedTerms = terms.map((term) => {
-      return {
+      const newTerm = {
+
+        core: {
+          name: term?.name,
+          from: term?.from,
+          to: term?.to,
+          term: term?.term,
+          academicYear: term?.academicYear,
+          vacationDate: term?.vacationDate,
+          reOpeningDate: term?.reOpeningDate,
+
+        },
+        headmaster: term?.headmaster,
+        report: term?.report,
+        exams: term?.exams,
         termId: term._id,
         sessionId: term?.session?._id,
-        academicYear: term?.session?.academicYear,
-        term: term.term,
-        from: term?.from,
-        to: term?.to,
-        vacationDate: term.vacationDate,
-        reOpeningDate: term.reOpeningDate,
-        active: term.active,
-        createdAt: term?.createdAt,
-      };
+        active: term?.active
+
+      }
+
+
+      return newTerm
     });
 
     const sortedTerms = _.sortBy(modifiedTerms, ["academicYear", "term"]);
@@ -93,18 +77,50 @@ router.get(
 
 //@GET School Term by id
 router.get(
+  "/valid",
+  asyncHandler(async (req, res) => {
+    const { academicYear, term } = req.query;
+    //Find if a term already exits
+    const exists = await Term.findOne({
+      school: req.user.school,
+      academicYear,
+      term,
+      active: true,
+    });
+
+    //Check if term already exists
+    if (!_.isEmpty(exists)) {
+      return res.status(400).json(`Academic year ${academicYear} with the term ${term} already exists.`);
+    }
+
+    res.status(200).json(exists);
+  })
+);
+//@GET School Term by id
+router.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-
-    // const term = await knex("session_term_info").select("*").where({
-    //   sessionId,
-    //   active: true,
-    // });
-
     const term = await Term.findById(id).populate("session");
 
-    res.status(200).json(term);
+    const modifiedTerm = {
+      core: {
+        name: term?.name,
+        from: term?.from,
+        to: term?.to,
+        term: term?.term,
+        academicYear: term?.academicYear,
+        vacationDate: term?.vacationDate,
+        reOpeningDate: term?.reOpeningDate,
+      },
+      report: term?.report,
+      headmaster: term?.headmaster,
+      exams: term?.exams,
+      termId: term._id,
+      sessionId: term?.session?._id,
+      active: term?.active
+    }
+    res.status(200).json(modifiedTerm);
   })
 );
 
@@ -113,106 +129,93 @@ router.get(
 //Add new School Term
 router.post(
   "/",
+  verifyJWT,
   asyncHandler(async (req, res) => {
-    const { from, to, vacationDate, reOpeningDate, academicYear, term } =
+    const { core, levels, students, exams, report } =
       req.body;
 
+
+    const existingIndexNumbers = _.flatMap(students, (student) => student?.data);
+    const indexNumbers = _.map(existingIndexNumbers, 'indexnumber');
+
+    const existingStudents = await Student.find({
+      school: req.user.school,
+      indexnumber: {
+        $in: indexNumbers,
+      },
+    });
+
+    if (!_.isEmpty(existingStudents)) {
+      return res
+        .status(404)
+        .json(
+          `Index Numbers of some students already exists.Please check and try again.`
+        );
+    }
+
+
+    const { name, from, to, term } = core
+    const { grade, ...examsRest } = exams
+
+    const academicStart = moment(from).year();
+    const academicEnd = moment(to).year();
+    const academicYear = `${academicStart}/${academicEnd}`;
+
+
     //Find if a term already exits
-    const exists = await Term.find({
+    const exists = await Term.findOne({
+      school: req.user.school,
       academicYear,
       term,
       active: true,
     });
 
-    // const termExists = await knex("session_term_info")
-    //   .where({
-    //     term,
-    //     academicYear,
-    //     termActive: true,
-    //   })
-    //   .select("term", "academicYear", "termActive");
 
     //Check if term already exists
-
     if (!_.isEmpty(exists)) {
-      return res.status(400).json("Session already exists.");
+      return res.status(400).json(`Academic year ${academicYear} with the term ${term} already exists.`);
     }
 
+
     //Find if a session already exits
-    const session = await Session.findOne({ academicYear });
-    // const session_ = await knex("sessions")
-    //   .where("academicYear", academicYear)
-    //   .select("_id")
-    //   .limit(1);
+    const session = await Session.findOne({ school: req.user.school, academicYear });
+    let sessionId = session?._id;
 
-    if (!_.isEmpty(session)) {
-      const sessionId = session._id;
-      req.body.session = sessionId;
 
-      //Create new Session with existing session id
-      const newTerm = await Term.create(req.body);
+    if (_.isEmpty(session)) {
 
-      const termID = randomUUID();
-      // const newTerm_ = await knex("terms").insert({
-      //   _id: termID,
-      //   termStarts: from,
-      //   name: term,
-      //   termEnds: to,
-      //   vacationDate,
-      //   reopeningDate: reOpeningDate,
-      //   sessionId: session_[0]?._id,
-      //   createdBy: "7949d62c-fc40-4fc9-be60-e59df348f868",
-      // });
+      //Create new Session  
+      const newSession = await Session.create({
+        school: req.user.school,
+        from: academicStart,
+        to: academicEnd,
+        academicYear,
+        name,
+        createdBy: req.user.id
+      });
 
-      if (_.isEmpty(newTerm)) {
+      if (_.isEmpty(newSession)) {
         return res
           .status(404)
           .json("Error creating new session.Try again later!!!");
       }
-
-      return res.status(201).json("New Session created Successfully!!!");
+      sessionId = newSession._id;
     }
 
-    //Create new Session
-    const splittedAcademicYear = academicYear.split("/");
-
-    const newSession = await Session.create({
-      from: splittedAcademicYear[0],
-      to: splittedAcademicYear[1],
+    //Create new term with new Session id
+    const newTerm = await Term.create({
+      school: req.user.school,
+      session: sessionId,
+      from, to, term,
       academicYear,
+      vacationDate: to,
+      reOpeningDate: to,
+      exams: {
+        ...examsRest
+      }, report
     });
 
-    // const sessionID = randomUUID();
 
-    // const newSession_ = await knex("sessions").insert({
-    //   _id: sessionID,
-    //   sessionFrom: splittedAcademicYear[0],
-    //   sessionTo: splittedAcademicYear[1],
-    //   academicYear: req.body.academicYear,
-    //   schoolId: "d8705acb-b88e-4ebb-adc3-54feea43ceed",
-    //   createdBy: "7949d62c-fc40-4fc9-be60-e59df348f868",
-    // });
-
-    if (_.isEmpty(newSession)) {
-      return res
-        .status(404)
-        .json("Error creating new session.Try again later!!!");
-    }
-    //Create new term with new Session id
-    req.body.session = newSession._id;
-    const newTerm = await Term.create(req.body);
-
-    // const termID = randomUUID();
-    // const newTerm_ = await knex("terms").insert({
-    //   _id: termID,
-    //   name: term,
-    //   sessionId: sessionID,
-    //   termStarts: from,
-    //   termEnds: to,
-    //   vacationDate,
-    //   reopeningDate: reOpeningDate,
-    //   createdBy: "7949d62c-fc40-4fc9-be60-e59df348f868",
-    // });
 
     if (_.isEmpty(newTerm)) {
       return res
@@ -220,7 +223,81 @@ router.post(
         .json("Error creating new session.Try again later!!!");
     }
 
+    let grades = null
+    if (!_.isEmpty(grade)) {
+
+
+      const newGrade = await Grade.create({
+        ...grade,
+        school: req.user.school,
+        session: sessionId,
+        term: newTerm._id,
+        createdBy: req.user.id,
+      })
+
+      grades = newGrade?._id
+    }
+
+    if (!_.isEmpty(levels)) {
+      // create levels
+      const modifiedLevels = levels.map(async (level) => {
+
+
+        const student = students.find(student => _.isEqual(student?.class, level))
+
+        const modifiedStudents = student?.data?.map(student => {
+          return {
+            ...student,
+            school: req.user.school,
+            createdBy: req.user.id
+          }
+        })
+
+        const createdStudents = await Student.insertMany(modifiedStudents, {
+          ordered: false,
+
+        });
+
+        // update student data in the session
+        const studentIds = _.map(createdStudents, '_id')
+        const newLevel = await Level.create({
+          session: sessionId,
+          term: newTerm._id,
+          level,
+          students: studentIds,
+          grades: grades._id,
+          createdBy: req.user.id
+
+        })
+
+        const examsDetails = studentIds.map(student => {
+
+          return {
+            session: sessionId,
+            term: newTerm._id,
+            level: newLevel?._id,
+            student: student,
+            createdBy: req.user.id
+          }
+
+        })
+
+        await Examination.insertMany(examsDetails);
+        await CurrentFee.insertMany(examsDetails);
+
+
+        return newLevel
+      })
+
+      await Promise.all(modifiedLevels)
+      return res.status(201).json("New Session created Successfully!!!");
+    }
+
     res.status(201).json("New Session created Successfully!!!");
+
+
+
+
   })
 );
 
@@ -228,10 +305,19 @@ router.post(
 router.put(
   "/",
   asyncHandler(async (req, res) => {
-    const { id, ...rest } = req.body;
-    const modifiedTerm = await Term.findByIdAndUpdate(id, {
+    const { termId, ...rest } = req.body;
+    const modifiedTerm = await Term.findByIdAndUpdate(termId, {
       $set: {
-        ...rest
+        ...rest?.core,
+        exams: {
+          ...rest?.exams
+        },
+        report: {
+          ...rest?.report
+        },
+        headmaster: {
+          ...rest?.headmaster
+        }
       }
     });
 
@@ -267,10 +353,6 @@ router.put(
       }
     );
 
-    // const updatedTerm = await knex("terms").where("_id", id).update({
-    //   active,
-    // });
-
     if (_.isEmpty(updatedTerm)) {
       return res.status(404).json("Error updating Session info");
     }
@@ -280,26 +362,6 @@ router.put(
     );
   })
 );
-
-// router.delete(
-//   '/:id',
-//   asyncHandler(async (req, res) => {
-//     const id = req.params.id;
-//     const deletedTerm = await Term.findByIdAndUpdate(id, {
-//       $set: {
-//         active: false,
-//       },
-//     });
-
-//     if (_.isEmpty(deletedTerm)) {
-//       return res
-//         .status(404)
-//         .json('Error removing session info.Try again later');
-//     }
-
-//     res.status(201).json(' Session have been removed successfully!!!');
-//   })
-// );
 
 router.put(
   "/remove",
@@ -311,8 +373,6 @@ router.put(
     }, {
       new: true
     });
-
-    // const deletedTerms = await knex("terms").where("_id","IN" sessions).del();
 
     if (_.isEmpty(deletedTerms)) {
       return res

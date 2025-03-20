@@ -45,7 +45,7 @@ const SMSHome = () => {
         isPending={messages.isPending}
         columns={MESSAGE_COLUMNS}
         data={messages.data ?? []}
-        // search={true}
+        search={true}
         actions={[]}
         showAddButton={true}
         addButtonImg={EMPTY_IMAGES.sms}

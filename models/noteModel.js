@@ -33,6 +33,6 @@ const noteSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-noteSchema.index({ createdBy: 1 });
+noteSchema.index({ user: 1 });
 
 module.exports = db.model('Note', noteSchema);

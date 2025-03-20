@@ -23,7 +23,7 @@ function Grade() {
 
   const queryClient = useQueryClient();
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 

@@ -51,7 +51,7 @@ router.get(
     //   )
     //   .orderBy("createdAt", "desc");
 
-    const users = await User.find({})
+    const users = await User.find({ school: req.user.school })
       .select("-password")
       .sort({ createdAt: -1 });
     // console.log(users)
@@ -236,7 +236,7 @@ router.post(
     });
 
     const refresh_token = jwt.sign(refreshData, process.env.JWT_REFRESH_SECRET, {
-      expiresIn: "30d",
+      expiresIn: "180d",
     });
 
     // loggedInUser.token = token;
@@ -365,7 +365,7 @@ router.put(
 
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "30d",
+      expiresIn: "15m",
     });
 
     res.status(200).json({ token });
@@ -443,7 +443,7 @@ router.put(
 
 
       const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-        expiresIn: "30d",
+        expiresIn: "15m",
       });
 
       return res.status(200).json({ token });

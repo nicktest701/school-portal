@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import Box from "@mui/material/Box";
 import _ from "lodash";
+import { useMediaQuery, useTheme } from "@mui/material";
 const LineChart = ({ data }) => {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
 
@@ -20,7 +23,7 @@ const LineChart = ({ data }) => {
       sx={{
         minWidth: 100,
         width: "100%",
-        height: 200,
+        height: matches ? 200 : 400,
       }}
     >
       <Bar

@@ -1,16 +1,18 @@
 import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material';
+import { useTheme,useMediaQuery } from '@mui/material';
 import { Doughnut } from 'react-chartjs-2';
 
 const PieChart = () => {
-  const { palette } = useTheme();
+ const { palette, breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("md"));
+
 
   return (
     <Box
     sx={{
       minWidth: 100,
       width: "100%",
-      height: 200,
+ height: matches ? 200 : 400,
     }}
     >
       <Doughnut

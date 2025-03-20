@@ -41,7 +41,7 @@ const Uploads = () => {
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const navigate = useNavigate();
   const { state } = useLocation();

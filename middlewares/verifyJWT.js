@@ -52,7 +52,7 @@ const verifyJWT = (req, res, next) => {
       active: authUser?.active,
       school: authUser?.school
     };
-    // console.log(loggedInUser)
+    
 
     req.user = loggedInUser;
 

@@ -29,7 +29,7 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 const TeacherAssignCourse = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   const queryClient = useQueryClient();

@@ -1,5 +1,5 @@
 import { Doughnut } from "react-chartjs-2";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography,useTheme, useMediaQuery  } from "@mui/material";
 
 import BarChartRounded from "@mui/icons-material/BarChartRounded";
 import Card from "@mui/material/Card";
@@ -7,6 +7,9 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 
 function StudentCountChart({ data }) {
+   const { palette, breakpoints } = useTheme();
+    const matches = useMediaQuery(breakpoints.down("md"));
+  
   return (
     <Card elevation={1}>
       <CardHeader
@@ -23,7 +26,7 @@ function StudentCountChart({ data }) {
           sx={{
             minWidth: 100,
             width: "100%",
-            height: 200,
+            height: matches ? 200 : 400,
           }}
         >
           <Doughnut
@@ -42,7 +45,7 @@ function StudentCountChart({ data }) {
             options={{
               responsive: true,
               maintainAspectRatio: false,
-              radius: 60,
+              radius:matches? 60:100,
 
               layout: {
                 padding: 2,

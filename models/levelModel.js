@@ -16,10 +16,11 @@ const LevelSchema = new mongoose.Schema(
       index: true, // Optimized for term-related queries
     },
     teacher: {
-      // type: mongoose.SchemaTypes.ObjectId,
-      // ref: "User", // Changed from `Mixed` to a proper reference
-      // required: true,
-      type: mongoose.SchemaTypes.Mixed,
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User", // Changed from `Mixed` to a proper reference
+      // type: mongoose.SchemaTypes.Mixed,
+      index: true,
+    
     },
     fee: {
       type: mongoose.SchemaTypes.ObjectId,
@@ -87,8 +88,7 @@ LevelSchema.virtual("noOfStudents").get(function () {
 
 // 🔹 Compound Indexes for Performance
 LevelSchema.index({ session: 1, term: 1 });
-LevelSchema.index({ createdBy: 1 });
 LevelSchema.index({ grades: 1 });
-LevelSchema.index({ active: 1 });
+
 
 module.exports = db.model("Level", LevelSchema);

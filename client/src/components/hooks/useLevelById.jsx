@@ -14,7 +14,6 @@ function useLevelById(id) {
       ?.find((level) => level?._id === id),
   });
 
-  // console.log(levels.data);
 
   const levelData = useMemo(() => {
     if (levels.data) {
@@ -24,6 +23,11 @@ function useLevelById(id) {
         subjects: levels?.data?.subjects,
         rollNumber: levels?.data?.students?.length,
         levelName: `${levels?.data?.level?.name} ${levels?.data?.level?.type}`,
+        teacher: {
+          _id: levels?.data?.teacher?._id,
+          fullName: levels?.data?.teacher?.fullname,
+          profile: levels?.data?.teacher?.profile,
+        },
       };
     } else {
       return {

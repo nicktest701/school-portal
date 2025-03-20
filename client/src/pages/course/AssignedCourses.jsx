@@ -14,7 +14,7 @@ function AssignCourses() {
   const navigate = useNavigate();
   const {
     user,
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   const courses = useQuery({

@@ -1,5 +1,5 @@
 import { Bar } from "react-chartjs-2";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography , useTheme, useMediaQuery } from "@mui/material";
 import BarChartRounded from "@mui/icons-material/BarChartRounded";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -7,6 +7,10 @@ import CardHeader from "@mui/material/CardHeader";
 import { useState, useEffect } from "react";
 
 const WeeklyGenderAttendance = ({ data }) => {
+const { palette, breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("md"));
+
+
   const [chartData, setChartData] = useState({
     labels: ["Male", "Female"], // Bar labels for male and female counts
     datasets: [
@@ -66,7 +70,7 @@ const WeeklyGenderAttendance = ({ data }) => {
           sx={{
             minWidth: 100,
             width: "100%",
-            height: 200,
+           height: matches ? 200 : 400,
           }}
         >
           <Bar

@@ -1,5 +1,5 @@
 import React, { use, useState } from "react";
-import { Box, Link, Stack } from "@mui/material";
+import { Box, Button, Link, Stack } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import _ from "lodash";
@@ -18,14 +18,15 @@ import ViewLevel from "./ViewLevel";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import useLevel from "@/components/hooks/useLevel";
+import { CloudUploadRounded } from "@mui/icons-material";
+import ImportLevels from "./ImportLevels";
 
 const LevelTab = () => {
   const { schoolSessionDispatch } = use(SchoolSessionContext);
+  const [openImportLevel, setOpenImportLevel] = useState(false);
   const [selectedLevels, setSelectedLevels] = useState([]);
 
-  const {
-    userState: { session },
-  } = use(UserContext);
+  const { session } = use(UserContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [openAddCurrentLevel, setOpenAddCurrentLevel] = useState(false);
@@ -124,7 +125,7 @@ const LevelTab = () => {
     });
   };
 
-  const handleOpenSubject = ({ _id,  }) => {
+  const handleOpenSubject = ({ _id }) => {
     navigate(`/level/${_id}/courses`);
   };
 
@@ -144,6 +145,9 @@ const LevelTab = () => {
       payload: { open: true, data },
     });
   };
+
+  const handleOpenImportLevel = () => setOpenImportLevel(true);
+  const handleCloseImportLevel = () => setOpenImportLevel(false);
 
   const newLevelColumns = [
     ...SCHOOL_LEVELS,
@@ -204,6 +208,16 @@ const LevelTab = () => {
         columns={newLevelColumns}
         data={levelsOption}
         actions={[]}
+        otherButtons={
+          <Button
+            color="success"
+            variant="contained"
+            startIcon={<CloudUploadRounded />}
+            onClick={handleOpenImportLevel}
+          >
+            Import Levels
+          </Button>
+        }
         showAddButton={true}
         addButtonText="New Level"
         addButtonImg={EMPTY_IMAGES.level}
@@ -216,6 +230,7 @@ const LevelTab = () => {
       <ViewLevel />
       <AddLevel open={openAddCurrentLevel} setOpen={setOpenAddCurrentLevel} />
       <EditLevel />
+      <ImportLevels open={openImportLevel} onClose={handleCloseImportLevel} />
       {(isPending || deleteManyIsLoading) && <GlobalSpinner />}
     </Box>
   );

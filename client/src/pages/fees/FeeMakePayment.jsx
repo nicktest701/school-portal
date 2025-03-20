@@ -44,7 +44,7 @@ const FeeMakePayment = () => {
   //Get Session id
   const {
     user,
-    userState: { session },
+    session
   } = use(UserContext);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();

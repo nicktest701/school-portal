@@ -28,7 +28,7 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const AddLevel = ({ open, setOpen }) => {
   const {
-    userState: { session },
+    session
   } = use(UserContext);
 
   const queryClient = useQueryClient();

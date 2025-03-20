@@ -25,7 +25,7 @@ function TeacherCourses() {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { id } = useParams();
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   const courses = useQuery({

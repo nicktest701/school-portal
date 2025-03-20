@@ -41,7 +41,7 @@ import { StudentContext } from "@/context/providers/StudentProvider";
 const ViewExamsReports = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const {
-    userState: { session },
+    session
   } = use(UserContext);
   const [isPending, startTransition] = useTransition();
   const { studentDispatch } = use(StudentContext);

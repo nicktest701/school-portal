@@ -8,7 +8,7 @@ import { UserContext } from "@/context/providers/UserProvider";
 
 function Student() {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const { studentDispatch } = useContext(StudentContext);
   //  console.log(students)

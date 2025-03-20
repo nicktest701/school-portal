@@ -32,7 +32,7 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const AddFee = ({ open, setOpen }) => {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   const queryClient = useQueryClient();

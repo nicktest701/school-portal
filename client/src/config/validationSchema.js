@@ -23,6 +23,13 @@ export const levelValidationSchema = object().shape({
   level: string().required('Required*'),
 });
 
+export const AssignTeacherValidationSchema = object().shape({
+  teacher: object({
+    _id: string().required('Required*'),
+    fullname: string().required('Required*'),
+  }),
+});
+
 export const currentLevelValidationSchema = object().shape({
   _id: string().required('Required*'),
   type: string().required('Required*'),

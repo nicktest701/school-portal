@@ -1,17 +1,11 @@
 import React, { use } from "react";
-import { Dialog } from "@mui/material";
-import { sessionInitialValues } from "@/config/initialValues";
-import Transition from "@/components/animations/Transition";
-import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import SessionForm from "./SessionForm";
-import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { Container } from "@mui/material";
+import CustomTitle from "@/components/custom/CustomTitle";
+import session_icon from "@/assets/images/header/session_ico.svg";
 
 const AddSession = () => {
-  const { schoolSessionState, schoolSessionDispatch } =
-    use(SchoolSessionContext);
-
   const currentYear = new Date().getFullYear();
-
 
   // const { handleSubmit, control } = useForm({
   //   resolver: yupResolver(sessionValidationSchema),
@@ -28,20 +22,16 @@ const AddSession = () => {
 
   //ADD New Session
 
-  function handleCloseDialog() {
-    schoolSessionDispatch({ type: "displayAddSession", payload: false });
-  }
   return (
-    <Dialog
-      open={schoolSessionState.displayAddSession}
-      fullWidth
-      maxWidth="lg"
-      TransitionComponent={Transition}
-    >
-      <CustomDialogTitle title="Add Session" onClose={handleCloseDialog} />
-
+    <Container>
+      <CustomTitle
+        title="New Session"
+        subtitle="Create, update, and oversee academic sessions to ensure smooth academic operations"
+        img={session_icon}
+        color="primary.main"
+      />
       <SessionForm />
-    </Dialog>
+    </Container>
   );
 };
 

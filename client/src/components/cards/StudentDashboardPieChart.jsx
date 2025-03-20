@@ -1,12 +1,14 @@
 import PivotTableChartRounded from "@mui/icons-material/PivotTableChartRounded";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme,useMediaQuery } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { Doughnut } from "react-chartjs-2";
 
 const StudentDashboardPieChart = ({ females, males }) => {
-  const { palette } = useTheme();
+  const { palette, breakpoints } = useTheme();
+   const matches = useMediaQuery(breakpoints.down("md"));
+ 
   return (
     <Card elevation={1}>
       <CardHeader
@@ -23,7 +25,7 @@ const StudentDashboardPieChart = ({ females, males }) => {
           sx={{
             minWidth: 100,
             width: "100%",
-            height: 200,
+            height: matches ? 200 : 400,
           }}
         >
           <Doughnut

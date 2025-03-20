@@ -38,7 +38,7 @@ router.get(
     const levels = await Level.find({
       session: new ObjectId(session),
       term: new ObjectId(term),
-      'teacher._id': teacher
+      teacher: teacher
     })
       .select(['teacher', 'level'])
       .populate({
@@ -50,7 +50,7 @@ router.get(
     const studentInEachLevel = levels.map((level) => {
       return {
         level: level?.levelName,
-        students: level?.noOfStudents
+        students: level?.noOfStudents || 0
       };
     });
 

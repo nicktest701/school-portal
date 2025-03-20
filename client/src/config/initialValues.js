@@ -15,6 +15,41 @@ export const sessionInitialValues = {
   vacationDate: '',
   reOpeningDate: '',
 };
+export const sessionDefaultValues = {
+  core: {
+    name: "",
+    from: new Date(),
+    to: new Date(),
+    term: "",
+  },
+  levels: [],
+  students: [
+
+  ],
+  exams: {
+    midTermExams: {
+      from: "",
+      to: "",
+    },
+    revisionWeek: {
+      from: "",
+      to: "",
+    },
+    finalExams: {
+      from: "",
+      to: "",
+    },
+    scorePreference: "50/50",
+    grade: {
+
+    },
+  },
+  report: {
+    template: "",
+    dimension: "A4",
+  },
+};
+
 
 export const levelInitialValues = {
   level: '',

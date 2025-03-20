@@ -22,7 +22,7 @@ const DrawerItem = ({ title, icon, to }) => {
 
   return (
     <Tooltip title={title} placement="right">
-      <NavLink to={to} style={myLinkStyles} end>
+      <NavLink to={to} style={myLinkStyles} >
         <Stack
           direction="row"
           justifyContent="flex-start"

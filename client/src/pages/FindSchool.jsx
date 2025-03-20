@@ -19,7 +19,7 @@ import { getSchool } from "@/api/schoolAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { UserContext } from "@/context/providers/UserProvider";
 
-const FindSchool = ({ setValue }) => {
+const FindSchool = () => {
   const { updateSchoolInformation } = use(UserContext);
   const [schoolDetails, setSchoolDetails] = useState({
     _id: "",
@@ -68,7 +68,7 @@ const FindSchool = ({ setValue }) => {
 
   const handleProceedToLogin = () => {
     updateSchoolInformation(schoolDetails);
-    setValue(true);
+ 
   };
 
   const codeWatch = watch("code");

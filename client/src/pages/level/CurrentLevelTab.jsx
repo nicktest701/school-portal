@@ -1,6 +1,11 @@
 import React from "react";
 import _ from "lodash";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { STUDENTS_COLUMN } from "@/mockup/columns/studentColumns";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import FileDialog from "@/components/modals/FileDialog";
@@ -26,15 +31,23 @@ import {
   Grid2,
   IconButton,
   Typography,
+  Stack,
+  Avatar,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+
 import SubjectPopover from "./SubjectPopOver";
 import GradePopover from "./GradePopover";
 import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
+import AssignTeacher from "./AssignTeacher";
 
 const CurrentLevelTab = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("md"));
 
   //Get Students in Current Level id
   const {
@@ -44,6 +57,7 @@ const CurrentLevelTab = () => {
     subjects,
     rollNumber,
     levelLoading,
+    teacher,
     refetch,
   } = useLevelById(id);
 
@@ -53,6 +67,14 @@ const CurrentLevelTab = () => {
   const handleOpenAddSubject = () => {
     navigate(`/level/${id}/courses`);
   };
+
+  const handleOpenAssignTeacher = () => {
+    setSearchParams((params) => {
+      params.set("_at", true);
+      return params;
+    });
+  };
+
   const groupedStudents = _.groupBy(students, "gender");
 
   if (levelLoading) {
@@ -166,33 +188,36 @@ const CurrentLevelTab = () => {
             <Typography variant="body2" color="text.primary">
               Only 5 academic year/semester results out of 6 have been approved.
             </Typography>
-            {/* <Box mt={2} display="flex" alignItems="center" gap={1}>
-              <Typography variant="body2" fontWeight="bold" color="primary">
-                Result Entry Progress
-              </Typography>
-            </Box> */}
-            {/* <LinearProgress
-              variant="determinate"
-              value={0}
-              sx={{
-                height: 8,
-                borderRadius: 1,
-                mt: 1,
-              }}
-            />
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography variant="body2" color="text.secondary" mt={0.5}>
-                Progress: {0}%
-              </Typography>
-              <Typography textAlign="center" fontSize={11}>
-                {" "}
-                completed
-              </Typography>
-            </Box> */}
+            {teacher?._id && (
+              <Link
+                to={`/teacher/${teacher?._id}`}
+                style={{
+                  color: "var(--primary)",
+                  textDecoration: "none",
+                }}
+              >
+                <Stack
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  spacing={2}
+                  p={1}
+                  width="fit-content"
+                  ml="auto"
+                  sx={{
+                    alignSelf: "end",
+                    "&:hover": {
+                      bgcolor: "rgba(0,0,0,0.05)",
+                      cursor: "pointer",
+                      borderRadius: "12px",
+                    },
+                  }}
+                >
+                  <Avatar srcSet={teacher?.profile} />
+                  <Typography>{teacher?.fullName}</Typography>
+                </Stack>
+              </Link>
+            )}
           </Box>
 
           <Divider sx={{ my: 2 }} />
@@ -262,15 +287,24 @@ const CurrentLevelTab = () => {
               startIcon={<NoteAltRounded />}
               onClick={handleOpenAttendance}
             >
-              Mark Attendance
+              {matches && "Mark Attendance"}
             </Button>
             <Button
               variant="contained"
               startIcon={<NoteAltRounded />}
               onClick={handleOpenAddSubject}
             >
-              Add Subjects
+              {matches && "Add Subjects"}
             </Button>
+            {!teacher?._id && (
+              <Button
+                variant="contained"
+                startIcon={<NoteAltRounded />}
+                onClick={handleOpenAssignTeacher}
+              >
+                {matches && "Assign Teacher"}
+              </Button>
+            )}
           </Box>
         </CardContent>
       </Card>
@@ -293,6 +327,7 @@ const CurrentLevelTab = () => {
       />
 
       <FileDialog />
+      <AssignTeacher levelName={levelName} />
     </Box>
   );
 };

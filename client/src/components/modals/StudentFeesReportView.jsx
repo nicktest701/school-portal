@@ -35,7 +35,7 @@ const StudentFeesReportView = () => {
     academicYear: '',
   });
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   useEffect(() => {

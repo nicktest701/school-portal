@@ -7,12 +7,11 @@ import { Edit } from "@mui/icons-material";
 import CustomTitle from "@/components/custom/CustomTitle";
 import { useSearchParams } from "react-router-dom";
 import UpdateUserProfile from "@/components/dialog/UpdateUserProfile";
+import moment from "moment";
 
 function Profile() {
   const { user } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
-
- 
 
   const handleOpenEdit = () => {
     setSearchParams((params) => {
@@ -36,7 +35,7 @@ function Profile() {
           alignItems: "start",
           py: 4,
           gap: 4,
-          bgcolor:'#fff' 
+          bgcolor: "#fff",
         }}
       >
         <Button
@@ -56,10 +55,7 @@ function Profile() {
           <Stack
             sx={{ p: 1, border: "1px solid lightgray", borderRadius: "50%" }}
           >
-            <Avatar
-              src={user?.profile}
-              sx={{ height: 120, width: 120 }}
-            />
+            <Avatar src={user?.profile} sx={{ height: 120, width: 120 }} />
           </Stack>
           <Typography
             variant="h6"
@@ -81,7 +77,10 @@ function Profile() {
           <FormDisplayItem label="Username" value={user.username || ""} />
           <FormDisplayItem label="Email" value={user.email || ""} />
           <CustomFormControl>
-            <FormDisplayItem label="Date of Birth" value={user.dateofbirth || ""} />
+            <FormDisplayItem
+              label="Date of Birth"
+              value={moment(new Date(user.dateofbirth)).format("LL") || ""}
+            />
 
             <FormDisplayItem label="Gender" value={user.gender || ""} />
           </CustomFormControl>

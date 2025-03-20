@@ -107,6 +107,6 @@ UserSchema.statics.findByUsername = function (username) {
 // 🔹 Compound Indexes for Faster Queries
 UserSchema.index({ email: 1, username: 1 });
 UserSchema.index({ school: 1, role: 1 });
-UserSchema.index({ active: 1 });
+
 
 module.exports = db.model("User", UserSchema);

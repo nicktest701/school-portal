@@ -1,5 +1,10 @@
 import React, { lazy, Suspense, use } from "react";
-import { Route, Routes } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 
 import Loader from "../../config/Loader";
 import Shell from "../Shell";
@@ -11,10 +16,13 @@ import MoreEvents from "../events/MoreEvents";
 import { UserContext } from "@/context/providers/UserProvider";
 import DashboardSkeleton from "@/components/skeleton/DashboardSkeleton";
 import EventSkeleton from "@/components/skeleton/EventSkeleton";
+import ProtectedRoute from "./ProtectedRoute";
+import AddSession from "../session/AddSession";
 
 //Session
 const Sessions = lazy(() => import("../session/Sessions"));
 const ViewSession = lazy(() => import("../session/ViewSession"));
+const EditSessionForm = lazy(() => import("../session/edit-form/EditSessionForm"));
 
 const FeePrint = lazy(() => import("../fees/FeePrint"));
 const LevelFeeInformation = lazy(() => import("../fees/LevelFeeInformation"));
@@ -109,7 +117,14 @@ const Root = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Shell />}>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Shell />
+            </ProtectedRoute>
+          }
+        >
           <Route
             index
             element={
@@ -119,7 +134,7 @@ const Root = () => {
             }
           />
 
-          {user.role === "administrator" && (
+          {user?.role === "administrator" && (
             <>
               {/* session */}
 
@@ -142,10 +157,26 @@ const Root = () => {
                 <Route
                   element={
                     <Suspense fallback={<Loader />}>
+                      <AddSession />
+                    </Suspense>
+                  }
+                  path="new"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
                       <ViewSession />
                     </Suspense>
                   }
                   path=":id"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <EditSessionForm />
+                    </Suspense>
+                  }
+                  path=":id/edit"
                 />
               </Route>
 
@@ -254,12 +285,12 @@ const Root = () => {
                   path="view"
                 />
                 <Route
+                  path="view/:studentId"
                   element={
                     <Suspense fallback={<Loader />}>
                       <StudentDetails />
                     </Suspense>
                   }
-                  path="profile/:id/:type/:studentId"
                 />
                 <Route
                   element={
@@ -503,16 +534,6 @@ const Root = () => {
                 path="/settings"
               />
 
-              {/* school sessions */}
-              <Route
-                element={
-                  <Suspense fallback={<Loader />}>
-                    <SchoolSession />
-                  </Suspense>
-                }
-                path="/school-session"
-              />
-
               {/* users */}
               <Route
                 element={
@@ -558,7 +579,7 @@ const Root = () => {
             </>
           )}
 
-          {user.role === "teacher" && (
+          {user?.role === "teacher" && (
             <>
               {/* Course */}
               <Route
@@ -792,6 +813,15 @@ const Root = () => {
             path="/about"
           />
         </Route>
+        {/* school sessions */}
+        <Route
+          element={
+            <Suspense fallback={<Loader />}>
+              <SchoolSession />
+            </Suspense>
+          }
+          path="/school-session"
+        />
 
         <Route element={<Login />} path="/login" />
 
@@ -800,5 +830,14 @@ const Root = () => {
     </>
   );
 };
+
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <Shell />,
+//     children: [],
+//   },
+// ]);
+// return <RouterProvider router={router} />;
 
 export default Root;

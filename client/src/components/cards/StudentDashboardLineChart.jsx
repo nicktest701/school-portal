@@ -6,8 +6,11 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { Bar } from "react-chartjs-2";
 import _ from "lodash";
-import { Typography } from "@mui/material";
+import { Typography,useTheme, useMediaQuery } from "@mui/material";
 const StudentDashboardLineChart = ({ data }) => {
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("md"));
+
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
 
@@ -30,7 +33,7 @@ const StudentDashboardLineChart = ({ data }) => {
           sx={{
             minWidth: 100,
             width: "100%",
-            height: 200,
+            height: matches ? 200 : 400,
           }}
         >
           <Bar

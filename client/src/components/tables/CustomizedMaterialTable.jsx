@@ -1,17 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { useMediaQuery, useTheme } from "@mui/material";
-import {
-  Divider,
-  Typography,
-  Skeleton,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableContainer,
-  TableBody,
-} from "@mui/material";
-import MaterialTable, { MTableToolbar, MTableBodyRow } from "material-table";
+import { Divider, Stack } from "@mui/material";
+import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "@/config/tableIcons";
 import { Add, Delete, Refresh } from "@mui/icons-material";
 import { Button } from "@mui/material";
@@ -19,6 +9,7 @@ import CustomTableTitle from "../custom/CustomTableTitle";
 import EmptyDataContainer from "../EmptyDataContainer";
 import AnimatedContainer from "../animations/AnimatedContainer";
 import TableSkeleton from "../skeleton/TableSkeleton";
+import _ from "lodash";
 
 function CustomizedMaterialTable({
   title,
@@ -45,6 +36,7 @@ function CustomizedMaterialTable({
   showRowShadow,
   autoCompleteComponent,
   tableRef,
+  otherButtons,
 }) {
   const modifiedColumns = columns.map((column) => {
     return { ...column };
@@ -83,7 +75,7 @@ function CustomizedMaterialTable({
           isLoading={isPending}
           icons={tableIcons}
           columns={modifiedColumns}
-          data={data === undefined ? [] : data}
+          data={data || []}
           options={{
             draggable: true,
 
@@ -111,17 +103,13 @@ function CustomizedMaterialTable({
             selection: true,
             showSelectAllCheckbox: true,
             columnsButton: true,
-            paging:
-              showPaging ||
-              (data === undefined || data.length === 0 ? false : true),
+            paging: showPaging || _.isEmpty(data) ? false : true,
             pageSize: 10,
             pageSizeOptions: [3, 5, 10, 20, 30, 40, 50, 100],
             paginationType: "stepped",
             // paginationPosition: 'top',
             actionsColumnIndex: -1,
-
-            header: data === undefined || data.length === 0 ? false : true,
-
+            header: _.isEmpty(data) ? false : true,
             headerStyle: {
               color: "rgb(1, 46, 84)",
               fontWeight: "bold",
@@ -164,8 +152,7 @@ function CustomizedMaterialTable({
           onSelectionChange={onSelectionChange}
           components={{
             Toolbar: (props) => {
-              return (data === undefined || data?.length === 0) &&
-                title !== "Students" ? null : (
+              return _.isEmpty(data) && title !== "Students" ? null : (
                 <>
                   <Box
                     sx={{
@@ -182,16 +169,20 @@ function CustomizedMaterialTable({
                         // icon={icon}
                       />
                     )}
-                    {showAddButton && (
-                      <Button
-                        variant="contained"
-                        startIcon={addButtonIcon || <Add />}
-                        disableElevation
-                        onClick={() => onAddButtonClicked()}
-                      >
-                        {addButtonText}
-                      </Button>
-                    )}
+
+                    <Stack direction="row" gap={1}>
+                      {otherButtons}
+                      {showAddButton && (
+                        <Button
+                          variant="contained"
+                          startIcon={addButtonIcon || <Add />}
+                          disableElevation
+                          onClick={() => onAddButtonClicked()}
+                        >
+                          {addButtonText}
+                        </Button>
+                      )}
+                    </Stack>
                   </Box>
                   <Divider />
                   <Box
@@ -199,7 +190,7 @@ function CustomizedMaterialTable({
                   >
                     {autoCompleteComponent}
                   </Box>
-               
+
                   <div style={{ paddingBottom: "16px" }}>
                     <MTableToolbar {...props} className="hide-on-print" />
                   </div>
@@ -207,36 +198,10 @@ function CustomizedMaterialTable({
               );
             },
           }}
-          localization={{
-            body: {
-              emptyDataSourceMessage: (
-                <MTableBodyRow>
-                  {isPending ? (
-                    <Typography>Please Wait...</Typography>
-                  ) : (
-                    <>
-                      {data && data?.length === 0 && (
-                        <EmptyDataContainer
-                          img={addButtonImg}
-                          message={addButtonMessage}
-                          buttonText={addButtonText}
-                          onClick={onAddButtonClicked}
-                          showAddButton={showAddButton}
-                        />
-                      )}
-                    </>
-                  )}
-                </MTableBodyRow>
-              ),
-            },
-          }}
         />
-        {/* {isPending && <LoadingSpinner />} */}
       </Box>
     </AnimatedContainer>
   );
 }
 
 export default CustomizedMaterialTable;
-
-

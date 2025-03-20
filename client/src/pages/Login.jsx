@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { SchoolRounded } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import {
@@ -23,8 +23,7 @@ import FindSchool from "./FindSchool";
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [showLogin, setShowLogin] = useState(false);
-  const {  school_info, logInUser } = useContext(UserContext);
+  const { school_info, logInUser } = useContext(UserContext);
   const initialValues = {
     username: "",
     password: "",
@@ -52,10 +51,9 @@ const Login = () => {
       },
     });
   };
- 
 
   if (!school_info?._id) {
-    return <FindSchool setValue={setShowLogin} />;
+    return <FindSchool />;
   }
 
   return (

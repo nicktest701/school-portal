@@ -38,7 +38,6 @@ const UpdateUserProfile = () => {
     setProfileImage(user?.profile);
   }, [user]);
 
-  //PUT user
   const { mutateAsync, isPending } = useMutation({
     mutationFn: putUser,
   });
@@ -110,7 +109,7 @@ const UpdateUserProfile = () => {
 
   return (
     <Dialog open={searchParams.get("e_p")} maxWidth="md" fullWidth>
-      <CustomDialogTitle title="Edit User" onClose={handleClose} />
+      <CustomDialogTitle title="Edit Account" onClose={handleClose} />
 
       <Formik
         initialValues={{
@@ -191,11 +190,20 @@ const UpdateUserProfile = () => {
                     helperText={touched.username && errors.username}
                   />
                   <TextField
+                    type="date"
+                    label="Date of birth"
+                    fullWidth
+                    size="small"
+                    InputLabelProps={{ shrink: true }}
+                    value={values.dateofbirth || ""}
+                    onChange={handleChange("dateofbirth")}
+                    error={Boolean(touched.dateofbirth && errors.dateofbirth)}
+                    helperText={touched.dateofbirth && errors.dateofbirth}
+                  />
+                  <TextField
                     label="Email"
                     fullWidth
                     size="small"
-                    row={3}
-                    maxRows={3}
                     value={values.email || ""}
                     onChange={handleChange("email")}
                     error={Boolean(touched.email && errors.email)}

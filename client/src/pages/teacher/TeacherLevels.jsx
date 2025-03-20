@@ -22,7 +22,7 @@ import { UserContext } from "@/context/providers/UserProvider";
 
 function TeacherLevels() {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();

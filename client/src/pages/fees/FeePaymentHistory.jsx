@@ -15,7 +15,7 @@ import CustomTitle from "@/components/custom/CustomTitle";
 
 function FeePaymentHistory() {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   //

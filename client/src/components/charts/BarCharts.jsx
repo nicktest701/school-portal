@@ -1,14 +1,15 @@
-import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import Box from '@mui/material/Box';
-import { useTheme } from '@emotion/react';
+import React from "react";
+import { Bar } from "react-chartjs-2";
+import Box from "@mui/material/Box";
+import { useTheme, useMediaQuery } from "@emotion/react";
 const BarCharts = ({ labels, data }) => {
-  const { palette } = useTheme();
+  const { palette, breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("md"));
   return (
     <Box
       sx={{
         minWidth: 200,
-        height: 200,
+        height: matches ? 200 : 400,
       }}
     >
       <Bar
@@ -16,7 +17,7 @@ const BarCharts = ({ labels, data }) => {
           labels: labels,
           datasets: [
             {
-              label: 'No of Students',
+              label: "No of Students",
               data: data,
               backgroundColor: [palette.primary.main, palette.secondary.main],
               barThickness: 10,

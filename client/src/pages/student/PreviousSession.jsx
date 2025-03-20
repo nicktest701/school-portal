@@ -18,7 +18,7 @@ import moment from 'moment';
 
 function PreviousSession({ open, setOpen }) {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);

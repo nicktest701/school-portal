@@ -9,27 +9,21 @@ import {
 } from "@mui/material";
 import Swal from "sweetalert2";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-
-import { postManyStudents } from "../../api/studentAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { postManyStudents } from "@/api/studentAPI";
 import useLevel from "../hooks/useLevel";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import { UserContext } from "../../context/providers/UserProvider";
-import { IMPORT_STUDENT_COLUMNS } from "../../mockup/columns/studentColumns";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { UserContext } from "@/context/providers/UserProvider";
+import { IMPORT_STUDENT_COLUMNS } from "@/mockup/columns/studentColumns";
 import CustomizedMaterialTable from "../tables/CustomizedMaterialTable";
-import { EMPTY_IMAGES } from "../../config/images";
+import { EMPTY_IMAGES } from "@/config/images";
 import CustomDialogTitle from "../dialog/CustomDialogTitle";
 import CustomTitle from "../custom/CustomTitle";
 import { ImportExport } from "@mui/icons-material";
 import GlobalSpinner from "../spinners/GlobalSpinner";
 
 function AddStudentFileDialog() {
-  const {
-    userState: { session },
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
 
   //Params
   const queryClient = useQueryClient();
@@ -107,7 +101,7 @@ function AddStudentFileDialog() {
     <Dialog open={fileData.open} fullScreen fullWidth>
       <CustomDialogTitle onClose={handleCloseDialog} />
 
-      <DialogContent sx={{px:4}}>
+      <DialogContent sx={{ px: 4 }}>
         <CustomTitle
           title="Import Students"
           subtitle="Enroll new students by adding their personal and academic details to the system for accurate record-keeping and future reference by importing Student data from excel or csv files."
@@ -129,6 +123,7 @@ function AddStudentFileDialog() {
             icon={EMPTY_IMAGES.student}
             columns={IMPORT_STUDENT_COLUMNS}
             data={fileData?.data}
+            search={true}
             options={{
               pageSize: 10,
               pageSizeOptions: [10, 20, 30, 50],

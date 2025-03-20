@@ -15,9 +15,7 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import { useNavigate } from "react-router-dom";
 const FeeHome = () => {
   const {
-    userState: {
-      session: { sessionId, termId, from, to },
-    },
+    session: { sessionId, termId, from, to },
   } = useContext(UserContext);
   const navigate = useNavigate();
 

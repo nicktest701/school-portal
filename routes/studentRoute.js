@@ -35,19 +35,24 @@ const upload = multer({ storage: Storage });
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const students = await Student.find({});
+    const students = await Student.find({
+      school: req.user.school
+    });
+    res.json(students);
+  })
+);
+//@GET All students
+router.get(
+  '/ids',
+  asyncHandler(async (req, res) => {
+    const existingStudents = await Student.find({
+      school: req.user.school
+    });
+    const students = _.map(existingStudents, 'indexnumber')
     res.json(students);
   })
 );
 
-//@GET All students
-router.get(
-  '/',
-  asyncHandler(async (req, res) => {
-    const students = await Student.find({});
-    res.json(students);
-  })
-);
 
 //@GET All students details
 router.get(
@@ -56,6 +61,7 @@ router.get(
     const { sessionId, termId } = req.query;
 
     const allLevels = await Level.find({
+
       session: new ObjectId(sessionId),
     })
       .populate({
@@ -243,7 +249,6 @@ router.post(
   asyncHandler(async (req, res) => {
     const { details } = req.body;
 
-
     const studentDetails = JSON.parse(details)
     const { personal, medical, academic, parent } = studentDetails;
 
@@ -277,6 +282,8 @@ router.post(
       nationality: personal?.nationality,
       medical,
       academic,
+      school: req.user.school,
+      createdBy: req.user.createdBy,
     });
 
     if (_.isEmpty(student)) {
@@ -290,35 +297,27 @@ router.post(
       { new: true }
     );
 
-    //create exams details for student
-    await Examination.create({
+
+    const stud = {
       session: new ObjectId(personal.session?.sessionId),
       term: new ObjectId(personal.session?.termId),
       level: new ObjectId(level?._id),
       student: new ObjectId(student._id),
-      scores: [],
-      overallScore: 0,
-      comments: {},
-    });
-
-
-    await CurrentFee.create({
-      session: new ObjectId(personal.session?.sessionId),
-      term: new ObjectId(personal.session?.termId),
-      level: new ObjectId(personal.level?._id),
-      fee: level?.fees?._id,
-      student: student._id,
-      payment: [],
-    });
+    }
+    //create exams details for student
+    await Examination.create(stud);
+    await CurrentFee.create(stud);
 
 
     const firstParent = {
       ...parent.parent1,
       student: student._id,
+      school: req.user.school,
     };
     const secondParent = {
       ...parent.parent2,
       student: student._id,
+      school: req.user.school,
     };
 
     await Parent.insertMany([firstParent, secondParent]);
@@ -340,12 +339,11 @@ router.post(
     const indexNumbers = _.map(students, 'indexnumber');
 
     const existingStudents = await Student.find({
+      school: req.user.school,
       indexnumber: {
         $in: indexNumbers,
       },
     });
-
-
 
     if (!_.isEmpty(existingStudents)) {
       return res
@@ -358,7 +356,16 @@ router.post(
     let studentIds = _.map(students, '_id');
 
     if (type === 'file') {
-      const newStudents = await Student.create(students);
+
+      const modifiedStudents = students?.map((student) => {
+        return {
+          ...student,
+          school: req.user.school,
+          createdBy: req.user.createdBy,
+        };
+      });
+      const newStudents = await Student.create(modifiedStudents);
+
 
       if (_.isEmpty(newStudents)) {
         return res
@@ -375,12 +382,9 @@ router.post(
       session.levelId,
       {
         $push: { students: studentIds },
-        // $set: {
-        //   rollNumber: studentIds.length,
-        // },
       },
       { new: true }
-    ).select('students');
+    );
 
     //create exams details for students
     studentIds.forEach(async (id) => {
@@ -420,25 +424,6 @@ router.post(
   })
 );
 
-
-//@PUT students
-router.post(
-  '/test',
-  upload.single('profile'),
-  asyncHandler(async (req, res) => {
-
-    let filename = req.file?.filename;
-    imageURL = await uploadFile(filename, 'students/');
-    console.log(imageURL)
-
-    // const studentPhoto = await uploadBase64Image(req.body?.profile, '123', 'students')
-
-    // res.status(200).json({
-    //   studentPhoto
-    // });
-    res.status(200).json('done');
-  })
-);
 //@PUT students
 router.put(
   '/',

@@ -3,23 +3,35 @@ const db = require("../db/DBConnection");
 
 const TermSchema = new mongoose.Schema(
   {
+    school: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "School",
+    },
     session: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Session",
     },
+    name: String,
     from: String,
     to: String,
     term: String,
     academicYear: String,
-    startDate: String,
     vacationDate: String,
     reOpeningDate: String,
     headmaster: {
       type: mongoose.SchemaTypes.Mixed,
     },
+    exams: {
+      type: mongoose.SchemaTypes.Mixed,
+    },
     report: {
-      type: String,
-      default: 'first'
+      template: {
+        type: String,
+        default: 'first'
+      }, dimension: {
+        type: String,
+        default: 'A4'
+      }
     },
     active: {
       type: Boolean,
@@ -31,5 +43,6 @@ const TermSchema = new mongoose.Schema(
   }
 );
 
+TermSchema.index({ school: 1 });
 TermSchema.index({ session: 1 });
 module.exports = db.model("Term", TermSchema);

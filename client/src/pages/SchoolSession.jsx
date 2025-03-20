@@ -8,7 +8,7 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTerms } from "../api/termAPI";
@@ -18,7 +18,7 @@ import AddSchoolSession from "./session/AddSchoolSession";
 
 const SchoolSession = () => {
   const { schoolSessionDispatch } = use(SchoolSessionContext);
-  const { userDispatch, user, updateSession } = use(UserContext);
+  const {  user, updateSession } = use(UserContext);
   const navigate = useNavigate();
   const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState("");

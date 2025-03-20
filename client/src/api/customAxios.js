@@ -48,7 +48,7 @@ api.interceptors.response.use(
       const originalRequest = error.config;
 
       if (
-        [403].includes(error?.response?.status) &&
+        [401, 403].includes(error?.response?.status) &&
         !originalRequest._retry
       ) {
         originalRequest._retry = true;
@@ -71,7 +71,7 @@ api.interceptors.response.use(
           // Retry the original request with the new access token
           return api(originalRequest);
         } catch (refreshError) {
-        
+
           deleteUser();
           deleteToken();
           if (location.pathname !== "/login") {

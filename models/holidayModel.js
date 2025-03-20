@@ -37,8 +37,6 @@ const holidaySchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Index for date field for faster querying
-holidaySchema.index({ date: 1 });
 
 const Holiday = db.model('Holiday', holidaySchema);
 

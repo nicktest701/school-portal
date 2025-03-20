@@ -59,7 +59,7 @@ function Header() {
     createNote.mutate(data);
   };
 
-  const activeNotifications = data?.filter((notif) => notif.active);
+  const activeNotifications = data?.filter((notif) => notif?.active);
 
   return (
     <>

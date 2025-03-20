@@ -17,7 +17,7 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const FeeNew = () => {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   const queryClient = useQueryClient();

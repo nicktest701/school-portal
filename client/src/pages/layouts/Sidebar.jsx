@@ -141,11 +141,34 @@ const Sidebar = () => {
                 icon={<NumbersSharp />}
                 to="/subject"
               />
+
+              {/* <NavLinkItemCollapse
+                icon={<LocalLibraryRounded htmlColor="" />}
+                title={toggleWidth ? "" : "Students"}
+                toggleWidth={toggleWidth}
+              >
+                <DrawerItem
+                  title={toggleWidth ? "" : "Home"}
+                  icon={<BedroomBabyRoundedIcon />}
+                  to="/"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "View Students"}
+                  icon={<ListAltSharp />}
+                  to="/student/view"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "New Student"}
+                  icon={<BookRounded />}
+                  to="/student/new"
+                />
+              </NavLinkItemCollapse> */}
               <DrawerItem
                 title={toggleWidth ? "" : "Students"}
                 icon={<LocalLibraryRounded />}
                 to="/student"
               />
+
               <DrawerItem
                 title={toggleWidth ? "" : "Teachers"}
                 icon={<Person2Rounded />}
@@ -184,7 +207,7 @@ const Sidebar = () => {
                 icon={<AnnouncementRounded />}
                 to="/announcements"
               />
-            
+
               <DrawerItem
                 title={toggleWidth ? "" : "Users"}
                 icon={<PeopleAltRoundedIcon />}

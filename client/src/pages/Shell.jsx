@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
-import { UserContext } from "../context/providers/UserProvider";
+import React from "react";
 import _ from "lodash";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Footer from "./layouts/Footer";
 import Sidebar from "./layouts/Sidebar";
 import Content from "./layouts/Content";
@@ -9,12 +8,6 @@ import Header from "./layouts/Header";
 import { Box } from "@mui/material";
 
 const Shell = () => {
-  const { user, session } = useContext(UserContext);
-
-  if (_.isEmpty(session?.sessionId) || !user?.id) {
-    return <Navigate to="/login" />;
-  }
-
   return (
     <>
       <Box

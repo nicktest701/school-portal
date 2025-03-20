@@ -10,6 +10,7 @@ const SessionSchema = new mongoose.Schema(
     from: String,
     to: String,
     academicYear: String,
+    name: String,
     active: {
       type: Boolean,
       default: true,

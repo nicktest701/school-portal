@@ -24,7 +24,7 @@ import ExamsScoreTable from "@/components/tables/ExamsScoreTable";
 
 const ExamsScoreInput = ({ setTab }) => {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { levelId } = useParams();

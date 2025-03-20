@@ -18,7 +18,7 @@ import {
   ReportRounded,
 } from "@mui/icons-material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import StudentProfile from "@/components/tabs/student/StudentProfile";
 import StudentFees from "./StudentFees";
 import StudentAcademics from "@/components/tabs/student/StudentAcademics";
@@ -31,20 +31,25 @@ import { UserContext } from "@/context/providers/UserProvider";
 import { getStudentAllFeeHistory } from "@/api/currentFeeAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import useLevelById from "@/components/hooks/useLevelById";
 
 const StudentDetails = () => {
+  const [searchParams] = useSearchParams();
   const [tab, setTab] = useLocalStorage("student_profile_tab", "1");
 
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const queryClient = useQueryClient();
   ///Params
-  const { studentId, type, id } = useParams();
+  const { studentId } = useParams();
 
   //States
-  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+
+  const id = searchParams.get("_l");
+  const { levelName } = useLevelById(id);
 
   ///
   const {
@@ -137,9 +142,7 @@ const StudentDetails = () => {
 
           <Typography>{student?.indexnumber}</Typography>
           <Typography variant="h6">{student?.fullName}</Typography>
-          <Typography variant="body2">
-            {type || `${student?.levelName}`}
-          </Typography>
+          <Typography variant="body2">{levelName}</Typography>
           <Button
             variant="contained"
             startIcon={<MessageRounded />}

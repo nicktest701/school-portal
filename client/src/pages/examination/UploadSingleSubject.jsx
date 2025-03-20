@@ -35,7 +35,7 @@ const UploadSingleSubject = () => {
   const uploadedData = sessionStorage.getItem("course-upload-data");
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();

@@ -1,13 +1,14 @@
 import React, { use } from "react";
 import _ from "lodash";
+import { Container, ListItemText, Typography, Box } from "@mui/material";
 import {
-  Container,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Typography,
-  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 import { PropTypes } from "prop-types";
 import { useParams } from "react-router-dom";
@@ -18,6 +19,7 @@ import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { UserContext } from "@/context/providers/UserProvider";
+import DataSkeleton from "@/components/skeleton/DataSkeleton";
 
 function AttendanceHistory() {
   const { user } = use(UserContext);
@@ -29,6 +31,9 @@ function AttendanceHistory() {
     enabled: !!id,
   });
 
+  if (attendanceHistory.isPending) {
+    return <DataSkeleton />;
+  }
   return (
     <Container>
       {user?.role === "administrator" && (
@@ -44,85 +49,67 @@ function AttendanceHistory() {
         subtitle="Review past attendance records to analyze trends, identify issues, and ensure comprehensive tracking of student and staff presence."
         color="primary.main"
       />
-      <Box sx={{ bgcolor: "#fff", p: 2 }}>
-        {attendanceHistory.isPending && <Typography>Loading....</Typography>}
 
+      <Box sx={{ bgcolor: "#fff", p: 2 }}>
         <ListItemText
-          primary={`Attendance - ${attendanceHistory?.data?.length} days`}
-          primaryTypographyProps={{
-            fontSize: 20,
-            fontWeight: "bold",
-            textAlign: "right",
+          primary="Attendance"
+          secondary={`${attendanceHistory?.data?.length} days`}
+          slotProps={{
+            primary: {
+              fontSize: 20,
+              fontWeight: "bold",
+              // textAlign: "right",
+            },
+            secondary: {
+              color: "#1976d2",
+              fontWeight: "bold",
+            },
           }}
         />
-        <List sx={{ maxHeight: "50svh", overflowY: "auto" }}>
-          <ListItem>
-            <ListItemText primary="Date" />
-            <ListItemText primary="Present" />
-            <ListItemText primary="Absent" />
-          </ListItem>
-          {attendanceHistory.data &&
-            attendanceHistory.data.map((attendance) => (
-              <ListItemButton key={attendance.date} divider>
-                <ListItemText
-                  primary={moment(attendance.date).format("Do MMMM,YYYY")}
-                  secondary={moment(attendance.date).format("dddd")}
-                  slotProps={{
-                    secondary: {
-                      color: "primary.main",
-                      fontWeight: "bold",
-                    },
-                  }}
-                />
-                <ListItemText
-                  primary={attendance.present}
-                  slotProps={{
-                    primary: {
-                      width: 100,
-                    },
-                  }}
-                />
-                <ListItemText
-                  primary={attendance.absent}
-                  slotProps={{
-                    primary: {
-                      width: 100,
-                    },
-                  }}
-                />
-              </ListItemButton>
-            ))}
-          <ListItemButton divider>
-            <ListItemText
-              primary={"Total"}
-              slotProps={{
-                secondary: {
-                  color: "primary.main",
-                  fontWeight: "bold",
-                },
-                primary: {
-                  width: 130,
-                },
-              }}
-            />
-            <ListItemText
-              primary={_.sumBy(attendanceHistory.data, "present")}
-              slotProps={{
-                primary: {
-                  width: 100,
-                },
-              }}
-            />
-            <ListItemText
-              primary={_.sumBy(attendanceHistory.data, "absent")}
-              slotProps={{
-                primary: {
-                  width: 100,
-                },
-              }}
-            />
-          </ListItemButton>
-        </List>
+
+        <TableContainer
+          component={Paper}
+          sx={{ maxHeight: "70svh", overflowY: "auto" }}
+        >
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell>Present</TableCell>
+                <TableCell>Absent</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {attendanceHistory.data &&
+                attendanceHistory.data.map((attendance) => (
+                  <TableRow key={attendance.date}>
+                    <TableCell>
+                      {moment(new Date(attendance.date)).format(
+                        "Do MMMM, YYYY"
+                      )}
+                      <br />
+                      <span style={{ color: "#1976d2", fontWeight: "bold" }}>
+                        {moment(new Date(attendance.date)).format("dddd")}
+                      </span>
+                    </TableCell>
+                    <TableCell>{attendance.present}</TableCell>
+                    <TableCell>{attendance.absent}</TableCell>
+                  </TableRow>
+                ))}
+
+              {/* Total Row */}
+              <TableRow sx={{ fontWeight: "bold", backgroundColor: "#f5f5f5" }}>
+                <TableCell>Total</TableCell>
+                <TableCell>
+                  {_.sumBy(attendanceHistory.data, "present")}
+                </TableCell>
+                <TableCell>
+                  {_.sumBy(attendanceHistory.data, "absent")}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
       {attendanceHistory.isPending && (
         <LoadingSpinner value="Loading Attendance History" />

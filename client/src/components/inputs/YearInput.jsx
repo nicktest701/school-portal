@@ -31,6 +31,11 @@ const YearInput = ({ name, control, label, rules }) => {
               label={label}
               size="small"
               fullWidth
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
+              }}
             />
           )}
         />

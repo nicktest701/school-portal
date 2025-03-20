@@ -27,7 +27,10 @@ const ExaminationSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    scores: Array,
+    scores: {
+      type: Array,
+      default: []
+    },
     overallScore: {
       type: Number,
       default: 0,

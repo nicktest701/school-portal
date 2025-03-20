@@ -23,7 +23,7 @@ import {
 
 function FileDialog() {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   //Params

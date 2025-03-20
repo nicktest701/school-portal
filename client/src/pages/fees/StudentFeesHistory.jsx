@@ -18,7 +18,7 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const StudentFeesHistory = () => {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const { state } = useLocation();
   const [searchParams] = useSearchParams();

@@ -113,17 +113,19 @@ const Sessions = () => {
     navigate(`/session/${data?.termId}`);
   };
   //Edit session
-  const handlEditSession = (data) => {
-    setSearchParams((params) => {
-      params.set("_id", data?.termId);
-      params.set("edit_session", true);
+  const handlEditSession = (id) => {
+    navigate(`/session/${id}/edit`);
+    // setSearchParams((params) => {
+    //   params.set("_id", data?.termId);
+    //   params.set("edit_session", true);
 
-      return params;
-    });
+    //   return params;
+    // });
   };
 
   const handleOpenSession = () => {
-    schoolSessionDispatch({ type: "displayAddSession", payload: true });
+    navigate("/session/new");
+    // schoolSessionDispatch({ type: "displayAddSession", payload: true });
   };
 
   ///Disable or Enable User Account by id
@@ -191,7 +193,7 @@ const Sessions = () => {
             onAddButtonClicked={handleOpenSession}
             handleRefresh={sessions.refetch}
             onSelectionChange={handleSelectionChange}
-            onDeleteClicked={handleMultipleDeleteSession}
+            // onDeleteClicked={handleMultipleDeleteSession}
             options={{
               search: true,
             }}

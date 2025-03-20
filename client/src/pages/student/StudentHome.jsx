@@ -18,7 +18,7 @@ import { Person } from "@mui/icons-material";
 
 const StudentHome = () => {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
   const studentDetails = useQuery({

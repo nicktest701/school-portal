@@ -28,10 +28,8 @@ export const getLevel = async (id) => {
   try {
     const res = await api({
       method: 'GET',
-      url: `/levels`,
-      params: {
-        id,
-      },
+      url: `/levels/${id}`,
+
     });
 
     return res.data;
@@ -46,6 +44,20 @@ export const postLevel = async (newLevel) => {
     const res = await api({
       method: 'POST',
       url: `/levels`,
+      data: newLevel,
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
+export const postLevels = async (newLevel) => {
+  try {
+    const res = await api({
+      method: 'POST',
+      url: `/levels/many`,
       data: newLevel,
     });
 

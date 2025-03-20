@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Autocomplete, Container, IconButton, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { STUDENTS_COLUMN } from "@/mockup/columns/studentColumns";
@@ -18,11 +18,11 @@ const StudentView = () => {
 
   const handleRowClick = (rowData) => {
     const id = rowData.levelId;
-    const type = rowData.levelName;
-    navigate(`/student/profile/${id}/${type}/${rowData._id}`, {
+
+    navigate(`/student/view/${rowData._id}?_l=${id}`, {
       state: {
+        studentId: rowData._id,
         levelId: rowData.levelId,
-        levelName: rowData.levelName,
       },
     });
   };
@@ -32,8 +32,6 @@ const StudentView = () => {
       _id: "",
       type: "",
     });
-
-    all.refetch();
   };
 
   const selectedStudents = useMemo(() => {
@@ -58,7 +56,6 @@ const StudentView = () => {
         color="primary.main"
         right={
           <IconButton>
-            {" "}
             <Refresh sx={{ width: 32, height: 32 }} onClick={handleRefresh} />
           </IconButton>
         }

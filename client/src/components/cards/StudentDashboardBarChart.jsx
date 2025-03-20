@@ -4,11 +4,14 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import PropTypes from "prop-types";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 import _ from "lodash";
 
 const StudentDashboardBarChart = ({ data }) => {
+  const { palette, breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("md"));
+
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
 
@@ -28,14 +31,15 @@ const StudentDashboardBarChart = ({ data }) => {
           <Typography fontSize={12} fontStyle="italic">
             Total number of active students in each term.
           </Typography>
-        } />
-      
+        }
+      />
+
       <CardContent>
         <Box
           sx={{
             minWidth: 100,
             width: "100%",
-            height: 200,
+            height: matches ? 200 : 400,
           }}
         >
           <Bar

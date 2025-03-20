@@ -34,6 +34,20 @@ export const getAllStudents = async () => {
     throw error.response.data;
   }
 };
+//Get all Students
+export const getAllStudentID = async () => {
+  try {
+    const res = await api({
+      method: 'GET',
+      url: `/students/ids`,
+    });
+
+    return res.data;
+  } catch (error) {
+
+    throw error.response.data;
+  }
+};
 
 //Get all Students
 export const getAllStudentsByCurrentLevel = async (currentLevelId) => {
@@ -83,6 +97,7 @@ export const getStudent = async (id) => {
     throw error.response.data;
   }
 };
+
 export const getStudentByIndexNumber = async (id) => {
   try {
     const res = await api({
@@ -174,6 +189,21 @@ export const postNewStudent = async ({ photo, details }) => {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+    });
+
+    return res.data;
+  } catch (error) {
+
+    throw error.response.data;
+  }
+};
+
+export const checkExistingStudentID = async (data) => {
+  try {
+    const res = await api({
+      method: 'POST',
+      url: `/students/indexnumber`,
+      data,
     });
 
     return res.data;

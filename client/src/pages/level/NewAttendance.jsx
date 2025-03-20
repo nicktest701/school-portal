@@ -46,7 +46,7 @@ function NewAttendance({ to }) {
   const [allstudents, setAllStudents] = useState([]);
 
   const { levelName } = useLevelById(id);
-  console.log(id)
+
 
   //GET attendance by level id and date
   const attendance = useQuery({

@@ -9,12 +9,12 @@ import {
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import { Formik } from "formik";
-import CustomFormControl from "../../../components/inputs/CustomFormControl";
-import { StudentContext } from "../../../context/providers/StudentProvider";
-import { NATIONALITY } from "../../../mockup/data/nationality";
-import { TOWNS } from "../../../mockup/data/towns";
-import { RELATIONSHIP } from "../../../mockup/columns/sessionColumns";
-import { guardianValidationSchema } from "../../../config/validationSchema";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { StudentContext } from "@/context/providers/StudentProvider";
+import { NATIONALITY } from "@/mockup/data/nationality";
+import { TOWNS } from "@/mockup/data/towns";
+import { RELATIONSHIP } from "@/mockup/columns/sessionColumns";
+import { guardianValidationSchema } from "@/config/validationSchema";
 
 const ParentInfo = ({ setMode }) => {
   const {

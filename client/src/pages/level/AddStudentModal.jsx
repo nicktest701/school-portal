@@ -23,7 +23,7 @@ import { UserContext } from "../../context/providers/UserProvider";
 const AddStudentModal = () => {
 
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
 
 

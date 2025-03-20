@@ -41,7 +41,7 @@ const LevelExamScoreInput = () => {
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();

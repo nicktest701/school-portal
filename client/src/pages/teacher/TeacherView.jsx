@@ -44,7 +44,6 @@ const TeacherView = () => {
     enabled: !!id,
   });
 
-
   //EDIT Teacher Info
   const editTeacherInfo = () => {
     navigate(`/teacher/${id}/edit`);
@@ -105,7 +104,7 @@ const TeacherView = () => {
   return (
     <>
       <Container>
-        <Back to="/teacher" color="primary.main" />
+        <Back to={-1} color="primary.main" />
         <CustomTitle
           title="Teacher Information"
           subtitle="Manage teachers profile and assigned levels and courses"
@@ -157,14 +156,12 @@ const TeacherView = () => {
                 />
               </Box>
 
-              <Typography variant="h5">
-                {teacher?.data?.fullname}
-              </Typography>
+              <Typography variant="h5">{teacher?.data?.fullname}</Typography>
               <Button startIcon={<MessageRounded />} onClick={openQuickMessage}>
                 Send Message
               </Button>
-             
-              <ButtonGroup variant="contained" >
+
+              <ButtonGroup variant="contained">
                 <Button
                   color="secondary"
                   endIcon={<Person />}
@@ -203,6 +200,5 @@ const TeacherView = () => {
   );
 };
 
-TeacherView.propTypes = {};
 
 export default React.memo(TeacherView);

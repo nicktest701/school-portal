@@ -4,6 +4,10 @@ const { randomUUID } = require('crypto');
 
 const GradeSchema = new mongoose.Schema(
   {
+    school: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'School',
+    },
     session: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Session',
@@ -27,6 +31,7 @@ const GradeSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+GradeSchema.index({ school: 1 });
 GradeSchema.index({ session: 1 });
 GradeSchema.index({ term: 1 });
 GradeSchema.index({ createdBy: 1 });

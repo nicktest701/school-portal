@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { Typography } from "@mui/material";
-import { use, useState } from "react";
+import { use } from "react";
 import { UserContext } from "@/context/providers/UserProvider";
 import { getAllHolidays } from "@/api/holidayAPI";
 

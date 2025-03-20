@@ -7,16 +7,21 @@ import {
   Container,
   TextField,
   Button,
+  ListItemText,
+  FormControl,
+  Box,
 } from "@mui/material";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTerm } from "@/api/termAPI";
 
 import CustomTitle from "@/components/custom/CustomTitle";
 import Edit from "@mui/icons-material/Edit";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
 
 const ViewSession = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { id } = useParams();
   const queryClient = useQueryClient();
 
@@ -31,18 +36,20 @@ const ViewSession = () => {
 
   //Edit session
   const handleEditSession = () => {
-    setSearchParams((params) => {
-      params.set("_id", id);
-      params.set("edit_session", true);
+    navigate("edit");
 
-      return params;
-    });
+    // setSearchParams((params) => {
+    //   params.set("_id", id);
+    //   params.set("edit_session", true);
+
+    //   return params;
+    // });
   };
 
   return (
     <Container>
       <CustomTitle
-        title={session?.data?.academicYear}
+        title={`${session?.data?.core?.academicYear},${session?.data?.core?.term}`}
         subtitle="Create, update, and oversee academic sessions to ensure smooth academic operations"
         // img={session_icon}
         color="primary.main"
@@ -66,80 +73,192 @@ const ViewSession = () => {
             sx={{
               bgcolor: "#fff",
               py: 4,
+              mb: 2,
             }}
           >
+            <Typography variant="h5">Basic Session Details</Typography>
             <Stack spacing={2} paddingY={2}>
               <TextField
                 label="Academic Year"
-                value={session?.data?.academicYear}
+                value={session?.data?.core?.academicYear}
                 InputProps={{ readOnly: true }}
                 fullWidth
                 margin="normal"
                 size="small"
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
               />
               <TextField
                 label="Term/Semester"
-                value={session?.data?.term}
+                value={session?.data?.core?.term}
                 InputProps={{ readOnly: true }}
                 fullWidth
                 margin="normal"
                 size="small"
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
               />
 
-              <Typography fontSize={13}>Duration</Typography>
+              <Typography fontSize={13}>Academic Session</Typography>
 
-              <TextField
+              <PreviewField
                 label="Start of Academic Term/Semester"
-                value={moment(new Date(session?.data?.from))?.format(
-                  "Do MMMM YYYY"
-                )}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                margin="normal"
-                size="small"
+                value={new Date(session?.data?.core?.from)}
               />
 
-              <TextField
+              <PreviewField
                 label="End of Academic Term/Semester"
-                value={moment(new Date(session?.data?.to))?.format(
-                  "Do MMMM YYYY"
-                )}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                margin="normal"
-                size="small"
+                value={new Date(session?.data?.core?.to)}
               />
 
               <Typography fontSize={13}>Vacation</Typography>
 
-              <TextField
+              <PreviewField
                 label="Vacation Date"
-                value={moment(new Date(session?.data?.vacationDate))?.format(
-                  "Do MMMM YYYY"
-                )}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                margin="normal"
-                size="small"
+                value={new Date(session?.data?.core?.vacationDate)}
               />
 
-              <TextField
+              <PreviewField
                 label="Next Term Begins"
-                value={moment(new Date(session?.data?.reOpeningDate))?.format(
-                  "Do MMMM YYYY"
-                )}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                margin="normal"
-                size="small"
+                value={new Date(session?.data?.core?.reOpeningDate)}
               />
+            </Stack>
+          </Container>
 
-              <Divider />
+          {/* Exams  */}
+          <Container
+            sx={{
+              bgcolor: "#fff",
+              py: 4,
+              mb: 2,
+            }}
+          >
+            <Typography variant="h5">Exam & Assessment</Typography>
+            <Stack paddingY={1}>
+              <FormControl>
+                <Typography variant="body2">Mid Term Examination</Typography>
+                <CustomFormControl>
+                  <PreviewField
+                    label="From"
+                    value={new Date(session?.data?.exams?.midTermExams?.from)}
+                  />
+                  <PreviewField
+                    label="To"
+                    value={new Date(session?.data?.exams?.midTermExams?.to)}
+                  />
+                </CustomFormControl>
+              </FormControl>
+
+              <FormControl>
+                <Typography variant="body2">Revision Week</Typography>
+                <CustomFormControl>
+                  <PreviewField
+                    label="From"
+                    value={new Date(session?.data?.exams?.revisionWeek?.from)}
+                  />
+                  <PreviewField
+                    label="To"
+                    value={new Date(session?.data?.exams?.revisionWeek?.to)}
+                  />
+                </CustomFormControl>
+              </FormControl>
+
+              <FormControl>
+                <Typography variant="body2">Examination Week</Typography>
+                <CustomFormControl>
+                  <PreviewField
+                    label="From"
+                    value={new Date(session?.data?.exams?.finalExams?.from)}
+                  />
+                  <PreviewField
+                    label="To"
+                    value={new Date(session?.data?.exams?.finalExams?.to)}
+                  />
+                </CustomFormControl>
+              </FormControl>
+            </Stack>
+          </Container>
+
+          {/* Headmaster  */}
+          <Container
+            sx={{
+              bgcolor: "#fff",
+              py: 4,
+              mb: 2,
+            }}
+          >
+            <Typography variant="h5">Head Master</Typography>
+            <Stack direction={{ xs: "column", md: "row" }} width="100%" gap={3}>
+              <Stack spacing={2} paddingY={2} flexGrow={1}>
+                <PreviewField
+                  label="Full Name"
+                  value={session?.data?.headmaster?.name}
+                />
+                <PreviewField
+                  label="Contact"
+                  value={session?.data?.headmaster?.phone}
+                />
+              </Stack>
+              <Box>
+                <img
+                  alt="headmaster signature"
+                  src={session?.data?.headmaster?.signature}
+                />
+              </Box>
+            </Stack>
+          </Container>
+
+          {/* Report  */}
+          <Container
+            sx={{
+              bgcolor: "#fff",
+              py: 4,
+              mb: 2,
+            }}
+          >
+            <Typography variant="h5">Report Customization</Typography>
+            <Stack spacing={2} paddingY={2}>
+              <PreviewField
+                label="Report"
+                value={session?.data?.report?.template}
+              />
+              <PreviewField
+                label="Dimension"
+                value={session?.data?.report?.dimension}
+              />
             </Stack>
           </Container>
         </>
       )}
     </Container>
+  );
+};
+
+const PreviewField = ({ label, value }) => {
+  return (
+    <TextField
+      label={label}
+      value={
+        typeof value === "object"
+          ? moment(value)?.format("Do MMMM YYYY")
+          : value
+      }
+      InputProps={{ readOnly: true }}
+      fullWidth
+      margin="normal"
+      size="small"
+      slotProps={{
+        inputLabel: {
+          shrink: true,
+        },
+      }}
+    />
   );
 };
 

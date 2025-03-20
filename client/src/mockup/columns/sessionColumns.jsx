@@ -33,27 +33,44 @@ export const SCHOOL_SESSION_COLUMN = (
       hidden: true,
     },
     {
-      field: "from",
+      field: "core.from",
       hidden: true,
     },
     {
-      field: "to",
+      field: "core.to",
       hidden: true,
     },
     {
-      field: "academicYear",
+      field: "core.academicYear",
       title: "Academic Year",
+      searchable: true,
+      customFilterAndSearch: (data, rowData) => {
+        const name = rowData?.core?.name;
+        const academicYear = rowData?.core?.academicYear;         
+        return (
+          name.toLowerCase().lastIndexOf(data?.toLowerCase()) > -1 ||
+          academicYear?.toLowerCase().lastIndexOf(data?.toLowerCase()) > -1
+        );
+      },
+      render: (data) => {
+        return (
+          <ListItemText
+            primary={data?.core?.name}
+            secondary={data?.core.academicYear}
+          />
+        );
+      },
     },
     {
-      field: "term",
+      field: "core.term",
       title: "Term",
     },
     {
-      field: "vacationDate",
+      field: "core.vacationDate",
       hidden: true,
     },
     {
-      field: "reOpeningDate",
+      field: "core.reOpeningDate",
       hidden: true,
     },
     {
@@ -101,15 +118,18 @@ export const SCHOOL_SESSION_COLUMN = (
             <IconButton onClick={() => handleView(rowData)} title="View">
               <Visibility className="ico " titleAccess="View" />
             </IconButton>
-            <IconButton onClick={() => handleEdit(rowData)} title="Edit">
+            <IconButton
+              onClick={() => handleEdit(rowData?.termId)}
+              title="Edit"
+            >
               <Edit className="ico " titleAccess="Edit" />
             </IconButton>
-            <IconButton
+            {/* <IconButton
               title="Delete"
               onClick={() => handleDelete(rowData?.termId)}
             >
               <Delete className="ico " titleAccess="Delete" />
-            </IconButton>
+            </IconButton> */}
           </Stack>
         );
       },
@@ -242,6 +262,30 @@ export const LEVEL_OPTIONS = [
   "Basic 10",
   "Basic 11",
   "Basic 12",
+  "Class 1",
+  "Class 2",
+  "Class 3",
+  "Class 4",
+  "Class 5",
+  "Class 6",
+  "Class 7",
+  "Class 8",
+  "Class 9",
+  "Class 10",
+  "Class 11",
+  "Class 12",
+  "Stage 1",
+  "Stage 2",
+  "Stage 3",
+  "Stage 4",
+  "Stage 5",
+  "Stage 6",
+  "Stage 7",
+  "Stage 8",
+  "Stage 9",
+  "Stage 10",
+  "Stage 11",
+  "Stage 12",
   "J.H.S 1",
   "J.H.S 2",
   "J.H.S 3",

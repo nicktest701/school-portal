@@ -112,6 +112,6 @@ StudentSchema.virtual("fullName").get(function () {
 
 // 🔹 Compound Indexes for Performance
 StudentSchema.index({ school: 1, indexnumber: 1 }); // Fast lookup within a school
-StudentSchema.index({ createdBy: 1 });
+
 
 module.exports = db.model("Student", StudentSchema);

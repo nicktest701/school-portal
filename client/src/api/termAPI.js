@@ -36,6 +36,21 @@ export const getTerm = async (id) => {
   }
 };
 
+export const getValidTerm = async ({ academicYear, term }) => {
+  try {
+    const res = await api({
+      method: 'GET',
+      url: `/terms/valid?academicYear=${academicYear}&term=${term}`,
+
+    });
+
+    return res.data;
+  } catch (error) {
+
+    throw error.response.data;
+  }
+};
+
 
 export const postTerm = async (newTerm) => {
   try {

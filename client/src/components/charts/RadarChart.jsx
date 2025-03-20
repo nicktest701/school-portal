@@ -1,20 +1,21 @@
-import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material';
-import {  Radar } from 'react-chartjs-2';
+import Box from "@mui/material/Box";
+import { useTheme, useMediaQuery } from "@mui/material";
+import { Radar } from "react-chartjs-2";
 
 const RadarChart = ({ values, labels }) => {
-  const { palette } = useTheme();
+  const { palette, breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("md"));
 
   return (
     <Box
-    sx={{
-      minWidth: 100,
-      width: "100%",
-      height: 200,
-    }}
+      sx={{
+        minWidth: 100,
+        width: "100%",
+        height: matches ? 200 : 400,
+      }}
     >
       <Radar
-        datasetIdKey='id'
+        datasetIdKey="id"
         data={{
           labels,
           datasets: [
@@ -22,7 +23,7 @@ const RadarChart = ({ values, labels }) => {
               data: values,
               borderColor: palette.primary.main,
               backgroundColor: [palette.primary.main, palette.secondary.main],
-              fill: '-2',
+              fill: "-2",
             },
           ],
         }}
@@ -50,7 +51,7 @@ const RadarChart = ({ values, labels }) => {
           plugins: {
             legend: {
               display: false,
-              position: 'bottom',
+              position: "bottom",
             },
           },
         }}

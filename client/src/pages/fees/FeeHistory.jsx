@@ -17,7 +17,7 @@ import { EMPTY_IMAGES } from "@/config/images";
 import { useSearchParams } from "react-router-dom";
 const FeeHistory = () => {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
 

@@ -25,7 +25,7 @@ import { UserContext } from "@/context/providers/UserProvider";
 
 const TeacherAssignLevel = () => {
   const {
-    userState: { session },
+    session
   } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
@@ -59,10 +59,7 @@ const TeacherAssignLevel = () => {
       if (data.isConfirmed) {
         const info = {
           _id: values?._id,
-          teacher: {
-            _id: id,
-            fullName: teacher?.data?.fullName,
-          },
+          teacher: id,
         };
 
         mutateAsync(info, {

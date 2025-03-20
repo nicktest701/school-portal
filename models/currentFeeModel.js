@@ -24,7 +24,10 @@ const CurrentFeeSchema = new mongoose.Schema(
       ref: "Fee",
     },
 
-    payment: Array,
+    payment: {
+      type: Array,
+      default: []
+    },
     active: {
       type: Boolean,
       default: true,

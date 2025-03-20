@@ -65,6 +65,8 @@ export default function NotesBoard() {
   if (isPending) return <NotesSkeleton />;
   if (error) return <div>Error: {error.message}</div>;
 
+  // console.log(notes)
+
   // return <NotesSkeleton />;
   return (
     <Container>
@@ -175,28 +177,11 @@ export default function NotesBoard() {
                               cursor: "grab",
                             }}
                           >
-                            <Typography
-                              variant="h6"
-                              color={selectedColor}
-                              gutterBottom
-                            >
-                              {note.title}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              color={selectedColor}
-                              sx={{ width: "100%", whiteSpace: "pre-wrap" }}
-                            >
-                              {note.content}
-                            </Typography>
-
                             <Box
                               sx={{
-                                position: "absolute",
-                                top: 8,
-                                right: 8,
                                 display: "flex",
-                                gap: 1,
+                                justifyContent: "flex-end",
+                                gap: 0.5,
                               }}
                             >
                               <IconButton
@@ -214,6 +199,20 @@ export default function NotesBoard() {
                                 <DeleteIcon fontSize="small" />
                               </IconButton>
                             </Box>
+                            <Typography
+                              variant="h6"
+                              color={selectedColor}
+                              gutterBottom
+                            >
+                              {note.title}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color={selectedColor}
+                              sx={{ width: "100%", whiteSpace: "pre-wrap" }}
+                            >
+                              {note.content}
+                            </Typography>
                           </Paper>
                         </Grid>
                       )}

@@ -1,11 +1,9 @@
 import React, { useReducer, useState } from "react";
 import Swal from "sweetalert2";
 import UserReducer from "../reducers/UserReducer";
-import PropTypes from "prop-types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { generateNewCurrentLevelDetailsFromLevels } from "@/api/levelAPI";
 import { logOut } from "@/api/userAPI";
-import { getAllNotifications } from "@/api/notificationAPI";
 import { useNavigate } from "react-router-dom";
 import { getUser, parseJwt } from "@/config/sessionHandler";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
@@ -45,27 +43,27 @@ const UserProvider = ({ children }) => {
   const { levelLoading, students } = useLevel();
 
   //check if current level details exists
-  useQuery({
-    queryKey: [
-      "generate-current-level-details",
-      session?.sessionId,
-      session?.termId,
-    ],
-    queryFn: () =>
-      generateNewCurrentLevelDetailsFromLevels({
-        sessionId: session?.sessionId,
-        termId: session?.termId,
-      }),
-    enabled:
-      !!session?.sessionId &&
-      !!session?.termId &&
-      !!user?.role === "administrator",
-  });
+  // useQuery({
+  //   queryKey: [
+  //     "generate-current-level-details",
+  //     session?.sessionId,
+  //     session?.termId,
+  //   ],
+  //   queryFn: () =>
+  //     generateNewCurrentLevelDetailsFromLevels({
+  //       sessionId: session?.sessionId,
+  //       termId: session?.termId,
+  //     }),
+  //   enabled:
+  //     !!session?.sessionId &&
+  //     !!session?.termId &&
+  //     !!user?.role === "administrator",
+  // });
 
   const initState = {
     isPending: true,
     session,
-    user: user,
+    user,
     school_info: schoolInfo?.data,
   };
 
@@ -108,6 +106,7 @@ const UserProvider = ({ children }) => {
               localStorage.removeItem("@school_info");
               localStorage.removeItem("@school_session");
               navigate("/login");
+              setSchoolInformation(null);
               localStorage.removeItem("@user");
               setUser(null);
             },
@@ -138,8 +137,6 @@ const UserProvider = ({ children }) => {
     </UserContext>
   );
 };
-UserProvider.propTypes = {
-  children: PropTypes.node,
-};
+
 
 export default UserProvider;

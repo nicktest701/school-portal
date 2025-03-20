@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { use, useState } from "react";
 import Calendar from "react-calendar";
 import { Box, Stack, Typography, Avatar } from "@mui/material";
 import DashboardSwiper from "@/components/swiper/DashboardSwiper";
@@ -14,15 +14,10 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import Announcement from "@/components/calendar/Announcement";
 import Event from "@/components/calendar/Event";
 
-
 const Dashboard = () => {
-  const {
-    user,
-    userState: { session },
-  } = useContext(UserContext);
+  const { user, session } = use(UserContext);
 
   const [value, onChange] = useState(new Date());
-
 
   return (
     <>
@@ -38,6 +33,7 @@ const Dashboard = () => {
         <Box
           sx={{
             flexGrow: 1,
+            px: { xs: 1, md: 4 },
           }}
         >
           <Typography variant="h6" sx={{ color: "primary.main" }}>
