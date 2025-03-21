@@ -14,6 +14,7 @@ import { Typography } from "@mui/material";
 import { use } from "react";
 import { UserContext } from "@/context/providers/UserProvider";
 import { getAllHolidays } from "@/api/holidayAPI";
+import _ from "lodash";
 
 function CustomEvent() {
   const { session } = use(UserContext);

@@ -17,8 +17,9 @@ import { UserContext } from "../context/providers/UserProvider";
 import AddSchoolSession from "./session/AddSchoolSession";
 
 const SchoolSession = () => {
+  const [loading, setLoading] = useState(false);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
-  const {  user, updateSession } = use(UserContext);
+  const { user, updateSession } = use(UserContext);
   const navigate = useNavigate();
   const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState("");
@@ -32,36 +33,43 @@ const SchoolSession = () => {
     queryKey: ["terms"],
     queryFn: () => getAllTerms(),
     select: (sessions) => {
-      if (user?.role === "administrator") {
-        return sessions;
-      } else {
-        return sessions.filter((session) => session.active);
+      if (sessions?.length > 0) {
+        const modifieldSessions = sessions?.map(({ core, ...rest }) => {
+          return {
+            ...core,
+            ...rest,
+          };
+        });
+        if (user?.role === "administrator") {
+          return modifieldSessions;
+        } else {
+          return modifieldSessions.filter((session) => session.active);
+        }
       }
+      return [];
     },
   });
-  // const currentPath = state?.path || '/';
 
   const handleSession = () => {
+    setLoading(true);
     setSessionError("");
-    if (session.termId === "") {
+    if (session?.termId === "") {
       setSessionError("Session is Required*");
       return;
     }
-    schoolSessionDispatch({ type: "setCurrentSession", payload: session });
-    updateSession(session);
-    // localStorage.setItem("@school_session", JSON.stringify(session));
-    // userDispatch({ type: "setSession", payload: session });
 
+    schoolSessionDispatch({
+      type: "setCurrentSession",
+      payload: session,
+    });
+    updateSession(session);
     navigate("/", {
       replace: true,
     });
+    setLoading(false);
   };
 
   const handleOpenAddSession = () => setOpenAddSession(true);
-
-  // if (_.isEmpty(user?.id)) {
-  //   return <Navigate to="/login" />;
-  // }
 
   return (
     <Container
@@ -141,6 +149,7 @@ const SchoolSession = () => {
           endIcon={<ArrowForwardRounded />}
           fullWidth
           onClick={handleSession}
+          loading={loading}
         >
           Continue
         </Button>
