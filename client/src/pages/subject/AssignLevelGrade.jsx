@@ -18,7 +18,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash";
 
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
-
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { assignGradeToLevel } from "@/api/levelAPI";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -28,6 +28,7 @@ import Swal from "sweetalert2";
 import GradeTable from "@/components/tables/GradeTable";
 
 const AssignLevelGrade = () => {
+   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { levelId, level } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();

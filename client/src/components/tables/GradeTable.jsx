@@ -13,19 +13,7 @@ import {
 import { DeleteRounded } from "@mui/icons-material";
 import { gradeColor } from "@/config/gradeColor";
 
-
-
 const GradeTable = ({ data, removeGrade }) => {
-  //Remove Subject from Score List
-  const handleRemoveSubject = (id) => {
-    setData((prev) => {
-      const filteredScoreList = prev.filter(
-        ({ subject }) => subject?._id !== id
-      );
-      return filteredScoreList;
-    });
-  };
-
   return (
     <TableContainer component={Paper}>
       <Table>

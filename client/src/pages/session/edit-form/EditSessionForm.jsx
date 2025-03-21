@@ -249,19 +249,6 @@ export default function EditSessionForm() {
           </FormStep>
         );
 
-        return (
-          <>
-            <FormStep active={activeStep === 2}>
-              <Student
-                watch={watch}
-                control={control}
-                setValue={setValue}
-                errors={errors}
-                handleNext={handleNext}
-              />
-            </FormStep>
-          </>
-        );
       case 1:
         return (
           <>

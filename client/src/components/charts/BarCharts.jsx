@@ -1,7 +1,8 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import Box from "@mui/material/Box";
-import { useTheme, useMediaQuery } from "@emotion/react";
+import { useTheme, useMediaQuery } from "@mui/material";
+
 const BarCharts = ({ labels, data }) => {
   const { palette, breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));

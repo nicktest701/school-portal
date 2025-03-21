@@ -64,6 +64,24 @@ function CustomEvent() {
   //   setSelectedEvent(null);
   // };
 
+  const eventDetails = _.union(events?.data, holidays.data, [
+    {
+      _id: "1",
+      title: `Start of ${session?.term} (${session?.academicYear})`,
+      date: moment(session?.from).format("YYYY-MM-DD"),
+    },
+    {
+      _id: "2",
+      title: `End of ${session?.term} (${session?.academicYear})`,
+      date: moment(session?.to).format("YYYY-MM-DD"),
+    },
+    {
+      _id: "3",
+      title: `Vacation Date for ${session?.term}`,
+      date: moment(session?.vacationDate).format("YYYY-MM-DD"),
+    },
+  ]);
+
   return (
     <Box
       sx={{
@@ -89,25 +107,7 @@ function CustomEvent() {
         selectMirror={true}
         dayMaxEvents={true}
         initialDate={moment().format("YYYY-MM-DD")}
-        events={[
-          ...events?.data,
-          ...holidays.data,
-          {
-            _id: "1",
-            title: `Start of ${session?.term} (${session?.academicYear})`,
-            date: moment(session?.from).format("YYYY-MM-DD"),
-          },
-          {
-            _id: "2",
-            title: `End of ${session?.term} (${session?.academicYear})`,
-            date: moment(session?.to).format("YYYY-MM-DD"),
-          },
-          {
-            _id: "3",
-            title: `Vacation Date for ${session?.term}`,
-            date: moment(session?.vacationDate).format("YYYY-MM-DD"),
-          },
-        ]}
+        events={eventDetails}
         eventBackgroundColor="var(--primary)"
         eventBorderColor="white"
         // eventTextColor="#333"
@@ -118,7 +118,6 @@ function CustomEvent() {
                 sx: { fontSize: 14, textTransform: "uppercase" },
               },
             }}
-          
             title={eventInfo?.event?.extendedProps?.type}
           >
             <Box
@@ -147,7 +146,7 @@ function CustomEvent() {
           }
           navigate(`/events/${extendedProps?._id}`);
         }}
-        loading={events.isPending}
+        loading={events.isPending || holidays.isPending}
       />
 
       {/* <Popover

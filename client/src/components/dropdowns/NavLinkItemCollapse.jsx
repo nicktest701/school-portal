@@ -1,10 +1,7 @@
 import React from "react";
 import {
-  ListItemButton,
-  ListItemIcon,
   Collapse,
   List,
-  ListItemText,
   useTheme,
   Stack,
   Typography,
@@ -15,12 +12,8 @@ import {
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { NavLink, useLocation } from "react-router-dom";
 
-function NavLinkItemCollapse({ to, title, children, icon, toggleWidth, mini }) {
-  const {
-    palette,
-    breakpoints,
-    typography: { button },
-  } = useTheme();
+function NavLinkItemCollapse({ to, title, children, icon, toggleWidth }) {
+  const { palette, breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
   const { pathname } = useLocation();
   const [open, setOpen] = React.useState(false);
