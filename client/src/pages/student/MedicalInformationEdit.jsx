@@ -43,13 +43,15 @@ const MedicalInformationEdit = ({ medical }) => {
   };
 
   const handleClose = () =>
-    setSearchParams({
-      open: "false",
+    setSearchParams((params) => {
+      params.delete("mi");
+
+      return params;
     });
 
   return (
     <Dialog
-      open={searchParams.get("open") === "true"}
+      open={searchParams.get("mi") === "true"}
       maxWidth="sm"
       fullWidth
       onClose={handleClose}

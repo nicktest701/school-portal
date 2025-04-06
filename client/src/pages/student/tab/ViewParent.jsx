@@ -7,33 +7,22 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
-import PropTypes from "prop-types";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import ProfileItem from "../../../components/typo/ProfileItem";
-import { getParentByStudentId } from "../../../api/parentAPI";
-import { SchoolSessionContext } from "../../../context/providers/SchoolSessionProvider";
-import CustomDialogTitle from "../../../components/dialog/CustomDialogTitle";
-import { StudentContext } from "../../../context/providers/StudentProvider";
+import ProfileItem from "@/components/typo/ProfileItem";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { StudentContext } from "@/context/providers/StudentProvider";
 import ParentEdit from "./ParentEdit";
 import { Typography } from "@mui/material";
 import ParentNew from "./ParentNew";
 
-const ViewParent = ({ open, setOpen }) => {
+const ViewParent = ({ open, setOpen, parents }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
   const [openNewParent, setOpenNewParent] = useState(false);
 
-  const { studentId } = useParams();
 
   //CLOSE view User Info
   const handleClose = () => setOpen(false);
-
-  const { isPending, data } = useQuery({
-    queryKey: ["parent"],
-    queryFn: () => getParentByStudentId(studentId),
-    enabled: !!studentId,
-  });
 
   // OPEN Quick Message
   const openQuickMessage = (phonenumber, email) => {
@@ -64,13 +53,11 @@ const ViewParent = ({ open, setOpen }) => {
 
   return (
     <>
-      <Dialog open={open} maxWidth="sm" fullWidth onClose={handleClose}>
+      <Dialog open={open} maxWidth="md" fullWidth onClose={handleClose}>
         <CustomDialogTitle title="Parent Information" onClose={handleClose} />
-        <DialogContent sx={{ p: 1 }}>
-          {isPending && <Typography>Loading....</Typography>}
-
-          {data?.length > 0 ? (
-            data?.map((parent, index) => {
+        <DialogContent >
+          {parents?.length > 0 ? (
+            parents?.map((parent, index) => {
               return (
                 <Box key={parent?._id}>
                   <Divider flexItem>
@@ -137,7 +124,12 @@ const ViewParent = ({ open, setOpen }) => {
               alignItems="center"
             >
               <Typography>No Parent info available</Typography>
-              <Button startIcon={<Add/>} onClick={() => setOpenNewParent(true)}>Add New</Button>
+              <Button
+                startIcon={<Add />}
+                onClick={() => setOpenNewParent(true)}
+              >
+                Add New
+              </Button>
             </Box>
           )}
         </DialogContent>
@@ -146,11 +138,6 @@ const ViewParent = ({ open, setOpen }) => {
       <ParentNew open={openNewParent} setOpen={setOpenNewParent} />
     </>
   );
-};
-
-ViewParent.propTypes = {
-  open: PropTypes.bool,
-  setOpen: PropTypes.func,
 };
 
 export default React.memo(ViewParent);

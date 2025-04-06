@@ -1,13 +1,13 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Container from '@mui/material/Container';
-import FeeNav from './layout/FeeNav';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Container from "@mui/material/Container";
+import FeeNav from "./layout/FeeNav";
 
 const Fees = () => {
   return (
     <>
       <FeeNav />
-      <Container>
+      <Container maxWidth="lg">
         <Outlet />
       </Container>
     </>

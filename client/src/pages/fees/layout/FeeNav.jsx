@@ -17,10 +17,10 @@ const FeeNav = () => {
               paddingY: 1,
             }}
           >
-            <NavLinkItem to="/" text="Home" />
-            <NavLinkItem to="new" text="New Fees" />
-            <NavLinkItem to="payment" text="Make Payment" />
-            <NavLinkItem to="history" text="Quick Search " />
+            <NavLinkItem to="/fee" text="Home" />
+            <NavLinkItem to="/fee/new" text="New Fees" />
+            <NavLinkItem to="/fee/payment" text="Make Payment" />
+            <NavLinkItem to="/fee/history" text="Fee History " />
           </Container>
         </Toolbar>
       </AppBar>

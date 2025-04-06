@@ -21,6 +21,7 @@ router.get(
   })
 );
 
+
 //@GET Parent by student ID
 router.get(
   '/student',
@@ -37,6 +38,7 @@ router.get(
     res.status(200).json(parents);
   })
 );
+
 //@GET  Parent by id
 router.get(
   '/:id',
@@ -57,9 +59,20 @@ router.get(
 router.post(
   '/',
   asyncHandler(async (req, res) => {
+
+
     const newParent = await Parent.insertMany([
-      req.body.parent1,
-      req.body.parent2,
+      {
+        ...req.body.parent1,
+        school: req.user.school,
+
+      },
+      {
+        ...req.body.parent2,
+        school: req.user.school,
+
+      }
+
     ]);
 
     if (_.isEmpty(newParent)) {

@@ -31,6 +31,11 @@ function App() {
   });
   const { reset } = useQueryErrorResetBoundary();
 
+
+  
+
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <UserProvider>

@@ -1,25 +1,22 @@
 import React, { useContext, useRef } from "react";
-import { Avatar, Box, Button, Stack } from "@mui/material";
+import { Avatar, Box, Button } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { getStudentFeeHistory } from "@/api/currentFeeAPI";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { useReactToPrint } from "react-to-print";
-import { STUDENT_FEES_HISTORY_COLUMNS } from "@/mockup/columns/sessionColumns";
-import PropTypes from "prop-types";
-import { UserContext } from "@/context/providers/UserProvider";
+import { STUDENT_FEES_HISTORY } from "@/mockup/columns/sessionColumns";
 import { PrintRounded } from "@mui/icons-material";
 import history_icon from "@/assets/images/header/history_ico.svg";
-import FeeReport from "./FeeReport";
 import CustomTitle from "@/components/custom/CustomTitle";
 import { useSearchParams } from "react-router-dom";
-import Back from "@/components/Back";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import PaymentTable from "@/components/tables/PaymentTable";
+import useLevelById from "@/components/hooks/useLevelById";
+import DataSkeleton from "@/components/skeleton/DataSkeleton";
+import FeeReportTemplate from "./layout/FeeReportTemplate";
 
 const StudentFeesHistory = () => {
-  const {
-    session
-  } = useContext(UserContext);
   const { state } = useLocation();
   const [searchParams] = useSearchParams();
   const componentRef = useRef();
@@ -30,35 +27,37 @@ const StudentFeesHistory = () => {
       searchParams.get("_id"),
       searchParams.get("level_id"),
     ],
-    queryFn: () =>
-      getStudentFeeHistory({
-        sessionId: session.sessionId,
-        termId: session?.termId,
-        studentId: searchParams.get("_id"),
-        levelId: searchParams.get("level_id"),
-        feeId: searchParams.get("fid"),
-      }),
+    queryFn: () => getStudentFeeHistory(searchParams.get("_id")),
     enabled: !!searchParams.get("_id") && !!searchParams.get("level_id"),
   });
 
+  const { students, levelLoading } = useLevelById(searchParams.get("level_id"));
+
+  const student = students?.find(
+    (student) => student?._id === searchParams.get("_id")
+  );
+
   const reactToPrintFn = useReactToPrint({
-    documentTitle: studentFee?.data?.fullName,
+    documentTitle: student?.fullName,
     contentRef: componentRef,
   });
 
+  if (levelLoading || studentFee.isPending) {
+    return <DataSkeleton />;
+  }
+
   return (
     <>
-      <Back to={state?.prevPath} color="primary.main" />
+      {/* <Back to={state?.prevPath} color="primary.main" /> */}
       <CustomTitle
-        title={studentFee?.data?.fullName || ""}
-        subtitle={studentFee?.data?.levelType}
+        title={student?.fullName || ""}
+        // subtitle={student?.levelType}
         color="primary.main"
         icon={
-          <Avatar
-            srcSet={studentFee?.data?.profile}
-            sx={{ width: 60, height: 60 }}
-          />
+          <Avatar srcSet={student?.profile} sx={{ width: 60, height: 60 }} />
         }
+        showBack={true}
+        to={state?.prevPath}
       />
 
       <Box>
@@ -71,12 +70,12 @@ const StudentFeesHistory = () => {
             addButtonImg={history_icon}
             addButtonMessage="No Fees History Found"
             isPending={studentFee.isPending}
-            exportFileName={studentFee?.data?.fullName}
-            columns={STUDENT_FEES_HISTORY_COLUMNS}
-            data={studentFee?.data?.payment}
+            exportFileName={student?.fullName}
+            columns={STUDENT_FEES_HISTORY}
+            data={studentFee?.data}
             actions={[]}
             handleRefresh={studentFee.refetch}
-            autoCompleteComponent={
+            otherButtons={
               <Button
                 startIcon={<PrintRounded />}
                 variant="contained"
@@ -93,11 +92,23 @@ const StudentFeesHistory = () => {
             style={{
               border: "none",
             }}
+            detailPanel={(rowData) => (
+              <PaymentTable payments={rowData?.payment} />
+            )}
           />
         </>
       </Box>
       <div ref={componentRef} className="print-container">
-        <FeeReport student={studentFee?.data} />
+        {/* <FeeReport student={studentFee?.data} /> */}
+        {studentFee?.data?.map((data, index) => {
+          return (
+            <FeeReportTemplate
+              key={index}
+              feeData={data}
+              student={student?.fullName}
+            />
+          );
+        })}
       </div>
       {studentFee.isPending && (
         <LoadingSpinner value="Loading Fee History..." />
@@ -106,8 +117,4 @@ const StudentFeesHistory = () => {
   );
 };
 
-StudentFeesHistory.propTypes = {
-  open: PropTypes.bool,
-  setOpen: PropTypes.func,
-};
 export default StudentFeesHistory;

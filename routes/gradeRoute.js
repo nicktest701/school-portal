@@ -9,13 +9,22 @@ router.get(
   '/',
   asyncHandler(async (req, res) => {
     const { session, term } = req.query
-   
-    const grades = await Grade.find();
 
-    if (!session) {
-      return res.status(200).json(grades);
+    if (!session || !term) {
+      return res.status(200).json([]);
 
     }
+    const grades = await Grade.find({
+      session,
+      term
+    });
+
+    if (!grades) {
+      return res.status(200).json([]);
+
+    }
+    // console.log(grades)
+
     const modifiedGrades = grades.map(async (grade) => {
 
       const assignedLevels = await Level.find({
@@ -25,8 +34,11 @@ router.get(
       }).select('level')
 
 
+
       return {
-        ...grade?._doc,
+        _id: grade?._id,
+        name: grade?.name,
+        ratings: grade?.ratings,
         assignedLevels: _.map(assignedLevels, ({ levelName, _id }) => {
           return { levelName, _id }
         })
@@ -59,8 +71,12 @@ router.post(
   asyncHandler(async (req, res) => {
     //Create new Grade
     const newGrades = req.body;
-
-    const grades = await Grade.create(newGrades);
+    
+    const grades = await Grade.create({
+      ...newGrades,
+      school: req.user.school,
+      createdBy: req.user.id,
+    });
     if (_.isEmpty(grades)) {
       return res.status(404).send('Error creating new grades.Try again later');
     }

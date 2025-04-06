@@ -8,7 +8,7 @@ const ReportItemUnderline = ({ title, text }) => {
       </span>
       <span
         style={{
-          borderBottom: "1px #000 dotted",
+          borderBottom: "1px #333 dashed",
           fontSize: "13px",
         }}
       >

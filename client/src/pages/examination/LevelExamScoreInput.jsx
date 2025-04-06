@@ -2,6 +2,7 @@ import {
   Autocomplete,
   Box,
   FormHelperText,
+  FormLabel,
   Input,
   Stack,
   TextField,
@@ -21,8 +22,11 @@ import {
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { readXLSX } from "@/config/readXLSX";
-import { readCSV } from "@/config/readCSV";
-import { NoteRounded } from "@mui/icons-material";
+import {
+  CloudSyncRounded,
+  NoteRounded,
+  UploadFileRounded,
+} from "@mui/icons-material";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { EMPTY_IMAGES } from "@/config/images";
 import { postBulkExams } from "@/api/ExaminationAPI";
@@ -34,15 +38,8 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLevelById from "@/components/hooks/useLevelById";
 
 const LevelExamScoreInput = () => {
-  const CSV_FILE_TYPE = "text/csv";
-  const XLSX_FILE_TYPE =
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-  const XLS_FILE_TYPE = "application/vnd.ms-excel";
-
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { levelId } = useParams();
@@ -56,52 +53,58 @@ const LevelExamScoreInput = () => {
 
   const { levelLoading, subjects, gradeSystem } = useLevelById(levelId);
 
+  const scorePreference = session?.exams?.scorePreference?.split("/");
+  const classScorePreference = scorePreference[0];
+  const examsScorePreference = scorePreference[1];
+
   //LOAD Results from file excel,csv
-  function handleLoadFile(e) {
+  async function handleLoadFile(e) {
+    setFieldError("");
+    const file = e.target.files[0];
+
     if (subject?._id === "") {
       setFieldError("Please select a Subject!");
-      setIsLoading(false);
+
       return;
     }
     setMainError(false);
     setIsLoading(true);
-    const files = e.target.files[0];
 
-    try {
-      const reader = new FileReader();
-      files.type === CSV_FILE_TYPE
-        ? reader.readAsBinaryString(files)
-        : reader.readAsArrayBuffer(files);
-
-      reader.onload = async function (event) {
-        let results = [];
-
-        if (files.type === XLSX_FILE_TYPE || files.type === XLS_FILE_TYPE) {
-          results = readXLSX(event.target.result);
-        }
-
-        if (files.type === CSV_FILE_TYPE) {
-          results = readCSV(event.target.result);
-        }
-
+    if (file) {
+      try {
         // console.log(results);
+        const results = await readXLSX(file, "camel-case");
+
         if (results.length !== 0) {
           const modifiedResults = results.map((item) => {
-            const classScore = Number(Object.values(item)[2] || 0);
-            const examsScore = Number(Object.values(item)[3] || 0);
+            const classScore = Number(
+              item["class score"] || item["classscore"] || 0
+            );
+            const examsScore = Number(
+              item["exams score"] || item["examsscore"] || 0
+            );
 
-            if (classScore > 50 || examsScore > 50) {
+            if (
+              classScore > classScorePreference ||
+              examsScore > examsScorePreference
+            ) {
               setMainError(
-                "It seems there is some inconsistencies in your results.Class score or Exams score cannot be more than 50 marks!"
+                `It seems there is some inconsistencies in your results.
+                Class score show be from 0 - ${classScorePreference}*.
+                 Exams score show be from 0 - ${examsScorePreference}*.`
               );
               setIsLoading(false);
               setData([]);
-              throw "It seems there is some inconsistencies in your results.Class score or Exams score cannot be more than 50";
+              throw `It seems there is some inconsistencies in your results.
+              Class score show be from 0 - ${classScorePreference}*.
+               Exams score show be from 0 - ${examsScorePreference}*.`;
             }
 
             return {
-              indexnumber: _.toString(Object.values(item)[0]),
-              student: Object.values(item)[1],
+              indexnumber: _.toString(
+                item["index number"] || item["indexnumber"]
+              ),
+              student: item["student"],
               _id: subject?._id,
               subject: subject?.name,
               classScore,
@@ -113,15 +116,13 @@ const LevelExamScoreInput = () => {
             };
           });
 
-          const values = await Promise.all(modifiedResults);
-          // console.log(values);
-          setData(values);
+          setData(modifiedResults);
         }
-      };
-    } catch (error) {
-      setMainError(error);
-    } finally {
-      setIsLoading(false);
+      } catch (error) {
+        setMainError(error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   }
 
@@ -136,6 +137,7 @@ const LevelExamScoreInput = () => {
       title: "Importing results",
       text: `Do you want to import results in ${subject?.name}?`,
       showCancelButton: true,
+      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         setIsLoading(true);
@@ -164,6 +166,22 @@ const LevelExamScoreInput = () => {
             schoolSessionDispatch(alertError(error));
           },
         });
+      }
+    });
+  };
+
+  //CLOSE File Dialog
+  const handleClose = () => {
+    Swal.fire({
+      title: "Exiting",
+      text: "Unsaved Changes will be lost. Are you sure?",
+      showCancelButton: true,
+      backdrop: false,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        navigate(`/examination/${levelId}`);
+        setData([]);
+        setSubject({ _id: "", name: "" });
       }
     });
   };
@@ -212,12 +230,24 @@ const LevelExamScoreInput = () => {
         color="primary.main"
       />
 
-      <Stack spacing={2} py={4} px={2} my={4} border="1px solid lightgray">
+      <Stack
+        spacing={2}
+        py={4}
+        px={2}
+        my={4}
+        border="1px solid lightgray"
+        borderRadius={2}
+      >
         <Typography>
           Select an <b>EXCEL</b> OR <b>CSV</b> file containing student results
           information. Make sure the columns matches the accepted fields.
         </Typography>
-        <Stack direction="row" spacing={3} pt={2}>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          alignItems="start"
+          spacing={3}
+          pt={2}
+        >
           <Autocomplete
             options={subjects}
             loading={levelLoading}
@@ -249,47 +279,51 @@ const LevelExamScoreInput = () => {
               />
             )}
           />
-
-          <Button
-            variant="contained"
-            sx={{
-              width: 300,
-              cursor: "pointer",
-            }}
-            startIcon={<NoteRounded />}
-          >
-            <label
-              style={{ color: "#fff" }}
+          <Button sx={{ bgcolor: "var(--primary)" }}>
+            <FormLabel
               htmlFor="resultFile"
-              title="Import results"
-            >
-              {isPending ? "Please Wait..." : "Upload File"}
-            </label>
+              title="Import Subjects from File"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
 
-            <Input
-              type="file"
-              id="resultFile"
-              name="resultFile"
-              hidden
-              inputProps={{
-                accept: ".xlsx,.xls,.csv",
+                gap: 1,
+                color: "primary.main",
+                cursor: "pointer",
+                px: 2,
+                py: 0.5,
               }}
-              onChange={(event) => handleLoadFile(event)}
-              onClick={(e) => {
-                e.target.value = null;
-                e.currentTarget.value = null;
-              }}
-            />
+            >
+              <UploadFileRounded htmlColor="#fff" />
+              <Typography variant="caption" color="#fff">
+                Load Results
+              </Typography>
+
+              <Input
+                type="file"
+                id="resultFile"
+                name="resultFile"
+                hidden
+                inputProps={{
+                  accept: ".xlsx,.xls,.csv",
+                }}
+                onChange={handleLoadFile}
+                onClick={(e) => {
+                  e.target.value = null;
+                  e.currentTarget.value = null;
+                }}
+              />
+            </FormLabel>
           </Button>
         </Stack>
+        {mainError && (
+          <FormHelperText sx={{ color: "red" }}>{mainError}</FormHelperText>
+        )}
       </Stack>
 
       <Box>
         <>
-          {mainError && (
-            <FormHelperText sx={{ color: "red" }}>{mainError}</FormHelperText>
-          )}
-
           <CustomizedMaterialTable
             icon={EMPTY_IMAGES.score}
             search={true}
@@ -303,7 +337,7 @@ const LevelExamScoreInput = () => {
               <>
                 {data?.length > 0 && (
                   <Stack direction="row" spacing={3} justifyContent="flex-end">
-                    <Button>Cancel</Button>
+                    <Button onClick={handleClose}>Cancel</Button>
                     <Button variant="contained" onClick={handlePostResults}>
                       Save Results
                     </Button>

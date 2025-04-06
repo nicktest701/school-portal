@@ -7,7 +7,6 @@ import {
   Typography,
 } from "@mui/material";
 import StudentAcademicReportListItem from "@/components/list/StudentAcademicReportListItem";
-import _ from "lodash";
 import ViewExamsRecord from "@/pages/examination/ViewExamsRecord";
 import { SearchRounded } from "@mui/icons-material";
 
@@ -15,16 +14,16 @@ const StudentAcademics = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value.toLowerCase());
+    const query = event.target.value.toLowerCase();
+    setSearchTerm(query);
   };
 
   // Flatten and filter the data
   const filteredItems = data?.map((items) => {
-    const selectedItems = items[1].filter(
-      (item) =>
-        item.academicYear.toLowerCase().includes(searchTerm) ||
-        item.term.toLowerCase().includes(searchTerm) ||
-        item.levelName.toLowerCase().includes(searchTerm)
+    const selectedItems = items[1].filter((item) =>
+      Object.values(item).some((value) =>
+        value.toString().toLowerCase().includes(searchTerm)
+      )
     );
 
     return [items[0], selectedItems];
@@ -39,23 +38,24 @@ const StudentAcademics = ({ data }) => {
         p={1}
         sx={{ fontWeight: "bold", width: "100%" }}
       >
-        Student Academics
+         Academic Records
       </Typography>
       <TextField
         label="Search for record"
         variant="outlined"
         fullWidth
-        size='small'
+        size="small"
         margin="normal"
         onChange={handleSearchChange}
         slotProps={{
           input: {
-            endAdornment:  <InputAdornment position="end">
-            <SearchRounded />
-          </InputAdornment>
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchRounded />
+              </InputAdornment>
+            ),
           },
         }}
-     
       />
       <Stack spacing={2} pt={2} sx={{ height: "50svh", overflowY: "auto" }}>
         {filteredItems !== undefined ? (

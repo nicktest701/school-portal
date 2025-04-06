@@ -7,135 +7,137 @@ import {
   DialogTitle,
   Stack,
   TextField,
-} from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import React, { useContext, useState } from 'react';
-import { getAllPreviousLevels } from '../../api/levelAPI';
-import { getAllTerms } from '../../api/termAPI';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import { UserContext } from '../../context/providers/UserProvider';
-import moment from 'moment';
+} from "@mui/material";
+import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
+import React, { useContext, useState } from "react";
+import { getPreviousLevels } from "@/api/levelAPI";
+import { getAllSessions } from "@/api/termAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 
 function PreviousSession({ open, setOpen }) {
-  const {
-    session
-  } = useContext(UserContext);
-
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [selectedLevel, setSelectedLevel] = useState({
-    _id: '',
-    levelType: '',
-    students: [],
+    _id: "",
+    file: "",
+    data: [],
   });
 
   const [selectedSession, setSelectedSession] = useState({
-    termId: '',
-    sessionId: '',
-    label: '',
+    termId: "",
+    sessionId: "",
+    academicYear: "",
+    term: "",
   });
 
   const termOptions = useQuery({
-    queryKey: ['terms'],
-    queryFn: () => getAllTerms(),
-    enabled: !!session?.sessionId,
-    select: (sessions) => {
-      const filteredSchoolSession = sessions.filter(({ to }) => {
-        return moment(new Date(session.to)) > moment(new Date(to));
-      });
+    queryKey: ["previous-sessions"],
+    queryFn: () => getAllSessions(),
+    initialData: [],
 
-      return filteredSchoolSession.map(
-        ({ termId, sessionId, academicYear, term }) => {
-          return {
-            termId,
-            sessionId,
-            label: `${academicYear},${term}`,
-          };
-        }
-      );
-    },
   });
 
   const levelOptions = useQuery({
-    queryKey: ['previous-levels', selectedSession?.termId],
-    queryFn: () => getAllPreviousLevels(selectedSession),
-    enabled: !!selectedSession?.termId,
-    select: (levels) => {
-      return levels.map(({ _id, level, students }) => {
-        return {
-          _id,
-          levelType: `${level.name}${level.type}`,
-          students,
-        };
-      });
-    },
+    queryKey: [
+      "previous-sessions",
+      selectedSession.sessionId,
+      selectedSession._id,
+    ],
+    queryFn: () =>
+      getPreviousLevels(
+        selectedSession.sessionId,
+        selectedSession._id,
+        "student"
+      ),
+    enabled: !!selectedSession.sessionId && !!selectedSession._id,
+    initialData: [],
   });
 
   //LOAD students
   const handleLoadStudents = () => {
-    if (selectedLevel?.students?.length !== 0) {
-      schoolSessionDispatch({
-        type: 'openAddStudentFileDialog',
-        payload: { data: selectedLevel?.students, type: 'previous' },
+    if (selectedLevel?.data?.length === 0) {
+      Swal.fire({
+        icon:'info',
+        title: "Empty Data Set",
+        text: "No student found!",
+        backdrop: false,
       });
+      return;
     }
+    schoolSessionDispatch({
+      type: "openAddStudentFileDialog",
+      payload: { data: selectedLevel?.data, type: "previous" },
+    });
   };
 
   return (
-    <Dialog open={open} maxWidth='xs' fullWidth>
-      <DialogTitle> Students from Session</DialogTitle>
+    <Dialog open={open} maxWidth="sm" fullWidth>
+      <DialogTitle> Students from previous sessions</DialogTitle>
       <DialogContent>
         <Stack spacing={2} paddingY={2}>
           <Autocomplete
-            size='small'
-            options={termOptions.data ?? []}
-            noOptionsText='No session available'
+            size="small"
+            options={termOptions.data}
+            noOptionsText="No session available"
+            loading={termOptions.isPending}
+            loadingText="Loading Sessions.Please wait..."
             disableClearable={true}
             fullWidth
             value={selectedSession}
             onChange={(e, value) => {
               setSelectedLevel({
-                _id: '',
-                levelType: '',
+                _id: "",
+                levelName: "",
                 students: [],
               });
               setSelectedSession(value);
             }}
             isOptionEqualToValue={(option, value) =>
-              option.termId === value.termId ||
-              value.termId === '' ||
-              value.termId === null ||
-              value.termId === undefined
+              option?.termId === value?.termId ||
+              value?.termId === "" ||
+              value?.termId === null ||
+              value?.termId === undefined
             }
-            getOptionLabel={(option) => option.label || ''}
+            getOptionLabel={(option) =>
+              option?.termId !== "" ? `${option?.name}` : ""
+            }
             renderInput={(params) => (
-              <TextField {...params} label='Select School Session' />
+              <TextField {...params} label="Select Previous Session" />
             )}
           />
           <Autocomplete
-            size='small'
+            size="small"
             options={levelOptions?.data ?? []}
-            noOptionsText='No level available'
+            noOptionsText="No level available"
+            loading={levelOptions.isPending}
+            loadingText="Loading Levels.Please wait..."
             disableClearable={true}
             fullWidth
             value={selectedLevel}
             onChange={(e, value) => setSelectedLevel(value)}
             isOptionEqualToValue={(option, value) =>
               option._id === value._id ||
-              value._id === '' ||
+              value._id === "" ||
               value._id === null ||
               value._id === undefined
             }
-            getOptionLabel={(option) => option.levelType || ''}
+            getOptionLabel={(option) => option.file || ""}
             renderInput={(params) => (
-              <TextField {...params} label='Select Level' />
+              <TextField {...params} label="Select Level" />
             )}
           />
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpen(false)}>Cancel</Button>
         <Button
-          variant='contained'
+          variant="outlined"
+          color="secondary"
+          onClick={() => setOpen(false)}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
           onClick={handleLoadStudents}
           disabled={!selectedLevel?._id}
         >

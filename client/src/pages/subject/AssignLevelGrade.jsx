@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-
 import {
   Button,
   Dialog,
@@ -8,11 +7,6 @@ import {
   Stack,
   Autocomplete,
   TextField,
-  List,
-  Typography,
-  ListItem,
-  Checkbox,
-  ListItemText,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash";
@@ -26,9 +20,11 @@ import { getGrades } from "@/api/gradeAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import Swal from "sweetalert2";
 import GradeTable from "@/components/tables/GradeTable";
+import { UserContext } from "@/context/providers/UserProvider";
 
-const AssignLevelGrade = () => {
-   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
+const AssignLevelGrade = ({ levelName }) => {
+  const { session } = useContext(UserContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { levelId, level } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
@@ -39,8 +35,9 @@ const AssignLevelGrade = () => {
   });
 
   const grades = useQuery({
-    queryKey: ["grades"],
-    queryFn: () => getGrades("", ""),
+    queryKey: ["grades", session?.sessionId, session?.termId],
+    queryFn: () => getGrades(session?.sessionId, session?.termId),
+    enabled: !!session?.sessionId && !!session?.termId,
   });
 
   const { mutateAsync, isPending } = useMutation({
@@ -55,7 +52,7 @@ const AssignLevelGrade = () => {
 
     Swal.fire({
       title: "Assign Grade",
-      text: `Do yow wish to assign ${selectedGrade?.name} to ${level}?`,
+      text: `Do yow wish to assign ${selectedGrade?.name} to ${levelName}?`,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
@@ -103,7 +100,7 @@ const AssignLevelGrade = () => {
     >
       <CustomDialogTitle
         title="Assign Grade"
-        subtitle={`Select a grading system and add to ${level}`}
+        subtitle={`Select a grading system and add to ${levelName}`}
         onClose={handleClose}
       />
       <DialogContent sx={{ p: 1 }}>

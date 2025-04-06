@@ -37,6 +37,7 @@ const MoreEvents = () => {
     data: events,
     refetch,
     isPending,
+    isLoading,
     onError,
   } = useQuery({
     queryKey: ["events"],
@@ -98,7 +99,7 @@ const MoreEvents = () => {
   const totalPages = Math.ceil(filteredEvents.length / pageSize);
 
   return (
-    <Container maxWidth='lg'>
+    <Container maxWidth="lg">
       <CustomTitle
         title="Events"
         subtitle="Organize and oversee exams, schedule, and results to ensure a fair and efficient examination process."
@@ -110,7 +111,7 @@ const MoreEvents = () => {
           </IconButton>
         }
       />
-      {isPending ? (
+      {isPending || isLoading ? (
         <EventSkeleton />
       ) : onError ? (
         <p>Error</p>

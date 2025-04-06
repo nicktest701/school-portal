@@ -27,12 +27,14 @@ import _ from "lodash";
 import { Download, NoteRounded } from "@mui/icons-material";
 import { downloadTemplate } from "@/api/userAPI";
 import GradeTable from "@/components/tables/GradeTable";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function AddGrade({ open, setOpen }) {
+  const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [grades, setGrades] = useState([]);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(uuid());
   const initialValues = {
     lowestMark: 0,
     highestMark: 0,
@@ -58,6 +60,8 @@ function AddGrade({ open, setOpen }) {
 
   const saveGrades = () => {
     const values = {
+      session: session?.sessionId,
+      term: session?.termId,
       name: name || uuid(),
       ratings: grades,
     };
@@ -104,7 +108,7 @@ function AddGrade({ open, setOpen }) {
           setGrades(formattedData);
         }
       };
-      reader.readAsBinaryString(file);
+      reader.readAsArrayBuffer(file);
     }
   };
 
@@ -211,7 +215,7 @@ function AddGrade({ open, setOpen }) {
               );
             }}
           </Formik>
-          <Button sx={{ bgcolor: "var(--secondary)" }}>
+          <Button sx={{ alignSelf: "flex-end", bgcolor: "success.main" }}>
             <FormLabel
               htmlFor="studentFile"
               title="Import Grade from File"
@@ -230,9 +234,9 @@ function AddGrade({ open, setOpen }) {
               <Typography
                 variant="caption"
                 color="#fff"
-                textTransform="capitalize"
+                textTransform="lowercase"
               >
-                Import Grade(.xlsx,.xls,.csv)
+                Import Grade (.xlsx,.xls,.csv)
               </Typography>
 
               <Input

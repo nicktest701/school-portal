@@ -64,7 +64,8 @@ const Grade = ({ setValue, data }) => {
         const results = rows.map((row) => {
           const rowData = {};
           headers.forEach((header, index) => {
-            rowData.id = rowData[header] = row[index];
+            rowData.id = uuid();
+            rowData[header] = row[index];
           });
           return rowData;
         });

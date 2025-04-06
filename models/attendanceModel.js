@@ -3,6 +3,14 @@ const db = require("../db/DBConnection");
 
 const AttendanceSchema = new mongoose.Schema(
   {
+    session: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Session",
+    },
+    term: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Term",
+    },
     level: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Level",

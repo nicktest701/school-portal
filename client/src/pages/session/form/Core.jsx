@@ -6,6 +6,10 @@ import {
   FormLabel,
   Stack,
   FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormHelperText,
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 import DateInputPicker from "@/components/inputs/DateInputPicker";
@@ -13,6 +17,8 @@ import SelectInput from "@/components/inputs/SelectInput";
 import { SCHOOL_TERMS } from "@/mockup/columns/sessionColumns";
 import CustomFormControl from "@/components/inputs/CustomFormControl";
 import moment from "moment";
+import CustomRadioInput from "@/components/items/CustomRadioInput";
+import Input from "@/components/inputs/Input";
 
 const Core = ({ watch, control, errors }) => {
   const sT = watch("core.from");
@@ -34,20 +40,20 @@ const Core = ({ watch, control, errors }) => {
       </Typography>
 
       <Stack spacing={2} py={2}>
-        <Controller
+        <Input
           name="core.name"
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size="small"
-              label="Session Name"
-              fullWidth
-              error={!!errors.core?.name}
-              helperText={errors.core?.name?.message}
-              required
-            />
-          )}
+          size="small"
+          label="Session Name"
+          fullWidth
+          // render={({ field }) => (
+          //   <TextField
+          //     {...field}
+          //     error={!!errors.core?.name}
+          //     helperText={errors.core?.name?.message}
+          //     required
+          //   />
+          // )}
         />
 
         <FormControl required>
@@ -103,6 +109,11 @@ const Core = ({ watch, control, errors }) => {
             </MenuItem>
           ))}
         </SelectInput>
+        <CustomRadioInput
+          name="core.isPromotionTerm"
+          title="Promotion Term / Semester?"
+          control={control}
+        />
       </Stack>
     </div>
   );

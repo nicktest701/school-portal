@@ -11,7 +11,6 @@ import {
 } from "@mui/icons-material";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
@@ -19,18 +18,17 @@ import Swal from "sweetalert2";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { StudentContext } from "@/context/providers/StudentProvider";
 import StudentEdit from "@/pages/student/StudentEdit";
-import ProfileItem from "../../typo/ProfileItem";
 import { disableStudentAccount } from "@/api/studentAPI";
-import ChipItem from "../../list/ChipItem";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import moment from "moment";
-import PropTypes from "prop-types";
 import ViewParent from "@/pages/student/tab/ViewParent";
 import MedicalInformationEdit from "@/pages/student/MedicalInformationEdit";
 import { useParams, useSearchParams } from "react-router-dom";
 import ViewPreviousReport from "@/pages/student/tab/ViewPreviousReport";
-const StudentProfile = ({ student }) => {
+import ProfileItem from "@/components/typo/ProfileItem";
+import ChipItem from "@/components/list/ChipItem";
+const StudentProfile = ({ levelName, student, parents }) => {
   const { type } = useParams();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
@@ -42,7 +40,7 @@ const StudentProfile = ({ student }) => {
 
   const handleOpenMedicalHistory = () => {
     setSearchParams({
-      open: true,
+      mi: true,
     });
   };
 
@@ -100,7 +98,7 @@ const StudentProfile = ({ student }) => {
           p={1}
           sx={{ fontWeight: "bold", width: "100%" }}
         >
-          Student Profile
+          Profile Information
         </Typography>
         <Stack
           direction="row"
@@ -158,10 +156,7 @@ const StudentProfile = ({ student }) => {
           icon={<EditRounded />}
         />
         <Stack py={2}>
-          <ProfileItem
-            label="Current Level"
-            text={type || `${student?.levelName} `}
-          />
+          <ProfileItem label="Current Level" text={type || levelName} />
           <ProfileItem
             label="Previous School"
             text={`${
@@ -198,7 +193,11 @@ const StudentProfile = ({ student }) => {
         </Box>
       </Box>
       <StudentEdit />
-      <ViewParent open={openViewParent} setOpen={setOpenViewParent} />
+      <ViewParent
+        parents={parents}
+        open={openViewParent}
+        setOpen={setOpenViewParent}
+      />
       <MedicalInformationEdit
         medical={{ ...student?.medical, id: student?._id }}
       />
@@ -209,9 +208,6 @@ const StudentProfile = ({ student }) => {
       />
     </>
   );
-};
-StudentProfile.propTypes = {
-  student: PropTypes.object,
 };
 
 export default StudentProfile;

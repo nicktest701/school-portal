@@ -31,15 +31,19 @@ const EmptyDataContainer = ({
         justifyContent: "center",
       }}
     >
-      
-        <Empty width={matches ? 100 : 200} />
-      
-      <Stack zIndex={9999999} pt={12}>
-        <Typography variant="h6" color="primary" textAlign="center">
+      <Empty width={matches ? 120 : 200} />
+
+      <Stack zIndex={999} pt={12} gap={2} alignItems="center">
+        <Typography variant="body1" color="primary" textAlign="center" pt={2}>
           {message || "No data available !"}
         </Typography>
         {showAddButton && (
-          <Button variant="contained" startIcon={<Add />} onClick={onClick}>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={onClick}
+            sx={{ width: { xs: 150, md: 200 } }}
+          >
             {buttonText}
           </Button>
         )}

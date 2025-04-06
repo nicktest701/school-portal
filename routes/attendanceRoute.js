@@ -27,9 +27,11 @@ router.get(
   '/history/:id',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { date } = req.query;
+    const { session, term } = req.query;
     // //console.log(id, date);
     const attendance = await Attendance.find({
+      session,
+      term,
       level: new ObjectId(id),
     });
 
@@ -60,13 +62,11 @@ router.get(
   '/:id',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { date } = req.query;
-
-
+    const { date, session, term } = req.query;
 
     const attendance = await Attendance.findOne({
       level: new ObjectId(id),
-      date,
+      date: moment(new Date(date)).format("YYYY-MM-DD"),
     });
 
 
@@ -98,9 +98,11 @@ router.get(
       });
 
       const selectedAttendance = {
+        session, term,
         level: id,
-        date,
+        date: moment(new Date(date)).format("YYYY-MM-DD"),
         status: students,
+        createdBy: req.user.id
       };
       const savedAttendance = await Attendance.create(selectedAttendance);
       return res.status(200).json(savedAttendance);
@@ -113,17 +115,18 @@ router.get(
 router.post(
   '/',
   asyncHandler(async (req, res) => {
-    const { date, level } = req.body;
+    const { date, level, status, session, term } = req.body;
 
     const attendance = await Attendance.findOneAndUpdate(
       {
-        level: new ObjectId(level),
-        date: date,
-        active: true,
+        session, term,
+        level,
+        date: moment(new Date(date)).format("YYYY-MM-DD"),
+
       },
       {
         $set: {
-          status: req.body?.status,
+          status: status,
         },
       },
       {
@@ -146,18 +149,18 @@ router.post(
 router.post(
   '/student',
   asyncHandler(async (req, res) => {
-    const { date, level, status } = req.body;
+    const { date, level, status, session, term } = req.body;
 
     const exists = await Attendance.findOne({
-      level: new ObjectId(level),
-      date: date,
-      active: true,
+      level,
+      date: moment(new Date(date)).format("YYYY-MM-DD"),
     });
 
     if (_.isEmpty(exists)) {
       const attendance = {
+        session, term,
         level,
-        date,
+        date: moment(new Date(date)).format("YYYY-MM-DD"),
         status: [status],
         createdBy: req.user?.id
       };
@@ -173,9 +176,8 @@ router.post(
 
     const attendance = await Attendance.findOneAndUpdate(
       {
-        level: new ObjectId(level),
-        date: date,
-        active: true,
+        level,
+        date: moment(new Date(date)).format("YYYY-MM-DD"),
       },
       {
         $set: {

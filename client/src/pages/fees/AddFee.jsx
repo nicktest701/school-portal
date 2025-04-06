@@ -31,9 +31,7 @@ import { UserContext } from "@/context/providers/UserProvider";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const AddFee = ({ open, setOpen }) => {
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
 
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -117,7 +115,9 @@ const AddFee = ({ open, setOpen }) => {
     // //console.log(newValues);
     mutateAsync(newValues, {
       onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ["fees", session] });
+        queryClient.invalidateQueries({
+          queryKey: ["fees", session?.sessionId, session?.termId],
+        });
         options.setSubmitting(false);
       },
       onSuccess: (data) => {

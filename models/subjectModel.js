@@ -18,7 +18,6 @@ const SubjectSchema = new mongoose.Schema(
     code: {
       type: String,
       required: true,
-      unique: true, // Ensures no duplicate subject codes
       uppercase: true,
       trim: true,
       maxlength: 10, // Limit subject code length
@@ -26,7 +25,7 @@ const SubjectSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true, // Ensures subject names are distinct
+      // unique: true, // Ensures subject names are distinct
       uppercase: true,
       trim: true,
       maxlength: 100, // Avoids excessively long names
@@ -43,7 +42,7 @@ const SubjectSchema = new mongoose.Schema(
 );
 
 // 🔹 Compound Indexes for Efficient Queries
-SubjectSchema.index({ session: 1, term: 1, code: 1 }, { unique: true }); // Prevents duplicate subjects per session & term
-SubjectSchema.index({ session: 1, term: 1, name: 1 }, { unique: true }); // Ensures unique names per session & term
+SubjectSchema.index({ term: 1, code: 1 }); // Prevents duplicate subjects per session & term
+SubjectSchema.index({ term: 1, name: 1 }); // Ensures unique names per session & term
 
 module.exports = db.model("Subject", SubjectSchema);

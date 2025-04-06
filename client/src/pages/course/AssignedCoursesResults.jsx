@@ -37,7 +37,7 @@ import useLevelById from "@/components/hooks/useLevelById";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import AddStudentRecord from "./AddStudentRecord";
 import { gradeColor } from "@/config/gradeColor";
-import { RefreshRounded } from "@mui/icons-material";
+import { RefreshRounded, ScoreRounded } from "@mui/icons-material";
 import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
 
 function AssignedCoursesResults() {
@@ -60,8 +60,10 @@ function AssignedCoursesResults() {
         subject: subject?._id,
       }),
     initialData: {
+      students: 0,
       results: [],
       overallScore: 0,
+      totalOverAllScore: 0,
       topScore: 0,
       lowScore: 0,
       performanceIndex: 0,
@@ -71,7 +73,7 @@ function AssignedCoursesResults() {
   });
 
   const downloadSheet = useCallback(() => {
-    const columns = ["Index Number", "Student", "Class  Score", "Exams  Score"];
+    const columns = ["Index Number", "Student", "Class Score", "Exams Score"];
     const modifiedSheet = scores?.data?.results?.map((student) => {
       return {
         indexnumber: student?.indexnumber,
@@ -93,7 +95,7 @@ function AssignedCoursesResults() {
       (w, r) => Math.max(w, r?.student?.length),
       10
     );
-    worksheet["!cols"] = [{ wch: max_width }];
+    worksheet["!cols"] = [{ wch: max_width + 30 }];
     XLSX.writeFile(
       workbook,
       `${searchParams.get("sub") || "Subject"}-Assessment.xlsx`,
@@ -245,7 +247,7 @@ function AssignedCoursesResults() {
                   </Badge>
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  | {subject?.name} |
+                  {subject?.name} | {subject?.code}
                 </Typography>
               </Box>
             </Box>
@@ -262,11 +264,11 @@ function AssignedCoursesResults() {
           {/* Progress Section */}
           <Box mt={2}>
             <Typography variant="body2" color="text.secondary">
-              Below is the state of school results by distinct academic year and
-              semesters.
+              Gain insights into students' academic progress and achievements.
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Only 5 academic year/semester results out of 6 have been approved.
+              Monitor grades, assessments, and overall performance to support
+              learning growth.
             </Typography>
             <Box mt={2} display="flex" alignItems="center" gap={1}>
               <Typography variant="body2" fontWeight="bold" color="primary">
@@ -294,18 +296,28 @@ function AssignedCoursesResults() {
 
           {/* Statistics Section */}
           <Grid2 container spacing={2}>
-            <Grid2 size={4}>
+            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
               <Box textAlign="center">
                 <GroupIcon color="primary" />
+                <Typography variant="h6">{scores?.data?.students}</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Students
+                </Typography>
+              </Box>
+            </Grid2>
+            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+              <Box textAlign="center">
+                <ScoreRounded color="info" />
                 <Typography variant="h6">
-                  {scores?.data?.overallScore}
+                  {scores?.data?.overallScore} /{" "}
+                  {scores?.data?.totalOverAllScore}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Overall Score
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 item size={4}>
+            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
               <Box textAlign="center">
                 <AssignmentTurnedInIcon color="success" />
                 <Typography variant="h6">{scores?.data?.topScore}%</Typography>
@@ -314,10 +326,12 @@ function AssignedCoursesResults() {
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 item size={4}>
+            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
               <Box textAlign="center">
                 <AssignmentTurnedInIcon color="error" />
-                <Typography variant="h6">{scores?.data?.lowScore}%</Typography>
+                <Typography variant="h6">
+                  {scores?.data?.lowScore || 0}%
+                </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Least Score
                 </Typography>
@@ -338,7 +352,6 @@ function AssignedCoursesResults() {
         actions={[]}
         icon={student_icon}
         handleRefresh={scores?.refetch}
-      
         autoCompleteComponent={
           <ButtonGroup>
             <Button variant="outlined" onClick={downloadSheet}>

@@ -58,7 +58,7 @@ const TeacherHome = () => {
           <CustomizedMaterialTable
             title="Teachers"
             icon={teacher_icon}
-            isPending={teachers.isPending}
+            isPending={teachers.isPending || teachers.isLoading}
             columns={TEACHERS_COLUMN}
             data={teachers.data}
             actions={[]}
@@ -71,6 +71,7 @@ const TeacherHome = () => {
             options={{
               search: true,
             }}
+            handleRefresh={teachers?.refetch}
           />
         </TabPanel>
         <TabPanel value="2" sx={{ px: 0 }}>

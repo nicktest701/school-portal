@@ -39,7 +39,7 @@ const Headmaster = () => {
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [signaturePreview, setSignaturePreview] = useState(
-    session?.data?.signature
+    session?.headmaster?.signature
   );
 
   const { handleSubmit, reset, control, isSubmitting, setValue } = useForm({
@@ -53,9 +53,9 @@ const Headmaster = () => {
 
   useEffect(() => {
     reset({
-      name: session?.data?.name,
-      phone: session?.data?.phone,
-      signature: session?.data?.signature,
+      name: session?.headmaster?.name,
+      phone: session?.headmaster?.phone,
+      signature: session?.headmaster?.signature,
     });
   }, [session, reset]);
 
@@ -66,7 +66,7 @@ const Headmaster = () => {
   const onSubmit = (values) => {
     const details = {
       sessionId: session?.sessionId,
-      id: session?.termId,
+      termId: session?.termId,
       headmaster: {
         ...values,
         signature: signaturePreview,
@@ -147,7 +147,7 @@ const Headmaster = () => {
           />
 
           {/* Signature Upload Field */}
-          <Box sx={{ mb: 3 }}>
+          {/* <Box sx={{ mb: 3 }}>
             <input
               accept="image/*"
               id="signature"
@@ -164,7 +164,7 @@ const Headmaster = () => {
                 Upload Signature
               </Button>
             </label>
-          </Box>
+          </Box> */}
 
           {/* Signature Preview */}
           {signaturePreview && (
@@ -186,7 +186,7 @@ const Headmaster = () => {
           )}
 
           {/* Submit Button */}
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          {/* <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               type="submit"
               loading={isPending}
@@ -196,7 +196,7 @@ const Headmaster = () => {
             >
               {isPending ? "Please Wait.." : "Update Changes"}
             </Button>
-          </Box>
+          </Box> */}
         </form>
       </Paper>
     </Container>

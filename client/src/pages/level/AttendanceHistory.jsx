@@ -1,6 +1,7 @@
 import React, { use } from "react";
 import _ from "lodash";
-import { Container, ListItemText, Typography, Box } from "@mui/material";
+import { Refresh } from "@mui/icons-material";
+import { Container, ListItemText, IconButton, Box } from "@mui/material";
 import {
   Table,
   TableBody,
@@ -22,12 +23,17 @@ import { UserContext } from "@/context/providers/UserProvider";
 import DataSkeleton from "@/components/skeleton/DataSkeleton";
 
 function AttendanceHistory() {
-  const { user } = use(UserContext);
+  const { user, session } = use(UserContext);
   const { id } = useParams();
 
   const attendanceHistory = useQuery({
     queryKey: ["attendance-history", id],
-    queryFn: () => getAttendanceHistory(id),
+    queryFn: () =>
+      getAttendanceHistory({
+        id: id,
+        session: session?.sessionId,
+        term: session?.termId,
+      }),
     enabled: !!id,
   });
 
@@ -48,6 +54,11 @@ function AttendanceHistory() {
         title="Attendance History"
         subtitle="Review past attendance records to analyze trends, identify issues, and ensure comprehensive tracking of student and staff presence."
         color="primary.main"
+        right={
+          <IconButton onClick={attendanceHistory.refetch}>
+            <Refresh sx={{ width: 36, height: 36 }} />
+          </IconButton>
+        }
       />
 
       <Box sx={{ bgcolor: "#fff", p: 2 }}>

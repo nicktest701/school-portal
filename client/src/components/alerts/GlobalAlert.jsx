@@ -22,8 +22,8 @@ const GlobalAlert = () => {
   return (
     <Snackbar
       anchorOrigin={{
-        horizontal: "left",
-        vertical: "bottom",
+        horizontal: "right",
+        vertical: "top",
       }}
       open={alertData?.message ? true : false}
       autoHideDuration={5000}

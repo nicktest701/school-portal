@@ -11,13 +11,12 @@ import Edit from "@mui/icons-material/Edit";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import EditSubject from "./EditSubject";
-import {
-  alertError,
-  alertSuccess,
-} from "@/context/actions/globalAlertActions";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function Subject() {
+  const { session } = useContext(UserContext);
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [openAddSubject, setOpenAddSubject] = useState(false);
@@ -25,7 +24,11 @@ function Subject() {
 
   const subjects = useQuery({
     queryKey: ["subjects"],
-    queryFn: () => getSubjects(),
+    queryFn: () =>
+      getSubjects({
+        session: session?.sessionId,
+        term: session?.termId,
+      }),
     // initialData: [],
   });
 
@@ -63,7 +66,6 @@ function Subject() {
     });
   };
 
- 
   const columns = [
     ...SUBJECT_COLUMNS,
     {

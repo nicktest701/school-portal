@@ -7,6 +7,7 @@ function useLevel() {
 
   const {
     isPending,
+    isLoading,
     isFetching,
     refetch,
     data: levels,
@@ -24,10 +25,20 @@ function useLevel() {
         noOfAssignedTeachers: 0,
       },
     },
+    // refetchOnMount: false,
   });
 
+  localStorage.setItem(
+    "levels",
+    JSON.stringify(
+      _.map(levels.levelsOption, (level) => {
+        return { _id: level?._id, type: level?.type };
+      })
+    )
+  );
+
   return {
-    levelLoading: isPending,
+    levelLoading: isPending || isLoading,
     levelIsFetching: isFetching,
     levelRefetch: refetch,
     ...levels,

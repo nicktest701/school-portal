@@ -79,7 +79,7 @@ const LevelSchema = new mongoose.Schema(
 
 // 🔹 Virtuals for Readable Data
 LevelSchema.virtual("levelName").get(function () {
-  return `${this.level?.name ?? ""} ${this.level?.type ?? ""}`.trim();
+  return `${this.level?.name ?? ""}${this.level?.type ?? ""}`.trim();
 });
 
 LevelSchema.virtual("noOfStudents").get(function () {

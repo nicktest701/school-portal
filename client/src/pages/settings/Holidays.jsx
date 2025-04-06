@@ -283,9 +283,9 @@ const Holidays = () => {
         {toggleOption === "table" && (
           <TableContainer component={Paper}>
             <Table
-              sx={{ minWidth: 650 }}
+              // sx={{ minWidth: 650 }}
               stickyHeader
-              aria-label="sticky table"
+              aria-label="table"
             >
               <TableHead>
                 <TableRow>

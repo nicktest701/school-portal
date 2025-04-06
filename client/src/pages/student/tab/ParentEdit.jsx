@@ -1,29 +1,27 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
 import {
   Stack,
   TextField,
   MenuItem,
   Autocomplete,
   Dialog,
-  DialogContent,Button
-} from '@mui/material';
-import PropTypes from 'prop-types';
+  DialogContent,
+  Button,
+} from "@mui/material";
+import PropTypes from "prop-types";
 
-import CustomFormControl from '../../../components/inputs/CustomFormControl';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Formik } from 'formik';
-import { StudentContext } from '../../../context/providers/StudentProvider';
-import { parentValidationSchema } from '../../../config/validationSchema';
-import { SchoolSessionContext } from '../../../context/providers/SchoolSessionProvider';
-import {
-  alertError,
-  alertSuccess,
-} from '../../../context/actions/globalAlertActions';
-import { NATIONALITY } from '../../../mockup/data/nationality';
-import { TOWNS } from '../../../mockup/data/towns';
-import CustomDialogTitle from '../../../components/dialog/CustomDialogTitle';
-import { putParent } from '../../../api/parentAPI';
-import { RELATIONSHIP } from '../../../mockup/columns/sessionColumns';
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Formik } from "formik";
+import { StudentContext } from "@/context/providers/StudentProvider";
+import { parentValidationSchema } from "@/config/validationSchema";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { NATIONALITY } from "@/mockup/data/nationality";
+import { TOWNS } from "@/mockup/data/towns";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { putParent } from "@/api/parentAPI";
+import { RELATIONSHIP } from "@/mockup/columns/sessionColumns";
 
 const ParentEdit = () => {
   const queryClient = useQueryClient();
@@ -41,7 +39,7 @@ const ParentEdit = () => {
 
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(['parent']);
+        queryClient.invalidateQueries(["parent"]);
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
@@ -57,7 +55,7 @@ const ParentEdit = () => {
   //CLOSE
   const handleClose = () => {
     studentDispatch({
-      type: 'editParent',
+      type: "editParent",
       payload: {
         open: false,
         data: {},
@@ -68,13 +66,13 @@ const ParentEdit = () => {
   return (
     <>
       <Dialog
-        maxWidth='md'
+        maxWidth="md"
         fullWidth
         open={studentState?.editParentData.open}
         onClose={handleClose}
       >
         <CustomDialogTitle
-          title='Edit Parent/Guardian Information'
+          title="Edit Parent/Guardian Information"
           onClose={handleClose}
         />
         <DialogContent>
@@ -97,44 +95,57 @@ const ParentEdit = () => {
                 <Stack padding={2} spacing={1}>
                   <CustomFormControl>
                     <TextField
-                      label='Firstname'
-                      type='text'
+                      label="Firstname"
+                      type="text"
                       fullWidth
-                      size='small'
-                      value={values.firstname || ''}
-                      onChange={handleChange('firstname')}
+                      size="small"
+                      value={values.firstname || ""}
+                      onChange={handleChange("firstname")}
                       error={Boolean(touched.firstname && errors.firstname)}
                       helperText={touched.firstname && errors.firstname}
                     />
                     <TextField
-                      label='Surname'
+                      label="Surname"
                       fullWidth
-                      size='small'
-                      value={values.surname || ''}
-                      onChange={handleChange('surname')}
+                      size="small"
+                      value={values.surname || ""}
+                      onChange={handleChange("surname")}
                       error={Boolean(touched.surname && errors.surname)}
                       helperText={touched.surname && errors.surname}
                     />
                   </CustomFormControl>
                   <CustomFormControl>
+                    <TextField
+                      label="Gender"
+                      select
+                      fullWidth
+                      size="small"
+                      value={values.gender || ""}
+                      onChange={handleChange("gender")}
+                      error={Boolean(touched.gender && errors.gender)}
+                      helperText={touched.gender && errors.gender}
+                    >
+                      <MenuItem value="male">Male</MenuItem>
+                      <MenuItem value="female">Female</MenuItem>
+                    </TextField>
                     <Autocomplete
                       freeSolo
                       fullWidth
-                      size='small'
-                      options={RELATIONSHIP}
-                      loadingText='Please wait....'
-                      noOptionsText='No Relationship available'
-                      getOptionLabel={(option) => option || ''}
+                      size="small"
+                      options={RELATIONSHIP(values.gender)}
+                      loadingText="Please wait...."
+                      noOptionsText="No Relationship available"
+                      getOptionLabel={(option) => option || ""}
                       value={values?.relationship}
                       onInputChange={(e, value) =>
-                        setFieldValue('relationship', value)
+                        setFieldValue("relationship", value)
                       }
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label='Relationship'
+                          label="Relationship"
                           fullWidth
-                          size='small'
+                          size="small"
                           error={Boolean(
                             touched?.relationship && errors?.relationship
                           )}
@@ -144,52 +155,39 @@ const ParentEdit = () => {
                         />
                       )}
                     />
-                    <TextField
-                      label='Gender'
-                      select
-                      fullWidth
-                      size='small'
-                      value={values.gender || ''}
-                      onChange={handleChange('gender')}
-                      error={Boolean(touched.gender && errors.gender)}
-                      helperText={touched.gender && errors.gender}
-                    >
-                      <MenuItem value='male'>Male</MenuItem>
-                      <MenuItem value='female'>Female</MenuItem>
-                    </TextField>
                   </CustomFormControl>
                   <CustomFormControl>
                     <TextField
-                      label='Email'
+                      label="Email"
                       fullWidth
-                      size='small'
+                      size="small"
                       row={3}
                       maxRows={3}
-                      value={values.email || ''}
-                      onChange={handleChange('email')}
+                      value={values.email || ""}
+                      onChange={handleChange("email")}
                       error={Boolean(touched.email && errors.email)}
                       helperText={touched.email && errors.email}
                     />
                     <TextField
-                      label='Telephone No.'
-                      inputMode='tel'
-                      type='tel'
+                      label="Telephone No."
+                      inputMode="tel"
+                      type="tel"
                       fullWidth
-                      size='small'
-                      value={values.phonenumber || ''}
-                      onChange={handleChange('phonenumber')}
+                      size="small"
+                      value={values.phonenumber || ""}
+                      onChange={handleChange("phonenumber")}
                       error={Boolean(touched.phonenumber && errors.phonenumber)}
                       helperText={touched.phonenumber && errors.phonenumber}
                     />
                   </CustomFormControl>
                   <TextField
-                    label='Residence Address'
+                    label="Residence Address"
                     fullWidth
-                    size='small'
+                    size="small"
                     row={3}
                     maxRows={3}
-                    value={values.address || ''}
-                    onChange={handleChange('address')}
+                    value={values.address || ""}
+                    onChange={handleChange("address")}
                     error={Boolean(touched.address && errors.address)}
                     helperText={touched.address && errors.address}
                   />
@@ -198,19 +196,19 @@ const ParentEdit = () => {
                     <Autocomplete
                       freeSolo
                       fullWidth
-                      size='small'
+                      size="small"
                       options={TOWNS}
-                      loadingText='Please wait....'
-                      noOptionsText='No Town available'
+                      loadingText="Please wait...."
+                      noOptionsText="No Town available"
                       getOptionLabel={(option) => option}
-                      value={values.residence || ''}
-                      onChange={(e, value) => setFieldValue('residence', value)}
+                      value={values.residence || ""}
+                      onChange={(e, value) => setFieldValue("residence", value)}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label='Residence'
+                          label="Residence"
                           fullWidth
-                          size='small'
+                          size="small"
                           error={Boolean(touched.residence && errors.residence)}
                           helperText={touched.residence && errors.residence}
                         />
@@ -220,21 +218,21 @@ const ParentEdit = () => {
                     <Autocomplete
                       freeSolo
                       fullWidth
-                      size='small'
-                      loadingText='Please wait....'
+                      size="small"
+                      loadingText="Please wait...."
                       options={NATIONALITY}
-                      noOptionsText='No Nationality available'
-                      getOptionLabel={(option) => option || ''}
-                      value={values.nationality || ''}
+                      noOptionsText="No Nationality available"
+                      getOptionLabel={(option) => option || ""}
+                      value={values.nationality || ""}
                       onChange={(e, value) =>
-                        setFieldValue('nationality', value)
+                        setFieldValue("nationality", value)
                       }
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label='Nationality'
+                          label="Nationality"
                           fullWidth
-                          size='small'
+                          size="small"
                           error={Boolean(
                             touched.nationality && errors.nationality
                           )}
@@ -245,15 +243,15 @@ const ParentEdit = () => {
                   </CustomFormControl>
 
                   <Stack
-                    direction='row'
-                    justifyContent='flex-end'
+                    direction="row"
+                    justifyContent="flex-end"
                     spacing={2}
                     paddingY={4}
                   >
                     <Button
                       loading={isSubmitting}
-                      variant='contained'
-                      color='primary'
+                      variant="contained"
+                      color="primary"
                       sx={{ minWidth: { xs: 100, sm: 150 } }}
                       onClick={handleSubmit}
                     >

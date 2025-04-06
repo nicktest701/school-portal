@@ -1,23 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import _ from "lodash";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { StudentContext } from "../../../context/providers/StudentProvider";
-import { Avatar } from "@mui/material";
-import { AddAPhoto, ArrowForwardRounded } from "@mui/icons-material";
+import { Avatar, Link } from "@mui/material";
+import { AddAPhoto } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 
-const PhotoUpload = ({ setMode }) => {
-  const {
-    studentState: {
-      newStudent: { photo },
-    },
-    studentDispatch,
-  } = useContext(StudentContext);
-  const [profile, setProfile] = useState(photo?.profile);
+const PhotoUpload = ({ setValue, errors, handleNext, watch }) => {
+  const photo = watch("photo.display");
 
-  const { getRootProps, getInputProps, open,acceptedFiles } = useDropzone({
+  const { getRootProps, getInputProps, open } = useDropzone({
     // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
@@ -29,55 +22,18 @@ const PhotoUpload = ({ setMode }) => {
     multiple: false,
     onDrop: (acceptedFiles) => {
       if (!_.isEmpty(acceptedFiles)) {
+        setValue("photo.profile", acceptedFiles);
+
         const reader = new FileReader();
         reader.onload = function (event) {
           const ImageURL = event.target.result;
-          setProfile(ImageURL);
+          setValue("photo.display", ImageURL);
         };
 
         reader.readAsDataURL(acceptedFiles[0]);
       }
     },
   });
-
-  useEffect(() => {
-    const student = JSON.parse(localStorage.getItem("@student"));
-    if (student) {
-      setProfile(student?.photo?.profile);
-
-      return;
-    }
-  }, []);
-
-  const onSubmit = () => {
-    console.log(profile);
-
-    studentDispatch({
-      type: "addNewStudent",
-      payload: {
-        photo: {
-          image: acceptedFiles[0],
-          profile,
-          isCompleted: true,
-        },
-      },
-    });
-
-    // try {
-    //   studentDispatch({ type: 'addNewStudent', payload: values });
-
-    //   localStorage.setItem('@student', JSON.stringify(values));
-
-    // } catch (error) {
-    //   //   setMsg({
-    //   //     severity: 'error',
-    //   //     text: `Could not save student info.Try again!!!.
-    //   //           In this problem persists,try contacting your administrator!!!`,
-    //   //   });
-    // }
-
-    setMode("parent-info");
-  };
 
   return (
     <Stack
@@ -86,24 +42,15 @@ const PhotoUpload = ({ setMode }) => {
       {...getRootProps({ className: "dropzone" })}
       style={{ border: "1px dashed black" }}
     >
-      <Stack direction="row" justifyContent="flex-end" spacing={2}>
-        <Button
-          variant="contained"
-          onClick={onSubmit}
-          endIcon={<ArrowForwardRounded />}
+      <Stack direction="row" justifyContent="flex-end">
+        <Link
+          sx={{ cursor: "pointer", alignSelf: "start" }}
+          onClick={handleNext}
+          variant="caption"
         >
-          Continue
-        </Button>
+          Skip for now
+        </Link>
       </Stack>
-      <Typography
-        variant="h5"
-        color="primary.main"
-        bgcolor="whitesmoke"
-        p={1}
-        sx={{ fontWeight: "bold" }}
-      >
-        Upload Photo
-      </Typography>
 
       <Stack
         spacing={2}
@@ -113,7 +60,7 @@ const PhotoUpload = ({ setMode }) => {
       >
         <Avatar
           variant="square"
-          src={profile}
+          src={photo ? photo : null}
           sx={{ width: 120, height: 120 }}
         />
 
@@ -130,7 +77,5 @@ const PhotoUpload = ({ setMode }) => {
     </Stack>
   );
 };
-
-PhotoUpload.propTypes = {};
 
 export default PhotoUpload;

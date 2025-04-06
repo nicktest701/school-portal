@@ -3,7 +3,6 @@ import List from "@mui/material/List";
 import ListSubheader from "@mui/material/ListSubheader";
 import PropTypes from "prop-types";
 import { ListItemButton, ListItemText } from "@mui/material";
-import { v4 as uuid } from "uuid";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 const StudentFeeReportListItem = ({ item }) => {
@@ -37,30 +36,27 @@ const StudentFeeReportListItem = ({ item }) => {
             {item[0]}
           </ListSubheader>
         }
+        sx={{ paddingY: 1 }}
       >
-        {item[1]?.map(({ term, levelId, levelType, id }) => {
-          const uniqueId = uuid();
-
+        {item[1]?.map(({ term, level, _id }) => {
           return (
-            <>
-              <ListItemButton
-                key={uniqueId}
-                onClick={() => handleViewFeesDetailsByTerm(id, levelId)}
-              >
-                <ListItemText
-                  primary={levelType}
-                  secondary={term}
-                  // primaryTypographyProps={{
-                  //   fontSize: 14,
-                  // }}
-                  secondaryTypographyProps={{
+            <ListItemButton
+              key={_id}
+              // onClick={() => handleViewFeesDetailsByTerm(id, levelId)}
+            >
+              {/* {JSON.stringify(item[1])} */}
+              <ListItemText
+                primary={level}
+                secondary={term}
+                slotProps={{
+                  secondary: {
                     fontSize: 13,
                     color: "primary.main",
                     fontWeight: "bold",
-                  }}
-                />
-              </ListItemButton>
-            </>
+                  },
+                }}
+              />
+            </ListItemButton>
           );
         })}
       </List>
@@ -68,11 +64,6 @@ const StudentFeeReportListItem = ({ item }) => {
       {/* <StudentFeesHistory open={openFeesHistory} setOpen={setOpenFeesHistory} /> */}
     </>
   );
-};
-
-StudentFeeReportListItem.propTypes = {
-  item: PropTypes.array,
-  studentId: PropTypes.string,
 };
 
 export default StudentFeeReportListItem;

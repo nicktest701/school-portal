@@ -8,19 +8,16 @@ const ParentSchema = new mongoose.Schema(
     school: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "School",
-      required: true,
       index: true, // Optimized for school-based lookups
     },
     profile: String,
     firstname: {
       type: String,
       lowercase: true,
-      required: true,
     },
     surname: {
       type: String,
       lowercase: true,
-      required: true,
     },
     relationship: String,
     gender: String,
@@ -50,7 +47,7 @@ const ParentSchema = new mongoose.Schema(
 
 // 🔹 Virtual Full Name Field (No Lodash Dependency)
 ParentSchema.virtual("fullName").get(function () {
-  const name = `${this.surname} ${this.firstname}}`.trim();
+  const name = `${this?.surname} ${this?.firstname}}`.trim();
   return _.upperCase(name)
 });
 

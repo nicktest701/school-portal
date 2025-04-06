@@ -20,6 +20,24 @@ export const getAllTerms = async (session) => {
   }
 };
 
+//Get all Students
+export const getAllSessions = async (session) => {
+  try {
+    const res = await api({
+      method: 'GET',
+      url: `/terms/sessions`,
+      params: {
+        session,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+
+    throw error.response.data;
+  }
+};
+
 
 export const getTerm = async (id) => {
   try {

@@ -19,14 +19,13 @@ import {
 } from "@mui/material";
 import Swal from "sweetalert2";
 import { useReactToPrint } from "react-to-print";
-import { FixedSizeList, FixedSizeGrid as Grid } from "react-window";
-import { Link, useParams } from "react-router-dom";
+import { FixedSizeList } from "react-window";
+import { useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { generateReports, publishReports } from "@/api/ExaminationAPI";
 import { UserContext } from "@/context/providers/UserProvider";
 import ViewScoreSheet from "./ViewScoreSheet";
 import {
-  ArrowBack,
   ArrowUpwardSharp,
   Note,
   RefreshRounded,
@@ -40,9 +39,7 @@ import { StudentContext } from "@/context/providers/StudentProvider";
 
 const ViewExamsReports = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
-  const {
-    session
-  } = use(UserContext);
+  const { session } = use(UserContext);
   const [isPending, startTransition] = useTransition();
   const { studentDispatch } = use(StudentContext);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
@@ -174,9 +171,6 @@ const ViewExamsReports = () => {
   return (
     <>
       <Container maxWidth="lg">
-        <Link to={-1} style={{ color: "var(--primary)" }}>
-          <ArrowBack />
-        </Link>
         <CustomTitle
           title="Student Reports"
           subtitle="Show details of student performance"
@@ -186,6 +180,7 @@ const ViewExamsReports = () => {
               <RefreshRounded sx={{ width: 36, height: 36 }} />
             </IconButton>
           }
+          showBack={true}
         />
         <Stack py={2}>
           <ButtonGroup

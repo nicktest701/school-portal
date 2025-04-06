@@ -6,14 +6,15 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { Bar } from "react-chartjs-2";
 import _ from "lodash";
-import { Typography,useTheme, useMediaQuery } from "@mui/material";
-const StudentDashboardLineChart = ({ data }) => {
+import { Typography, useTheme, useMediaQuery } from "@mui/material";
+const StudentDashboardLineChart = ({ data, academicYear }) => {
   const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
 
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
-
+  
+  
   useEffect(() => {
     if (data) {
       setLabels(_.map(data, "level"));
@@ -22,12 +23,16 @@ const StudentDashboardLineChart = ({ data }) => {
   }, [data]);
 
   return (
-    <Card elevation={1} >
-      <CardHeader avatar={<PieChartRounded />} title="Students" subheader={
+    <Card elevation={1}>
+      <CardHeader
+        avatar={<PieChartRounded />}
+        title={`Current Students for ${academicYear || ""}`}
+        subheader={
           <Typography fontSize={12} fontStyle="italic">
             Total number of active students at each level.
           </Typography>
-        } />
+        }
+      />
       <CardContent>
         <Box
           sx={{
@@ -45,8 +50,8 @@ const StudentDashboardLineChart = ({ data }) => {
                   label: "Levels",
                   data: dataset,
                   backgroundColor: ["rgb(255, 192, 159)", " rgb(1, 46, 84)"],
-                  barThickness: 10,
-                  borderRadius: 10,
+                  barThickness: matches ? 10 : 30,
+                  borderRadius: 2,
                 },
               ],
             }}
@@ -89,7 +94,7 @@ const StudentDashboardLineChart = ({ data }) => {
                   },
                   backgroundColor: "#000",
                   // borderRadius:'40px',
-                  formatter: (value) => value, // Display the data value directly
+                  formatter: (value) => value || 0, // Display the data value directly
                 },
               },
             }}

@@ -1,4 +1,12 @@
-import { Avatar, Box, Divider, Grid, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  Grid2 as Grid,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import React, { useContext } from "react";
 import { UserContext } from "@/context/providers/UserProvider";
 import CourseStudentCard from "./CourseStudentCard";
@@ -11,12 +19,13 @@ import { useQuery } from "@tanstack/react-query";
 import { getCourseDashboardInfo } from "@/api/courseAPI";
 import CourseAttendanceCard from "./CourseAttendanceCard";
 import CustomTitle from "@/components/custom/CustomTitle";
+import ChartContainer from "@/components/charts/ChartContainer";
+import { Refresh, SchoolRounded } from "@mui/icons-material";
+import TeacherLevelWeeklyAttendance from "@/components/charts/TeacherLevelWeeklyAttendance";
+import GenderAttendance from "@/components/charts/GenderAttendance";
 
 function CourseHome() {
-  const {
-    user,
-    session
-  } = useContext(UserContext);
+  const { user, session } = useContext(UserContext);
 
   const dashboardInfo = useQuery({
     queryKey: ["course-dashboard-info"],
@@ -27,6 +36,16 @@ function CourseHome() {
         teacher: user?.id,
       }),
     enabled: !!session?.sessionId && !!session?.termId && !!user?.id,
+    initialData: {
+      weeklyAttendances: {
+        labels: [""],
+        datasets: [],
+      },
+      genderAttendance: {
+        labels: ["Male", "Female"],
+        datasets: [],
+      },
+    },
   });
 
   const labels = dashboardInfo?.data?.studentInEachLevel?.map(
@@ -36,22 +55,22 @@ function CourseHome() {
     (item) => item?.students
   );
 
-  const attendancelabels = dashboardInfo?.data?.groupedWeeklyAttendance?.map(
-    (item) => item?.date
-  );
-
-  const presentData = dashboardInfo?.data?.groupedWeeklyAttendance?.map(
-    (item) => item?.present
-  );
-  const absentData = dashboardInfo?.data?.groupedWeeklyAttendance?.map(
-    (item) => item?.absent
-  );
-
   return (
     <>
-      {/* student cards  */}
-      {/* <Typography>Students</Typography>
-        <Divider /> */}
+      <CustomTitle
+        title="Levels Summary"
+        subtitle=" Get a comprehensive summary of student enrollment, performance, and engagement in the academic year."
+        icon={<SchoolRounded color="primary" />}
+        color="primary.main"
+        right={
+          <Tooltip title="Refresh">
+            <IconButton>
+              <Refresh onClick={dashboardInfo?.refetch} sx={{ width: 36, height: 36 }} />
+            </IconButton>
+          </Tooltip>
+        }
+      />
+
       <Typography variant="h5" py={2}>
         Summary
       </Typography>
@@ -59,21 +78,23 @@ function CourseHome() {
       <CourseStudentCard data={dashboardInfo?.data} />
 
       <Typography variant="h5" py={2}>
-        Student Overview
+        Students
       </Typography>
       <Divider />
 
       <Grid container spacing={3} py={2}>
-        <Grid item lg={4} md={4} xs={12}>
+        <Grid size={{ xs: 12, md: 4 }}>
           {/* student by gender */}
-          <CustomCard title="Students by Gender">
+          <ChartContainer
+            title="Students by Gender"
+            subtitle="Analyze the gender distribution of students."
+          >
             <Box
               sx={{
                 position: "relative",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: 200,
               }}
             >
               <Circle
@@ -91,35 +112,45 @@ function CourseHome() {
                 m="-12px"
               />
             </Box>
-          </CustomCard>
+          </ChartContainer>
         </Grid>
-        <Grid item lg={8} md={8} xs={12}>
-          <CustomCard title="Students in levels">
+        <Grid size={{ xs: 12, md: 8 }}>
+          <ChartContainer
+            title="Students in levels"
+            subtitle="Track student distribution across different academic levels for better class management"
+          >
             <BarCharts labels={labels} data={values} />
-          </CustomCard>
+          </ChartContainer>
         </Grid>
       </Grid>
 
       <Typography variant="h5" py={2}>
-        Level Attendance
+        Attendance
       </Typography>
       <Divider />
       <CourseAttendanceCard data={dashboardInfo?.data} />
 
       <Grid container spacing={3}>
-        <Grid item lg={8} sm={6} xs={12}>
-          <CustomCard title="Total Weekly Attendance">
+        <Grid size={{ xs: 12, sm: 6, lg: 8 }}>
+          <TeacherLevelWeeklyAttendance
+            data={dashboardInfo?.data?.weeklyAttendances}
+          />
+          {/* <ChartContainer
+            title="Total Weekly Attendance"
+            subtitle=" Review attendance records on a weekly basis"
+          >
             <LineChart
               labels={attendancelabels}
               values={presentData}
               values2={absentData}
             />
-          </CustomCard>
+          </ChartContainer> */}
         </Grid>
-        <Grid item lg={4} sm={6} xs={12}>
-          <CustomCard title="Weekly Absent">
+        <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
+          {/* <ChartContainer title="Weekly Absent">
             <RadarChart labels={attendancelabels} values={absentData} />
-          </CustomCard>
+          </ChartContainer> */}
+          <GenderAttendance data={dashboardInfo?.data?.genderAttendance} />
         </Grid>
         {/* <Grid item lg={5} sm={12} xs={12}>
             <CustomCard title='Total Attendance'>
@@ -143,6 +174,18 @@ function CourseHome() {
             </CustomCard>
           </Grid> */}
       </Grid>
+      {/* <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(1fr,1fr))",
+          gap: 2,
+          mt: 2,
+        }}
+      >
+        <TeacherLevelWeeklyAttendance
+          data={dashboardInfo?.data?.weeklyAttendances}
+        />
+      </Box> */}
     </>
   );
 }

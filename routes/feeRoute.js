@@ -43,6 +43,7 @@ router.get(
     const { session, term } = req.query;
 
     const fees = await Fee.find({
+      school: req.user.school,
       session,
       term,
     }).populate({
@@ -122,26 +123,28 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     const { session, term, level } = req.body;
-    //console.log(req.body);
-    //Create new Fees
 
     const exists = await Fee.findOne({
-      session: new ObjectId(session),
-      term: new ObjectId(term),
-      level: new ObjectId(level),
+      session,
+      term,
+      level
     });
 
     if (!_.isEmpty(exists)) {
-      return res.status(404).send("Fees for this level already exists");
+      return res.status(400).send("Fees for this level already exists");
     }
 
-    const fee = await Fee.create(req.body);
+    const fee = await Fee.create({
+      school: req.user.school,
+      ...req.body,
+      createdBy: req.user.id
+    });
 
     if (_.isEmpty(fee)) {
       return res.status(404).send("Error creating new Fee.Try again later");
     }
 
-    const currentStudents = await Level.findByIdAndUpdate(
+    const currentLevel = await Level.findByIdAndUpdate(
       level,
       {
         $set: {
@@ -151,26 +154,29 @@ router.post(
       {
         new: true,
       }
-    ).populate({
-      path: "students",
-      match: { active: true },
-    });
-    //console.log(currentStudents);
+    ).select('students');
 
-    const modifiedStudents = currentStudents.students.map((student) => {
-      return {
-        session,
-        term,
-        level,
-        student: student?._id,
-        fee: fee._id,
-      };
-    });
 
-    const studentCurrentFees = await CurrentFee.insertMany(modifiedStudents);
+    if (!_.isEmpty(currentLevel.students)) {
+      const modifiedStudents = currentLevel?.students.map(async (student) => {
+        return await CurrentFee.findOneAndUpdate({
+          session,
+          term,
+          level,
+          student
+        }, {
+          $set: {
+            fee: fee?._id
+          }
+        }, {
+          new: true,
+          upsert: true
 
-    //console.log(studentCurrentFees);
+        })
+      })
+      await Promise.all(modifiedStudents)
 
+    }
     res.status(201).json("New Fee created");
   })
 );
@@ -201,14 +207,5 @@ router.delete(
   })
 );
 
-// router.delete(
-//   "/:id",
-//   asyncHandler(async (req, res) => {
-//     const id = req.params.id;
-//     await Fee.findByIdAndDelete(id);
-
-//     res.sendStatus(201);
-//   })
-// );
 
 module.exports = router;

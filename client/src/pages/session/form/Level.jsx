@@ -14,26 +14,81 @@ import {
   Typography,
   Stack,
   Link,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Autocomplete,
 } from "@mui/material";
 import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from "@mui/icons-material";
-import * as XLSX from "xlsx";
 import { downloadTemplate } from "@/api/userAPI";
+import { getAllSessions } from "@/api/termAPI";
+import { getPreviousLevels } from "@/api/levelAPI";
+import { useQuery } from "@tanstack/react-query";
+import { readXLSX } from "@/config/readXLSX";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const Level = ({ watch, setValue, errors, handleNext }) => {
   const levelWatch = watch("levels");
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [inputMethod, setInputMethod] = useState("file");
   const [uploadedFiles, setUploadedFiles] = useState(_.compact(levelWatch));
   const [filteredData, setFilteredData] = useState(_.compact(levelWatch));
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [session, setSession] = useState({
+    _id: "",
+    sessionId: "",
+    academicYear: "",
+    term: "",
+  });
+
+  const previousSessions = useQuery({
+    queryKey: ["previous-sessions"],
+    queryFn: () => getAllSessions(),
+    initialData: [],
+  });
+
+  const previousLevels = useQuery({
+    queryKey: ["previous-sessions", session.sessionId, session._id],
+    queryFn: () => getPreviousLevels(session.sessionId, session._id),
+    enabled: !!session.sessionId && !!session._id,
+    initialData: [],
+  });
+
+  const handleAddToList = () => {
+    setFilteredData(previousLevels.data);
+    setUploadedFiles(previousLevels.data);
+    setValue("levels", previousLevels.data);
+  };
+
   // Handle file selection
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const uploadedFile = e.target.files[0];
     if (uploadedFile) {
+      setIsLoading(true);
       parseFile(uploadedFile);
+      try {
+        // Parse Excel/CSV file
+        const results = await readXLSX(uploadedFile);
+        if (results.length > 0) {
+          const levels = _.uniqBy(
+            results,
+            (obj) => `${obj?.name}-${obj?.type}`
+          );
+
+          setFilteredData(levels);
+          setUploadedFiles(levels);
+          setValue("levels", levels);
+        }
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -51,6 +106,7 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
           sheetData,
           (obj) => `${obj?.name}-${obj?.type}`
         );
+
         setFilteredData(levels);
         setUploadedFiles(levels);
         setValue("levels", levels);
@@ -101,52 +157,109 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
         institution’s structure, ensuring smooth student progression and
         curriculum planning.
       </Typography>
-      <Stack spacing={2} py={2} justifyContent="center">
-        <TextField
-          type="file"
-          accept=".csv,.xlsx"
-          label="Select File"
-          slotProps={{
-            inputLabel: {
-              shrink: true,
-            },
-            input: {
+      <FormControl component="fieldset" error={!!errors.inputMethod}>
+        <FormLabel>Choose how you want to add levels</FormLabel>
+        <RadioGroup
+          value={inputMethod}
+          onChange={(event) => {
+            setInputMethod(event.target.value);
+          }}
+          row
+        >
+          <FormControlLabel
+            value="file"
+            control={<Radio />}
+            label="From File"
+          />
+          <FormControlLabel
+            value="autocomplete"
+            control={<Radio />}
+            label="From Previous Session"
+          />
+        </RadioGroup>
+      </FormControl>
+      {inputMethod === "file" && (
+        <Stack spacing={2} py={2} justifyContent="center">
+          <TextField
+            type="file"
+            accept=".csv,.xlsx"
+            label="Select File"
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              },
+              input: {
+                accept: ".xlsx,.xls,.csv",
+              },
+            }}
+            inputProps={{
               accept: ".xlsx,.xls,.csv",
-            },
-          }}
-          inputProps={{
-            accept: ".xlsx,.xls,.csv",
-          }}
-          fullWidth
-          onChange={handleFileChange}
-          error={!!errors.levels}
-          helperText={errors.levels?.message}
-        />
+            }}
+            fullWidth
+            onChange={handleFileChange}
+            error={!!errors.levels}
+            helperText={errors.levels?.message}
+          />
 
-        {errors.levels && (
-          <small style={{ color: "#B02136" }}>
-            Columns in table must match the specified columns in the template
-            below
-          </small>
-        )}
+          {errors.levels && (
+            <small style={{ color: "#B02136" }}>
+              Columns in table must match the specified columns in the template
+              below
+            </small>
+          )}
 
-        <Stack direction="row" justifyContent="space-between">
-          <Link
-            sx={{ cursor: "pointer", alignSelf: "start" }}
-            onClick={handleDownloadTemplate}
-            variant="caption"
-          >
-            Download Level template here
-          </Link>
-          <Link
-            sx={{ cursor: "pointer", alignSelf: "start" }}
-            onClick={handleNext}
-            variant="caption"
-          >
-            Skip for now
-          </Link>
+          <Stack direction="row" justifyContent="space-between">
+            <Link
+              sx={{ cursor: "pointer", alignSelf: "start" }}
+              onClick={handleDownloadTemplate}
+              variant="caption"
+            >
+              Download Level template here
+            </Link>
+            <Link
+              sx={{ cursor: "pointer", alignSelf: "start" }}
+              onClick={handleNext}
+              variant="caption"
+            >
+              Skip for now
+            </Link>
+          </Stack>
         </Stack>
-      </Stack>
+      )}
+
+      {inputMethod === "autocomplete" && (
+        <Stack spacing={2} py={2} justifyContent="center">
+          <Autocomplete
+            options={previousSessions?.data}
+            noOptionsText="No Session not found"
+            closeText=""
+            clearText=" "
+            disableClearable={true}
+            fullWidth
+            value={session}
+            onChange={(e, value) => setSession(value)}
+            isOptionEqualToValue={(option, value) =>
+              value?._id === "" ||
+              value?._id === undefined ||
+              option._id === value?._id
+            }
+            getOptionLabel={(option) => option?.name || ""}
+            renderInput={(params) => (
+              <TextField {...params} label="Select  Session" />
+            )}
+          />
+          {session?._id && (
+            <Button
+              onClick={handleAddToList}
+              variant="contained"
+              color="primary"
+              sx={{ alignSelf: "flex-start" }}
+            >
+              Load Levels
+            </Button>
+          )}
+        </Stack>
+      )}
 
       {levelWatch.length > 0 && (
         <>
@@ -174,6 +287,7 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
             InputProps={{ startAdornment: <SearchIcon /> }}
             sx={{ my: 2 }}
           />
+
           <TableContainer
             component={Paper}
             sx={{ maxHeight: 500, overflowY: "auto" }}
@@ -207,6 +321,7 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
           </TableContainer>
         </>
       )}
+      {isLoading && <LoadingSpinner />}
     </div>
   );
 };

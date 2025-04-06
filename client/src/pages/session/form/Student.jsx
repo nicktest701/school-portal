@@ -1,6 +1,11 @@
 import React, { useState, useRef } from "react";
 import _ from "lodash";
 import {
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
   Autocomplete,
   Button,
   TextField,
@@ -24,17 +29,21 @@ import {
   Preview as PreviewIcon,
   Search as SearchIcon,
 } from "@mui/icons-material";
-import * as XLSX from "xlsx";
 import { downloadTemplate } from "@/api/userAPI";
 import { getAllStudentID } from "@/api/studentAPI";
 import useSessionStorage from "@/hooks/useSessionStorage";
 import { useQuery } from "@tanstack/react-query";
+import { getPreviousLevels } from "@/api/levelAPI";
+import { getAllSessions } from "@/api/termAPI";
+import { readXLSX } from "@/config/readXLSX";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
-const Student = ({ watch, setValue, errors, handleNext }) => {
-  const [duplicates, setDuplicates] = useSessionStorage("@duplicates", []);
+const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   const students = watch("students");
   const levels = watch("levels");
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [inputMethod, setInputMethod] = useState("file");
   const [uploadedFiles, setUploadedFiles] = useState(_.compact(students));
   const [modalOpen, setModalOpen] = useState(false);
   const [previewData, setPreviewData] = useState([]);
@@ -47,39 +56,63 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
 
   const previewTableRef = useRef(null);
 
+  const [levelName, setLevelName] = useState({
+    _id: "",
+    level: { name: "", type: "" },
+    file: "",
+    data: [],
+    isPrevious: true,
+  });
+
+  const [session, setSession] = useState({
+    _id: "",
+    sessionId: "",
+    academicYear: "",
+    term: "",
+  });
+
+  const previousSessions = useQuery({
+    queryKey: ["previous-sessions"],
+    queryFn: () => getAllSessions(),
+    initialData: [],
+  });
+
+  const previousLevels = useQuery({
+    queryKey: ["previous-sessions", session.sessionId, session._id],
+    queryFn: () => getPreviousLevels(session.sessionId, session._id, "student"),
+    enabled: !!session.sessionId && !!session._id,
+    initialData: [],
+  });
+
   const { data: studentIds } = useQuery({
     queryKey: ["students-ids"],
     queryFn: getAllStudentID,
     initialData: [],
     // staleTime: 20 * 60 * 1000,
   });
-  // console.log(studentIds)
 
   // Handle file selection
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const uploadedFile = e.target.files[0];
+
     if (uploadedFile) {
+      setIsLoading(true);
       parseFile(uploadedFile);
       setFile(uploadedFile);
-    }
-  };
 
-  // Parse Excel/CSV file
-  const parseFile = (file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-
-      if (sheetData.length > 0) {
-        setPreviewData(sheetData);
-        setFilteredData(sheetData);
-        setVisibleRows(20); // Reset rows on new file
+      try {
+        // Parse Excel/CSV file
+        const results = await readXLSX(uploadedFile);
+        if (results.length > 0) {
+          setPreviewData(results);
+          setFilteredData(results);
+          setVisibleRows(20); // Reset rows on new file
+        }
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
       }
-    };
-    reader.readAsArrayBuffer(file);
+    }
   };
 
   // Handle preview modal
@@ -96,29 +129,32 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
   // Add selected file to the list
   const handleAddToList = () => {
     // return;
-    if (level && file && previewData.length > 0) {
+    if (level && file) {
+      if (previewData.length === 0) {
+        setError("students", {
+          message:
+            inputMethod === "file"
+              ? "No student found in selected file!"
+              : "No student found in selected Level!",
+          type: "custom",
+        });
+        return;
+      }
       const newLevels = _.uniqBy(
         [
           ...uploadedFiles,
-          { class: level, fileName: file.name, data: previewData },
+          {
+            class: level,
+            fileName: inputMethod === "file" ? file.name : levelName.file,
+            data: previewData,
+            isPrevious: inputMethod === "autocomplete" ? true : false,
+          },
         ],
         (obj) => `${obj?.class?.name}-${obj?.class?.type}`
       );
 
       setUploadedFiles(newLevels);
       setValue("students", newLevels);
-
-      const dups = _.intersection(
-        studentIds,
-        _.map(_.flatMap(newLevels, "data"), (student) =>
-          student?.indexnumber?.toString()
-        )
-      );
-      if (!_.isEmpty(dups)) {
-        setDuplicates((prev) => {
-          return _.uniq([...prev, ...dups]);
-        });
-      }
 
       setLevel({ name: "", type: "" });
       setPreviewData([]);
@@ -139,14 +175,10 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
     const updatedData = filteredData.filter((_, i) => i !== rowIndex);
     setFilteredData(updatedData);
 
-    const dups = duplicates.filter((id, i) => id !== idx?.toString());
-    setDuplicates(dups);
-
     if (previewFileIndex !== null) {
       let updatedFiles = [...uploadedFiles];
       updatedFiles[previewFileIndex].data = updatedData;
       setUploadedFiles(updatedFiles);
-    
     }
   };
 
@@ -154,7 +186,7 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
   const handleClearAll = () => {
     setUploadedFiles([]);
     setValue("students", []);
-    setDuplicates([]);
+  
   };
 
   // Load more rows when scrolling
@@ -238,43 +270,117 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
             Skip for now
           </Link>
         </Stack>
-     
+
         {level?.name && (
           <>
-            <TextField
-              type="file"
-              accept=".csv,.xlsx"
-              label="Select Student List"
-              slotProps={{
-                inputLabel: {
-                  shrink: true,
-                },
-              }}
-              inputProps={{
-                accept: ".xlsx,.xls,.csv",
-              }}
-              fullWidth
-              onChange={handleFileChange}
-            />
-
-            <Link
-              sx={{ cursor: "pointer", alignSelf: "start" }}
-              onClick={handleDownloadTemplate}
-              variant="caption"
-            >
-              Download Student template here
-            </Link>
-
-            {previewData.length > 0 && (
-              <Button
-                onClick={handleAddToList}
-                variant="contained"
-                color="primary"
-                sx={{ alignSelf: "flex-start" }}
+            <FormControl component="fieldset" error={!!errors.inputMethod}>
+              <FormLabel>
+                Choose how you want to add students to each level
+              </FormLabel>
+              <RadioGroup
+                value={inputMethod}
+                onChange={(event) => {
+                  setInputMethod(event.target.value);
+                }}
+                row
               >
-                Add to List
-              </Button>
+                <FormControlLabel
+                  value="file"
+                  control={<Radio />}
+                  label="From File"
+                />
+                <FormControlLabel
+                  value="autocomplete"
+                  control={<Radio />}
+                  label="From Previous Session"
+                />
+              </RadioGroup>
+            </FormControl>
+
+            {inputMethod === "file" && (
+              <>
+                <TextField
+                  type="file"
+                  accept=".csv,.xlsx"
+                  label="Select Student List"
+                  slotProps={{
+                    inputLabel: {
+                      shrink: true,
+                    },
+                  }}
+                  inputProps={{
+                    accept: ".xlsx,.xls,.csv",
+                  }}
+                  fullWidth
+                  onChange={handleFileChange}
+                />
+
+                <Link
+                  sx={{ cursor: "pointer", alignSelf: "start" }}
+                  onClick={handleDownloadTemplate}
+                  variant="caption"
+                >
+                  Download Student template here
+                </Link>
+              </>
             )}
+            {inputMethod === "autocomplete" && (
+              <Stack spacing={2} py={2} justifyContent="center">
+                <Autocomplete
+                  options={previousSessions?.data}
+                  noOptionsText="No Session not found"
+                  closeText=""
+                  clearText=" "
+                  disableClearable={true}
+                  fullWidth
+                  value={session}
+                  onChange={(e, value) => setSession(value)}
+                  isOptionEqualToValue={(option, value) =>
+                    value?._id === "" ||
+                    value?._id === undefined ||
+                    option._id === value?._id
+                  }
+                  getOptionLabel={(option) => option?.name || ""}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select  Session" />
+                  )}
+                />
+                <Autocomplete
+                  options={previousLevels?.data}
+                  noOptionsText="No Level found!"
+                  closeText=""
+                  clearText=" "
+                  disableClearable={true}
+                  fullWidth
+                  value={levelName}
+                  onChange={(e, value) => {
+                    setLevelName((prev) => {
+                      return { ...prev, ...value };
+                    });
+                    setFile(value?.file);
+                    setPreviewData(value?.data);
+                  }}
+                  isOptionEqualToValue={(option, value) =>
+                    value?._id === "" ||
+                    value?._id === undefined ||
+                    option._id === value?._id
+                  }
+                  getOptionLabel={(option) => option?.file || ""}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Select Level" />
+                  )}
+                />
+              </Stack>
+            )}
+
+            <Button
+              onClick={handleAddToList}
+              variant="contained"
+              color="primary"
+              sx={{ alignSelf: "flex-start" }}
+            >
+              Add to List
+            </Button>
           </>
         )}
       </Stack>
@@ -298,7 +404,7 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
               Clear All
             </Button>
           </Stack>
-          {(duplicates?.length > 0 || errors?.students) && (
+          {(errors?.students) && (
             <FormHelperText sx={{ color: "error.main" }}>
               {errors?.students
                 ? errors?.students?.message
@@ -309,8 +415,9 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Class</TableCell>
-                  <TableCell>File Name</TableCell>
+                  <TableCell>New Level</TableCell>
+                  <TableCell>File Name/ Previous Level</TableCell>
+                  <TableCell>No of Students</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -322,6 +429,7 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
                       {item?.class?.type}
                     </TableCell>
                     <TableCell>{item?.fileName}</TableCell>
+                    <TableCell>{item?.data?.length}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleOpenModal(index)}>
                         <PreviewIcon />
@@ -366,7 +474,7 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
           />
           <TableContainer
             component={Paper}
-            sx={{ maxHeight: 500, overflowY: "auto" }}
+            sx={{ maxHeight: 500, overflow: "auto" }}
             onScroll={handleScroll}
             ref={previewTableRef}
           >
@@ -413,6 +521,7 @@ const Student = ({ watch, setValue, errors, handleNext }) => {
           </TableContainer>
         </Box>
       </Modal>
+      {isLoading && <LoadingSpinner />}
     </div>
   );
 };

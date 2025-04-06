@@ -56,18 +56,18 @@ const Sidebar = () => {
         top: 0,
         pt: 2,
         height: "100dvh",
-        display: { xs: "none", sm: "inline-flex" },
+        display: { xs: "none", md: "inline-flex" },
         bgcolor: "primary.main",
         overflow: "hidden",
       }}
     >
       <Box
         sx={{
-          width: toggleWidth ? 70 : { xs: 0, sm: 70, md: 250 },
+          width: toggleWidth ? 70 : { xs: 0, md: 250 },
           transition: "width 300ms ease-in-out",
         }}
       >
-        <Stack alignItems={{ xs: "left", sm: "center" }} pb={2} spacing={2}>
+        <Stack alignItems={{ xs: "left", md: "center" }} pb={2} spacing={2}>
           <IconButton
             edge="end"
             sx={{

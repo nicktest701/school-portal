@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import CustomDatePicker from "@/components/inputs/CustomDatePicker";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
-import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -39,7 +38,7 @@ function NewAttendance({ to }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useContext(UserContext);
+  const { user, session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const [date, setDate] = useState(moment());
@@ -47,11 +46,15 @@ function NewAttendance({ to }) {
 
   const { levelName } = useLevelById(id);
 
-
   //GET attendance by level id and date
   const attendance = useQuery({
     queryKey: ["attendance", id, date],
-    queryFn: () => getAttendance(id, date.format("L")),
+    queryFn: () =>
+      getAttendance(id, {
+        date: date,
+        session: session?.sessionId,
+        term: session?.termId,
+      }),
     enabled: !!id && !!date,
     // enabled: !!id && !!date && !isWeekend(date),
   });
@@ -93,8 +96,14 @@ function NewAttendance({ to }) {
   const handleSaveAttendance = () => {
     const newAttendance = {
       level: id,
-      date: date.format("L"),
-      status: allstudents,
+      date: date,
+      status: _.map(allstudents, ({ tableData, ...rest }) => {
+        return {
+          ...rest,
+        };
+      }),
+      session: session?.sessionId,
+      term: session?.termId,
     };
 
     postAttendanceAsync(newAttendance, {
@@ -118,8 +127,14 @@ function NewAttendance({ to }) {
   const handleSaveStudentAttendance = (data) => {
     const newAttendance = {
       level: id,
-      date: date.format("L"),
-      status: data,
+      date: date,
+      status: _.map(data, ({ tableData, ...rest }) => {
+        return {
+          ...rest,
+        };
+      }),
+      session: session?.sessionId,
+      term: session?.termId,
     };
 
     postStudentAttendanceAsync(newAttendance, {

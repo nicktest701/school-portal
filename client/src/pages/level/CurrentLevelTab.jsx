@@ -68,6 +68,10 @@ const CurrentLevelTab = () => {
     navigate(`/level/${id}/courses`);
   };
 
+  const handleViewStudent = (_id) => {
+    navigate(`/student/view/${_id}?_l=${id}`);
+  };
+
   const handleOpenAssignTeacher = () => {
     setSearchParams((params) => {
       params.set("_at", true);
@@ -142,11 +146,11 @@ const CurrentLevelTab = () => {
                       component="div"
                       color="text.primary"
                     >
-                      0
+                      {rollNumber}
                     </Typography>
                   </Box>
                 </Box>
-                <Typography>Performance </Typography>
+                <Typography textAlign="center">Students </Typography>
               </Box>
               <Box>
                 <Typography variant="h3">
@@ -165,7 +169,7 @@ const CurrentLevelTab = () => {
                   color="text.secondary"
                   textTransform="uppercase"
                 >
-                  {0}
+                  9052900 | LEVEL CODE
                 </Typography>
               </Box>
             </Box>
@@ -182,11 +186,11 @@ const CurrentLevelTab = () => {
           {/* Progress Section */}
           <Box mt={2}>
             <Typography variant="body2" color="text.primary">
-              Below is the state of school results by distinct academic year and
-              semesters.
+              View essential information about the class, including enrolled
+              students, subjects, and schedules.
             </Typography>
             <Typography variant="body2" color="text.primary">
-              Only 5 academic year/semester results out of 6 have been approved.
+              Stay organized with structured class management tools.
             </Typography>
             {teacher?._id && (
               <Link
@@ -271,7 +275,7 @@ const CurrentLevelTab = () => {
             <Grid2 size={{ xs: 4, md: 2.3 }}>
               <Box textAlign="center">
                 <FemaleRounded color="error" />
-                <Typography variant="h6" color="error">
+                <Typography variant="body2" color="error">
                   {gradeSystem?.name}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -319,6 +323,7 @@ const CurrentLevelTab = () => {
         data={students}
         actions={[]}
         icon={student_icon}
+        onRowClick={({ _id }) => handleViewStudent(_id)}
         style={
           {
             // maxWidth: "90%",

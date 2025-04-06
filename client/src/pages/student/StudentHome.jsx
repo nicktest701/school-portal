@@ -14,12 +14,10 @@ import { EMPTY_IMAGES } from "@/config/images";
 import ChartSkeleton from "@/components/skeleton/ChartSkeleton";
 import CustomTitle from "@/components/custom/CustomTitle";
 import DashboardCard from "@/components/cards/DashboardCard";
-import { Person } from "@mui/icons-material";
+import { Person, Refresh } from "@mui/icons-material";
 
 const StudentHome = () => {
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
 
   const studentDetails = useQuery({
     queryKey: ["student-details", session?.sessionId, session?.termId],
@@ -46,6 +44,11 @@ const StudentHome = () => {
         subtitle="Add, edit, and view student records to keep accurate and up-to-date information on all students."
         img={student_icon}
         color="primary.main"
+        right={
+          <IconButton onClick={studentDetails.refetch}>
+            <Refresh sx={{ width: 36, height: 36 }} />
+          </IconButton>
+        }
       />
       <Typography variant="h5" py={2}>
         Student Details Summary
@@ -135,10 +138,11 @@ const StudentHome = () => {
       >
         <StudentDashboardLineChart
           data={studentDetails?.data?.noOfStudentsInEachLevel}
+          academicYear={`${session?.academicYear},${session?.term}`}
         />
       </Box>
 
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
@@ -147,8 +151,8 @@ const StudentHome = () => {
           pt: 3,
           gap: 2,
         }}
-      >
-        <CustomizedMaterialTable
+      > */}
+      {/* <CustomizedMaterialTable
           title="Recently Added Students"
           icon={student_icon}
           isPending={studentDetails.isPending}
@@ -178,31 +182,31 @@ const StudentHome = () => {
             border: "none",
             boxShadow: "0px 1px 5px rgba(0,0,0,0.07)",
           }}
-        />
+        /> */}
 
-        <CustomizedMaterialTable
-          title="Recently Added Students"
-          icon={student_icon}
-          isPending={studentDetails.isPending}
-          columns={RECENT_STUDENTS_COLUMN}
-          options={{
-            paginationPosition: "bottom",
-            pageSize: 3,
-            selection: false,
-            toolbar: false,
-            paging: false,
-          }}
-          data={_.take(studentDetails.data?.recentStudents, 5) ?? []}
-          actions={[]}
-          handleRefresh={studentDetails.refetch}
-          addButtonImg={EMPTY_IMAGES.student}
-          addButtonMessage="😑 No Students recently added !!!!"
-          style={{
-            border: "none",
-            boxShadow: "0px 1px 5px rgba(0,0,0,0.07)",
-          }}
-        />
-      </Box>
+      <CustomizedMaterialTable
+        title="Recently Added Students"
+        icon={student_icon}
+        isPending={studentDetails.isPending}
+        columns={RECENT_STUDENTS_COLUMN}
+        options={{
+          paginationPosition: "bottom",
+          pageSize: 3,
+          selection: false,
+          // toolbar: false,
+          paging: false,
+        }}
+        data={studentDetails?.data?.recentStudents}
+        actions={[]}
+        handleRefresh={studentDetails.refetch}
+        addButtonImg={EMPTY_IMAGES.student}
+        addButtonMessage="😑 No Students recently added !!!!"
+        style={{
+          border: "none",
+          boxShadow: "0px 1px 5px rgba(0,0,0,0.07)",
+        }}
+      />
+      {/* </Box> */}
     </Container>
   );
 };

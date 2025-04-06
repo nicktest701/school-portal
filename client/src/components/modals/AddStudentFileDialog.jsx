@@ -20,8 +20,7 @@ import { EMPTY_IMAGES } from "@/config/images";
 import CustomDialogTitle from "../dialog/CustomDialogTitle";
 import CustomTitle from "../custom/CustomTitle";
 import { ImportExport } from "@mui/icons-material";
-import GlobalSpinner from "../spinners/GlobalSpinner";
-
+import LoadingSpinner from "../spinners/LoadingSpinner";
 function AddStudentFileDialog() {
   const { session } = useContext(UserContext);
 
@@ -45,7 +44,7 @@ function AddStudentFileDialog() {
       title: "Exiting",
       text: "Unsaved Changes will be lost. Are you sure?",
       showCancelButton: true,
-      // backdrop: false,
+      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         schoolSessionDispatch({ type: "closeAddStudentFileDialog" });
@@ -74,6 +73,8 @@ function AddStudentFileDialog() {
       },
       type: fileData.type,
     };
+    console.log(studentInfo)
+    // return;
 
     Swal.fire({
       title: "Importing students",
@@ -82,15 +83,25 @@ function AddStudentFileDialog() {
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         mutateAsync(studentInfo, {
-          onSettled: () => {
-            queryClient.invalidateQueries(["all-students"]);
-          },
           onSuccess: (data) => {
             schoolSessionDispatch(alertSuccess(data));
             schoolSessionDispatch({ type: "closeAddStudentFileDialog" });
+            queryClient.invalidateQueries(["all-students"]);
           },
           onError: (error) => {
-            schoolSessionDispatch(alertError(error));
+            if (error?.isDuplicateError) {
+              Swal.fire({
+                title: "Duplicate Student ID",
+                icon: "error",
+                html: `<div> ${error?.message} ${JSON.stringify(
+                  error?.data
+                )} </div>`,
+                showCancelButton: false,
+                backdrop: false,
+              });
+            } else {
+              schoolSessionDispatch(alertError(error));
+            }
           },
         });
       }
@@ -124,10 +135,6 @@ function AddStudentFileDialog() {
             columns={IMPORT_STUDENT_COLUMNS}
             data={fileData?.data}
             search={true}
-            options={{
-              pageSize: 10,
-              pageSizeOptions: [10, 20, 30, 50],
-            }}
             actions={[]}
             autoCompleteComponent={
               <Autocomplete
@@ -136,9 +143,9 @@ function AddStudentFileDialog() {
                 noOptionsText="No Level available"
                 getOptionLabel={(option) => option.type || ""}
                 isOptionEqualToValue={(option, value) =>
-                  value._id === undefined ||
-                  value._id === "" ||
-                  value._id === option._id
+                  value?._id === undefined ||
+                  value?._id === "" ||
+                  value?._id === option?._id
                 }
                 value={fieldValue}
                 onChange={(e, value) => setFieldValue(value)}
@@ -161,13 +168,13 @@ function AddStudentFileDialog() {
               />
             }
             showAddButton
-            addButtonText="Import Students Data"
+            addButtonText="Import Students"
             addButtonIcon={<ImportExport />}
             onAddButtonClicked={handlePostStudents}
           />
         )}
       </DialogContent>
-      {isPending && <GlobalSpinner />}
+      {isPending && <LoadingSpinner />}
     </Dialog>
   );
 }

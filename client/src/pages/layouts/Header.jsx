@@ -120,7 +120,7 @@ function Header() {
             <HomeLinks />
             <Box
               sx={{
-                display: { xs: "inline-flex", sm: "none" },
+                display: { xs: "inline-flex", md: "none" },
                 justifySelf: "flex-start",
                 flexGrow: 1,
                 px: 1,

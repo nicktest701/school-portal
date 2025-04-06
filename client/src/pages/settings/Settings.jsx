@@ -1,4 +1,4 @@
-import { Container, Tab } from "@mui/material";
+import { Container, Tab, useMediaQuery, useTheme } from "@mui/material";
 import CustomTitle from "../../components/custom/CustomTitle";
 import settings_icon from "../../assets/images/header/settings_ico.svg";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -10,6 +10,8 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import BasicInformation from "./BasicInformation";
 
 const Settings = () => {
+  const { breakpoints } = useTheme();
+  // const matches = useMediaQuery(breakpoints.);
   const [st, setSt] = useLocalStorage("settings_tab", "1");
 
   return (
@@ -24,15 +26,17 @@ const Settings = () => {
       <TabContext value={st}>
         <TabList
           allowScrollButtonsMobile
+          selectionFollowsFocus
           scrollButtons
-          centered
+          // centered={}
           onChange={(e, value) => setSt(value)}
+          sx={{ width: { xs: 300, sm: "100%" } }}
         >
           <Tab value="1" label="Basic Information" />
           <Tab value="2" label="Logo" />
           <Tab value="3" label="Holidays" />
           <Tab value="4" label="Headmaster" />
-          <Tab value="5" label="Report Customization" />
+          {/* <Tab value="5" label="Report Customization" /> */}
         </TabList>
         <TabPanel value="1" sx={{ px: 0 }}>
           <BasicInformation />
@@ -46,9 +50,9 @@ const Settings = () => {
         <TabPanel value="4" sx={{ px: 0 }}>
           <Headmaster />
         </TabPanel>
-        <TabPanel value="5" sx={{ px: 0 }}>
+        {/* <TabPanel value="5" sx={{ px: 0 }}>
           <ReportTemplates />
-        </TabPanel>
+        </TabPanel> */}
       </TabContext>
     </Container>
   );

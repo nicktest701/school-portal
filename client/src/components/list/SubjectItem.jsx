@@ -1,5 +1,4 @@
-
-import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import {
   Checkbox,
   Divider,
@@ -9,8 +8,9 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   TextField,
-} from '@mui/material';
-import React, { useState } from 'react';
+} from "@mui/material";
+import React, { useState } from "react";
+
 
 const SubjectItem = ({
   name,
@@ -20,36 +20,38 @@ const SubjectItem = ({
   appendCode,
   handleIsCore,
 }) => {
-  const [value, setValue] = useState(code);
+  const [value, setValue] = useState(code );
 
   return (
     <>
       <ListItem>
         <TextField
-          placeholder='code '
-          size='small'
+          placeholder="code "
+          size="small"
           sx={{ width: 100, mr: 2 }}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onBlur={() => appendCode({ name, isCore, code: value })}
+          onBlur={() =>
+            appendCode({ name, isCore, code: value  })
+          }
         />
         <ListItemText
           secondary={name}
-          secondaryTypographyProps={{ fontSize: 12, fontStyle: 'italic' }}
+          secondaryTypographyProps={{ fontSize: 12, fontStyle: "italic" }}
         />
         <ListItemSecondaryAction
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             gap: 1,
           }}
         >
           <FormControlLabel
-            label='Core'
+            label="Core"
             control={
               <Checkbox
-                title='Core'
+                title="Core"
                 checked={isCore}
                 value={isCore}
                 onChange={() => handleIsCore(name, !isCore)}

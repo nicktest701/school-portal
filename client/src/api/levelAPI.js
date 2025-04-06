@@ -24,6 +24,20 @@ export const getAllLevels = async (session, term) => {
   }
 };
 
+export const getPreviousLevels = async (session, term, student) => {
+  try {
+    const res = await api({
+      method: 'GET',
+      url: `/levels/previous?session=${session}&term=${term}&student=${student || ""}`,
+
+    });
+
+    return res.data;
+  } catch (error) {
+    //console.log(error.response.data);
+    throw error.response.data;
+  }
+};
 export const getLevel = async (id) => {
   try {
     const res = await api({

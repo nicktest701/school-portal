@@ -3,7 +3,7 @@ import React from "react";
 import { ArrowBackRounded } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-import PropTypes from "prop-types";
+
 
 function CustomTitle({
   title,
@@ -17,13 +17,6 @@ function CustomTitle({
   to,
   right,
 }) {
-  CustomTitle.propTypes = {
-    title: PropTypes.string,
-    subtitle: PropTypes.string,
-    color: PropTypes.string,
-    backColor: PropTypes.string,
-    img: PropTypes.string,
-  };
 
   const navigate = useNavigate();
   const goBack = () => navigate(to || -1);
@@ -33,7 +26,7 @@ function CustomTitle({
       <Stack
         sx={{
           display: "flex",
-          flexDirection: { xs: "column-reverse", sm: "row" },
+          flexDirection: { xs: "column", sm: "row" },
           justifyContent: { xs: "center", md: "flex-start" },
           alignItems: "center",
           py: 3,

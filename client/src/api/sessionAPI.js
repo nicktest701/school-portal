@@ -150,6 +150,6 @@ export const putBulkData = async ({ dataCategory, dataType, data, onProgress }) 
 
     return res.data;
   } catch (error) {
-    return error.response.data
+    throw error.response.data
   }
 };

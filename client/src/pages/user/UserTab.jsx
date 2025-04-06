@@ -14,8 +14,6 @@ function UserTab() {
     // initialData: [],
   });
 
-
-
   const handleAddNewUser = () => {
     navigate("/users/new");
   };
@@ -25,25 +23,23 @@ function UserTab() {
   };
 
   return (
-    <>
-      <CustomizedMaterialTable
-        isPending={users.isPending}
-        title="Users"
-        icon={users_icon}
-        search={true}
-        columns={USERS_COLUMNS}
-        data={users.data}
-        actions={[]}
-        showAddButton={true}
-        addButtonText="New User"
-        addButtonImg={EMPTY_IMAGES.sms}
-        addButtonMessage="No Users available !"
-        onAddButtonClicked={handleAddNewUser}
-        onRowClick={handleViewUser}
-        showRowShadow={true}
-        handleRefresh={users?.refetch}
-      />
-    </>
+    <CustomizedMaterialTable
+      isPending={users.isPending}
+      title="Users"
+      icon={users_icon}
+      search={true}
+      columns={USERS_COLUMNS}
+      data={users.data}
+      actions={[]}
+      showAddButton={true}
+      addButtonText="New User"
+      addButtonImg={EMPTY_IMAGES.sms}
+      addButtonMessage="No Users available !"
+      onAddButtonClicked={handleAddNewUser}
+      onRowClick={handleViewUser}
+      showRowShadow={true}
+      handleRefresh={users?.refetch}
+    />
   );
 }
 

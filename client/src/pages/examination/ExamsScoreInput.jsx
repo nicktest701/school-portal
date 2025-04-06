@@ -23,9 +23,7 @@ import useLevelById from "@/components/hooks/useLevelById";
 import ExamsScoreTable from "@/components/tables/ExamsScoreTable";
 
 const ExamsScoreInput = ({ setTab }) => {
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { levelId } = useParams();
   const queryClient = useQueryClient();
@@ -38,6 +36,11 @@ const ExamsScoreInput = ({ setTab }) => {
 
   const [scoreList, setScoreList] = useState([]);
   const { gradeSystem, subjects } = useLevelById(levelId);
+
+  const scorePreference = session?.exams?.scorePreference?.split("/");
+  const classScorePreference = scorePreference[0];
+  const examsScorePreference = scorePreference[1];
+
 
   const initialValues = {
     subject: {
@@ -109,13 +112,15 @@ const ExamsScoreInput = ({ setTab }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={examsScoreValidationSchema}
+      validationSchema={examsScoreValidationSchema(
+        classScorePreference,
+        examsScorePreference
+      )}
       onSubmit={onSubmit}
     >
       {({
         values,
         errors,
-        touched,
         isValid,
         dirty,
         handleChange,
@@ -192,7 +197,7 @@ const ExamsScoreInput = ({ setTab }) => {
                           label="Subject"
                           size="small"
                           error={Boolean(errors.subject)}
-                          helperText={touched.subject && errors.subject}
+                          helperText={ errors.subject}
                         />
                       )}
                     />
@@ -203,7 +208,7 @@ const ExamsScoreInput = ({ setTab }) => {
                       value={values.classScore}
                       onChange={handleChange("classScore")}
                       error={Boolean(errors.classScore)}
-                      helperText={touched.classScore && errors.classScore}
+                      helperText={errors.classScore}
                     />
                     <TextField
                       type="number"
@@ -212,7 +217,7 @@ const ExamsScoreInput = ({ setTab }) => {
                       value={values.examsScore}
                       onChange={handleChange("examsScore")}
                       error={Boolean(errors.examsScore)}
-                      helperText={touched.examsScore && errors.examsScore}
+                      helperText={errors.examsScore}
                     />
                     <Button
                       variant="contained"

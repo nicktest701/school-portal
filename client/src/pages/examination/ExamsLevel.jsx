@@ -139,7 +139,7 @@ const ExamsLevel = ({ type }) => {
 
     const worksheet = XLSX.utils.json_to_sheet(modifiedSheet);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, level || "Subject");
+    XLSX.utils.book_append_sheet(workbook, worksheet, levelName || "Subject");
     XLSX.utils.sheet_add_aoa(worksheet, [columns], {
       origin: "A1",
     });
@@ -149,8 +149,8 @@ const ExamsLevel = ({ type }) => {
       (w, r) => Math.max(w, r?.student?.length),
       10
     );
-    worksheet["!cols"] = [{ wch: max_width }];
-    XLSX.writeFile(workbook, `${level || "Subject"}-Assessment.xlsx`, {
+    worksheet["!cols"] = [{ wch: max_width + 30 }];
+    XLSX.writeFile(workbook, `${levelName || "Subject"}-Assessment.xlsx`, {
       compression: true,
     });
   }, [examDetails?.data?.students]);
@@ -182,9 +182,10 @@ const ExamsLevel = ({ type }) => {
         }}
       >
         <CustomTitle
-          title="Examination Portal"
-          subtitle="Track,manage and control academic and class activities"
+          title={`${levelName} Portal`}
+          subtitle="Plan, Conduct, and Analyze Student Performance"
           img={exams_icon}
+          // showBack={true}
           backColor="#012e54"
         />
         <Typography
@@ -192,7 +193,7 @@ const ExamsLevel = ({ type }) => {
           variant="h5"
           whiteSpace="nowrap"
         >
-          { levelName}
+          {levelName}
         </Typography>
       </Container>
 
@@ -248,7 +249,7 @@ const ExamsLevel = ({ type }) => {
       </Box>
 
       {/* Dashboard hero  */}
-      <Card sx={{ margin: "auto", padding: 2 }}>
+      <Card sx={{ margin: "auto", padding: 2, mb: 3 }}>
         <CardContent>
           {/* Header */}
           <Box
@@ -315,7 +316,7 @@ const ExamsLevel = ({ type }) => {
                       component="div"
                       color="text.primary"
                     >
-                      {examDetails?.data?.scorePercentage}%
+                      {examDetails?.data?.scorePercentage || 0}%
                     </Typography>
                   </Box>
                 </Box>
@@ -334,7 +335,7 @@ const ExamsLevel = ({ type }) => {
                   </Badge>
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  9052900 | ASHANTI REGION
+                  9052900 | LEVEL CODE
                 </Typography>
               </Box>
             </Box>
@@ -351,11 +352,11 @@ const ExamsLevel = ({ type }) => {
           {/* Progress Section */}
           <Box mt={2}>
             <Typography variant="body2" color="text.secondary">
-              Below is the state of school results by distinct academic year and
-              semesters.
+              Gain insights into students' academic progress and achievements.
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Only 5 academic year/semester results out of 6 have been approved.
+              Monitor grades, assessments, and overall performance to support
+              learning growth.
             </Typography>
             <Box mt={2} display="flex" alignItems="center" gap={1}>
               <Typography variant="body2" fontWeight="bold" color="primary">
@@ -364,7 +365,7 @@ const ExamsLevel = ({ type }) => {
             </Box>
             <LinearProgress
               variant="determinate"
-              value={examDetails?.data?.resultsCompleted}
+              value={examDetails?.data?.resultsCompleted || 0}
               color={
                 gradeColor(examDetails?.data?.resultsCompleted).bg?.split(
                   "."
@@ -377,7 +378,7 @@ const ExamsLevel = ({ type }) => {
               }}
             />
             <Typography variant="body2" color="text.secondary" mt={0.5}>
-              Progress: {examDetails?.data?.resultsCompleted}%
+              Progress: {examDetails?.data?.resultsCompleted || 0}%
             </Typography>
           </Box>
 
@@ -399,28 +400,27 @@ const ExamsLevel = ({ type }) => {
             <Grid2 size={{ xs: 6, md: 2.5 }}>
               <Box textAlign="center">
                 <Book color="success" />
-                <Typography variant="h6" color="success">
+                <Typography variant="body2" color="success">
                   {gradeSystem?.name || "N/A"}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Grade System{" "}
-                  {gradeSystem?.name ? (
+                  Grade System
+                  {gradeSystem?.name && (
                     <GradePopover grades={gradeSystem?.ratings} />
-                  ) : (
-                    <button
-                      style={{
-                        border: "1px solid var(--primary)",
-                        backgroundColor: "transparent",
-                        padding: "4px",
-                        borderRadius: "2px",
-                        color: "var(--primary)",
-                        fontSize: "12px",
-                      }}
-                      onClick={handleShowAssignGrade}
-                    >
-                      Assign Grade
-                    </button>
                   )}
+                  <button
+                    style={{
+                      border: "1px solid var(--primary)",
+                      backgroundColor: "transparent",
+                      padding: "4px",
+                      borderRadius: "2px",
+                      color: "var(--primary)",
+                      fontSize: "12px",
+                    }}
+                    onClick={handleShowAssignGrade}
+                  >
+                    Assign Grade
+                  </button>
                 </Typography>
               </Box>
             </Grid2>
@@ -468,64 +468,9 @@ const ExamsLevel = ({ type }) => {
       />
       {examDetails.isPending && <LoadingSpinner value="Please Waiting.." />}
 
-      <AssignLevelGrade />
+      <AssignLevelGrade levelName={levelName} />
     </>
   );
 };
 
 export default ExamsLevel;
-
-{
-  /* Circular Progress with Text */
-}
-//   <Box>
-//   <Box
-//     sx={{
-//       position: "relative",
-//       display: "inline-flex",
-//     }}
-//   >
-//     {/* Non-completed part */}
-//     <CircularProgress
-//       variant="determinate"
-//       value={100} // Always render the full circle as light gray
-//       size={90}
-//       thickness={3}
-//       sx={{
-//         color: "lightgray",
-//       }}
-//     />
-//     <CircularProgress
-//       variant="determinate"
-//       value={examDetails?.data?.resultsCompleted}
-//       size={90}
-//       thickness={3}
-//       sx={{
-//         color:
-//           examDetails?.data?.resultsCompleted === 100
-//             ? "green"
-//             : "primary.main",
-//         position: "absolute", // Stack it on top of the gray progress
-//         left: 0,
-//         // bgcolor:'lightgray'
-//       }} // Optional styling for 100%
-//     />
-//     <Box
-//       sx={{
-//         top: 0,
-//         left: 0,
-//         bottom: 0,
-//         right: 0,
-//         position: "absolute",
-//         display: "flex",
-//         alignItems: "center",
-//         justifyContent: "center",
-//       }}
-//     >
-//       <Typography variant="h6" component="div" color="text.primary">
-//         {examDetails?.data?.resultsCompleted}%
-//       </Typography>
-//     </Box>
-//   </Box>
-//   <Typography>Results Entry </Typography>
-// </Box>

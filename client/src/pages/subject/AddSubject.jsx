@@ -29,8 +29,10 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { Download, NoteRounded } from "@mui/icons-material";
 import { downloadTemplate } from "@/api/userAPI";
+import { UserContext } from "@/context/providers/UserProvider";
 
 const AddSubject = ({ open, setOpen }) => {
+  const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [subjects, setSubjects] = useState([]);
@@ -91,19 +93,26 @@ const AddSubject = ({ open, setOpen }) => {
     // console.log(subjectList);
     // return;
 
-    mutateAsync(subjectList, {
-      onSettled: () => {
-        queryClient.invalidateQueries(["subjects"]);
+    mutateAsync(
+      {
+        session: session?.sessionId,
+        term: session?.termId,
+        subjects: subjectList,
       },
-      onSuccess: (data) => {
-        schoolSessionDispatch(alertSuccess(data));
-        setSubjectList([]);
-        setOpen(false);
-      },
-      onError: (error) => {
-        schoolSessionDispatch(alertError(error));
-      },
-    });
+      {
+        onSettled: () => {
+          queryClient.invalidateQueries(["subjects"]);
+        },
+        onSuccess: (data) => {
+          schoolSessionDispatch(alertSuccess(data));
+          setSubjectList([]);
+          setOpen(false);
+        },
+        onError: (error) => {
+          schoolSessionDispatch(alertError(error));
+        },
+      }
+    );
   };
 
   const handleFileUpload = (event) => {
@@ -124,6 +133,7 @@ const AddSubject = ({ open, setOpen }) => {
           const formattedData = rows.map((row) => {
             const rowData = {};
             headers.forEach((header, index) => {
+              rowData.code = _.uniqueId("10");
               rowData[header] = row[index];
             });
             return rowData;
@@ -132,7 +142,7 @@ const AddSubject = ({ open, setOpen }) => {
           setSubjectList(formattedData);
         }
       };
-      reader.readAsBinaryString(file);
+      reader.readAsArrayBuffer(file);
     }
   };
 
@@ -165,6 +175,7 @@ const AddSubject = ({ open, setOpen }) => {
                 return (
                   <ListItem
                     {...props}
+                    key={option?.name}
                     sx={{ display: "flex", alignItems: "center" }}
                   >
                     <Checkbox checked={state?.selected} />
@@ -173,7 +184,14 @@ const AddSubject = ({ open, setOpen }) => {
                 );
               }}
               value={subjects}
-              onChange={(e, value) => setSubjects(value)}
+              onChange={(e, value) =>
+                setSubjects(
+                  _.map(value, (subject) => ({
+                    ...subject,
+                    code: _.uniqueId("10"),
+                  }))
+                )
+              }
               renderInput={(params) => (
                 <TextField {...params} label="Select Subject" size="small" />
               )}
@@ -222,7 +240,7 @@ const AddSubject = ({ open, setOpen }) => {
             sx={{ alignSelf: "flex-end", textDecoration: "underline" }}
             variant="text"
             onClick={handleDownloadTemplate}
-            endIcon={<Download/>}
+            endIcon={<Download />}
           >
             Download Template here
           </Button>

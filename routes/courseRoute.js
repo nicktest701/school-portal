@@ -8,6 +8,7 @@ const {
   Types: { ObjectId },
 } = require('mongoose');
 const moment = require('moment/moment');
+const { processWeeklyAttendance, getTotalAttendance, getAttendanceByGender } = require('../config/helper');
 
 //@GET All school courses
 router.get(
@@ -50,7 +51,7 @@ router.get(
     const studentInEachLevel = levels.map((level) => {
       return {
         level: level?.levelName,
-        students: level?.noOfStudents || 0
+        students: level?.students?.length || 0
       };
     });
 
@@ -58,57 +59,41 @@ router.get(
     const totalStudents = levels.flatMap(({ students }) => students);
     const groupedStudents = _.groupBy(totalStudents, 'gender');
 
-    //Get attendance for today
-    const attendance = levels.flatMap(async (level) => {
-      const attendance = await Attendance.findOne({
-        level: new ObjectId(level?._id),
-        date: moment().format('L'),
-      }).select('status');
-      if (attendance === null) return [];
-      return attendance?.status;
-    });
-
-    const a = await Promise.all(attendance);
-
-    const groupedAttendance = _.groupBy(_.flatMap(a), 'status');
+    // const attendances=await Attendance.find({
+    //   level: level?._id,
+    // })
 
     //Get attendance for today
-    const weeklyAttendance = levels.map(async (level) => {
+    const attendances = levels.flatMap(async (level) => {
       const attendance = await Attendance.find({
         level: new ObjectId(level?._id),
-      });
-      if (attendance === null || attendance === undefined) return [];
-      return attendance;
-    });
+      })
+        .populate({
+          path: 'level', select: 'level'
+        })
+        .select(['date', 'status']);
 
-    const week = await Promise.all(weeklyAttendance);
-
-    //Group attendance into present and absent
-    const weeklyGroup = week?.flatMap((att) => {
-      return _.sortBy(att, 'date').map((at) => {
-        const group = _.groupBy(at?.status, 'status');
-
+      const data = attendance.map(at => {
         return {
+          level: level?.levelName,
           date: at?.date,
-          present: group?.Present?.length ?? 0,
-          absent: group?.Absent?.length ?? 0,
-        };
-      });
+          status: at?.status
+        }
+      })
+
+      return data
     });
 
-    const groupedByDate = _.groupBy(weeklyGroup, 'date');
-    const groupedWeeklyAttendance = Object.values(groupedByDate).map(
-      (value) => {
-        return {
-          date: moment(new Date(value[0]?.date)).format('ddd, Do MMM'),
-          present: _.sumBy(value, 'present'),
-          absent: _.sumBy(value, 'absent'),
-        };
-      }
-    );
+    const allAttendances = await Promise.all(attendances)
+    // console.log(allAttendances)
 
+    const modifiedAttendance = _.flatMap(allAttendances)
+    const totalAttendance = getTotalAttendance(modifiedAttendance)
+    const genderAttendance = getAttendanceByGender(modifiedAttendance)
 
-    // console.log(_.values(_.merge(_.keyBy(weeklyGroup, 'date'))));
+    const weeklyAttendances = processWeeklyAttendance(modifiedAttendance)
+ 
+    
 
     const dashboardInfo = {
       courses: courses ?? 0,
@@ -119,10 +104,11 @@ router.get(
         groupedStudents !== undefined
           ? groupedStudents
           : { male: [], female: [] },
-      present: groupedAttendance?.Present?.length,
-      absent: groupedAttendance?.Absent?.length,
-      unknown: groupedAttendance?.['']?.length,
-      groupedWeeklyAttendance,
+      present: totalAttendance.Present,
+      absent: totalAttendance?.Absent,
+      unknown: totalAttendance?.Unknown,
+      weeklyAttendances,
+      genderAttendance
     };
     res.status(200).json(dashboardInfo);
   })

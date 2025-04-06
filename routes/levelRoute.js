@@ -4,12 +4,13 @@ const Level = require('../models/levelModel');
 const User = require('../models/userModel');
 const Examination = require('../models/examinationModel');
 const Student = require('../models/studentModel');
+const Subject = require('../models/subjectModel');
 const Attendance = require('../models/attendanceModel');
 const _ = require('lodash');
-const moment = require('moment');
 const {
   Types: { ObjectId },
 } = require('mongoose');
+const { getAttendanceByGender, processGeneralWeeklyAttendance } = require('../config/helper');
 
 
 
@@ -171,136 +172,88 @@ router.get(
   asyncHandler(async (req, res) => {
     const { session, term } = req.query;
 
-    //No of students
-    const noOfStudents = await Student.countDocuments({ active: true });
-
-    const maleCount = await Student.countDocuments({ gender: "male", active: true });
-    const femaleCount = await Student.countDocuments({ gender: "female", active: true });
-
-
     //No of teachers
     const noOfTeachers = await User.find({
+      school: req.user.school,
       role: 'teacher'
     }).countDocuments({ active: true });
-
 
 
     //No of levels
     const levels = await Level.find({
       session: new ObjectId(session),
       term: new ObjectId(term),
+
+    }).populate({
+      path: 'students',
+      match: { active: true },
+    }).populate('subjects') // Populate subjects
+      .populate('grades')   // Populate grades
+
+    //No of Students
+    const students = _.flatMap(levels, 'students')
+
+
+    const maleCount = students?.filter(student => {
+      return student?.gender === 'male'
     })
 
-
-    //Atendance
-    const startOfWeek = moment().startOf('week').add(1, 'days'); // Monday
-    const endOfWeek = moment().endOf('week').subtract(1, 'days'); // Friday
-
-    const weekdays = [];
-    for (let day = 0; day <= 4; day++) {
-      weekdays.push(startOfWeek.clone().add(day, 'days').format("MM/DD/YYYY"));
-    }
-
-
-    const attendance = await Attendance.find({
-      date: { $in: weekdays },
-    });
-
-    // Prepare data with empty days filled
-    const attendanceMap = weekdays.map((date) => {
-      const entry = attendance.find((a) => a.date === date);
-      return {
-        date,
-        count: entry
-          ? entry.status.filter((s) => s.status === "Present").length
-          : 0,
-      };
-    });
-
-    ///
-
-    const attendanceSummary = weekdays.map((date) => {
-      const entry = attendance.find((a) => a.date === date);
-      const presentCount = entry
-        ? entry.status.filter((s) => s.status === "Present").length
-        : 0;
-      const absentCount = entry
-        ? entry.status.filter((s) => s.status === "Absent").length
-        : 0;
-
-      return {
-        date,
-        presentCount,
-        absentCount,
-      };
+    const femaleCount = students?.filter(student => {
+      return student?.gender === 'female'
     });
 
 
-    // Initialize counts for males and females
-    let malePresent = 0, femalePresent = 0;
-    let maleAbsent = 0, femaleAbsent = 0;
+    const attendances = levels.flatMap(async (level) => {
+      const attendance = await Attendance.find({
+        level: new ObjectId(level?._id),
+      })
+        .populate({
+          path: 'level', select: 'level'
+        })
+        .select(['date', 'status']);
 
-    // Count present and absent males and females
-    attendance.forEach((record) => {
-      record.status.forEach((student) => {
-        if (student.status === "Present") {
-          student.gender === "male" ? malePresent++ : femalePresent++;
-        } else if (student.status === "Absent") {
-          student.gender === "male" ? maleAbsent++ : femaleAbsent++;
+      const data = attendance.map(at => {
+        return {
+          level: level?.levelName,
+          date: at?.date,
+          status: at?.status
         }
-      });
+      })
+
+      return data
     });
 
+    const allAttendances = await Promise.all(attendances)
 
-    if (_.isEmpty(levels)) {
-      const dashboardInfo = {
-        teachers: noOfTeachers,
-        levels: 0,
-        courses: 0,
-        students: noOfStudents,
-        studentCount: {
-          male: maleCount,
-          female: femaleCount
-        },
-        attendance: [],
-        attendanceSummary: [],
-        genderAttendance: {
-          malePresent,
-          femalePresent,
-          maleAbsent,
-          femaleAbsent,
-        }
-      };
 
-      return res.status(200).json(dashboardInfo);
-    }
+    const modifiedAttendance = _.flatMap(allAttendances)
+    const weeklyAttendances = processGeneralWeeklyAttendance(modifiedAttendance)
+    const genderAttendance = getAttendanceByGender(modifiedAttendance)
+
+
+
+
 
     //No of Levels
     const noOfLevels = levels.length;
 
     // No of Subjects
-    const noOfSubjects = _.flatMap(_.map(levels, 'subjects')).length;
+    const subjects = await Subject.find({
+      session, term
+    }).countDocuments()
 
-    // No of Students
-    // const noOfStudents = _.flatMap(_.map(levels, 'students')).length;
 
     const dashboardInfo = {
       teachers: noOfTeachers,
       levels: noOfLevels,
-      courses: noOfSubjects,
-      students: noOfStudents,
+      courses: subjects,
+      students: students?.length,
       studentCount: {
-        male: maleCount,
-        female: femaleCount
+        male: maleCount?.length,
+        female: femaleCount?.length
       },
-      attendance: attendanceMap,
-      attendanceSummary,
-      genderAttendance: {
-        malePresent,
-        femalePresent,
-        maleAbsent,
-        femaleAbsent,
-      }
+      weeklyAttendances,
+      genderAttendance
     };
 
     res.status(200).json(dashboardInfo);
@@ -336,6 +289,66 @@ router.get(
     }
 
     res.status(200).json(level);
+  })
+);
+//@GET all current level by current school session
+router.get(
+  '/previous',
+  asyncHandler(async (req, res) => {
+    const { session, term, student } = req.query;
+
+
+    const levels = await Level.find({
+      session, term
+    }).populate({
+      path: 'students',
+      match: { active: true },
+    }).select('level')
+
+    let modifiedLevel = [];
+
+    if (student) {
+      modifiedLevel = levels?.map((level) => {
+        const students = level?.students?.map(student => ({
+          _id: student?._id,
+          indexnumber: student?.indexnumber,
+          firstname: student?.firstname,
+          surname: student?.surname,
+          othername: student?.othername,
+          dateofbirth: student?.dateofbirth,
+          gender: student?.gender,
+          email: student?.email,
+          phonenumber: student?.phonenumber,
+          address: student?.address,
+          residence: student?.residence,
+          nationality: student?.nationality,
+
+        }))
+
+        return {
+          _id: level?._id,
+          level: level?.level,
+          file: level?.levelName,
+          data: students
+        };
+      });
+
+    } else {
+
+
+      modifiedLevel = levels?.map((level) => {
+        return {
+          levelName: level?.levelName,
+          ...level?.level
+        };
+      });
+    }
+
+
+    res.status(200).json(modifiedLevel);
+
+
+
   })
 );
 
@@ -434,11 +447,7 @@ router.post(
     //GET all existing students
     const previousLevels = await Level.find({
       session: new ObjectId(sessionId),
-    }).populate({
-      path: 'students',
-      match: { active: true },
-    });
-
+    })
 
     const selectedLevels = previousLevels.map(
       ({ level }) => {
@@ -519,6 +528,24 @@ router.post(
   asyncHandler(async (req, res) => {
     const { session, term, levels } = req.body;
 
+    const existingLevels = await Level.find({
+      session, term,
+      level: {
+        $in: levels,
+      },
+    }).select('level')
+
+    if (!_.isEmpty(existingLevels)) {
+      return res
+        .status(400)
+        .json(
+          {
+            isDuplicateError: true,
+            message: `Some Levels already exist.Please check and try again.`,
+            data: _.map(existingLevels, 'levelName')
+          }
+        );
+    }
 
     const modifiedLevels = levels.map((level) => {
       return {
@@ -607,26 +634,6 @@ router.delete(
     res.status(201).json(' Level has been removed successfully!!!');
   })
 );
-
-//@GET all current level by current level id
-router.get(
-  '/previous',
-  asyncHandler(async (req, res) => {
-    const { sessionId, termId } = req.query;
-    const previousLevels = await Level.find({
-      session: new ObjectId(sessionId),
-      term: new ObjectId(termId),
-    })
-      .select('level')
-      .populate({
-        path: 'students',
-        match: { active: true },
-      });
-
-    res.status(200).json(previousLevels);
-  })
-);
-
 
 
 router.post(

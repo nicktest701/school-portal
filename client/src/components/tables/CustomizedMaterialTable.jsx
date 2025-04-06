@@ -37,6 +37,7 @@ function CustomizedMaterialTable({
   autoCompleteComponent,
   tableRef,
   otherButtons,
+  ...rest
 }) {
   const modifiedColumns = columns.map((column) => {
     return { ...column };
@@ -198,6 +199,7 @@ function CustomizedMaterialTable({
               );
             },
           }}
+          {...rest}
         />
       </Box>
     </AnimatedContainer>

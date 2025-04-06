@@ -99,7 +99,7 @@ router.post(
     if (_.isEmpty(userId)) {
       return res.status(404).json('Couldnt save Teacher info.Try again.');
     }
-  
+
     res.status(201).json('New Teacher Added!!!');
   })
 );
@@ -113,16 +113,22 @@ router.post(
     const usernames = _.map(teachers, 'username');
 
     const existingTeachers = await User.find({
+      school: req.user.school,
       username: {
         $in: usernames,
       },
-    });
+    }).select('username')
 
     if (!_.isEmpty(existingTeachers)) {
       return res
-        .status(404)
+        .status(400)
         .json(
-          `A teacher with the Username ${existingTeachers[0].username} already exists`
+          {
+            isDuplicateError: true,
+            isTeacher: true,
+            message: `Username of some teachers already exist.Please check and try again.`,
+            data: _.map(existingTeachers, 'username')
+          }
         );
     }
     let teacherPhoto = "https://firebasestorage.googleapis.com/v0/b/fir-system-54b99.appspot.com/o/download.png?alt=media&token=c3f23cd6-8973-4681-9900-98dbadc93d2a"

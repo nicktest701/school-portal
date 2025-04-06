@@ -19,7 +19,7 @@ const Input = ({ name, control, label, rules, defaultValue = "", ...rest }) => {
           onChange={onChange}
           onBlur={onBlur}
           error={!!error} // Display an error state when validation fails
-          helperText={error ? error.message : null} // Show the error message from validation
+          helperText={error ? error?.message : null} // Show the error message from validation
           {...rest} // Spread any other props like placeholder, fullWidth, etc.
         />
       )}

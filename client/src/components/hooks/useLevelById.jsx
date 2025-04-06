@@ -14,7 +14,6 @@ function useLevelById(id) {
       ?.find((level) => level?._id === id),
   });
 
-
   const levelData = useMemo(() => {
     if (levels.data) {
       return {
@@ -22,7 +21,7 @@ function useLevelById(id) {
         gradeSystem: levels?.data?.grades,
         subjects: levels?.data?.subjects,
         rollNumber: levels?.data?.students?.length,
-        levelName: `${levels?.data?.level?.name} ${levels?.data?.level?.type}`,
+        levelName: `${levels?.data?.level?.name}${levels?.data?.level?.type}`,
         teacher: {
           _id: levels?.data?.teacher?._id,
           fullName: levels?.data?.teacher?.fullname,
@@ -40,7 +39,7 @@ function useLevelById(id) {
   }, [levels.data]);
 
   return {
-    levelLoading: levels.isPending,
+    levelLoading: levels.isPending || levels.isLoading,
     refetch: levels.refetch,
     levelError: levels?.error,
     ...levelData,

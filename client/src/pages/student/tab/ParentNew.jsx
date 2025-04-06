@@ -25,6 +25,7 @@ import { postParent } from "@/api/parentAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { useParams } from "react-router-dom";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const ParentNew = ({ open, setOpen }) => {
   const {
@@ -39,14 +40,12 @@ const ParentNew = ({ open, setOpen }) => {
   const { isPending, mutateAsync } = useMutation({ mutationFn: postParent });
 
   const onSubmit = (values, options) => {
-    // console.log(values);
-
     values.parent1.student = studentId;
     values.parent2.student = studentId;
 
     mutateAsync(values, {
       onSettled: () => {
-        queryClient.invalidateQueries(["parent"]);
+        queryClient.invalidateQueries(["student-profile", studentId]);
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
@@ -89,7 +88,7 @@ const ParentNew = ({ open, setOpen }) => {
           }) => {
             return (
               <Stack py={2} spacing={1}>
-                <div style={{ maxHeight: 350, overflowY: "auto" }}>
+                <div style={{ overflowY: "auto" }}>
                   <Stack py={2} spacing={1}>
                     <Stack
                       direction="row"
@@ -165,7 +164,7 @@ const ParentNew = ({ open, setOpen }) => {
                         freeSolo
                         fullWidth
                         size="small"
-                        options={RELATIONSHIP}
+                        options={RELATIONSHIP(values?.parent1?.gender)}
                         loadingText="Please wait...."
                         noOptionsText="No Relationship available"
                         getOptionLabel={(option) => option || ""}
@@ -229,9 +228,6 @@ const ParentNew = ({ open, setOpen }) => {
                       label="Address"
                       fullWidth
                       size="small"
-                      row={3}
-                      maxRows={3}
-                      multiline
                       value={values?.parent1?.address}
                       onChange={handleChange("parent1.address")}
                       error={Boolean(
@@ -380,7 +376,7 @@ const ParentNew = ({ open, setOpen }) => {
                         freeSolo
                         fullWidth
                         size="small"
-                        options={RELATIONSHIP}
+                        options={RELATIONSHIP(values?.parent2?.gender)}
                         loadingText="Please wait...."
                         noOptionsText="No Relationship available"
                         getOptionLabel={(option) => option || ""}
@@ -444,9 +440,6 @@ const ParentNew = ({ open, setOpen }) => {
                       label="Address"
                       fullWidth
                       size="small"
-                      row={3}
-                      maxRows={3}
-                      multiline
                       value={values?.parent2?.address}
                       onChange={handleChange("parent2.address")}
                       error={Boolean(
@@ -539,6 +532,7 @@ const ParentNew = ({ open, setOpen }) => {
           }}
         </Formik>
       </DialogContent>
+      {isPending && <LoadingSpinner value="Please Wait..." />}
     </Dialog>
   );
 };

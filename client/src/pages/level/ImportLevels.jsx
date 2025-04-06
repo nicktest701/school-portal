@@ -16,18 +16,26 @@ import {
   Typography,
   Stack,
   Link,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Autocomplete,
 } from "@mui/material";
 import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from "@mui/icons-material";
+import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
+import { getAllSessions } from "@/api/termAPI";
+import { getPreviousLevels } from "@/api/levelAPI";
 import { downloadTemplate } from "@/api/userAPI";
 import { UserContext } from "@/context/providers/UserProvider";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Swal from "sweetalert2";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { postLevels } from "@/api/levelAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
@@ -35,11 +43,47 @@ const ImportLevels = ({ open, onClose }) => {
   const { session } = use(UserContext);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
+  const [error, setError] = useState("");
+  const [inputMethod, setInputMethod] = useState("file");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [newSession, setNewSession] = useState({
+    _id: "",
+    sessionId: "",
+    academicYear: "",
+    term: "",
+  });
 
   const { mutateAsync, isPending } = useMutation({ mutationFn: postLevels });
+
+  const previousSessions = useQuery({
+    queryKey: ["previous-sessions", inputMethod],
+    queryFn: () => getAllSessions(),
+    initialData: [],
+    enabled: inputMethod === "autocomplete",
+    select: (terms) => {
+      return _.filter(terms, (term) => term?._id !== session?.termId);
+    },
+  });
+
+  const previousLevels = useQuery({
+    queryKey: ["previous-sessions", newSession.sessionId, newSession._id],
+    queryFn: () => getPreviousLevels(newSession.sessionId, newSession._id),
+    enabled: !!newSession.sessionId && !!newSession._id,
+    initialData: [],
+  });
+
+  const handleAddToList = () => {
+    setError("");
+    if (_.isEmpty(previousLevels.data)) {
+      setError("No Level found!");
+      return;
+    }
+
+    setFilteredData(previousLevels.data);
+    setUploadedFiles(previousLevels.data);
+  };
 
   const handleUpload = () => {
     Swal.fire({
@@ -48,12 +92,18 @@ const ImportLevels = ({ open, onClose }) => {
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
+      const newLevels = _.map(uploadedFiles, ({ name, type }) => ({
+        name,
+        type,
+      }));
+
+      // return;
       if (isConfirmed) {
         mutateAsync(
           {
             session: session?.sessionId,
             term: session?.termId,
-            levels: uploadedFiles,
+            levels: newLevels,
           },
           {
             onSettled: () => {
@@ -64,7 +114,19 @@ const ImportLevels = ({ open, onClose }) => {
               onClose();
             },
             onError: (error) => {
-              schoolSessionDispatch(alertError(error));
+              if (error?.isDuplicateError) {
+                Swal.fire({
+                  title: "Duplicate Levels Found!",
+                  icon: "error",
+                  html: `<div> ${error?.message} ${JSON.stringify(
+                    error?.data
+                  )} </div>`,
+                  showCancelButton: false,
+                  backdrop: false,
+                });
+              } else {
+                schoolSessionDispatch(alertError(error));
+              }
             },
           }
         );
@@ -136,134 +198,201 @@ const ImportLevels = ({ open, onClose }) => {
   };
 
   return (
-    <Modal open={open} onClose={isPending ? () => {} : onClose}>
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          p: 2,
-          borderRadius: 2,
-          width: { xs: 320, md: 700 },
-        }}
-      >
-        <div>
-          <Typography variant="h5">Levels Structure</Typography>
-          <Typography variant="body2" fontStyle="italic" pb={2}>
-            Define grade levels, classes, and departments to match your
-            institution’s structure, ensuring smooth student progression and
-            curriculum planning.
-          </Typography>
-          <Stack spacing={2} py={2} justifyContent="center">
-            {uploadedFiles?.length > 0 && (
-              <Button
-                onClick={handleUpload}
-                variant="contained"
-                color="primary"
-                sx={{ marginTop: 10, alignSelf: "end" }}
-                loading={isPending}
+    <>
+      <Modal open={open} onClose={isPending ? () => {} : onClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 2,
+            borderRadius: 2,
+            width: { xs: 320, md: 700 },
+          }}
+        >
+          <div>
+            <Typography variant="h5">Import New Levels </Typography>
+            <Typography variant="body2" fontStyle="italic" pb={2}>
+              Define grade levels, classes, and departments to match your
+              institution’s structure, ensuring smooth student progression and
+              curriculum planning.
+            </Typography>
+            <FormControl component="fieldset">
+              <FormLabel>Choose how you want to import levels</FormLabel>
+              <RadioGroup
+                value={inputMethod}
+                onChange={(event) => {
+                  setInputMethod(event.target.value);
+                }}
+                row
               >
-                Save Levels
-              </Button>
-            )}
-            <TextField
-              type="file"
-              accept=".csv,.xlsx"
-              label="Select File"
-              slotProps={{
-                inputLabel: {
-                  shrink: true,
-                },
-                input: {
-                  accept: ".xlsx,.xls,.csv",
-                },
-              }}
-              inputProps={{
-                accept: ".xlsx,.xls,.csv",
-              }}
-              fullWidth
-              onChange={handleFileChange}
-            />
+                <FormControlLabel
+                  value="file"
+                  control={<Radio />}
+                  label="From File"
+                />
+                <FormControlLabel
+                  value="autocomplete"
+                  control={<Radio />}
+                  label="From Previous Session"
+                />
+              </RadioGroup>
+            </FormControl>
 
-            <Stack direction="row" justifyContent="space-between">
-              <Link
-                sx={{ cursor: "pointer", alignSelf: "start" }}
-                onClick={handleDownloadTemplate}
-                variant="caption"
-              >
-                Download Level template here
-              </Link>
+            <Stack spacing={2} py={2} justifyContent="center">
+              {uploadedFiles?.length > 0 && (
+                <Button
+                  onClick={handleUpload}
+                  variant="contained"
+                  color="primary"
+                  sx={{ marginTop: 10, alignSelf: "end" }}
+                  loading={isPending}
+                >
+                  Save Levels
+                </Button>
+              )}
+              {inputMethod === "file" && (
+                <Stack spacing={2} py={2} justifyContent="center">
+                  <TextField
+                    type="file"
+                    accept=".csv,.xlsx"
+                    label="Select File"
+                    slotProps={{
+                      inputLabel: {
+                        shrink: true,
+                      },
+                      input: {
+                        accept: ".xlsx,.xls,.csv",
+                      },
+                    }}
+                    inputProps={{
+                      accept: ".xlsx,.xls,.csv",
+                    }}
+                    fullWidth
+                    onChange={handleFileChange}
+                  />
+
+                  <Stack direction="row" justifyContent="space-between">
+                    <Link
+                      sx={{ cursor: "pointer", alignSelf: "start" }}
+                      onClick={handleDownloadTemplate}
+                      variant="caption"
+                    >
+                      Download Level template here
+                    </Link>
+                  </Stack>
+                </Stack>
+              )}
+
+              {inputMethod === "autocomplete" && (
+                <Stack spacing={2} py={2} justifyContent="center">
+                  <Autocomplete
+                    options={previousSessions?.data}
+                    noOptionsText="No Session not found"
+                    closeText=""
+                    clearText=" "
+                    disableClearable={true}
+                    fullWidth
+                    value={newSession}
+                    onChange={(e, value) => setNewSession(value)}
+                    isOptionEqualToValue={(option, value) =>
+                      value?._id === "" ||
+                      value?._id === undefined ||
+                      option._id === value?._id
+                    }
+                    getOptionLabel={(option) => option?.name || ""}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select  Session"
+                        error={error !== ""}
+                        helperText={error}
+                      />
+                    )}
+                  />
+                  {newSession?._id && (
+                    <Button
+                      onClick={handleAddToList}
+                      variant="contained"
+                      color="primary"
+                      sx={{ alignSelf: "flex-start" }}
+                    >
+                      Load Levels
+                    </Button>
+                  )}
+                </Stack>
+              )}
             </Stack>
-          </Stack>
 
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            py={2}
-          >
-            <h3>Selected Files</h3>
-            <Button
-              onClick={handleClearAll}
-              variant="contained"
-              color="secondary"
-              style={{ marginTop: 10 }}
-              disabled={filteredData?.length === 0}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              py={2}
             >
-              Clear All
-            </Button>
-          </Stack>
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="Search..."
-            onChange={handleSearch}
-            InputProps={{ startAdornment: <SearchIcon /> }}
-            sx={{ my: 2 }}
-          />
-          {filteredData.length > 0 && (
-            <>
-              <TableContainer
-                component={Paper}
-                sx={{ maxHeight: 500, overflowY: "auto" }}
+              <h3>Imported Levels</h3>
+              <Button
+                onClick={handleClearAll}
+                variant="contained"
+                color="secondary"
+                style={{ marginTop: 10 }}
+                disabled={filteredData?.length === 0}
               >
-                <Table stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Level</TableCell>
-                      <TableCell>Type</TableCell>
-                      <TableCell> Level Name</TableCell>
-                      <TableCell>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredData.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{item?.name}</TableCell>
-                        <TableCell>{item?.type}</TableCell>
-                        <TableCell>
-                          {item?.name}
-                          {item?.type}
-                        </TableCell>
-                        <TableCell>
-                          <IconButton onClick={() => handleDeleteFile(index)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
+                Clear All
+              </Button>
+            </Stack>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Search..."
+              onChange={handleSearch}
+              InputProps={{ startAdornment: <SearchIcon /> }}
+              sx={{ my: 2 }}
+            />
+            {filteredData.length > 0 && (
+              <>
+                <TableContainer
+                  component={Paper}
+                  sx={{ maxHeight: 300, overflowY: "auto" }}
+                >
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Level</TableCell>
+                        <TableCell>Type</TableCell>
+                        <TableCell> Level Name</TableCell>
+                        <TableCell>Actions</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </>
-          )}
-        </div>
-        {isPending && <LoadingSpinner value="Please Wait.." />}
-      </Box>
-    </Modal>
+                    </TableHead>
+                    <TableBody>
+                      {filteredData.map((item, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{item?.name}</TableCell>
+                          <TableCell>{item?.type}</TableCell>
+                          <TableCell>
+                            {item?.name}
+                            {item?.type}
+                          </TableCell>
+                          <TableCell>
+                            <IconButton onClick={() => handleDeleteFile(index)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </>
+            )}
+          </div>
+        </Box>
+      </Modal>
+      {isPending && <LoadingSpinner value="Please Wait.." />}
+    </>
   );
 };
 

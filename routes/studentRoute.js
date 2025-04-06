@@ -7,6 +7,7 @@ const {
 } = require('mongoose');
 const _ = require('lodash');
 const multer = require('multer');
+const Term = require('../models/termModel');
 const Level = require('../models/levelModel');
 const Student = require('../models/studentModel');
 const Parent = require('../models/parentModel');
@@ -59,43 +60,39 @@ router.get(
   '/details',
   asyncHandler(async (req, res) => {
     const { sessionId, termId } = req.query;
+    const terms = await Term.find({
+      session: new ObjectId(sessionId),
+
+    }).select(['term', 'academicYear'])
+
+
+    const modifiedTerms = _.map(terms, ({ term, academicYear }) => ({
+      term, academicYear, student: 0
+    }))
 
     const allLevels = await Level.find({
-
       session: new ObjectId(sessionId),
     })
-      .populate({
-        path: 'students',
-        match: { active: true },
-      })
-      .populate('term')
-      .select('level students');
+      .populate('term', ['term', 'academicYear'])
+      .select(['level', 'students']);
 
-    if (_.isEmpty(allLevels)) {
-      return res.status(200).json({
-        recentStudents: [],
-        noOfStudentsInEachLevel: [],
-        noOfStudentsForEachTerm: [],
-        students: 0,
-        males: 0,
-        females: 0,
-      });
-    }
 
     //group students into terms
     const groupedLevels = _.groupBy(allLevels, 'term.term');
 
     const groupedTerms = Object.values(groupedLevels).map((level) => {
-      return level.flatMap(({ term: { term, academicYear }, students }) => {
+
+      return level.flatMap(({ term: { term, academicYear }, noOfStudents }) => {
         return {
           academicYear,
           term,
-          noOfStudents: students.length,
+          noOfStudents,
         };
       });
     });
 
     //No of students for each term
+
     const noOfStudents = groupedTerms.map((term) => {
       return {
         academicYear: term[0].academicYear,
@@ -104,19 +101,25 @@ router.get(
       };
     });
 
-    const students = await Level.find({
+    //Students in each term
+    const students = _.values(_.merge(_.keyBy([...modifiedTerms, ...noOfStudents], 'term')))
+
+
+    //Current Students in current sessions
+    const currentStudents = await Level.find({
+
       session: new ObjectId(sessionId),
       term: new ObjectId(termId),
     }).populate({
       path: 'students',
       match: { active: true },
-    });
+    }).select('level')
 
     const maleStudents = [];
     const femaleStudents = [];
 
     //Get number of males and females
-    const modifiedStudents = students.flatMap(({ students }) => {
+    const modifiedStudents = currentStudents.flatMap(({ levelName, students }) => {
       return students.map((student) => {
         if (student.gender === 'male') {
           maleStudents.push(student);
@@ -127,20 +130,21 @@ router.get(
         student._doc.fullName = _.startCase(
           `${student?.surname} ${student?.firstname} ${student?.othername}`
         );
+        student._doc.levelName = levelName
 
         return student;
       });
     });
 
     //Get all recently added students
-    const recentStudents =
-      _.orderBy(modifiedStudents, 'createdAt', 'desc').slice(0, 10) ?? [];
+    const recentStudents = _.take(_.orderBy(modifiedStudents, 'createdAt', 'desc'), 10)
 
     //Get total no of students in each class
-    const noOfStudentsInEachLevel = students.map(({ students, level }) => {
+    const noOfStudentsInEachLevel = currentStudents.map(({ noOfStudents, levelName }) => {
+
       return {
-        level: `${level.name} ${level.type}`,
-        students: students.length,
+        level: levelName,
+        students: noOfStudents,
       };
     });
     // console.log(noOfStudentsInEachLevel);
@@ -148,7 +152,7 @@ router.get(
     const details = {
       recentStudents,
       noOfStudentsInEachLevel,
-      noOfStudentsForEachTerm: noOfStudents,
+      noOfStudentsForEachTerm: students,
       students: modifiedStudents.length ?? 0,
       males: maleStudents.length ?? 0,
       females: femaleStudents.length ?? 0,
@@ -200,47 +204,90 @@ router.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
 
+    //Personal Info
     const student = await Student.findById(id);
 
-    if (_.isEmpty(student)) {
-      return res.json('No Such Student exists');
-    }
-    res.status(200).json(student);
-  })
-);
+    //School Fees
+    const fees = await CurrentFee.find({
+      student: id,
+    }).sort({ createdAt: -1 })
+      .populate('student')
+      .populate({
+        path: 'term',
+        select: ['term', 'academicYear']
+      })
+      .populate({
+        path: 'level',
+        select: ['level']
+      })
+      .select('payment');
 
-//@GET ALL student for search
-router.post(
-  '/search/all',
-  asyncHandler(async (req, res) => {
-    const { level } = req.body;
-
-    //find student current level details
-    const currentLevel = await Level.findById(level).populate({
-      path: 'students',
-      match: { active: true },
-    });
-
-    if (_.isEmpty(currentLevel)) {
-      return res.status(200).json([]);
-    }
-
-    //filter out all students
-
-    const uniqueStudents = currentLevel.students.map((student) => {
+    const modifiedFees = fees.map(fee => {
       return {
-        id: student._id,
-        profile: student.profile,
-        fullName: student?.fullName,
-        level: currentLevel?._id,
-        levelType: `${currentLevel.level?.name}${currentLevel.level?.type}`,
+        _id: fee?._id,
+        academicYear: fee?.term?.academicYear,
+        term: fee?.term?.term,
+        level: fee?.level?.levelName,
+        payment: fee?.payment,
+        paid: _.sumBy(fee?.payment, 'paid')
+      }
+    })
+
+    //Group selected terms in ascending order
+    const groupfeesByTerms = _.groupBy(
+      _.sortBy(modifiedFees, 'term'),
+      'academicYear'
+    );
+    const feesDetails = Object.entries(groupfeesByTerms)
+
+
+
+    //Examination
+    const examination = await Examination.find({
+      student: id
+    })
+      .populate('term', ['academicYear', 'term'])
+      .populate('level', ['level', 'subjects'])
+
+
+
+    const modifiedExams = examination.map(({ _id, term, level }) => {
+      return {
+        _id,
+        academicYear: term?.academicYear,
+        term: term?.term,
+        levelName: level?.levelName,
+        subjects: level.subjects,
       };
     });
-    //console.log(uniqueStudents);
 
-    res.status(200).json(uniqueStudents);
+
+    //Group selected terms in ascending order
+    const groupExamsByTerms = _.groupBy(
+      _.sortBy(modifiedExams, 'term'),
+      'academicYear'
+    );
+    const examsDetails = Object.entries(groupExamsByTerms)
+
+    //Parents
+    const parents = await Parent.find({
+      student: id,
+    });
+
+
+    if (_.isEmpty(student)) {
+      return res.status(400).json('No Such Student exists');
+    }
+
+    res.status(200).json({
+      profile: student || [],
+      fees: feesDetails || [],
+      exams: examsDetails || [],
+      parents: parents || []
+    });
   })
 );
+
 
 //@POST students
 router.post(
@@ -250,11 +297,11 @@ router.post(
     const { details } = req.body;
 
     const studentDetails = JSON.parse(details)
-    const { personal, medical, academic, parent } = studentDetails;
+    const { session, personal, medical, academic, parent } = studentDetails;
 
     const doesStudentExists = await Student.findOne({
       indexnumber: personal?.indexnumber
-    });
+    }).select('indexnumber');
 
     if (!_.isEmpty(doesStudentExists)) {
       return res.status(400).json('Index Number already exist!');
@@ -264,6 +311,7 @@ router.post(
     if (req.file) {
       const filename = req.file?.filename;
       studentPhoto = await uploadFile(filename, 'students/');
+
     }
 
     //Add new Student
@@ -283,7 +331,7 @@ router.post(
       medical,
       academic,
       school: req.user.school,
-      createdBy: req.user.createdBy,
+      createdBy: req.user.id,
     });
 
     if (_.isEmpty(student)) {
@@ -299,28 +347,25 @@ router.post(
 
 
     const stud = {
-      session: new ObjectId(personal.session?.sessionId),
-      term: new ObjectId(personal.session?.termId),
-      level: new ObjectId(level?._id),
-      student: new ObjectId(student._id),
+      session: session?.sessionId,
+      term: session?.termId,
+      level: level?._id,
+      student: student._id,
+      school: req.user.school,
+      createdBy: req.user.id,
     }
     //create exams details for student
     await Examination.create(stud);
     await CurrentFee.create(stud);
 
 
-    const firstParent = {
-      ...parent.parent1,
+    const modifiedParents = parent.map(par => ({
+      ...par,
       student: student._id,
       school: req.user.school,
-    };
-    const secondParent = {
-      ...parent.parent2,
-      student: student._id,
-      school: req.user.school,
-    };
+    }));
 
-    await Parent.insertMany([firstParent, secondParent]);
+    await Parent.insertMany(modifiedParents);
 
     res.status(200).json(student?._id);
   })
@@ -332,24 +377,25 @@ router.post(
   asyncHandler(async (req, res) => {
     const { session, students, type } = req.body;
 
-    // console.log(session)
-    // return res
-    //   .status(200).json('ok')
-
-    const indexNumbers = _.map(students, 'indexnumber');
-
+    const indexNumbers = _.compact(_.map(students, 'indexnumber'));
     const existingStudents = await Student.find({
       school: req.user.school,
       indexnumber: {
         $in: indexNumbers,
       },
-    });
+    }).select('indexnumber')
+
 
     if (!_.isEmpty(existingStudents)) {
       return res
-        .status(404)
+        .status(400)
         .json(
-          `A student with the ID ${existingStudents[0].indexnumber} already exists`
+          {
+            isDuplicateError: true,
+            
+            message: `ID of some students already exist.Please check and try again.`,
+            data: _.map(existingStudents, 'indexnumber')
+          }
         );
     }
 
@@ -361,7 +407,7 @@ router.post(
         return {
           ...student,
           school: req.user.school,
-          createdBy: req.user.createdBy,
+          createdBy: req.user.id,
         };
       });
       const newStudents = await Student.create(modifiedStudents);
@@ -386,39 +432,20 @@ router.post(
       { new: true }
     );
 
-    //create exams details for students
-    studentIds.forEach(async (id) => {
-      await Examination.create({
-        session: new ObjectId(session.sessionId),
-        term: new ObjectId(session.termId),
-        level: new ObjectId(session.levelId),
-        student: id,
-        scores: [],
-        overallScore: 0,
-        comments: {},
-      });
-    });
+    //Create Exams and fees details for each inserted Student
+    const studentDetails = studentIds.map(student => {
+      return {
+        session: session.sessionId,
+        term: session.termId,
+        level: session.levelId,
+        student: student,
+        createdBy: req.user.id
+      }
+    })
 
-    //find current fees for a particular student class
-    const fees = await Fee.findOne({
-      session: new ObjectId(session.sessionId),
-      term: new ObjectId(session.termId),
-      level: new ObjectId(session.levelId),
-    });
+    await Examination.insertMany(studentDetails);
+    await CurrentFee.insertMany(studentDetails);
 
-    //Generate current student fees
-    if (!_.isEmpty(fees)) {
-      studentIds.forEach(async (id) => {
-        await CurrentFee.create({
-          session: new ObjectId(session.sessionId),
-          term: new ObjectId(session.termId),
-          level: new ObjectId(session.levelId),
-          fee: fees._id,
-          student: id,
-          payment: [],
-        });
-      });
-    }
 
     res.status(200).json('Student Information Saved!!!');
   })
@@ -459,11 +486,11 @@ router.put(
 router.put(
   '/medical',
   asyncHandler(async (req, res) => {
-    const { id } = req.body;
+    const { id, ...rest } = req.body;
 
     const updatedStudent = await Student.findByIdAndUpdate(id, {
       $set: {
-        medical: req.body,
+        medical: rest,
       },
     });
 

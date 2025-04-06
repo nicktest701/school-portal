@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Stack,
-  Grid2,
-} from "@mui/material";
+import { Box, Typography, Card, CardContent, Stack } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { getAllEvents } from "@/api/eventAPI";
@@ -30,32 +23,31 @@ const Event = () => {
     <Box>
       {events.length !== 0 ? (
         <>
-          <Grid2 container spacing={2} sx={{ minHeight: 400 }}>
+          <Stack spacing={2} sx={{ minHeight: 400 }}>
             {_.take(events, 5).map((event) => (
-              <Grid2 size={{xs:12}} key={event._id} sx={{ width: "100%" }}>
-                <Card
-                  sx={{
-                    borderTop: `2px solid #d4edda`,
-                    borderRadius: 2,
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleOpenModal(event._id)}
-                >
-                  <CardContent>
-                    <Typography variant="body1" fontWeight="bold">
-                      {event.title}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {dayjs(event.createdAt).format("D MMMM, YYYY")}
-                    </Typography>
-                    <Typography variant="caption" display="block" mt={1}>
-                      {event.caption}...
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid2>
+              <Card
+                key={event?._id}
+                sx={{
+                  borderTop: `2px solid #d4edda`,
+                  borderRadius: 2,
+                  cursor: "pointer",
+                }}
+                onClick={() => handleOpenModal(event._id)}
+              >
+                <CardContent>
+                  <Typography variant="body1" fontWeight="bold">
+                    {event.title}
+                  </Typography>
+                  <Typography variant="caption" color="textSecondary">
+                    {dayjs(event.createdAt).format("D MMMM, YYYY")}
+                  </Typography>
+                  <Typography variant="caption" display="block" mt={1}>
+                    {event.caption}...
+                  </Typography>
+                </CardContent>
+              </Card>
             ))}
-          </Grid2>
+          </Stack>
 
           {/* View More Button */}
           <Box sx={{ textAlign: "center", mt: 3 }}>

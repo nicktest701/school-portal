@@ -10,25 +10,19 @@ import _ from "lodash";
 import { currencyFormatter } from "@/config/currencyFormatter";
 import { UserContext } from "@/context/providers/UserProvider";
 import fee_icon from "@/assets/images/header/fee_ico.svg";
-// import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 
 function FeePaymentHistory() {
-  const {
-    session
-  } = useContext(UserContext);
-
-  //
+  const { session } = useContext(UserContext);
   const [date, setDate] = useState(moment());
 
-  //
   const fees = useQuery({
     queryKey: ["fees-for-day", date],
     queryFn: () =>
       getAllCurrentFeesPaymentHistoryByDate({
         session: session?.sessionId,
         term: session?.termId,
-        date,
+        date: date.toDate(),
       }),
     initialData: [],
     enabled: !!session?.sessionId && !!session?.termId && !!date,
@@ -36,10 +30,7 @@ function FeePaymentHistory() {
 
   const totalAmount = useMemo(() => {
     if (fees?.data?.length === 0) return 0;
-
-    return _.sumBy(_.flatMap(fees?.data, "payment"), (payment) =>
-      Number(payment?.paid)
-    );
+    return _.sumBy(fees?.data, ({ payment }) => Number(payment?.paid));
   }, [fees?.data]);
 
   return (
@@ -49,6 +40,8 @@ function FeePaymentHistory() {
         title="Fee Payment History"
         subtitle="View fee transactions"
         color="primary.main"
+        showBack={true}
+        to="/fee/payment"
       />
 
       <>
@@ -65,6 +58,7 @@ function FeePaymentHistory() {
             style={{
               width: 300,
             }}
+            // shouldDisableWeekends={true}
           />
           <Stack>
             <Typography textAlign="right">Total Amount</Typography>
@@ -75,7 +69,7 @@ function FeePaymentHistory() {
         </Box>
 
         <CustomizedMaterialTable
-          isPending={fees.isPending}
+          isPending={fees.isPending || fees.isLoading}
           icon={fee_icon}
           title={`Fee Payment on ${date.format("LL")}`}
           addButtonImg={fee_icon}
@@ -83,6 +77,11 @@ function FeePaymentHistory() {
           search
           handleRefresh={fees.refetch}
           columns={[
+            {
+              title: "Paid On",
+              field: "payment.createdAt",
+              render: ({ payment }) => moment(payment?.createdAt).format("LLL"),
+            },
             {
               title: "Student",
               field: "student",
@@ -93,20 +92,17 @@ function FeePaymentHistory() {
             },
             {
               title: "Amount Paid",
-              field: "payment",
-              render: ({ payment }) => {
-                return (
-                  <>
-                    {payment.map((fee) => (
-                      <Stack direction="row" columnGap={1} key={fee.date}>
-                        <Typography variant="caption">
-                          {currencyFormatter(fee.paid)}
-                        </Typography>
-                      </Stack>
-                    ))}
-                  </>
-                );
+              field: "payment.paid",
+              type: "currency",
+              currencySetting: {
+                currencyCode: "GHS",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
               },
+            },
+            {
+              title: "Completed By",
+              field: "payment.issuerName",
             },
           ]}
           data={fees?.data}

@@ -15,6 +15,7 @@ const TermSchema = new mongoose.Schema(
     from: String,
     to: String,
     term: String,
+    isPromotionTerm:String,
     academicYear: String,
     vacationDate: String,
     reOpeningDate: String,

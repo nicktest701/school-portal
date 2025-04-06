@@ -16,20 +16,16 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const FeeNew = () => {
-  const {
-    session
-  } = useContext(UserContext);
-
+  const { session } = useContext(UserContext);
   const queryClient = useQueryClient();
-
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [openAddFee, setOpenAddFee] = useState(false);
 
   const fees = useQuery({
-    queryKey: ["fees", session?.sessionId],
+    queryKey: ["fees", session?.sessionId, session?.termId],
     queryFn: () => getAllFees(session),
-    enabled: !!session?.sessionId,
-    initialData:[]
+    enabled: !!session?.sessionId && !!session?.termId,
+    initialData: [],
   });
 
   const { mutateAsync, isPending } = useMutation({ mutationFn: deleteFee });
@@ -43,7 +39,11 @@ const FeeNew = () => {
       if (isConfirmed) {
         mutateAsync(id, {
           onSettled: () => {
-            queryClient.invalidateQueries(["fees"]);
+            queryClient.invalidateQueries([
+              "fees",
+              session?.sessionId,
+              session?.termId,
+            ]);
           },
           onSuccess: () => {
             schoolSessionDispatch(
@@ -100,7 +100,7 @@ const FeeNew = () => {
           icon={fee_icon}
           columns={SCHOOL_FEES_COLUMNS(handleView, handleEdit, handleDeleteFee)}
           data={fees.data}
-          isPending={fees.isPending}
+          isPending={fees.isPending || fees.isLoading}
           handleRefresh={fees.refetch}
           actions={[]}
           search={true}

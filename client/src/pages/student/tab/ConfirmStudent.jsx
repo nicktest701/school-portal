@@ -2,97 +2,37 @@ import {
   Avatar,
   Box,
   Button,
-  Dialog,
-  DialogContent,
-  ListItemText,
+  Container,
   Stack,
   Typography,
 } from "@mui/material";
-import React, { use, useRef, useState } from "react";
+import React, { use, useRef } from "react";
 import _ from "lodash";
-import { StudentContext } from "@/context/providers/StudentProvider";
 import MedicalAllergyItem from "@/components/items/MedicalAllergyItem";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postNewStudent } from "@/api/studentAPI";
-import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolRounded } from "@mui/icons-material";
-import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 import { UserContext } from "@/context/providers/UserProvider";
+import StudentViewItem from "./StudentViewItem";
+import { useNavigate } from "react-router-dom";
+import { newStudentDefaultValues } from "@/config/initialValues";
 
-function ConfirmStudent({ open, setOpen, setMode }) {
-  const queryClient = useQueryClient();
+function ConfirmStudent({ watch, isPending, id, hideSaveBtn, reset }) {
+  const { personal, photo, medical, parent, academic } = watch();
   const { school_info } = use(UserContext);
-  const {
-    studentState: {
-      newStudent: { personal, photo, medical, parent, academic },
-      studentDispatch,
-    },
-  } = use(StudentContext);
-  const { schoolSessionDispatch } = use(SchoolSessionContext);
   const componentRef = useRef();
-  const [id, setId] = useState("");
-  const [hideSaveBtn, setHideSaveBtn] = useState(false);
-
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: postNewStudent,
-  });
-  const onSubmit = () => {
-    // personal.profile = photo?.image;
-
-    const studentData = {
-      photo: photo?.image,
-      details: {
-        personal,
-        medical,
-        parent,
-        academic,
-      },
-    };
-
-    mutateAsync(studentData, {
-      onSettled: () => {
-        queryClient.invalidateQueries(["students-by-current-level"]);
-        queryClient.invalidateQueries(["all-students"]);
-      },
-      onSuccess: (data) => {
-        if (data) {
-          schoolSessionDispatch(alertSuccess("New Student Added"));
-          setHideSaveBtn(true);
-          setId(data);
-          // localStorage.removeItem("@student");
-        }
-      },
-      onError: (error) => {
-        schoolSessionDispatch(alertError(error));
-      },
-    });
-  };
-
-  //close dialog
-  const handleClose = () => {
-    if (id) {
-      setMode("personal-info");
-      setOpen(false);
-      studentDispatch({
-        type: "addNewStudent",
-        payload: {},
-      });
-    } else {
-      setOpen(false);
-    }
-  };
+  const navigate = useNavigate();
 
   const reactToPrintFn = useReactToPrint({
-    documentTitle: "Admission Form",
+    documentTitle: `Admission Form - ${personal?.surname} ${personal?.firstname} ${personal?.othername}`,
     contentRef: componentRef,
+    onAfterPrint: () => {
+      reset(newStudentDefaultValues);
+      localStorage.removeItem("active-add-student");
+    },
   });
 
-  const primaryStyle = { fontSize: 12, color: "primary", fontWeight: "700" };
-  const secondaryStyle = { fontSize: 10 };
   const legendStyle = {
     width: "100%",
     borderBottom: "1px solid black",
@@ -102,38 +42,59 @@ function ConfirmStudent({ open, setOpen, setMode }) {
   };
 
   return (
-    <Dialog open={open} fullWidth maxWidth="lg" onClose={() => setOpen(false)}>
-      {/* <CustomDialogTitle/> */}
-
+    <Container>
       <CustomDialogTitle
         title="Admission Form"
         subtitle="Preview of student information. Please check before saving your information."
-        onClose={handleClose}
       />
-      <Box
-        display="flex"
-        gap={2}
-        justifyContent="center"
-        alignItems="center"
-        pt={2}
+      <Container
+        sx={{
+          display: "flex",
+          gap: 2,
+          justifyContent: "center",
+          alignItems: "center",
+          py: 2,
+        }}
       >
-        {/* {hideSaveBtn ? ( */}
-        <Button variant="contained" onClick={() => reactToPrintFn()}>
-          Print Form
-        </Button>
-        {/* // ) : ( */}
         <Button
           loading={isPending}
           variant="contained"
           color="primary"
-          onClick={onSubmit}
+          type="submit"
         >
-          Save Student Data
+          Save Student
         </Button>
-        {/* // )} */}
-      </Box>
+        {hideSaveBtn && (
+          <>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => reactToPrintFn()}
+            >
+              Print Form
+            </Button>
+            <Button
+              variant="contained"
+              color="info"
+              onClick={() => {
+                navigate(`/student/view/${id}?_l=${academic?.level?._id}`);
+                reset(newStudentDefaultValues);
+                localStorage.removeItem("active-add-student");
+              }}
+            >
+              View Student
+            </Button>
+          </>
+        )}
+      </Container>
 
-      <DialogContent>
+      <Box
+        sx={{
+          // width: "8.5in",
+          height: "11in",
+          overflowY: "auto",
+        }}
+      >
         <div ref={componentRef}>
           {/* school details */}
 
@@ -152,7 +113,7 @@ function ConfirmStudent({ open, setOpen, setMode }) {
               backgroundPosition: "center center !important",
             }}
           >
-            <Typography variant="body1" sx={{ justifySelf: "start", py: 4 }}>
+            <Typography variant="h5" sx={{ justifySelf: "start", py: 4 }}>
               Admission Form
             </Typography>
             {school_info?.badge ? (
@@ -161,14 +122,22 @@ function ConfirmStudent({ open, setOpen, setMode }) {
                 loading="lazy"
                 srcSet={school_info?.badge}
                 sx={{
-                  width: 100,
-                  height: 100,
+                  width: 80,
+                  height: 80,
+                  bgcolor: "primary.main",
                 }}
-              />
+              >
+                {school_info?.name[0]}
+              </Avatar>
             ) : (
               <SchoolRounded sx={{ width: 100, height: 100 }} />
             )}
-            <Stack justifyContent="center" alignItems="center" width="100%">
+            <Stack
+              justifyContent="center"
+              alignItems="center"
+              width="100%"
+              pt={2}
+            >
               <Typography variant="h4">
                 {_.startCase(school_info?.name)}
               </Typography>
@@ -220,7 +189,7 @@ function ConfirmStudent({ open, setOpen, setMode }) {
             >
               <Avatar
                 variant="square"
-                src={photo?.profile}
+                src={photo?.display}
                 sx={{ alignSelf: "center", width: 80, height: 80 }}
               />
             </div>
@@ -228,11 +197,9 @@ function ConfirmStudent({ open, setOpen, setMode }) {
             {/* Personal Information  */}
             <div style={{ paddingBottom: "8px" }}>
               <legend style={legendStyle}>Personal Data</legend>
-              <ListItemText
+              <StudentViewItem
                 secondary="Student ID"
                 primary={personal?.indexnumber}
-                primaryTypographyProps={primaryStyle}
-                secondaryTypographyProps={secondaryStyle}
               />
               <div
                 style={{
@@ -240,54 +207,38 @@ function ConfirmStudent({ open, setOpen, setMode }) {
                   gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
                 }}
               >
-                <ListItemText
+                <StudentViewItem
                   secondary="Full Name"
                   primary={`${personal?.surname} ${personal?.firstname} ${personal?.othername}`}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
 
-                <ListItemText
+                <StudentViewItem
                   secondary="Date of Birth"
                   primary={moment(new Date(personal?.dateofbirth)).format("LL")}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Gender"
                   primary={personal?.gender}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Email Address"
                   primary={personal?.email}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Phone Number"
                   primary={personal?.phonenumber}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Residence"
                   primary={personal?.residence}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Nationality"
                   primary={personal?.nationality}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Address"
                   primary={personal?.address}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
               </div>
             </div>
@@ -308,61 +259,43 @@ function ConfirmStudent({ open, setOpen, setMode }) {
                     gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
                   }}
                 >
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Surname"
                     primary={parent?.parent1?.surname}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="First Name"
                     primary={parent?.parent1?.firstname}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Relationship"
                     primary={parent?.parent1?.relationship}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
 
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Gender"
                     primary={parent?.parent1?.gender}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Email Address"
                     primary={parent?.parent1?.email}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Phone Number"
                     primary={parent?.parent1?.phonenumber}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
 
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Residence"
                     primary={parent?.parent1?.residence}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Nationality"
                     primary={parent?.parent1?.nationality}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Address"
                     primary={parent?.parent1?.address}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
                 </div>
               </Stack>
@@ -379,61 +312,43 @@ function ConfirmStudent({ open, setOpen, setMode }) {
                     gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
                   }}
                 >
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Surname"
                     primary={parent?.parent2?.surname}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="First Name"
                     primary={parent?.parent2?.firstname}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Relationship"
                     primary={parent?.parent2?.relationship}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
 
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Gender"
                     primary={parent?.parent2?.gender}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Email Address"
                     primary={parent?.parent2?.email}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Phone Number"
                     primary={parent?.parent2?.phonenumber}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
 
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Residence"
                     primary={parent?.parent2?.residence}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Nationality"
                     primary={parent?.parent2?.nationality}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
-                  <ListItemText
+                  <StudentViewItem
                     secondary="Address"
                     primary={parent?.parent2?.address}
-                    primaryTypographyProps={primaryStyle}
-                    secondaryTypographyProps={secondaryStyle}
                   />
                 </div>
               </Stack>
@@ -455,7 +370,7 @@ function ConfirmStudent({ open, setOpen, setMode }) {
                 <MedicalAllergyItem title="2. Asthma" value={medical.asthma} />
                 <MedicalAllergyItem
                   title="3. Siezures"
-                  value={medical.siezures}
+                  value={medical.seizures}
                 />
                 <MedicalAllergyItem
                   title="4. Visual Impairment"
@@ -484,23 +399,17 @@ function ConfirmStudent({ open, setOpen, setMode }) {
                   gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
                 }}
               >
-                <ListItemText
+                <StudentViewItem
                   secondary="Fullname"
                   primary={medical?.emergencyContact?.fullname}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Phone Number"
                   primary={medical?.emergencyContact?.phonenumber}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Address"
                   primary={medical?.emergencyContact?.address}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
               </div>
             </div>
@@ -513,32 +422,25 @@ function ConfirmStudent({ open, setOpen, setMode }) {
                   gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
                 }}
               >
-                <ListItemText
+                <StudentViewItem
                   secondary="Current Level"
                   primary={academic?.level?.type}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
 
-                <ListItemText
+                <StudentViewItem
                   secondary="Previous School Name"
                   primary={academic?.previousSchool?.name}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
-                <ListItemText
+                <StudentViewItem
                   secondary="Location"
                   primary={academic?.previousSchool?.location}
-                  primaryTypographyProps={primaryStyle}
-                  secondaryTypographyProps={secondaryStyle}
                 />
               </div>
             </div>
           </Stack>
         </div>
-      </DialogContent>
-      {isPending && <GlobalSpinner />}
-    </Dialog>
+      </Box>
+    </Container>
   );
 }
 

@@ -42,7 +42,8 @@ const StudentSchema = new mongoose.Schema(
       maxlength: 50,
     },
     dateofbirth: {
-      type: Date, // Changed from String to Date for better date handling
+      // type: Date, // Changed from String to Date for better date handling
+      type: String,
       required: true,
     },
     gender: {

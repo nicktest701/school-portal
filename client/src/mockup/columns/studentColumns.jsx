@@ -11,8 +11,9 @@ import {
   Typography,
 } from "@mui/material";
 import _ from "lodash";
-import { gradeColor } from "../../config/gradeColor";
-import { overallScoreGradeColor } from "../../config/overallScoreGradeColor";
+import { gradeColor } from "@/config/gradeColor";
+import { overallScoreGradeColor } from "@/config/overallScoreGradeColor";
+
 
 export const STUDENTS_COLUMN = [
   {
@@ -51,11 +52,7 @@ export const STUDENTS_COLUMN = [
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar
-          src={
-            rowData.profile 
-          }
-        />
+        <Avatar src={rowData.profile} />
         <ListItemText
           primary={
             <Typography
@@ -207,11 +204,7 @@ export const RECENT_STUDENTS_COLUMN = [
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar
-          src={
-            rowData.profile
-          }
-        />
+        <Avatar src={rowData.profile} />
         <ListItemText
           primary={
             <Typography
@@ -225,10 +218,15 @@ export const RECENT_STUDENTS_COLUMN = [
             </Typography>
           }
           secondary={
-            <Typography variant="caption">{`${_.startCase(rowData.gender)} ,${
-              new Date().getFullYear() -
-              new Date(rowData.dateofbirth).getUTCFullYear()
-            }yrs`}</Typography>
+            <Typography variant="caption">
+              {/* {`${_.startCase(rowData.gender)} ,
+              ${moment().diff(
+                moment(rowData.dateofbirth),
+                "years"
+              )}yrs`} */}
+              {_.startCase(rowData.gender)}
+              {/* {JSON.stringify(rowData.dateofbirth)} */}
+            </Typography>
           }
         />
       </Stack>
@@ -279,13 +277,7 @@ export const STUDENTS_ATTENDANCE_COLUMNS = [
     field: "profile",
     title: "Avatar",
     export: false,
-    render: (rowData) => (
-      <Avatar
-        src={
-          rowData.profile 
-        }
-      />
-    ),
+    render: (rowData) => <Avatar src={rowData.profile} />,
   },
 
   {
@@ -346,11 +338,7 @@ export const STUDENTS_EXAMS_COLUMN = [
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar
-          src={
-            rowData.profile
-          }
-        />
+        <Avatar src={rowData.profile} />
         <ListItemText
           primary={
             <Typography

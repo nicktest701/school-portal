@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BarChartRounded from "@mui/icons-material/BarChartRounded";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -7,14 +7,17 @@ import PropTypes from "prop-types";
 import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 import _ from "lodash";
+import { UserContext } from "@/context/providers/UserProvider";
 
 const StudentDashboardBarChart = ({ data }) => {
-  const { palette, breakpoints } = useTheme();
+  const { session } = useContext(UserContext);
+  const {  breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
 
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
 
+ 
   useEffect(() => {
     if (data) {
       setLabels(_.map(data, "term"));
@@ -26,7 +29,7 @@ const StudentDashboardBarChart = ({ data }) => {
     <Card elevation={1}>
       <CardHeader
         avatar={<BarChartRounded />}
-        title={`Students for ${data && data[0]?.academicYear}`}
+        title={`Students for ${session?.academicYear}`}
         subheader={
           <Typography fontSize={12} fontStyle="italic">
             Total number of active students in each term.
@@ -47,11 +50,11 @@ const StudentDashboardBarChart = ({ data }) => {
               labels,
               datasets: [
                 {
-                  label: "No of Students",
+                  label: "No. of Students",
                   data: dataset,
                   backgroundColor: [" rgb(1, 46, 84)", "rgb(255, 192, 159)"],
-                  barThickness: 10,
-                  borderRadius: 10,
+                  barThickness: matches ? 10 : 30,
+                  borderRadius: 2,
                 },
               ],
             }}

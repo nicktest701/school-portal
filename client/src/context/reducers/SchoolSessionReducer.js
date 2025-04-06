@@ -113,7 +113,6 @@ const SchoolSessionReducer = (state, { type, payload }) => {
         ...state,
         addStudentFileData: {
           open: true,
-          columns: _.uniq(payload.data?.flatMap(Object.keys)),
           data: payload.data ?? [],
           type: payload.type,
         },

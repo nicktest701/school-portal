@@ -15,13 +15,15 @@ export const getAllAttendances = async () => {
   }
 };
 
-export const getAttendance = async (id, date) => {
+export const getAttendance = async (id, { date, session, term }) => {
   try {
     const res = await api({
       method: 'GET',
       url: `/attendances/${id}`,
       params: {
         date,
+        session,
+        term
       },
     });
 
@@ -86,11 +88,11 @@ export const deleteAttendance = async (id) => {
   }
 };
 
-export const getAttendanceHistory = async (levelId) => {
+export const getAttendanceHistory = async ({ id, session, term }) => {
   try {
     const res = await api({
       method: 'GET',
-      url: `/attendances/history/${levelId}`,
+      url: `/attendances/history/${id}?session=${session}&term=${term}`,
     });
 
     return res.data;

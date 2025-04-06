@@ -46,7 +46,7 @@ export const SCHOOL_SESSION_COLUMN = (
       searchable: true,
       customFilterAndSearch: (data, rowData) => {
         const name = rowData?.core?.name;
-        const academicYear = rowData?.core?.academicYear;         
+        const academicYear = rowData?.core?.academicYear;
         return (
           name.toLowerCase().lastIndexOf(data?.toLowerCase()) > -1 ||
           academicYear?.toLowerCase().lastIndexOf(data?.toLowerCase()) > -1
@@ -179,10 +179,7 @@ export const SCHOOL_LEVELS = [
       return teacher?._id ? (
         <Link
           style={{
-            backgroundColor: "var(--primary)",
-            padding: "7px 12px",
-            color: "#fff",
-            borderRadius: "4px",
+            color: "var(--primary)",
           }}
           to={`/teacher/${teacher?._id}`}
         >
@@ -320,6 +317,7 @@ export const SUBJECT_OPTIONS = [
   "Creative Arts & Design",
   "Career Technology",
   "Our World,Our People",
+  "Information & Communication Technology",
   "Computing",
   "Ghanaian Language",
   "French",
@@ -511,17 +509,14 @@ export const FEES_OPTIONS = [
   "Boarding Fee",
 ];
 
-export const RELATIONSHIP = [
-  "Father",
-  "Mother",
-  "Sister",
-  "Brother",
-  "Aunty",
-  "Uncle",
-  "Grand Father",
-  "Grand Mother",
-  "Cousin",
-];
+export const RELATIONSHIP = (data) => {
+  const gender = _.lowerCase(data);
+  return gender === "male"
+    ? ["Father", "Brother", "Uncle", "Grand Father", "Cousin"]
+    : gender === "female"
+    ? ["Mother", "Sister", "Aunty", "Grand Mother", "Cousin"]
+    : [];
+};
 
 export const FEES_COLUMNS = [
   {
@@ -677,6 +672,40 @@ export const STUDENT_FEES_HISTORY_COLUMNS = [
     cellStyle: {
       textTransform: "capitalize",
     },
+  },
+];
+export const STUDENT_FEES_HISTORY = [
+  {
+    field: "_id",
+    title: "ID",
+    hidden: true,
+  },
+  {
+    field: "academicYear",
+    title: "Academic Year",
+  },
+  {
+    field: "term",
+    title: "Term/Semester",
+  },
+  {
+    field: "level",
+    title: "Level",
+  },
+  {
+    field: "paid",
+    title: "Amount Paid",
+    type: "currency",
+    currencySetting: {
+      currencyCode: "GHS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
+  },
+  {
+    field: "payment",
+    title: "Payment",
+    hidden: true,
   },
 ];
 

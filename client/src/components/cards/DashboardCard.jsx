@@ -2,7 +2,6 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import CountUp from "react-countup";
-import PropTypes from "prop-types";
 import { memo } from "react";
 
 const DashboardCard = ({ title, value, icon }) => {
@@ -30,16 +29,12 @@ const DashboardCard = ({ title, value, icon }) => {
         >
           {icon}
         </div>
-        <Typography color="primary">{title}</Typography>
+        <Typography variant="body1" color="primary">{title}</Typography>
       </CardContent>
     </Card>
   );
 };
 
-DashboardCard.propTypes = {
-  title: PropTypes.string,
-  value: PropTypes.number,
-  icon: PropTypes.node,
-};
+
 
 export default memo(DashboardCard);

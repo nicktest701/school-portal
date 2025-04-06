@@ -4,11 +4,11 @@ import api from './customAxios';
 
 
 //Get all Students
-export const getSubjects = async () => {
+export const getSubjects = async ({ session, term }) => {
   try {
     const res = await api({
       method: 'GET',
-      url: `/subjects`,
+      url: `/subjects?session=${session}&term=${term}`,
     });
 
     return res.data;

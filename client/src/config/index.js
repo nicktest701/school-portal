@@ -10,7 +10,6 @@ import {
   bulkMessageInitialValues,
 } from "./initialValues";
 import { readCSV } from "./readCSV";
-import { readXLSX } from "./readXLSX";
 import { EMPTY_IMAGES, IMAGES } from "./images";
 import { TEACHERSREMARKS, INTEREST, CONDUCT } from "./remarks";
 export default {
@@ -38,5 +37,4 @@ export default {
 
   //read file
   readCSV,
-  readXLSX,
 };

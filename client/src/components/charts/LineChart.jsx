@@ -1,5 +1,5 @@
 import { Line } from "react-chartjs-2";
-import { useTheme ,useMediaQuery} from "@mui/material";
+import { useTheme, useMediaQuery } from "@mui/material";
 import Box from "@mui/material/Box";
 
 const LineChart = ({ labels, values, values2 }) => {
@@ -11,7 +11,7 @@ const LineChart = ({ labels, values, values2 }) => {
       sx={{
         minWidth: 100,
         width: "100%",
- height: matches ? 200 : 400,
+        height: matches ? 200 : 400,
       }}
     >
       <Line
@@ -50,6 +50,7 @@ const LineChart = ({ labels, values, values2 }) => {
               },
             },
             y: {
+              beginAtZero: true,
               ticks: {
                 // display: false,
               },

@@ -22,6 +22,7 @@ const SelectInput = ({
         fieldState: { error },
       }) => (
         <TextField
+        fullWidth
           select
           label={label}
           value={value}

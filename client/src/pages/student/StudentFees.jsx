@@ -1,13 +1,28 @@
-import { Box, Stack, Typography } from "@mui/material";
-import PropTypes from "prop-types";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { Box, Stack, TextField, Typography,  InputAdornment, } from "@mui/material";
 import StudentFeeReportListItem from "@/components/list/StudentFeeReportListItem";
-import { v4 as uuid } from "uuid";
-const StudentFees = ({ data }) => {
-  const { studentId } = useParams();
+import { SearchRounded } from "@mui/icons-material";
+const StudentFees = ({ fees }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchTerm(query);
+  };
+
+  // Flatten and filter the data
+  const filteredItems = fees?.map((items) => {
+    const selectedItems = items[1].filter((item) =>
+      Object.values(item).some((value) =>
+        value.toString().toLowerCase().includes(searchTerm)
+      )
+    );
+
+    return [items[0], selectedItems];
+  });
 
   return (
-    <Box>
+    <Box sx={{ minHeight: "70svh" }}>
       <Typography
         variant="h5"
         color="primary.main"
@@ -15,27 +30,30 @@ const StudentFees = ({ data }) => {
         p={1}
         sx={{ fontWeight: "bold", width: "100%" }}
       >
-        Student Fees History
+         Fees History
       </Typography>
-      <Stack
-        sx={{
-          width: "100%",
-          maxHeight: "100vh",
-          overflowY: "scroll",
-          // border: "1px solid black",
+      <TextField
+        label="Search for fees"
+        variant="outlined"
+        fullWidth
+        size="small"
+        margin="normal"
+        onChange={handleSearchChange}
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchRounded />
+              </InputAdornment>
+            ),
+          },
         }}
-      >
-        {data?.fees !== undefined ? (
+      />
+      <Stack spacing={2} pt={2} sx={{ height: "50svh", overflowY: "auto" }}>
+        {filteredItems !== undefined ? (
           <>
-            {data?.fees.map((session) => {
-              const id = uuid();
-              return (
-                <StudentFeeReportListItem
-                  key={id}
-                  item={session}
-                  studentId={studentId}
-                />
-              );
+            {filteredItems?.map((fee, index) => {
+              return <StudentFeeReportListItem key={index} item={fee} />;
             })}
           </>
         ) : (
@@ -44,9 +62,6 @@ const StudentFees = ({ data }) => {
       </Stack>
     </Box>
   );
-};
-StudentFees.propTypes = {
-  studentId: PropTypes.string,
 };
 
 export default StudentFees;

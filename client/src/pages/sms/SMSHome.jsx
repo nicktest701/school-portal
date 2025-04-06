@@ -42,7 +42,7 @@ const SMSHome = () => {
       <CustomizedMaterialTable
         title="Recent Messages"
         icon={sms_icon}
-        isPending={messages.isPending}
+        isPending={messages.isPending || messages.isLoading}
         columns={MESSAGE_COLUMNS}
         data={messages.data ?? []}
         search={true}

@@ -26,7 +26,6 @@ import { useParams, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const AssignTeacher = ({ levelName }) => {
-  const { session } = use(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams();
 

@@ -5,42 +5,29 @@ export const getAllCurrentFees = async () => {
   try {
     const res = await api({
       method: 'GET',
-      url:  `/current-fees`,
+      url: `/current-fees`,
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
-//Get all Students
-export const getAllRecentlyPaidFees = async (info) => {
-  try {
-    const res = await api({
-      method: 'GET',
-      url:  `/current-fees/recent`,
-      params: info,
-    });
 
-    return res.data;
-  } catch (error) {
-     return error.response.data
-  }
-};
 
 //Get all fees Summary
 export const getAllCurrentFeesPaymentHistoryByDate = async (data) => {
   try {
     const res = await api({
       method: 'get',
-      url:  `/current-fees/day`,
+      url: `/current-fees/day`,
       params: data,
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
@@ -49,13 +36,13 @@ export const getAllCurrentFeesSummary = async (sessionInfo) => {
   try {
     const res = await api({
       method: 'POST',
-      url:  `/current-fees/summary`,
+      url: `/current-fees/summary`,
       data: sessionInfo,
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
@@ -64,13 +51,13 @@ export const getAllCurrentFeesByLevel = async (sessionInfo) => {
   try {
     const res = await api({
       method: 'POST',
-      url:  `/current-fees/level`,
+      url: `/current-fees/level`,
       data: sessionInfo,
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
@@ -78,7 +65,7 @@ export const getCurrentFee = async (session, level) => {
   try {
     const res = await api({
       method: 'POST',
-      url:  `/current-fees/current-level`,
+      url: `/current-fees/current-level`,
       data: {
         ...session,
         level,
@@ -87,7 +74,7 @@ export const getCurrentFee = async (session, level) => {
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
@@ -95,42 +82,28 @@ export const getCurrentFeeForStudent = async (info) => {
   try {
     const res = await api({
       method: 'POST',
-      url:  `/current-fees/student`,
+      url: `/current-fees/student`,
       data: info,
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
-export const getStudentAllFeeHistory = async (student) => {
+
+export const getStudentFeeHistory = async (studentId) => {
   try {
     const res = await api({
       method: 'GET',
-      url:  `/current-fees/history/all`,
-      params: {
-        student,
-      },
+      url: `/current-fees/history?studentId=${studentId}`,
+
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
-  }
-};
-export const getStudentFeeHistory = async (info) => {
-  try {
-    const res = await api({
-      method: 'POST',
-      url:  `/current-fees/history`,
-      data: info,
-    });
-
-    return res.data;
-  } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
@@ -138,13 +111,13 @@ export const postCurrentFee = async (newCurrentFee) => {
   try {
     const res = await api({
       method: 'POST',
-      url:  `/current-fees`,
+      url: `/current-fees`,
       data: newCurrentFee,
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
@@ -152,13 +125,13 @@ export const putCurrentFee = async (updatedCurrentFee) => {
   try {
     const res = await api({
       method: 'PUT',
-      url:  `/current-fees`,
+      url: `/current-fees`,
       data: updatedCurrentFee,
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };
 
@@ -166,11 +139,11 @@ export const deleteCurrentFee = async (id) => {
   try {
     const res = await api({
       method: 'DELETE',
-      url:  `/fees/${id}`,
+      url: `/fees/${id}`,
     });
 
     return res.data;
   } catch (error) {
-     return error.response.data
+    return error.response.data
   }
 };

@@ -16,11 +16,13 @@ import { getSubjects } from "@/api/subjectAPI";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import useLevelById from "../hooks/useLevelById";
 import { Box, ListSubheader } from "@mui/material";
-import Back from "../Back";
+// import Back from "../Back";
 import CustomTitle from "../custom/CustomTitle";
 import { useParams } from "react-router-dom";
+import { UserContext } from "@/context/providers/UserProvider";
 
 const AddCurrentSubjects = () => {
+  const { session } = useContext(UserContext);
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { id } = useParams();
@@ -32,7 +34,11 @@ const AddCurrentSubjects = () => {
 
   const subjectOptions = useQuery({
     queryKey: ["subjects"],
-    queryFn: () => getSubjects(),
+    queryFn: () =>
+      getSubjects({
+        session: session?.sessionId,
+        term: session?.termId,
+      }),
     initialData: [],
   });
 
@@ -48,9 +54,7 @@ const AddCurrentSubjects = () => {
       _.merge(_.keyBy([...subjectList, ...subject], "_id"))
     );
 
-    console.log(subjectList);
     setSubjectList(newSubjects);
-
     setSubject([]);
   };
 
@@ -92,11 +96,13 @@ const AddCurrentSubjects = () => {
 
   return (
     <>
-      <Back to={-1} color="primary.main" />
+      {/* <Back to={-1} color="primary.main" /> */}
       <CustomTitle
         title={`Current Courses for ${levelName}`}
         subtitle="Add new subjects to the current level"
         color="primary.main"
+        showBack={true}
+      
       />
 
       <Box>

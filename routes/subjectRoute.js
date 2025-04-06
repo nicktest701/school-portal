@@ -3,38 +3,46 @@ const asyncHandler = require('express-async-handler');
 const Subject = require('../models/subjectModel');
 const _ = require('lodash');
 
+const SUBJECT_OPTIONS = [
+  'ENGLISH LANGUAGE',
+  'MATHEMATICS',
+  'INTEGRATED SCIENCE',
+  'NATURAL SCIENCE',
+  'HISTORY',
+  'SOCIAL STUDIES',
+  'OUR WORLD,OUR PEOPLE',
+  'RELIGIOUS & MORAL EDUCATION',
+  'COMPUTING',
+  "INFORMATION & COMMUNICATION TECHNOLOGY",
+  'CREATIVE ARTS & DESIGN',
+  'CAREER TECHNOLOGY',
+  'GHANAIAN LANGUAGE',
+  'FRENCH',
+  'ARABIC',
+  'PHYSICAL EDUCATION',
+  'PHYSICAL & HEALTH EDUCATION',
+  'READING',
+  'WRITING',
+  'MUSIC & DANCE',
+  'ORALS & RHYMES',
+];
 //@GET All school subjects
 router.get(
   '/',
   asyncHandler(async (req, res) => {
-    const subjects = await Subject.find();
+    const { session, term } = req.query
+
+    if (!session || !term) {
+      return res.status(200).send([]);
+    }
+
+    const subjects = await Subject.find({
+      session, term
+    });
     // console.log(subjects)
     if (_.isEmpty(subjects)) {
       return res.status(200).send([]);
     }
-
-    const SUBJECT_OPTIONS = [
-      'ENGLISH LANGUAGE',
-      'MATHEMATICS',
-      'INTEGRATED SCIENCE',
-      'NATURAL SCIENCE',
-      'HISTORY',
-      'SOCIAL STUDIES',
-      'OUR WORLD,OUR PEOPLE',
-      'RELIGIOUS & MORAL EDUCATION',
-      'COMPUTING',
-      'CREATIVE ARTS & DESIGN',
-      'CAREER TECHNOLOGY',
-      'GHANAIAN LANGUAGE',
-      'FRENCH',
-      'ARABIC',
-      'PHYSICAL EDUCATION',
-      'PHYSICAL & HEALTH EDUCATION',
-      'READING',
-      'WRITING',
-      'MUSIC & DANCE',
-      'ORALS & RHYMES',
-    ];
 
     const modifiedSubjects = subjects.sort(
       (a, b) =>
@@ -60,16 +68,32 @@ router.post(
   '/',
   asyncHandler(async (req, res) => {
     //Create new Subject
-    const subjects = req.body;
-
+    const { session, term, subjects } = req.body;
     const modifiedSubjects = subjects.map(async (subject) => {
-      return await Subject.findOneAndUpdate({ name: subject?.name }, subject, {
-        new: true,
-        upsert: true,
-      });
+
+      const s = await Subject.findOne({ session, term, name: _.upperCase(subject?.name) })
+      if (_.isEmpty(s)) {
+        return await Subject.create({
+          ...subject,
+          session,
+          term,
+        })
+      } else {
+        return sub = await Subject.findOneAndUpdate({ session, term, name: _.upperCase(subject?.name) }, {
+          $setOnInsert: {
+            ...subject,
+            session,
+            term,
+          }
+        }, {
+          new: true,
+          upsert: true,
+        });
+
+      }
     });
 
-    const updatedSubjects = await Promise.allSettled(modifiedSubjects);
+    const updatedSubjects = await Promise.all(modifiedSubjects)
 
     if (_.isEmpty(updatedSubjects)) {
       return res

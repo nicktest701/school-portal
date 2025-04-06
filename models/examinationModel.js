@@ -1,6 +1,7 @@
 const db = require("../db/DBConnection");
 const mongoose = require("mongoose");
-
+const Level = require('./levelModel');
+const generateCustomGrade = require("../config/generateCustomGrade");
 const ExaminationSchema = new mongoose.Schema(
   {
     session: {
@@ -63,6 +64,19 @@ const ExaminationSchema = new mongoose.Schema(
 ExaminationSchema.virtual("totalScore").get(function () {
   if (!this.scores || this.scores.length === 0) return 0;
   return this.scores.reduce((sum, score) => sum + score.totalScore, 0);
+});
+
+// 🔹 Virtual field to calculate totalScore dynamically
+ExaminationSchema.virtual("scoresWithTotal").get(async function () {
+
+  if (this.scores?.length === 0) return []
+  
+  const level = await Level.findById(this.level).populate('grades')
+  return this.scores.map((score) => ({
+    ...score,
+    totalScore: score.classScore + score.examsScore, // Auto-generated field
+    ...generateCustomGrade(Number(score.classScore + score.examsScore), level?.grades?.ratings)
+  }));
 });
 
 

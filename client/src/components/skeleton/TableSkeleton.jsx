@@ -32,7 +32,7 @@ const TableSkeleton = () => {
         "Remarks",
         "Action",
       ]
-    : ["Index Number", "Student", "Subject"];
+    : ["Index Number", "Student"];
 
   return (
     <Card>
@@ -103,7 +103,7 @@ const TableSkeleton = () => {
               <TableBody>
                 {[...Array(5)].map((_, rowIndex) => (
                   <TableRow key={rowIndex}>
-                    {[...Array(matches ? 9 : 3)].map((_, cellIndex) => (
+                    {[...Array(matches ? 9 : 2)].map((_, cellIndex) => (
                       <TableCell key={cellIndex}>
                         <Skeleton variant="text" width="70%" height={20} />
                       </TableCell>

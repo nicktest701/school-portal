@@ -8,7 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { deleteGrade, getGrades } from "@/api/gradeAPI";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
-import { Button, Link, Stack } from "@mui/material";
+import {  Link, Stack } from "@mui/material";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import ViewGrade from "./ViewGrade";
 import EditGrade from "./EditGrade";

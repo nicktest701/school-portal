@@ -15,7 +15,7 @@ function CourseAttendanceCard({ data }) {
       }}
     >
       <DashboardCard
-        title='Present Today'
+        title='Present'
         value={data?.present}
         icon={
           <IconButton sx={{ bgcolor: 'info.lighter' }}>
@@ -30,7 +30,7 @@ function CourseAttendanceCard({ data }) {
         }
       />
       <DashboardCard
-        title='Absent Today'
+        title='Absent '
         value={data?.absent}
         icon={
           <IconButton sx={{ bgcolor: 'success.lighter' }}>
@@ -45,7 +45,7 @@ function CourseAttendanceCard({ data }) {
         }
       />
       <DashboardCard
-        title='Unmarked Today'
+        title='Unmarked'
         value={data?.unknown}
         icon={
           <IconButton sx={{ bgcolor: 'warning.lighter' }}>

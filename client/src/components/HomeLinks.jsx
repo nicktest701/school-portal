@@ -12,6 +12,7 @@ export default function HomeLinks() {
       sx={{
         display: { xs: "none", md: "inline-flex" },
       }}
+      separator='◾'
     >
       <Link component={RouterLink} to="/" sx={{ fontWeight: "bold" }}>
         Home
@@ -24,16 +25,16 @@ export default function HomeLinks() {
           <Typography
             key={to}
             color="text.primary"
-            sx={{ textTransform: "capitalize" }}
+            sx={{ textTransform: "capitalize", fontSize: "14px" }}
           >
-            {value}
+            {decodeURIComponent(value)}
           </Typography>
         ) : (
           <Link
             key={to}
             component={RouterLink}
             to={to}
-            style={{ textTransform: "capitalize" }}
+            style={{ textTransform: "capitalize", fontSize: "14px" }}
           >
             {value}
           </Link>

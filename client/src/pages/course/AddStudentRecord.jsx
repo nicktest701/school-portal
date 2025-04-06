@@ -11,10 +11,17 @@ import Button from "@mui/material/Button";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { useParams, useSearchParams } from "react-router-dom";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function AddStudentRecord() {
+  const { session } = useContext(UserContext);
   const [searchParams] = useSearchParams();
   const { levelId } = useParams();
+
+  const scorePreference = session?.exams?.scorePreference?.split("/");
+  const classScorePreference = scorePreference[0];
+  const examsScorePreference = scorePreference[1];
+ 
 
   const {
     schoolSessionState: {
@@ -88,10 +95,13 @@ function AddStudentRecord() {
       <DialogContent>
         <Formik
           initialValues={data?.course}
-          validationSchema={addExamsScoreValidationSchema}
+          validationSchema={addExamsScoreValidationSchema(
+            classScorePreference,
+            examsScorePreference
+          )}
           onSubmit={onSubmit}
         >
-          {({ values, errors, touched, handleChange, handleSubmit }) => {
+          {({ values, errors, isValid, dirty, handleChange, handleSubmit }) => {
             return (
               <>
                 <Stack spacing={2} paddingY={2}>
@@ -101,7 +111,7 @@ function AddStudentRecord() {
                     value={values.subject}
                     onChange={handleChange("subject")}
                     error={Boolean(errors.subject)}
-                    helperText={touched.subject && errors.subject}
+                    helperText={errors.subject}
                     disabled
                   />
 
@@ -112,7 +122,7 @@ function AddStudentRecord() {
                     value={values.classScore}
                     onChange={handleChange("classScore")}
                     error={Boolean(errors.classScore)}
-                    helperText={touched.classScore && errors.classScore}
+                    helperText={errors.classScore}
                   />
                   <TextField
                     type="number"
@@ -121,13 +131,14 @@ function AddStudentRecord() {
                     value={values.examsScore}
                     onChange={handleChange("examsScore")}
                     error={Boolean(errors.examsScore)}
-                    helperText={touched.examsScore && errors.examsScore}
+                    helperText={errors.examsScore}
                   />
 
                   <Button
                     loading={isPending}
                     variant="contained"
                     onClick={handleSubmit}
+                    disabled={!isValid || !dirty}
                   >
                     Save Record
                   </Button>

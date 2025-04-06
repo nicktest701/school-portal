@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   Stack,
   Typography,
@@ -26,22 +26,16 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getStudent } from "@/api/studentAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import Back from "@/components/Back";
-import { getStudentAcademics } from "@/api/ExaminationAPI";
-import { UserContext } from "@/context/providers/UserProvider";
-import { getStudentAllFeeHistory } from "@/api/currentFeeAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import useLevelById from "@/components/hooks/useLevelById";
+import EmptyDataContainer from "@/components/EmptyDataContainer";
+import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 
 const StudentDetails = () => {
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useLocalStorage("student_profile_tab", "1");
-
-  const {
-    session
-  } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
   const queryClient = useQueryClient();
   ///Params
   const { studentId } = useParams();
@@ -55,30 +49,20 @@ const StudentDetails = () => {
   const {
     data: student,
     isPending,
+    isLoading,
     refetch,
   } = useQuery({
     queryKey: ["student-profile", studentId],
     queryFn: () => getStudent(studentId),
     enabled: !!studentId,
-    initialData: queryClient
-      .getQueryData(["all-students"])
-      ?.find((student) => student?._id === studentId),
-  });
-
-  //Get Academic Terms for students
-  const studentAcademics = useQuery({
-    queryKey: ["student-academics", studentId],
-    queryFn: () => getStudentAcademics(session, studentId, id),
-    initialData: [],
-    enabled: !!studentId && !!id,
-  });
-
-  //Get Academic Terms for students
-  const studentFees = useQuery({
-    queryKey: ["student-fees", studentId],
-    queryFn: () => getStudentAllFeeHistory(studentId),
-    initialData: [],
-    enabled: !!studentId,
+    initialData: {
+      profile: queryClient
+        .getQueryData(["all-students"])
+        ?.find((student) => student?._id === studentId),
+      fees: [],
+      exams: [],
+      parents: [],
+    },
   });
 
   //OPEN Quick Message
@@ -96,15 +80,14 @@ const StudentDetails = () => {
     });
   };
 
-  const handleRefresh = () => {
-    studentAcademics.refetch();
-    studentFees.refetch();
-    refetch();
-  };
+  if (isPending || isLoading) {
+    return <ProfileSkeleton />;
+  }
 
   return (
     <Container>
-      <Back to="/student/view" color="primary.main" />
+      <Back to={-1} color="primary.main" />
+      {/* {(isPending || isLoading) && <ProfileSkeleton />} */}
 
       <Box
         sx={{
@@ -129,19 +112,19 @@ const StudentDetails = () => {
             minWidth: 300,
           }}
         >
-          <IconButton sx={{ alignSelf: "flex-end" }} onClick={handleRefresh}>
+          <IconButton sx={{ alignSelf: "flex-end" }} onClick={refetch}>
             <RefreshRounded />
           </IconButton>
           <Avatar
-            srcSet={student?.profile}
+            srcSet={student?.profile?.profile}
             sx={{
               width: 100,
               height: 100,
             }}
           />
 
-          <Typography>{student?.indexnumber}</Typography>
-          <Typography variant="h6">{student?.fullName}</Typography>
+          <Typography>{student?.profile?.indexnumber}</Typography>
+          <Typography variant="h6">{student?.profile?.fullName}</Typography>
           <Typography variant="body2">{levelName}</Typography>
           <Button
             variant="contained"
@@ -181,20 +164,30 @@ const StudentDetails = () => {
             </TabList>
             <Divider />
             <TabPanel value="1" sx={{ px: 0 }}>
-              <StudentProfile student={student} />
+              <StudentProfile
+                levelName={levelName}
+                parents={student?.parents}
+                student={student?.profile}
+              />
             </TabPanel>
             <TabPanel value="2" sx={{ px: 0 }}>
-              <StudentAcademics data={studentAcademics?.data} />
+              {student?.exams?.length > 0 ? (
+                <StudentAcademics data={student?.exams} />
+              ) : (
+                <EmptyDataContainer message="No Academic Records Found!" />
+              )}
             </TabPanel>
             <TabPanel value="3" sx={{ px: 0 }}>
-              <StudentFees data={studentFees?.data} />
+              {student?.exams?.length > 0 ? (
+                <StudentFees fees={student?.fees} />
+              ) : (
+                <EmptyDataContainer message="No Academic Records Found!" />
+              )}
             </TabPanel>
           </TabContext>
         </Box>
       </Box>
-      {(isPending || studentAcademics.isPending || studentFees.isPending) && (
-        <LoadingSpinner value="Please Wait..." />
-      )}
+      {isPending && <LoadingSpinner value="Please Wait..." />}
     </Container>
   );
 };

@@ -1,12 +1,12 @@
 import {
   Box,
   FormHelperText,
+  FormLabel,
   Input,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import * as XLSX from "xlsx";
 import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
@@ -30,13 +30,13 @@ import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLevelById from "@/components/hooks/useLevelById";
+import { readXLSX } from "@/config/readXLSX";
+import { UploadFileRounded } from "@mui/icons-material";
 
 const UploadSingleSubject = () => {
   const uploadedData = sessionStorage.getItem("course-upload-data");
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { levelId } = useParams();
@@ -50,77 +50,78 @@ const UploadSingleSubject = () => {
   const [fieldError, setFieldError] = useState("");
   const [mainError, setMainError] = useState("");
 
+  const scorePreference = session?.exams?.scorePreference?.split("/");
+  const classScorePreference = scorePreference[0];
+  const examsScorePreference = scorePreference[1];
+
   const { levelLoading, levelName, gradeSystem, subjects } =
     useLevelById(levelId);
 
   const subject = subjects?.find((s) => s?._id === searchParams.get("_id"));
 
   //LOAD Results from file excel,csv
-  function handleLoadFile(e) {
-    setIsLoading(true);
+  async function handleLoadFile(e) {
     if (subject?.name === "") {
       setFieldError("Please select a Subject!");
-      setIsLoading(false);
+
       return;
     }
     setMainError(false);
+    setIsLoading(true);
+    if (file) {
+      try {
+        // console.log(results);
+        const results = await readXLSX(file);
 
-    try {
-      const files = e.target.files?.[0];
-      if (files) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const binaryStr = e.target?.result;
-          if (binaryStr) {
-            const workbook = XLSX.read(binaryStr, { type: "binary" });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const results = XLSX.utils.sheet_to_json(sheet, { header: 0 });
+        if (results.length !== 0) {
+          const modifiedResults = results.map((item) => {
+            const classScore = Number(
+              item["class score"] || item["classscore"] || 0
+            );
+            const examsScore = Number(
+              item["exams score"] || item["examsscore"] || 0
+            );
 
-            if (results.length !== 0) {
-              const modifiedResults = results.map((item) => {
-                const classScore = Number(Object.values(item)[2] || 0);
-                const examsScore = Number(Object.values(item)[3] || 0);
-
-                if (classScore > 50 || examsScore > 50) {
-                  setMainError(
-                    "It seems there is some inconsistencies in your results.Class score or Exams score cannot be more than 50 marks!"
-                  );
-                  setIsLoading(false);
-                  setData([]);
-                  throw "It seems there is some inconsistencies in your results.Class score or Exams score cannot be more than 50 marks";
-                }
-
-                return {
-                  indexnumber: _.toString(Object.values(item)[0]),
-                  student: Object.values(item)[1],
-                  _id: subject?._id,
-                  subject: subject?.name,
-                  classScore,
-                  examsScore,
-                  ...generateCustomGrade(
-                    Number(+classScore + +examsScore),
-                    gradeSystem?.ratings
-                  ),
-                };
-              });
-
-              const values = await Promise.all(modifiedResults);
-              setData(values);
-
-              sessionStorage.setItem(
-                "course-upload-data",
-                JSON.stringify(values)
+            if (
+              classScore > classScorePreference ||
+              examsScore > examsScorePreference
+            ) {
+              setMainError(
+                `It seems there is some inconsistencies in your results.
+                Class score show be from 0 - ${classScorePreference}*.
+                 Exams score show be from 0 - ${examsScorePreference}*.`
               );
+              setIsLoading(false);
+              setData([]);
+              throw `It seems there is some inconsistencies in your results.
+              Class score show be from 0 - ${classScorePreference}*.
+               Exams score show be from 0 - ${examsScorePreference}*.`;
             }
-          }
-        };
-        reader.readAsBinaryString(files);
+
+            return {
+              indexnumber: _.toString(
+                item["index number"] || item["indexnumber"]
+              ),
+              student: item["student"],
+              _id: subject?._id,
+              subject: subject?.name,
+              classScore,
+              examsScore,
+              ...generateCustomGrade(
+                Number(+classScore + +examsScore),
+                gradeSystem?.ratings
+              ),
+            };
+          });
+
+          setData(modifiedResults);
+          sessionStorage.setItem("course-upload-data", JSON.stringify(values));
+        }
+      } catch (error) {
+        setMainError(error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      setMainError(error);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -235,13 +236,18 @@ const UploadSingleSubject = () => {
         right={<Typography variant="h6">{subject?.name}</Typography>}
       />
 
-      <Stack spacing={2} py={4} px={2} my={4} border="1px solid lightgray">
+      <Stack spacing={2} py={4} px={2} my={4} border="1px solid lightgray" borderRadius={2}>
         <Typography>
           Select an <b>EXCEL</b> OR <b>CSV</b> file containing students'{" "}
           {subject?.name} results information. Make sure the columns matches the
           accepted fields.
         </Typography>
-        <Stack direction="row" spacing={3} pt={2}>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          alignItems="start"
+          spacing={3}
+          pt={2}
+        >
           <TextField
             value={subject?.name}
             contentEditable={false}
@@ -257,45 +263,51 @@ const UploadSingleSubject = () => {
             }}
           />
 
-          <Button
-            variant="contained"
-            sx={{
-              width: 300,
-              cursor: "pointer",
-            }}
-          >
-            <label
-              style={{ color: "#fff", display: "block" }}
+          <Button sx={{ bgcolor: "var(--primary)" }}>
+            <FormLabel
               htmlFor="resultFile"
-              title="Import results"
-            >
-              {isLoading ? "Please Wait..." : "Upload Results"}
-            </label>
+              title="Import Subjects from File"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
 
-            <Input
-              type="file"
-              id="resultFile"
-              name="resultFile"
-              hidden
-              inputProps={{
-                accept: ".xlsx,.xls,.csv",
+                gap: 1,
+                color: "primary.main",
+                cursor: "pointer",
+                px: 2,
+                py: 0.5,
               }}
-              onChange={(event) => handleLoadFile(event)}
-              onClick={(e) => {
-                e.target.value = null;
-                e.currentTarget.value = null;
-              }}
-            />
+            >
+              <UploadFileRounded htmlColor="#fff" />
+              <Typography variant="caption" color="#fff">
+                Load Results
+              </Typography>
+
+              <Input
+                type="file"
+                id="resultFile"
+                name="resultFile"
+                hidden
+                inputProps={{
+                  accept: ".xlsx,.xls,.csv",
+                }}
+                onChange={handleLoadFile}
+                onClick={(e) => {
+                  e.target.value = null;
+                  e.currentTarget.value = null;
+                }}
+              />
+            </FormLabel>
           </Button>
         </Stack>
+        {mainError && (
+          <FormHelperText sx={{ color: "red" }}>{mainError}</FormHelperText>
+        )}
       </Stack>
 
       <Box>
         <>
-          {mainError && (
-            <FormHelperText sx={{ color: "red" }}>{mainError}</FormHelperText>
-          )}
-
           <CustomizedMaterialTable
             icon={EMPTY_IMAGES.score}
             search={true}

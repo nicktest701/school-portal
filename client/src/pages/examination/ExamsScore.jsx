@@ -37,8 +37,10 @@ import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import { gradeColor } from "@/config/gradeColor";
 import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function ExamsScore() {
+  const { session } = useContext(UserContext);
   const { state } = useLocation();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [searchParams] = useSearchParams();
@@ -178,11 +180,12 @@ function ExamsScore() {
                 {/* Progress Section */}
                 <Box mt={2}>
                   <Typography variant="body2" color="text.secondary">
-                    Below is the state of school results by distinct academic
-                    year and semesters.
+                    Gain insights into students' academic progress and
+                    achievements. Below is the state of {exams?.data?.fullName}{" "}
+                    results in the {session?.academicYear} ,{session.term}.
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Only 5 academic year/semester results out of 6 have been
+                    Only {exams.data?.scores?.length} results have been
                     approved.
                   </Typography>
                   <Box mt={2} display="flex" alignItems="center" gap={1}>

@@ -344,10 +344,12 @@ router.get(
 
     const studentRecord = await Examination.find({
       level: new ObjectId(id),
-    }).populate({
-      path: 'student',
-      select: ['firstname', 'surname', 'othername', 'indexnumber']
-    }).select('scores')
+    }).
+      populate('level', 'level').
+      populate({
+        path: 'student',
+        select: ['firstname', 'surname', 'othername', 'indexnumber']
+      }).select('scores')
 
     const levelSubjects = await Level.findById(id)
       .populate({
@@ -359,8 +361,9 @@ router.get(
 
     const selectedSubject = levelSubjects?.subjects[0];
 
-    const results = studentRecord.map(({ _id, scores, student }) => {
-      const course = scores?.find((course) => course?._id === subject);
+    const result = studentRecord.map(async ({ _id, scoresWithTotal, scores, student }) => {
+      const newGenerateScore = await scoresWithTotal
+      const course = newGenerateScore?.find((course) => course?._id === subject);
 
       return {
         _id: _id,
@@ -381,10 +384,13 @@ router.get(
             },
       };
     });
+    const results = await Promise.all(result)
     const isCompleted = _.filter(results, (result) => _.isNumber(result?.course?.totalScore))
     const overallScore = _.sumBy(results, 'course.totalScore')
+    const totalOverAllScore = results?.length * 100
     const topScore = _.maxBy(results, 'course.totalScore')
     const lowScore = _.minBy(results, 'course.totalScore')
+  
 
     const scores = _.map(results, 'course.totalScore')
     const totalPossibleScore = scores.length * 100;
@@ -396,8 +402,10 @@ router.get(
 
 
     res.status(200).json({
+      students: studentRecord?.length,
       results,
       overallScore,
+      totalOverAllScore,
       topScore: topScore?.course?.totalScore,
       lowScore: lowScore?.course?.totalScore,
       performanceIndex: overallPerformancePercentage.toFixed(1),
@@ -799,8 +807,11 @@ router.put(
 
 
 const studentReportDetails = async (report, positions, reportType = 'preview') => {
-  const { _id, term, level, scores, overallScore, comments, student } =
+  const { _id, term, level, scores, scoresWithTotal, overallScore, comments, student } =
     report;
+
+
+  const newGenerateScore = await scoresWithTotal
 
 
 
@@ -840,7 +851,7 @@ const studentReportDetails = async (report, positions, reportType = 'preview') =
     level: `${level?.levelName}`,
     levelId: level?._id,
     profile: reportType === 'preview' ? student?.profile || null : STUDENT_PHOTO,
-    scores: scores.sort(
+    scores: newGenerateScore.sort(
       (a, b) =>
         SUBJECT_OPTIONS.indexOf(a.subject) -
         SUBJECT_OPTIONS.indexOf(b.subject)

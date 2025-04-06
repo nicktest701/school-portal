@@ -20,7 +20,10 @@ const FeeSchema = new mongoose.Schema(
       ref: "Level",
     },
 
-    amount: Array,
+    amount: {
+      type: Array,
+      default: []
+    },
     active: {
       type: Boolean,
       default: true,

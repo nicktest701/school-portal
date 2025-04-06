@@ -45,6 +45,11 @@ body.swal2-shown > [aria-hidden="true"] {
   filter: blur(3px);
 }
 
+.my-swal {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(2px);
+}
+
 #root {
   display: flex;
   flex: 1;
@@ -142,7 +147,7 @@ input {
   color: #012e54;
 }
 .mini-drawer-link:hover {
-  background-color:rgba(1, 47, 84, 0.27) !important;
+  background-color: rgba(1, 47, 84, 0.27) !important;
   color: #fff;
 }
 
@@ -296,8 +301,10 @@ a.button:active {
 }
 
 .swal2-container {
-  z-index: 110000 !important;
+  z-index: 99999999 !important;
   font-family: inherit;
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(2px) !important;
 }
 
 .swal2-title {
@@ -428,205 +435,6 @@ tbody tr:hover svg {
 
 /* SPinners */
 
-#wifi-loader {
-  --background: #62abff;
-  /* --front-color: #4f29f0; */
-  --front-color: var(--primary);
-  --back-color: #c3c8de;
-  --text-color: #414856;
-  width: 64px;
-  height: 64px;
-  border-radius: 50px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#wifi-loader svg {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#wifi-loader svg circle {
-  position: absolute;
-  fill: none;
-  stroke-width: 6px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transform: rotate(-100deg);
-  transform-origin: center;
-}
-
-#wifi-loader svg circle.back {
-  stroke: var(--back-color);
-}
-
-#wifi-loader svg circle.front {
-  stroke: var(--front-color);
-}
-
-#wifi-loader svg.circle-outer {
-  height: 86px;
-  width: 86px;
-}
-
-#wifi-loader svg.circle-outer circle {
-  stroke-dasharray: 62.75 188.25;
-}
-
-#wifi-loader svg.circle-outer circle.back {
-  animation: circle-outer135 1.8s ease infinite 0.3s;
-}
-
-#wifi-loader svg.circle-outer circle.front {
-  animation: circle-outer135 1.8s ease infinite 0.15s;
-}
-
-#wifi-loader svg.circle-middle {
-  height: 60px;
-  width: 60px;
-}
-
-#wifi-loader svg.circle-middle circle {
-  stroke-dasharray: 42.5 127.5;
-}
-
-#wifi-loader svg.circle-middle circle.back {
-  animation: circle-middle6123 1.8s ease infinite 0.25s;
-}
-
-#wifi-loader svg.circle-middle circle.front {
-  animation: circle-middle6123 1.8s ease infinite 0.1s;
-}
-
-#wifi-loader svg.circle-inner {
-  height: 34px;
-  width: 34px;
-}
-
-#wifi-loader svg.circle-inner circle {
-  stroke-dasharray: 22 66;
-}
-
-#wifi-loader svg.circle-inner circle.back {
-  animation: circle-inner162 1.8s ease infinite 0.2s;
-}
-
-#wifi-loader svg.circle-inner circle.front {
-  animation: circle-inner162 1.8s ease infinite 0.05s;
-}
-
-#wifi-loader .text {
-  position: absolute;
-  bottom: -40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-transform: lowercase;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.2px;
-}
-
-#wifi-loader .text::before,
-#wifi-loader .text::after {
-  content: attr(data-text);
-}
-
-#wifi-loader .text::before {
-  color: var(--text-color);
-}
-
-#wifi-loader .text::after {
-  color: var(--front-color);
-  animation: text-animation76 3.6s ease infinite;
-  position: absolute;
-  left: 0;
-}
-
-@keyframes circle-outer135 {
-  0% {
-    stroke-dashoffset: 25;
-  }
-
-  25% {
-    stroke-dashoffset: 0;
-  }
-
-  65% {
-    stroke-dashoffset: 301;
-  }
-
-  80% {
-    stroke-dashoffset: 276;
-  }
-
-  100% {
-    stroke-dashoffset: 276;
-  }
-}
-
-@keyframes circle-middle6123 {
-  0% {
-    stroke-dashoffset: 17;
-  }
-
-  25% {
-    stroke-dashoffset: 0;
-  }
-
-  65% {
-    stroke-dashoffset: 204;
-  }
-
-  80% {
-    stroke-dashoffset: 187;
-  }
-
-  100% {
-    stroke-dashoffset: 187;
-  }
-}
-
-@keyframes circle-inner162 {
-  0% {
-    stroke-dashoffset: 9;
-  }
-
-  25% {
-    stroke-dashoffset: 0;
-  }
-
-  65% {
-    stroke-dashoffset: 106;
-  }
-
-  80% {
-    stroke-dashoffset: 97;
-  }
-
-  100% {
-    stroke-dashoffset: 97;
-  }
-}
-
-@keyframes text-animation76 {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-
-  50% {
-    clip-path: inset(0);
-  }
-
-  100% {
-    clip-path: inset(0 0 0 100%);
-  }
-}
-
 .spinner2 {
   width: 56px;
   height: 56px;
@@ -669,6 +477,7 @@ tbody tr:hover svg {
     transform: rotate(1turn);
   }
 }
+
 .spinner3 {
   width: 40px;
   height: 40px;
@@ -802,11 +611,11 @@ tbody tr:hover svg {
 
 .notification-item {
   background-color: #fff;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .notification-item:hover {
-  background-color: rgba(0,0,0,0.05) !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .holiday-calendar {
@@ -912,4 +721,73 @@ tbody tr:hover svg {
 .export-options {
   display: flex;
   gap: 10px;
+}
+
+.report-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  font-family: Arial, sans-serif;
+  background: #fff;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+  }
+
+  .logo {
+    /* background: #ddd; */
+    width: 100px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .student-info,
+  .fee-summary,
+  .totals {
+    margin-top: 20px;
+  }
+
+  h2,
+  h3 {
+    margin-bottom: 5px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background: #f4f4f4;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+  }
+}
+
+@media print {
+  .report-container {
+    border: none;
+  }
 }

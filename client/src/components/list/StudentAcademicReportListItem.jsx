@@ -8,7 +8,6 @@ import {
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
 
-
 const StudentAcademicReportListItem = ({ item }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -22,7 +21,9 @@ const StudentAcademicReportListItem = ({ item }) => {
     <>
       <List
         subheader={
-          <ListSubheader sx={{ color: "primary.main", bgcolor: "whitesmoke" }}>
+          <ListSubheader
+            sx={{ color: "secondary.main", bgcolor: "primary.main" }}
+          >
             {item[0]}
           </ListSubheader>
         }
@@ -37,16 +38,14 @@ const StudentAcademicReportListItem = ({ item }) => {
               <ListItemText
                 primary={levelName}
                 secondary={term}
-                primaryTypographyProps={{
-                  fontSize: 14,
-                }}
-                secondaryTypographyProps={{
-                  fontSize: 13,
-                  color: "primary.main",
-                  fontWeight: "bold",
+                slotProps={{
+                  secondary: {
+                    fontSize: 13,
+                    color: "primary.main",
+                    fontWeight: "bold",
+                  },
                 }}
               />
-
             </ListItemButton>
           );
         })}

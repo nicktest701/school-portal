@@ -19,12 +19,12 @@ import { useReactToPrint } from "react-to-print";
 
 function ReportCard({ student, style, ref }) {
   const componentRef = useRef();
-  const { school_info } = use(UserContext);
+  const { school_info, session } = use(UserContext);
   const { palette } = useTheme();
   const [openRemarks, setOpenRemarks] = useState(false);
 
   const reactToPrintFn = useReactToPrint({
-    documentTitle: student?.fullName,
+    documentTitle: `${student?.fullName}-${student?.level}`,
     contentRef: componentRef,
   });
   return (
@@ -37,6 +37,7 @@ function ReportCard({ student, style, ref }) {
           ...style,
           maxWidth: "8.5in",
           minHeight: "11in",
+          // height: "11.69in",
           margin: "auto",
           padding: "16px",
           border: "1px solid lightgray",
@@ -69,7 +70,7 @@ function ReportCard({ student, style, ref }) {
             <Avatar
               alt="school logo"
               loading="lazy"
-              srcSet={school_info?.badge}
+              src={school_info?.badge}
               sx={{
                 width: 70,
                 height: 70,
@@ -283,7 +284,7 @@ function ReportCard({ student, style, ref }) {
           </Stack>
         </Box>
         <Divider />
-        <Stack justifyContent="center" alignItems="center">
+        {/* <Stack justifyContent="center" alignItems="center">
           <Typography>Bill</Typography>
           <table width="60%" border="1" style={{ borderCollapse: "collapse" }}>
             <thead>
@@ -322,7 +323,7 @@ function ReportCard({ student, style, ref }) {
               </tr>
             </tfoot>
           </table>
-        </Stack>
+        </Stack> */}
         <Typography
           style={{
             fontSize: "10px",
@@ -359,6 +360,36 @@ function ReportCard({ student, style, ref }) {
             >
               Add Remarks
             </Link> */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "5%",
+            leftt: 0,
+            display: "grid",
+            placeItems: "center",
+          }}
+        >
+          {session?.headmaster?.signature && (
+            <img
+              src={session?.headmaster?.signature}
+              alt="headmaster signature"
+              style={{
+                maxWidth: "100%",
+                aspectRatio: "1/1",
+                width: "100px",
+                height: "80px",
+              }}
+            />
+          )}
+          <span
+            style={{
+              borderTop: "1px #333 dashed",
+              fontSize: "13px",
+            }}
+          >
+            {session?.headmaster?.name}
+          </span>
+        </div>
       </Stack>
       <AddRemarks
         open={openRemarks}

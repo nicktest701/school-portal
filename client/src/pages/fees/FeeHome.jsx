@@ -1,18 +1,18 @@
 import React, { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Box, ListItemText } from "@mui/material";
+import { Box, Container, IconButton, ListItemText } from "@mui/material";
 import FeesDashboardCard from "@/components/cards/FeesDashboardCard";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
-import {
-  getAllCurrentFeesSummary,
-  getAllRecentlyPaidFees,
-} from "@/api/currentFeeAPI";
+import { getAllCurrentFeesSummary } from "@/api/currentFeeAPI";
 import { UserContext } from "@/context/providers/UserProvider";
 import { EMPTY_IMAGES } from "@/config/images";
 import teacher_icon from "@/assets/images/header/teacher_ico.svg";
 import moment from "moment";
 import CustomTitle from "@/components/custom/CustomTitle";
 import { useNavigate } from "react-router-dom";
+import MonthlyFeePaymentChart from "@/components/charts/MonthlyFeePaymentChart";
+import WeeklyFeePaymentChart from "@/components/charts/WeeklyFeePaymentChart";
+import { Refresh } from "@mui/icons-material";
 const FeeHome = () => {
   const {
     session: { sessionId, termId, from, to },
@@ -24,25 +24,39 @@ const FeeHome = () => {
     queryFn: () =>
       getAllCurrentFeesSummary({ session: sessionId, term: termId, from, to }),
     enabled: !!sessionId && !!termId,
-  });
-
-  const recentFees = useQuery({
-    queryKey: ["recent-fees"],
-    queryFn: () => getAllRecentlyPaidFees({ session: sessionId, term: termId }),
-    enabled: !!sessionId && !!termId,
+    initialData: {
+      recentFees: [],
+      today: 0,
+      week: 0,
+      month: 0,
+      term: 0,
+      monthlyProjection: {
+        labels: [""],
+        datasets: [],
+      },
+      weeklyProjection: {
+        labels: [""],
+        datasets: [],
+      },
+    },
   });
 
   const handleMakePayment = () => {
-    navigate(`/fee/payment`);
+    navigate(`/fee/history`);
   };
 
   return (
-    <>
+    <Container maxWidth="xl">
       <CustomTitle
         title="Fees Payment"
         subtitle="Track and manage school fee payments and financial records efficiently to maintain fiscal responsibility."
         img={teacher_icon}
         color="primary.main"
+        right={
+          <IconButton onClick={feeSummary.refetch}>
+            <Refresh sx={{ width: 36, height: 36 }} />
+          </IconButton>
+        }
       />
 
       <Box
@@ -54,14 +68,29 @@ const FeeHome = () => {
         }}
       >
         <FeesDashboardCard text="Today" value={feeSummary?.data?.today} />
-        <FeesDashboardCard text="Month" value={feeSummary?.data?.month} />
-        <FeesDashboardCard text="Term" value={feeSummary?.data?.term} />
-        <FeesDashboardCard text="Year" value={feeSummary?.data?.year} />
+        <FeesDashboardCard text="Week" value={feeSummary?.data?.week} />
+        <FeesDashboardCard text="This Month" value={feeSummary?.data?.month} />
+        <FeesDashboardCard
+          text="Term/Semester"
+          value={feeSummary?.data?.term}
+        />
+      </Box>
+
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(1fr,1fr))",
+          gap: 2,
+        }}
+      >
+        <MonthlyFeePaymentChart data={feeSummary?.data?.monthlyProjection} />
+        <WeeklyFeePaymentChart data={feeSummary?.data?.weeklyProjection} />
       </Box>
 
       <CustomizedMaterialTable
-        isPending={recentFees.isPending}
-        title="Recent Fee Payment"
+        isPending={feeSummary.isPending}
+        title="Recent Payments"
+        subtitle="Recent payment made within the term / semester"
         icon={teacher_icon}
         columns={[
           {
@@ -97,16 +126,19 @@ const FeeHome = () => {
             field: "outstanding",
           },
         ]}
-        data={recentFees.data}
+        data={feeSummary?.data?.recentFees}
         actions={[]}
         showAddButton={true}
         addButtonImg={EMPTY_IMAGES.level}
         addButtonMessage=" No recent fee payment !"
-        addButtonText="Make New Payment"
+        addButtonText="View More"
         onAddButtonClicked={handleMakePayment}
-        handleRefresh={recentFees.refetch}
+        options={{
+          showSelectAllCheckbox: false,
+          selection: false,
+        }}
       />
-    </>
+    </Container>
   );
 };
 

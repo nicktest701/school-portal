@@ -123,43 +123,6 @@ export const publishReport = async ({ id, onProgress }) => {
   }
 };
 
-//Get all Students
-export const getStudentAcademics = async (session, student, level) => {
-  try {
-    const res = await api({
-      method: 'POST',
-      url: `/examinations/student/academics`,
-      data: {
-        student,
-        session: session.sessionId,
-        term: session.termId,
-        level,
-      },
-    });
-
-    return res.data;
-  } catch (error) {
-
-    throw error.response.data;
-  }
-};
-
-
-// //Get Exams by exams id
-// export const getCurrentExams = async (session) => {
-//   try {
-//     const res = await api({
-//       method: 'POST',
-//       url: `/examinations/student/current`,
-//       data: session,
-//     });
-
-//     return res.data;
-//   } catch (error) {
-
-//     throw error.response.data;
-//   }
-// };
 
 //Add new Exams
 export const postExamsRemarks = async (comments) => {

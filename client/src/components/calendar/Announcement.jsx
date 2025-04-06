@@ -8,7 +8,6 @@ import {
   CardContent,
   Button,
   Modal,
-  Grid2,
 } from "@mui/material";
 import _ from "lodash";
 import { Link } from "react-router-dom";
@@ -37,33 +36,32 @@ const Announcement = () => {
     <Box>
       {announcements.length !== 0 ? (
         <>
-          <Grid2 container spacing={2} pt={1} sx={{ minHeight: 400 }}>
+          <Stack spacing={2} pt={1} sx={{ minHeight: 400 }}>
             {_.take(announcements, 5).map((announcement) => (
-              <Grid2 size={{xs:12}}  key={announcement._id} sx={{ width: "100%" }}>
-                <Card
-                  sx={{
-                    borderLeft: `2px solid ${announcement.bgColor}`,
-                    // backgroundColor: announcement.bgColor,
-                    borderRadius: 2,
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleOpenModal(announcement)}
-                >
-                  <CardContent>
-                    <Typography variant="body1" fontWeight="bold">
-                      {announcement.title}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {dayjs(announcement.createdAt).format("D MMMM, YYYY")}
-                    </Typography>
-                    <Typography variant="caption" display="block" mt={1}>
-                      {announcement.description.substring(0, 50)}...
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid2>
+              <Card
+                key={announcement._id}
+                sx={{
+                  borderLeft: `2px solid ${announcement.bgColor}`,
+                  // backgroundColor: announcement.bgColor,
+                  borderRadius: 2,
+                  cursor: "pointer",
+                }}
+                onClick={() => handleOpenModal(announcement)}
+              >
+                <CardContent>
+                  <Typography variant="body1" fontWeight="bold">
+                    {announcement.title}
+                  </Typography>
+                  <Typography variant="caption" color="textSecondary">
+                    {dayjs(announcement.createdAt).format("D MMMM, YYYY")}
+                  </Typography>
+                  <Typography variant="caption" display="block" mt={1}>
+                    {announcement.description.substring(0, 50)}...
+                  </Typography>
+                </CardContent>
+              </Card>
             ))}
-          </Grid2>
+          </Stack>
 
           {/* View More Button */}
           <Box sx={{ textAlign: "center", mt: 3 }}>

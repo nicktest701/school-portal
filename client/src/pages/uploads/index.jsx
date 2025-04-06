@@ -40,9 +40,7 @@ const Uploads = () => {
   const XLS_FILE_TYPE = "application/vnd.ms-excel";
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
   const navigate = useNavigate();
   const { state } = useLocation();
   const [levelValue, setLevelValue] = useState({ _id: "", type: "" });
@@ -50,7 +48,7 @@ const Uploads = () => {
   const [dataType, setDataType] = useState("personal-data");
   const [gradeName, setGradeName] = useState("");
   const [bulkData, setBulkData] = useState([]);
-  const [loadingData, setLoadingData] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [mainError, setMainError] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   //Get All levels
@@ -101,6 +99,8 @@ const Uploads = () => {
 
   //LOAD Results from file excel,csv
   function handleLoadFile(files) {
+    setIsLoading(true);
+
     try {
       const reader = new FileReader();
 
@@ -139,6 +139,7 @@ const Uploads = () => {
                 ...result,
               };
             });
+            console.log(modifiedResults);
             setBulkData(modifiedResults);
             return;
           }
@@ -161,7 +162,7 @@ const Uploads = () => {
     } catch (error) {
       setMainError(error);
     } finally {
-      // setLoadingData(false);
+      setIsLoading(false);
     }
   }
   //LOAD Photos
@@ -170,7 +171,6 @@ const Uploads = () => {
 
     setBulkData([]);
     setBulkData(files);
-    // setLoadingData(true);
 
     // const imagePromises = files.map(async (file) => {
     //   const src = () =>
@@ -213,10 +213,9 @@ const Uploads = () => {
   });
 
   const onSubmit = () => {
-    
     Swal.fire({
       title: "Importing results",
-      text: `You are about to import ${dataCategory} ${dataType}.Proceed with import?`,
+      text: `You are about to import ${dataCategory} data.Proceed with import?`,
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
@@ -243,11 +242,24 @@ const Uploads = () => {
           payload = {
             dataCategory,
             dataType,
-            data: { name: gradeName, ratings: bulkData },
+            data: {
+              session: session?.sessionId,
+              term: session?.termId,
+              name: gradeName,
+              ratings: bulkData,
+            },
           };
         }
         if (dataCategory === "subjects") {
-          payload = { dataCategory, dataType, data: bulkData };
+          payload = {
+            dataCategory,
+            dataType,
+            data: {
+              session: session?.sessionId,
+              term: session?.termId,
+              subjects: bulkData,
+            },
+          };
         }
 
         mutateAsync(
@@ -263,7 +275,21 @@ const Uploads = () => {
               navigate(state?.prevPath);
             },
             onError: (error) => {
-              schoolSessionDispatch(alertError(error));
+              if (error?.isDuplicateError) {
+                Swal.fire({
+                  title: error?.isTeacher
+                    ? "Duplicate Usernames found!"
+                    : "Duplicate Students ID found!",
+                  icon: "error",
+                  html: `<div> ${error?.message} ${JSON.stringify(
+                    error?.data
+                  )} </div>`,
+                  showCancelButton: false,
+                  backdrop: false,
+                });
+              } else {
+                schoolSessionDispatch(alertError(error));
+              }
             },
           }
         );
@@ -281,10 +307,9 @@ const Uploads = () => {
       title: "Cancel Uploads",
       text: "Unsaved Changes will be lost. Are you sure?",
       showCancelButton: true,
-
       allowOutsideClick: () => false,
       closeOnClickOutside: false,
-      backdrop: ` rgba(0,0,0,0.4)`,
+      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         setDataCategory("students");
@@ -578,7 +603,7 @@ const Uploads = () => {
         )}
       </>
 
-      {(isPending || loadingData) && (
+      {(isPending || isLoading) && (
         <LoadingSpinner
           value={
             isPending ? `Please Wait..${uploadProgress}%` : "Please Wait.."

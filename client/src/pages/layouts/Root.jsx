@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, use } from "react";
+import React, { lazy, Suspense, use, useEffect } from "react";
 import {
   Route,
   Routes,
@@ -18,11 +18,15 @@ import DashboardSkeleton from "@/components/skeleton/DashboardSkeleton";
 import EventSkeleton from "@/components/skeleton/EventSkeleton";
 import ProtectedRoute from "./ProtectedRoute";
 import AddSession from "../session/AddSession";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 
 //Session
 const Sessions = lazy(() => import("../session/Sessions"));
 const ViewSession = lazy(() => import("../session/ViewSession"));
-const EditSessionForm = lazy(() => import("../session/edit-form/EditSessionForm"));
+const EditSessionForm = lazy(() =>
+  import("../session/edit-form/EditSessionForm")
+);
 
 const FeePrint = lazy(() => import("../fees/FeePrint"));
 const LevelFeeInformation = lazy(() => import("../fees/LevelFeeInformation"));
@@ -86,14 +90,10 @@ const TeacherHome = lazy(() => import("../teacher/TeacherHome"));
 const About = lazy(() => import("../About"));
 const Settings = lazy(() => import("../settings/Settings"));
 const SchoolSession = lazy(() => import("../SchoolSession"));
-const StudentAcademicsReport = lazy(() =>
-  import("../student/StudentAcademicsReport")
-);
+
 
 const FeeHome = lazy(() => import("../fees/FeeHome"));
 const FeeMakePayment = lazy(() => import("../fees/FeeMakePayment"));
-const FeeHistory = lazy(() => import("../fees/FeeHistory"));
-const FeeSettings = lazy(() => import("../fees/FeeSettings"));
 const Level = lazy(() => import("../level"));
 const LevelDashboard = lazy(() => import("../level/LevelDashboard"));
 const CurrentLevel = lazy(() => import("../level/CurrentLevel"));
@@ -108,11 +108,32 @@ const AssignedCoursesResults = lazy(() =>
 
 const Root = () => {
   const { user } = use(UserContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
   // useEffect(() => {
   //   if (screenfull.isEnabled) {
   //     screenfull.request();
   //   }
   // }, []);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      schoolSessionDispatch(alertSuccess("Connection Restored"));
+    };
+
+    const handleOffline = () => {
+      schoolSessionDispatch(
+        alertError("Internet Connection Lost! Try reconnecting.")
+      );
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, [schoolSessionDispatch]);
 
   return (
     <>
@@ -292,14 +313,7 @@ const Root = () => {
                     </Suspense>
                   }
                 />
-                <Route
-                  element={
-                    <Suspense fallback={<Loader />}>
-                      <StudentAcademicsReport />
-                    </Suspense>
-                  }
-                  path="exam/:examsId"
-                />
+             
               </Route>
 
               {/* Teacher */}
@@ -441,7 +455,7 @@ const Root = () => {
                       <FeePaymentHistory />
                     </Suspense>
                   }
-                  path="payment/history"
+                  path="history"
                 />
                 <Route
                   element={
@@ -449,7 +463,7 @@ const Root = () => {
                       <StudentFeesHistory />
                     </Suspense>
                   }
-                  path="payment/student"
+                  path="payment/:student"
                 />
                 <Route
                   element={
@@ -460,23 +474,6 @@ const Root = () => {
                   path="level"
                 />
 
-                <Route
-                  element={
-                    <Suspense fallback={<Loader />}>
-                      <FeeHistory />
-                    </Suspense>
-                  }
-                  path="history"
-                />
-
-                <Route
-                  element={
-                    <Suspense fallback={<Loader />}>
-                      <FeeSettings />
-                    </Suspense>
-                  }
-                  path="settings"
-                />
                 <Route
                   element={
                     <Suspense fallback={<Loader />}>

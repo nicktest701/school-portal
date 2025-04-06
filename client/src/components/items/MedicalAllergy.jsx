@@ -16,7 +16,8 @@ function MedicalAllergy({ title, value, setValue }) {
       spacing={3}
     >
       <Typography
-        fontSize={13}
+        // fontSize={13}
+        variant='body2'
         sx={{ fontWeight: 'bold', width: '40%' }}
       >
         {title}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
-import { Box } from "@mui/material";
 import BarChartRounded from "@mui/icons-material/BarChartRounded";
+import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";

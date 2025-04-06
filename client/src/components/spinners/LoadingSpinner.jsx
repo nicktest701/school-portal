@@ -5,11 +5,9 @@ function LoadingSpinner({ value }) {
     <div
       style={{
         position: "fixed",
-        top: -250,
-        bottom: -200,
         inset: 0,
         backgroundColor: "rgba(0,0,0,0.52)",
-        zIndex: "9999999",
+        zIndex: "99999999999",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

@@ -7,7 +7,7 @@ function Course() {
   return (
     <>
       <CourseNav />
-      <Container>
+      <Container maxWidth='lg'>
         <Outlet />
       </Container>
     </>

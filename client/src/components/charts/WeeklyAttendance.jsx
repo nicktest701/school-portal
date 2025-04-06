@@ -4,57 +4,10 @@ import BarChartRounded from "@mui/icons-material/BarChartRounded";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import { useEffect, useState } from "react";
-import moment from "moment";
 
 function WeeklyAttendance({ data }) {
   const { palette, breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
-
-  const [chartData, setChartData] = useState({
-    labels: [],
-    datasets: [
-      {
-        label: "Present",
-        data: [],
-        backgroundColor: "#012e54",
-      },
-      {
-        label: "Absent",
-        data: [],
-        backgroundColor: "#ffc09f",
-      },
-    ],
-  });
-
-  useEffect(() => {
-    const labels = data.map((entry) =>
-      moment(entry.date, "MM/DD/YYYY").format("ddd,(Do MMM)")
-    );
-
-    const presentCounts = data.map((entry) => entry.presentCount);
-    const absentCounts = data.map((entry) => entry.absentCount);
-
-    setChartData({
-      labels: labels,
-      datasets: [
-        {
-          label: "Present",
-          data: presentCounts,
-          backgroundColor: "#012e54",
-          barThickness: 10,
-          borderRadius: 10,
-        },
-        {
-          label: "Absent",
-          data: absentCounts,
-          backgroundColor: "#ffc09f",
-          barThickness: 10,
-          borderRadius: 10,
-        },
-      ],
-    });
-  }, [data]);
 
   return (
     <Card elevation={1}>
@@ -76,7 +29,7 @@ function WeeklyAttendance({ data }) {
           }}
         >
           <Bar
-            data={chartData}
+            data={data}
             options={{
               responsive: true,
               maintainAspectRatio: false,

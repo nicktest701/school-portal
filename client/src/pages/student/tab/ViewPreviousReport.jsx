@@ -1,9 +1,7 @@
 import React from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import PropTypes from 'prop-types';
 import CustomDialogTitle from '../../../components/dialog/CustomDialogTitle';
-
 import ParentEdit from './ParentEdit';
 
 const ViewPreviousReport = ({ report, open, setOpen }) => {
@@ -35,9 +33,5 @@ const ViewPreviousReport = ({ report, open, setOpen }) => {
   );
 };
 
-ViewPreviousReport.propTypes = {
-  open: PropTypes.bool,
-  setOpen: PropTypes.func,
-};
 
 export default React.memo(ViewPreviousReport);

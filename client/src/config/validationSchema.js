@@ -1,4 +1,7 @@
-import { object, number, string, array, ref } from 'yup';
+import moment from 'moment';
+import { object, number, mixed, boolean, string, array, ref } from 'yup';
+
+const phoneRegex = /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/;
 
 export const findSchoolValidationSchema = object().shape({
   code: string()
@@ -54,7 +57,7 @@ export const studentValidationSchema = object().shape({
   gender: string().required('Required*'),
   email: string().email('Invalid email address!!!'),
   phonenumber: string().matches(
-    /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/,
+    phoneRegex,
     'Invalid Phone number'
   ),
   address: string().required('Required*'),
@@ -74,7 +77,7 @@ export const studentEditValidationSchema = object().shape({
   gender: string().required('Required*'),
   email: string().email('Invalid email address!!!'),
   phonenumber: string().matches(
-    /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/,
+    phoneRegex,
     'Invalid Phone number'
   ),
   address: string().required('Required*'),
@@ -96,7 +99,7 @@ export const teacherValidationSchema = object().shape({
   email: string().email('Invalid email address!!!'),
   phonenumber: string()
     .required('Required*')
-    .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    .matches(phoneRegex, 'Invalid Phone number'),
   address: string().required('Required*'),
   residence: string().required('Required*'),
   nationality: string().required('Required*'),
@@ -115,7 +118,7 @@ export const userValidationSchema = object().shape({
   email: string().email('Invalid email address!!!'),
   phonenumber: string()
     .required('Required*')
-    .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    .matches(phoneRegex, 'Invalid Phone number'),
   address: string().required('Required*'),
   nationality: string().required('Required*'),
   residence: string().required('Required*'),
@@ -144,7 +147,7 @@ export const updateProfileValidationSchema = object().shape({
   email: string().email('Invalid email address!!!'),
   phonenumber: string()
     .required('Required*')
-    .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    .matches(phoneRegex, 'Invalid Phone number'),
   password: string().min(8, 'Password should be between 8-15 characters long'),
   confirmPassword: string().oneOf(
     [ref('password'), null],
@@ -164,7 +167,7 @@ export const userEditValidationSchema = object().shape({
   email: string().email('Invalid email address!!!'),
   phonenumber: string()
     .required('Required*')
-    .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    .matches(phoneRegex, 'Invalid Phone number'),
   address: string().required('Required*'),
   nationality: string().required('Required*'),
   residence: string().required('Required*'),
@@ -174,14 +177,16 @@ export const parentValidationSchema = object().shape({
   firstname: string().required('Required*'),
   surname: string().required('Required*'),
   gender: string().required('Required*'),
-  email: string().email('Invalid email address!!!'),
+  email: string().email('Invalid email address!!!').optional(),
   phonenumber: string()
     .required('Required*')
-    .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    .matches(phoneRegex, 'Invalid Phone number'),
   address: string().required('Required*'),
   residence: string().required('Required*'),
   nationality: string().required('Required*'),
 });
+
+
 
 export const feeValidationSchema = object().shape({
   level: object({
@@ -195,7 +200,7 @@ export const messageValidationSchema = object().shape({
   email: string().required('Required*').email('Invalid email address!!!'),
   phonenumber: string()
     .required('Required*')
-    .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    .matches(phoneRegex, 'Invalid Phone number'),
   title: string().required('Required*'),
   message: string().required('Required*'),
 });
@@ -209,7 +214,7 @@ export const onlyEmailValidationSchema = object().shape({
 export const onlyPhoneValidationSchema = object().shape({
   phonenumber: string()
     .required('Required*')
-    .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+    .matches(phoneRegex, 'Invalid Phone number'),
   title: string().required('Required*'),
   message: string().required('Required*'),
 });
@@ -224,35 +229,35 @@ export const quickMessageValidationSchema = object().shape({
   message: string().required('Required*'),
 });
 
-export const examsScoreValidationSchema = object().shape({
+export const examsScoreValidationSchema = (c, e) => object().shape({
   // subject: string().required('Subject is Required*').nullable(true),
   subject: object({
     _id: string().required('Required*'),
     name: string().required('Required*'),
   }),
   classScore: number()
-    .required('Subject is Required*')
-    .min(0, 'Class Score should be between 0-50')
-    .max(50, 'Class Score should be between 0-50'),
+    .required('Class Score is Required*')
+    .min(0, `Class Score should be from 0 - ${c}`)
+    .max(c || 50, `Class Score should be from 0 - ${c}`),
   examsScore: number()
-    .required('Subject is Required*')
-    .min(0, 'Exams Score should be between 0-50')
-    .max(50, 'Exams Score should be between 0-50'),
+    .required('Exams Score is Required*')
+    .min(0, `Exams Score should be from 0 - ${e}`)
+    .max(e || 50, `Exams Score should be from 0 - ${e}`),
 });
 
-export const addExamsScoreValidationSchema = object().shape({
+export const addExamsScoreValidationSchema = (c, e) => object().shape({
 
   _id: string().required('Required*'),
   subject: string().required('Required*'),
 
   classScore: number()
-    .required('Subject is Required*')
-    .min(0, 'Class Score should be between 0-50')
-    .max(50, 'Class Score should be between 0-50'),
+    .required('Class Score is Required*')
+    .min(0, `Class Score should be from 0 - ${c}`)
+    .max(c || 50, `Class Score should be from 0 - ${c}`),
   examsScore: number()
-    .required('Subject is Required*')
-    .min(0, 'Exams Score should be between 0-50')
-    .max(50, 'Exams Score should be between 0-50'),
+    .required('Exams Score is Required*')
+    .min(0, `Exams Score should be from 0 - ${e}`)
+    .max(e || 50, `Exams Score should be from 0 - ${e}`),
 });
 
 //Personal Data
@@ -263,7 +268,7 @@ export const studentPersonalDataValidationSchema = object().shape({
   gender: string().required('Required*'),
   email: string().email('Invalid email address!!!'),
   phonenumber: string().matches(
-    /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/,
+    phoneRegex,
     'Invalid Phone number'
   ),
   address: string().required('Required*'),
@@ -280,7 +285,7 @@ export const guardianValidationSchema = object().shape({
     email: string().email('Invalid email address!!!'),
     phonenumber: string()
       .required('Required*')
-      .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+      .matches(phoneRegex, 'Invalid Phone number'),
     address: string().required('Required*'),
     residence: string().required('Required*'),
     nationality: string().required('Required*'),
@@ -293,7 +298,7 @@ export const guardianValidationSchema = object().shape({
     email: string().email('Invalid email address!!!'),
     phonenumber: string()
       .required('Required*')
-      .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+      .matches(phoneRegex, 'Invalid Phone number'),
     address: string().required('Required*'),
     residence: string().required('Required*'),
     nationality: string().required('Required*'),
@@ -305,7 +310,7 @@ export const medicalValidationSchema = object().shape({
     fullname: string().required('Required*'),
     phonenumber: string()
       .required('Required*')
-      .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, 'Invalid Phone number'),
+      .matches(phoneRegex, 'Invalid Phone number'),
     address: string().required('Required*'),
   }),
 });
@@ -316,6 +321,87 @@ export const studentCurrentLevelValidationSchema = object().shape({
     type: string().required('Required*'),
   }),
 });
+
+
+export const newStudentValidationSchema = [
+  object().shape({
+    personal: object().shape({
+      indexnumber: string().required('Required*'),
+      firstname: string().required('Required*'),
+      surname: string().required('Required*'),
+      dateofbirth: string().required("Required*"),
+      othername: string().optional(),
+      gender: string().required('Required*'),
+      email: string().email('Invalid email address!!!').optional(),
+      phonenumber: string().matches(
+        phoneRegex,
+        'Invalid Phone number'
+      ).optional(),
+      address: string().required('Required*'),
+      residence: string().required('Required*'),
+      nationality: string().required('Required*'),
+    })
+  }),
+  object().shape({
+    photo: object().shape({
+      profile: mixed().nullable(),
+      display: string().optional(),
+    }).optional()
+  }).optional(),
+  object().shape({
+    parent: array().of(parentValidationSchema)
+  }),
+  object().shape({
+    medical:
+      object().shape({
+        heartDisease: string()
+          .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
+          .required("This field is required"),
+        visualImpairment: string()
+          .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
+          .required("This field is required"),
+        asthma: string()
+          .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
+          .required("This field is required"),
+        hearingImpairment: string()
+          .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
+          .required("This field is required"),
+        seizures: string()
+          .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
+          .required("This field is required"),
+        physicalDisability: string()
+          .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
+          .required("This field is required"),
+
+        emergencyContact: object({
+          fullname: string().required('Required*'),
+          phonenumber: string()
+            .required('Required*')
+            .matches(phoneRegex, 'Invalid Phone number'),
+          address: string().required('Required*'),
+        }),
+      })
+  }),
+  object().shape({
+    academic: object().shape({
+      previousSchool: object({
+        name: string().optional(),
+        location: string().optional(),
+        report: mixed().nullable(),
+      }).optional(),
+
+      level: object({
+        _id: string().required('Required*'),
+        type: string().required('Required*'),
+      }),
+    }).optional(),
+  }),
+
+
+]
+
+
+
 
 export const gradesValidationSchema = object().shape({
   lowestMark: number()
@@ -339,3 +425,147 @@ export const eventValidationSchema = object().shape({
   description: string().trim().required('Required*'),
 
 });
+
+
+export const newSessionSchemas = [
+  object().shape({
+    core: object().shape({
+      name: string().trim().required("Required*"),
+      from: string().required("Required*"),
+      to: string()
+        .required("Required*")
+        .test(
+          "is-after-start",
+          "End of Academic Year date must be after or the same as the start of Academic Year",
+          function (value) {
+            const { from } = this.parent;
+            return !from || !value || moment(value).isSameOrAfter(moment(from));
+          }
+        ),
+      term: string().trim().required("Required*"),
+      isPromotionTerm: string()
+        .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
+        .required("This field is required"),
+    }),
+  }),
+  object().shape({
+    levels: array()
+      .of(
+        object().shape({
+          name: string().required("Class is required").optional(),
+          type: string().required("Class is required").optional(),
+          levelName: string().required("Class is required").optional(),
+        })
+      )
+      .optional(), // ✅ Optional: Only validates if there are files
+  }),
+  object().shape({
+    // students:array()
+    //   .of(
+    //     object().shape({
+    //       class: object().shape({
+    //         name: string().required("Class is required"),
+    //         type: string().optional(),
+    //       }),
+    //       fileName: string().required("Class is required"),
+    //       data: array()
+    //         .of(object())
+    //         .when("class", {
+    //           is: (value) => !!value?.name, // If class is selected
+    //           then: array()
+    //             .of(object())
+    //             .min(1, "Student data is required when a class is selected"),
+    //           otherwise: array().of(object()).optional(),
+    //         }),
+    //     })
+    //   )
+    //   .optional(),
+    students: array().of(object()).optional(),
+  }),
+  object().shape({
+    exams: object().shape({
+      midTermExams: object()
+        .shape({
+          from: string().required("Required*"),
+          to: string()
+            .required("Required*")
+            .test(
+              "is-after-start",
+              "End of Mid-Term must be after or the same as the start of Mid-Term",
+              function (value) {
+                const { from } = this.parent;
+                return (
+                  !from || !value || moment(value).isSameOrAfter(moment(from))
+                );
+              }
+            ),
+        })
+        .optional(),
+
+      revisionWeek: object()
+        .shape({
+          from: string().required("Required*"),
+          to: string()
+            .required("Required*")
+            .test(
+              "is-after-start",
+              "End of Revision Week must be after or the same as the start of Revision Week",
+              function (value) {
+                const { from } = this.parent;
+                return (
+                  !from || !value || moment(value).isSameOrAfter(moment(from))
+                );
+              }
+            ),
+        })
+        .optional(),
+
+      finalExams: object().shape({
+        from: string().required("Required*"),
+        to: string()
+          .required("Required*")
+          .test(
+            "is-after-start",
+            "End of Examination Week must be after or the same as the start of Examination Week",
+            function (value) {
+              const { from } = this.parent;
+              return (
+                !from || !value || moment(value).isSameOrAfter(moment(from))
+              );
+            }
+          ),
+      }),
+      scorePreference: string()
+        .oneOf(["20/80", "30/70", "40/60", "50/50"], "Invalid score preference")
+        .required("Score preference is required"),
+      grade: object()
+        .shape({
+          name: string().required("Grade 1 is required").optional(),
+          ratings: array()
+            .of(
+              object().shape({
+                highestMarks: string()
+                  .required("Class is required")
+                  .optional(),
+                lowestMarks: string()
+                  .required("Class is required")
+                  .optional(),
+                grade: string().required("Class is required").optional(),
+                remarks: string().required("Class is required").optional(),
+              })
+            )
+            .optional(), // ✅ Optional: Only validates if there are files
+        })
+        .optional(),
+    }),
+  }),
+  object().shape({
+    report: object().shape({
+      template: string().required("Please select a report template"),
+
+      dimension: string()
+        .oneOf(["A4", "A3", "Letter"], "Invalid report dimension")
+        .required("Report dimension is required"),
+    }),
+  }),
+];

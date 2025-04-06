@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   messageValidationSchema,
   onlyEmailValidationSchema,
@@ -21,6 +22,7 @@ export const sessionDefaultValues = {
     from: new Date(),
     to: new Date(),
     term: "",
+    isPromotionTerm: ''
   },
   levels: [],
   students: [
@@ -49,6 +51,64 @@ export const sessionDefaultValues = {
     dimension: "A4",
   },
 };
+export const parentDefaultValues = {
+  firstname: '',
+  surname: '',
+  gender: '',
+  relationship: '',
+  email: '',
+  phonenumber: '',
+  address: '',
+  residence: '',
+  nationality: '',
+}
+
+export const newStudentDefaultValues = {
+  personal: {
+    indexnumber: '',
+    firstname: '',
+    surname: '',
+    othername: '',
+    gender: 'male',
+    email: '',
+    dateofbirth: moment(),
+    phonenumber: '',
+    address: '',
+    residence: '',
+    nationality: '',
+  },
+  photo: {
+    profile: null
+  },
+  parent: [parentDefaultValues]
+  ,
+  medical: {
+    heartDisease: "",
+    visualImpairment: "",
+    asthma: "",
+    hearingImpairment: "",
+    seizures: "",
+    physicalDisability: "",
+    emergencyContact: {
+      fullname: '',
+      phonenumber: '',
+      address: '',
+    },
+  }
+  ,
+  academic: {
+    previousSchool: {
+      name: "",
+      location: "",
+      report: null
+    },
+    level: {
+      _id: '',
+      type: '',
+    },
+  }
+};
+
 
 
 export const levelInitialValues = {
@@ -152,29 +212,10 @@ export const userInitialValues = {
 
 //parent
 export const parentInitialValues = {
-  parent1: {
-    firstname: '',
-    surname: '',
-    gender: '',
-    relationship: '',
-    email: '',
-    phonenumber: '',
-    address: '',
-    residence: '',
-    nationality: '',
-  },
-  parent2: {
-    firstname: '',
-    surname: '',
-    gender: '',
-    relationship: '',
-    email: '',
-    phonenumber: '',
-    address: '',
-    residence: '',
-    nationality: '',
-  },
+  parent1: parentDefaultValues,
+  parent2: parentDefaultValues,
 };
+
 
 //sms
 export const quickMessageInitialValues = (radioValue) => {

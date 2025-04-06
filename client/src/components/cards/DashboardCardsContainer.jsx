@@ -13,13 +13,11 @@ import DashboardSkeleton from "../skeleton/DashboardSkeleton";
 import { IconButton, Stack, Typography } from "@mui/material";
 import StudentCountChart from "../charts/StudentCountChart";
 import WeeklyAttendance from "../charts/WeeklyAttendance";
-import WeeklyGenderAttendance from "../charts/WeeklyGenderAttendanceBarChart";
+import GenderAttendance from "../charts/GenderAttendance";
 
 function DashboardCardsContainer() {
   const { showBoundary } = useErrorBoundary();
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
 
   const info = useQuery({
     queryKey: ["dashboard-info", session?.sessionId, session?.termId],
@@ -38,13 +36,13 @@ function DashboardCardsContainer() {
         male: 0,
         female: 0,
       },
-      attendance: [],
-      attendanceSummary: [],
+      weeklyAttendances: {
+        labels: [""],
+        datasets: [],
+      },
       genderAttendance: {
-        malePresent: 0,
-        femalePresent: 0,
-        maleAbsent: 0,
-        femaleAbsent: 0,
+        labels: ["Male", "Female"],
+        datasets: [],
       },
     },
   });
@@ -143,15 +141,16 @@ function DashboardCardsContainer() {
               xs: "repeat(auto-fit,minmax(250px,1fr))",
               md: "1fr 1fr",
             },
-
             gap: 2,
           }}
         >
           <StudentCountChart data={info?.data?.studentCount} />
-          <WeeklyGenderAttendance data={info?.data?.genderAttendance} />
+          <GenderAttendance data={info?.data?.genderAttendance} />
         </Box>
-        {/* <StudentTotalAttendance data={info?.data?.attendance} /> */}
-        <WeeklyAttendance data={info?.data?.attendanceSummary} />
+   
+        {/* attendanceSummary */}
+        <WeeklyAttendance data={info?.data?.weeklyAttendances} />
+      
       </Box>
     </Stack>
   );

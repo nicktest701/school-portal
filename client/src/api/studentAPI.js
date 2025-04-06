@@ -177,8 +177,9 @@ export const postStudent = async ({ student, parent }) => {
 
 export const postNewStudent = async ({ photo, details }) => {
   const formData = new FormData();
+
   //Student
-  formData.append('profile', photo);
+  formData.append('profile', photo ? photo[0] : null);
   formData.append('details', JSON.stringify(details));
 
   try {
