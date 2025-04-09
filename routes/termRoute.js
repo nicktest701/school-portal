@@ -30,22 +30,17 @@ router.get(
         school: req.user.school,
         session: new ObjectId(session),
       }).populate("session");
-
-
     } else {
       terms = await Term.find({
         school: req.user.school,
       }).populate("session");
-
     }
-
 
     if (_.isEmpty(terms)) {
       return res.status(200).json([]);
     }
     const modifiedTerms = terms.map((term) => {
       const newTerm = {
-
         core: {
           name: term?.name,
           from: term?.from,
@@ -55,19 +50,16 @@ router.get(
           vacationDate: term?.vacationDate,
           reOpeningDate: term?.reOpeningDate,
           isPromotionTerm: term?.isPromotionTerm,
-
         },
         headmaster: term?.headmaster,
         report: term?.report,
         exams: term?.exams,
         termId: term._id,
         sessionId: term?.session?._id,
-        active: term?.active
+        active: term?.active,
+      };
 
-      }
-
-
-      return newTerm
+      return newTerm;
     });
 
     const sortedTerms = _.sortBy(modifiedTerms, ["academicYear", "term"]);
@@ -88,29 +80,25 @@ router.get(
         school: req.user.school,
         session: new ObjectId(session),
       }).populate("session");
-
     } else {
       terms = await Term.find({
         school: req.user.school,
-      })
-
+      });
     }
-
 
     if (_.isEmpty(terms)) {
       return res.status(200).json([]);
     }
     const modifiedTerms = terms.map((term) => {
       return {
-
         _id: term?._id,
         sessionId: term?.session,
         term: term?.term,
         name: `${term?.academicYear} ${term?.term}`,
         academicYear: term?.academicYear,
         active: term?.active,
-        createdAt: term?.createdAt
-      }
+        createdAt: term?.createdAt,
+      };
     });
 
     const sortedTerms = _.sortBy(modifiedTerms, ["academicYear", "term"]);
@@ -134,7 +122,11 @@ router.get(
 
     //Check if term already exists
     if (!_.isEmpty(exists)) {
-      return res.status(400).json(`Academic year ${academicYear} with the term ${term} already exists.`);
+      return res
+        .status(400)
+        .json(
+          `Academic year ${academicYear} with the term ${term} already exists.`
+        );
     }
 
     res.status(200).json(exists);
@@ -163,53 +155,49 @@ router.get(
       exams: term?.exams,
       termId: term._id,
       sessionId: term?.session?._id,
-      active: term?.active
-    }
+      active: term?.active,
+    };
     res.status(200).json(modifiedTerm);
   })
 );
-
-
 
 //Add new School Term
 router.post(
   "/",
   verifyJWT,
   asyncHandler(async (req, res) => {
-    const { core, levels, students, exams, report } =
-      req.body;
+    const { core, levels, students, exams, report } = req.body;
 
+    if (!_.isEmpty(students)) {
+      const existingIndexNumbers = _.flatMap(
+        students,
+        (student) => student?.data
+      );
+      const indexNumbers = _.compact(
+        _.map(existingIndexNumbers, "indexnumber")
+      );
+      const existingStudents = await Student.find({
+        school: req.user.school,
+        indexnumber: {
+          $in: indexNumbers,
+        },
+      }).select("indexnumber");
 
-    const existingIndexNumbers = _.flatMap(students, (student) => student?.data);
-    const indexNumbers = _.compact(_.map(existingIndexNumbers, 'indexnumber'));
-    const existingStudents = await Student.find({
-      school: req.user.school,
-      indexnumber: {
-        $in: indexNumbers,
-      },
-    }).select('indexnumber')
-
-
-    if (!_.isEmpty(existingStudents)) {
-      return res
-        .status(400)
-        .json(
-          {
-            isDuplicateError: true,
-            message: `ID of some students already exist.Please check and try again.`,
-            data: _.map(existingStudents, 'indexnumber')
-          }
-        );
+      if (!_.isEmpty(existingStudents)) {
+        return res.status(400).json({
+          isDuplicateError: true,
+          message: `ID of some students already exist.Please check and try again.`,
+          data: _.map(existingStudents, "indexnumber"),
+        });
+      }
     }
 
+    const { name, from, to, term, isPromotionTerm } = core;
+    const { grade, ...examsRest } = exams;
 
-    const { name, from, to, term, isPromotionTerm } = core
-    const { grade, ...examsRest } = exams
-
-    const academicStart = moment(from).year();
-    const academicEnd = moment(to).year();
+    const academicStart = moment(new Date(from)).year();
+    const academicEnd = moment(new Date(to)).year();
     const academicYear = `${academicStart}/${academicEnd}`;
-
 
     //Find if a term already exits
     const exists = await Term.findOne({
@@ -219,21 +207,24 @@ router.post(
       active: true,
     });
 
-
     //Check if term already exists
     if (!_.isEmpty(exists)) {
-      return res.status(400).json(`Academic year ${academicYear} with the term ${term} already exists.`);
+      return res
+        .status(400)
+        .json(
+          `Academic year ${academicYear} with the term ${term} already exists.`
+        );
     }
 
-
     //Find if a session already exits
-    const session = await Session.findOne({ school: req.user.school, academicYear });
+    const session = await Session.findOne({
+      school: req.user.school,
+      academicYear,
+    });
     let sessionId = session?._id;
 
-
     if (_.isEmpty(session)) {
-
-      //Create new Session  
+      //Create new Session
       const newSession = await Session.create({
         school: req.user.school,
         from: academicStart,
@@ -241,7 +232,7 @@ router.post(
         academicYear,
         name,
 
-        createdBy: req.user.id
+        createdBy: req.user.id,
       });
 
       if (_.isEmpty(newSession)) {
@@ -257,17 +248,19 @@ router.post(
       school: req.user.school,
       session: sessionId,
       name,
-      from, to, term,
+      from,
+      to,
+      term,
       academicYear,
       vacationDate: to,
       reOpeningDate: to,
       isPromotionTerm,
       exams: {
-        ...examsRest
-      }, report
+        scorePreference: "50/50",
+        ...examsRest,
+      },
+      report,
     });
-
-
 
     if (_.isEmpty(newTerm)) {
       return res
@@ -275,51 +268,48 @@ router.post(
         .json("Error creating new session.Try again later!!!");
     }
 
-    let grades = null
+    let grades = null;
     if (!_.isEmpty(grade)) {
-
-      const itGradeExisting = await Grade.findOne({ name: grade.name })
+      const itGradeExisting = await Grade.findOne({ name: grade.name });
 
       if (_.isEmpty(itGradeExisting)) {
-
-
         const newGrade = await Grade.create({
           ...grade,
           school: req.user.school,
           session: sessionId,
           term: newTerm._id,
           createdBy: req.user.id,
-        })
+        });
 
-        grades = newGrade?._id
+        grades = newGrade?._id;
       } else {
-        grades = itGradeExisting?._id
-
+        grades = itGradeExisting?._id;
       }
     }
 
     if (!_.isEmpty(levels)) {
       // create levels
       const modifiedLevels = levels.map(async (level) => {
+        const student = students.find((student) =>
+          _.isEqual(student?.class, level)
+        );
 
-        const student = students.find(student => _.isEqual(student?.class, level))
-
-        const modifiedStudents = student?.data?.map(student => {
+        const modifiedStudents = student?.data?.map((student) => {
           return {
             ...student,
             school: req.user.school,
-            createdBy: req.user.id
-          }
-        })
+            createdBy: req.user.id,
+          };
+        });
 
         let studentIds = [];
         if (student?.isPrevious) {
-          studentIds = _.map(student?.data, '_id')
+          studentIds = _.map(student?.data, "_id");
         } else {
           const createdStudents = await Student.insertMany(modifiedStudents, {
             ordered: false,
           });
-          studentIds = _.map(createdStudents, '_id')
+          studentIds = _.map(createdStudents, "_id");
         }
 
         // update student data in the session
@@ -329,40 +319,31 @@ router.post(
           level,
           students: studentIds,
           grades: grades._id,
-          createdBy: req.user.id
-
-        })
-
+          createdBy: req.user.id,
+        });
 
         //Create Exams and fees details for each inserted Student
-        const examsDetails = studentIds.map(student => {
-
+        const examsDetails = studentIds.map((student) => {
           return {
             session: sessionId,
             term: newTerm._id,
             level: newLevel?._id,
             student: student,
-            createdBy: req.user.id
-          }
-
-        })
+            createdBy: req.user.id,
+          };
+        });
 
         await Examination.insertMany(examsDetails);
         await CurrentFee.insertMany(examsDetails);
 
+        return newLevel;
+      });
 
-        return newLevel
-      })
-
-      await Promise.all(modifiedLevels)
+      await Promise.all(modifiedLevels);
       return res.status(201).json("New Session created Successfully!!!");
     }
 
     res.status(201).json("New Session created Successfully!!!");
-
-
-
-
   })
 );
 
@@ -371,20 +352,20 @@ router.put(
   "/",
   asyncHandler(async (req, res) => {
     const { termId, ...rest } = req.body;
-    console.log(req.body)
+    console.log(req.body);
     const modifiedTerm = await Term.findByIdAndUpdate(termId, {
       $set: {
         ...rest?.core,
         exams: {
-          ...rest?.exams
+          ...rest?.exams,
         },
         report: {
-          ...rest?.report
+          ...rest?.report,
         },
         headmaster: {
-          ...rest?.headmaster
-        }
-      }
+          ...rest?.headmaster,
+        },
+      },
     });
 
     // const modifiedTerm = await knex("terms")
@@ -399,9 +380,7 @@ router.put(
         .send("Error updating session info.Try again later");
     }
 
-    res
-      .status(201)
-      .json("Changes Saved!");
+    res.status(201).json("Changes Saved!");
   })
 );
 
@@ -432,13 +411,16 @@ router.put(
 router.put(
   "/remove",
   asyncHandler(async (req, res) => {
-    const sessions = req.body
-    console.log(sessions)
-    const deletedTerms = await Term.deleteMany({
-      _id: { $in: sessions },
-    }, {
-      new: true
-    });
+    const sessions = req.body;
+    console.log(sessions);
+    const deletedTerms = await Term.deleteMany(
+      {
+        _id: { $in: sessions },
+      },
+      {
+        new: true,
+      }
+    );
 
     if (_.isEmpty(deletedTerms)) {
       return res

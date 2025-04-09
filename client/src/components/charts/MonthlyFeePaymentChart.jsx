@@ -63,7 +63,7 @@ const MonthlyFeePaymentChart = ({ data }) => {
                 },
                 datalabels: {
                   display: true,
-                  color: "black",
+                  color: "#fff",
                   anchor: "center",
                   align: "end",
                   font: {

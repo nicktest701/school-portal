@@ -38,9 +38,12 @@ const ExamsScoreInput = ({ setTab }) => {
   const { gradeSystem, subjects } = useLevelById(levelId);
 
   const scorePreference = session?.exams?.scorePreference?.split("/");
-  const classScorePreference = scorePreference[0];
-  const examsScorePreference = scorePreference[1];
-
+  const classScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[0]
+    : 50;
+  const examsScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[1]
+    : 50;
 
   const initialValues = {
     subject: {
@@ -197,7 +200,7 @@ const ExamsScoreInput = ({ setTab }) => {
                           label="Subject"
                           size="small"
                           error={Boolean(errors.subject)}
-                          helperText={ errors.subject}
+                          helperText={errors.subject}
                         />
                       )}
                     />

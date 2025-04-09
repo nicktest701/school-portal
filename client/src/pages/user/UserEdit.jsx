@@ -41,6 +41,8 @@ const UserEdit = () => {
       ?.find((user) => user?._id === id),
   });
 
+
+
   useEffect(() => {
     setDob(moment(user?.data?.dateofbirth));
   }, [user?.data]);
@@ -49,7 +51,6 @@ const UserEdit = () => {
   const { mutateAsync, isPending } = useMutation({ mutationFn: putUser });
   const onSubmit = (values, options) => {
     delete values.profile;
-    values.fullname = `${values.firstname} ${values.lastname}`;
     values.dateofbirth = moment(dob).format("L");
     values.isOnlyUpdate = true;
 
@@ -257,7 +258,7 @@ const UserEdit = () => {
                   />
                   <CustomFormControl>
                     <TextField
-                      label="Place of Birth"
+                      label="Residence"
                       type="text"
                       fullWidth
                       size="small"

@@ -54,8 +54,12 @@ const LevelExamScoreInput = () => {
   const { levelLoading, subjects, gradeSystem } = useLevelById(levelId);
 
   const scorePreference = session?.exams?.scorePreference?.split("/");
-  const classScorePreference = scorePreference[0];
-  const examsScorePreference = scorePreference[1];
+  const classScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[0]
+    : 50;
+  const examsScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[1]
+    : 50;
 
   //LOAD Results from file excel,csv
   async function handleLoadFile(e) {

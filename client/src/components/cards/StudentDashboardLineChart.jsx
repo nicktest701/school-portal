@@ -7,14 +7,14 @@ import CardHeader from "@mui/material/CardHeader";
 import { Bar } from "react-chartjs-2";
 import _ from "lodash";
 import { Typography, useTheme, useMediaQuery } from "@mui/material";
+import {  generateRGBAColorsBetween } from "@/config/helper";
 const StudentDashboardLineChart = ({ data, academicYear }) => {
   const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
 
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
-  
-  
+
   useEffect(() => {
     if (data) {
       setLabels(_.map(data, "level"));
@@ -49,7 +49,7 @@ const StudentDashboardLineChart = ({ data, academicYear }) => {
                 {
                   label: "Levels",
                   data: dataset,
-                  backgroundColor: ["rgb(255, 192, 159)", " rgb(1, 46, 84)"],
+                  backgroundColor: generateRGBAColorsBetween(),
                   barThickness: matches ? 10 : 30,
                   borderRadius: 2,
                 },

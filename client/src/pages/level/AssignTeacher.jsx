@@ -71,7 +71,7 @@ const AssignTeacher = ({ levelName }) => {
             options.setSubmitting(false);
           },
           onSuccess: (data) => {
-            schoolSessionDispatch(alertSuccess(data));
+            schoolSessionDispatch(alertSuccess("Assigment done!"));
           },
           onError: (error) => {
             schoolSessionDispatch(alertError(error));

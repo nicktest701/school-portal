@@ -12,6 +12,7 @@ import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { useParams, useSearchParams } from "react-router-dom";
 import { UserContext } from "@/context/providers/UserProvider";
+import _ from "lodash";
 
 function AddStudentRecord() {
   const { session } = useContext(UserContext);
@@ -19,9 +20,12 @@ function AddStudentRecord() {
   const { levelId } = useParams();
 
   const scorePreference = session?.exams?.scorePreference?.split("/");
-  const classScorePreference = scorePreference[0];
-  const examsScorePreference = scorePreference[1];
- 
+  const classScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[0]
+    : 50;
+  const examsScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[1]
+    : 50;
 
   const {
     schoolSessionState: {

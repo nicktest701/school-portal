@@ -1,70 +1,83 @@
-import React, { useContext, useState } from 'react';
-
+import React, { useContext } from "react";
 import {
   Stack,
   Dialog,
   DialogContent,
   DialogActions,
-  TextField,
   MenuItem,
-  Divider,
   FormLabel,
-} from '@mui/material';
-import moment from 'moment';
-import { Formik } from 'formik';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+  Typography,
+} from "@mui/material";
+import moment from "moment";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Button from "@mui/material/Button";
-import { postTerm } from '@/api/termAPI';
-import { sessionValidationSchema } from '@/config/validationSchema';
-import { SchoolSessionContext } from '@/context/providers/SchoolSessionProvider';
-import {
-  alertError,
-  alertSuccess,
-} from '@/context/actions/globalAlertActions';
-import { sessionInitialValues } from '@/config/initialValues';
-import { SCHOOL_TERMS } from '@/mockup/columns/sessionColumns';
-import Transition from '@/components/animations/Transition';
-import CustomDatePicker from '@/components/inputs/CustomDatePicker';
-import CustomYearPicker from '@/components/inputs/CustomYearPicker';
-import CustomDialogTitle from '@/components/dialog/CustomDialogTitle';
+import { postTerm } from "@/api/termAPI";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { SCHOOL_TERMS } from "@/mockup/columns/sessionColumns";
+import Transition from "@/components/animations/Transition";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import DateInputPicker from "@/components/inputs/DateInputPicker";
+import CustomRadioInput from "@/components/items/CustomRadioInput";
+import { useForm } from "react-hook-form";
+import { sessionValidationSchema } from "@/config/validationSchema";
+import { sessionDefaultValues } from "@/config/initialValues";
+import { yupResolver } from "@hookform/resolvers/yup";
+import SelectInput from "@/components/inputs/SelectInput";
+import Input from "@/components/inputs/Input";
 
 const AddSchoolSession = ({ open, setOpen }) => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-
   const queryClient = useQueryClient();
-  const [startDate, setStartDate] = useState(moment());
-  const [endDate, setEndDate] = useState(moment());
-
-  const [startYear, setStartYear] = useState("");
-  const [endYear, setEndYear] = useState("");
 
   //ADD New Session
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: postTerm,
   });
 
-  const currentYear = new Date().getFullYear();
-  const onSubmit = (values, options) => {
-    values.academicYear = `${startYear || currentYear}/${
-      endYear || currentYear
-    }`;
+  const {
+    control,
+    watch,
+    formState: { isSubmitting, errors },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(sessionValidationSchema),
+    defaultValues: sessionDefaultValues.core,
+    mode: "onBlur",
+    shouldUnregister: false,
+  });
 
+  const sT = watch("from");
+  const eT = watch("to");
+
+  const onSubmit = (values) => {
     // console.log(values);
+    // return;
 
-    mutateAsync(values, {
-      onSettled: () => {
-        options.setSubmitting(false);
-        queryClient.invalidateQueries(['terms']);
+    mutateAsync(
+      {
+        core: {
+          ...values,
+        },
+        levels: [],
+        students: [],
+        exams: {
+          grade: "",
+        },
       },
-      onSuccess: (data) => {
-        schoolSessionDispatch(alertSuccess(data));
-        handleCloseAddSession();
-      },
-      onError: (error) => {
-        schoolSessionDispatch(alertError(error));
-      },
-    });
-    options.setSubmitting(false);
+      {
+        onSettled: () => {
+          queryClient.invalidateQueries(["terms"]);
+        },
+        onSuccess: () => {
+          schoolSessionDispatch(alertSuccess('New Session Created!'));
+          handleCloseAddSession();
+        },
+        onError: (error) => {
+          schoolSessionDispatch(alertError(error));
+        },
+      }
+    );
   };
 
   const handleCloseAddSession = () => setOpen(false);
@@ -73,95 +86,93 @@ const AddSchoolSession = ({ open, setOpen }) => {
     <Dialog
       open={open}
       fullWidth
-      maxWidth='xs'
+      maxWidth="sm"
       TransitionComponent={Transition}
     >
-      <CustomDialogTitle title='Add Session' onClose={handleCloseAddSession} />
-      <Formik
-        initialValues={{
-          ...sessionInitialValues,
-          from: startDate.format('l'),
-          to: endDate.format('l'),
-        }}
-        onSubmit={onSubmit}
-        validationSchema={sessionValidationSchema}
-        enableReinitialize={true}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-        }) => {
-          return (
-            <>
-              <DialogContent>
-                <Stack spacing={2} paddingY={2}>
-                  <FormLabel sx={{ fontSize: 13 }}>Academic Year</FormLabel>
-                  <Stack direction='row' columnGap={2}>
-                    <CustomYearPicker
-                      label='From'
-                      year={startYear}
-                      setYear={setStartYear}
-                    />
-                    <CustomYearPicker
-                      label='To'
-                      year={endYear}
-                      setYear={setEndYear}
-                    />
-                  </Stack>
-                  <CustomDatePicker
-                    label='Start of Academic Term/Semester'
-                    date={startDate}
-                    setDate={setStartDate}
-                    touched={touched.from}
-                    error={errors.from}
-                  />
-                  <CustomDatePicker
-                    label='End of Academic Term/Semester'
-                    date={endDate}
-                    setDate={setEndDate}
-                    touched={touched.to}
-                    error={errors.to}
-                  />
+      <CustomDialogTitle
+        title="Add Quick Session"
+        subtitle="You can complete the other details in the session preview"
+        onClose={handleCloseAddSession}
+      />
 
-                  <TextField
-                    select
-                    label='Term/Semester'
-                    size='small'
-                    value={values.term}
-                    onChange={handleChange('term')}
-                    error={Boolean(touched.term && errors.term)}
-                    helperText={touched.term && errors.term}
-                  >
-                    {SCHOOL_TERMS.length !== 0 ? (
-                      SCHOOL_TERMS.map((term) => (
-                        <MenuItem key={term} value={term}>
-                          {term}
-                        </MenuItem>
-                      ))
-                    ) : (
-                      <MenuItem>No Term Available </MenuItem>
-                    )}
-                  </TextField>
-                  <Divider />
-                </Stack>
-              </DialogContent>
-              <DialogActions sx={{ padding: 2 }}>
-                <Button
-                  loading={isSubmitting}
-                  variant='contained'
-                  onClick={handleSubmit}
-                >
-                  Save
-                </Button>
-              </DialogActions>
-            </>
-          );
-        }}
-      </Formik>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent>
+          <Stack spacing={2}>
+            <Input
+              name="name"
+              control={control}
+              size="small"
+              label="Session Name"
+              fullWidth
+            />
+
+            <FormLabel component="legend">Academic Session</FormLabel>
+
+            <DateInputPicker
+              label="Start of Academic Term/Semester"
+              name="from"
+              control={control}
+              textFieldProps={{
+                required: true,
+              }}
+            />
+            <DateInputPicker
+              label="End of Academic Term/Semester"
+              name="to"
+              control={control}
+              textFieldProps={{
+                required: true,
+              }}
+            />
+
+            <FormLabel
+              sx={{
+                textAlign: "center",
+                p: 1,
+                borderRadius: 1,
+                border: "1px solid lightgray",
+              }}
+            >
+              {`${moment(sT || new Date()).year()}/${moment(
+                eT || new Date()
+              ).year()}`}
+            </FormLabel>
+
+            <Typography variant="h6" gutterBottom>
+              Semester
+            </Typography>
+            <SelectInput
+              label="Term/Semester"
+              size="small"
+              name="term"
+              control={control}
+              fullWidth
+              margin="normal"
+            >
+              {SCHOOL_TERMS.map((term) => (
+                <MenuItem key={term} value={term}>
+                  {term}
+                </MenuItem>
+              ))}
+            </SelectInput>
+            <CustomRadioInput
+              name="isPromotionTerm"
+              title="Promotion Term / Semester?"
+              control={control}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ padding: 2 }}>
+          <Button
+            loading={isPending}
+            variant="contained"
+            type="submit"
+            // onClick={handleSubmit}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   );
 };

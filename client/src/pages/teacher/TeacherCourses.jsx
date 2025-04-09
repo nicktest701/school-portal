@@ -48,6 +48,7 @@ function TeacherCourses() {
       title: "Remove",
       text: "Do you want to revoke course from teacher?",
       showCancelButton: true,
+      backdrop:false
     }).then((data) => {
       if (data.isConfirmed) {
         mutateAsync(_id, {

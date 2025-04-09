@@ -74,6 +74,7 @@ function EditSubject() {
                     control={
                       <Checkbox
                         value={values.isCore || false}
+                        defaultValue={false}
                         checked={values?.isCore}
                         onChange={handleChange("isCore")}
                         defaultChecked={false}

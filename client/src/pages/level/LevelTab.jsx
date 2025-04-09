@@ -151,6 +151,7 @@ const LevelTab = () => {
 
   const newLevelColumns = [
     ...SCHOOL_LEVELS,
+    
     {
       field: null,
       title: "Class",
@@ -196,6 +197,7 @@ const LevelTab = () => {
         />
       ),
     },
+    
   ];
 
   return (

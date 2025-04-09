@@ -20,7 +20,6 @@ const LevelSchema = new mongoose.Schema(
       ref: "User", // Changed from `Mixed` to a proper reference
       // type: mongoose.SchemaTypes.Mixed,
       index: true,
-    
     },
     fee: {
       type: mongoose.SchemaTypes.ObjectId,
@@ -29,6 +28,10 @@ const LevelSchema = new mongoose.Schema(
     level: {
       type: Object,
       required: true,
+      default: {
+        name: "",
+        type: "",
+      },
     },
     subjects: [
       {
@@ -89,6 +92,5 @@ LevelSchema.virtual("noOfStudents").get(function () {
 // 🔹 Compound Indexes for Performance
 LevelSchema.index({ session: 1, term: 1 });
 LevelSchema.index({ grades: 1 });
-
 
 module.exports = db.model("Level", LevelSchema);

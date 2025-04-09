@@ -11,20 +11,23 @@ import level_icon from "@/assets/images/header/level_ico.svg";
 import DashboardCard from "@/components/cards/DashboardCard";
 
 const LevelDashboard = () => {
-  const { levelSummary } = useLevel();
+  const { levelSummary, subjects } = useLevel();
+
 
   return (
     <>
       <CustomTitle
-        title="School Levels & Subjects"
+        title="School Levels Information"
         subtitle="Organize and manage different educational levels to streamline curriculum and student progress tracking."
         img={level_icon}
         color="primary.main"
       />
       {/* <Divider /> */}
 
-      <Typography  variant='h5' py={2}>Level Details</Typography>
-      <Divider/>
+      <Typography variant="h5" py={2}>
+        Level Details
+      </Typography>
+      <Divider />
       <Box
         sx={{
           display: "grid",
@@ -48,7 +51,7 @@ const LevelDashboard = () => {
         />
         <DashboardCard
           title="Courses Offered"
-          value={levelSummary.noOfSubjects}
+          value={subjects}
           icon={
             <ClassIcon
               sx={{

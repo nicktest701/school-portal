@@ -33,12 +33,16 @@ const UserSchema = new mongoose.Schema(
       index: true, // Optimized for lookups
     },
     dateofbirth: {
-      type: String
+      type: String,
       // type: Date
     },
     gender: {
       type: String,
       enum: ["male", "female", "other"], // Standardized values
+      set: (value) => {
+        const lower = value ? value?.toLowerCase() : "";
+        return ["male", "female"].includes(lower) ? lower : "other";
+      },
       lowercase: true,
       trim: true,
     },
@@ -107,6 +111,5 @@ UserSchema.statics.findByUsername = function (username) {
 // 🔹 Compound Indexes for Faster Queries
 UserSchema.index({ email: 1, username: 1 });
 UserSchema.index({ school: 1, role: 1 });
-
 
 module.exports = db.model("User", UserSchema);

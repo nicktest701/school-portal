@@ -33,6 +33,7 @@ import {
   RefreshRounded,
   Note,
   Book,
+  Score,
 } from "@mui/icons-material";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { STUDENTS_EXAMS_COLUMN } from "@/mockup/columns/studentColumns";
@@ -55,13 +56,15 @@ const ExamsLevel = ({ type }) => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, session } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const { levelId } = useParams();
   const level = searchParams.get("level");
 
   //Get Students in Current Level id
   const { gradeSystem, subjects, levelName } = useLevelById(levelId);
+
+  const scorePreference = session?.exams?.scorePreference;
 
   //GET All Details about exams
 
@@ -421,6 +424,20 @@ const ExamsLevel = ({ type }) => {
                   >
                     Assign Grade
                   </button>
+                </Typography>
+              </Box>
+            </Grid2>
+            <Grid2 size={{ xs: 6, md: 2.5 }}>
+              <Box textAlign="center">
+                <Typography variant="caption" color="text.secondary">
+                  Score Preference
+                </Typography>
+                <Score color="success" />
+                <Typography variant="body2" color="success">
+                  {scorePreference || "50/50"}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  (Class Score / Exams Score)
                 </Typography>
               </Box>
             </Grid2>

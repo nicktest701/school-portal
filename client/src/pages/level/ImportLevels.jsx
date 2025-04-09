@@ -153,8 +153,11 @@ const ImportLevels = ({ open, onClose }) => {
 
       if (sheetData.length > 0) {
         const levels = _.uniqBy(
-          sheetData,
-          (obj) => `${obj?.name}-${obj?.type}`
+          _.map(sheetData, (level) => ({
+            name: level?.name,
+            type: level?.type || "",
+          })),
+          (obj) => `${obj?.name}-${obj?.type || ""}`
         );
 
         setFilteredData(levels);

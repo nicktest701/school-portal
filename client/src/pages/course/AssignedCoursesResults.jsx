@@ -37,15 +37,19 @@ import useLevelById from "@/components/hooks/useLevelById";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import AddStudentRecord from "./AddStudentRecord";
 import { gradeColor } from "@/config/gradeColor";
-import { RefreshRounded, ScoreRounded } from "@mui/icons-material";
+import { RefreshRounded, Score, ScoreRounded } from "@mui/icons-material";
 import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
+import { UserContext } from "@/context/providers/UserProvider";
 
 function AssignedCoursesResults() {
+  const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [searchParams] = useSearchParams();
   const { levelId } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
+
+  const scorePreference = session?.exams?.scorePreference;
 
   const { levelLoading, gradeSystem, subjects, levelName } =
     useLevelById(levelId);
@@ -296,7 +300,7 @@ function AssignedCoursesResults() {
 
           {/* Statistics Section */}
           <Grid2 container spacing={2}>
-            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid2 size={{ xs: 6, sm: 3, md: 2 }}>
               <Box textAlign="center">
                 <GroupIcon color="primary" />
                 <Typography variant="h6">{scores?.data?.students}</Typography>
@@ -305,7 +309,8 @@ function AssignedCoursesResults() {
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+
+            <Grid2 size={{ xs: 6, sm: 3, md: 2 }}>
               <Box textAlign="center">
                 <ScoreRounded color="info" />
                 <Typography variant="h6">
@@ -317,7 +322,7 @@ function AssignedCoursesResults() {
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid2 size={{ xs: 6, sm: 3, md: 2 }}>
               <Box textAlign="center">
                 <AssignmentTurnedInIcon color="success" />
                 <Typography variant="h6">{scores?.data?.topScore}%</Typography>
@@ -326,7 +331,7 @@ function AssignedCoursesResults() {
                 </Typography>
               </Box>
             </Grid2>
-            <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid2 size={{ xs: 6, sm: 3, md: 2 }}>
               <Box textAlign="center">
                 <AssignmentTurnedInIcon color="error" />
                 <Typography variant="h6">
@@ -334,6 +339,20 @@ function AssignedCoursesResults() {
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Least Score
+                </Typography>
+              </Box>
+            </Grid2>
+            <Grid2 size={{ xs: 6, sm: 3, md: 2 }}>
+              <Box textAlign="center">
+                <Typography variant="caption" color="text.secondary">
+                  Score Preference
+                </Typography>
+                <Score color="success" />
+                <Typography variant="body2" color="success">
+                  {scorePreference || "50/50"}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  (Class Score / Exams Score)
                 </Typography>
               </Box>
             </Grid2>

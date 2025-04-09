@@ -67,7 +67,6 @@ router.get(
   asyncHandler(async (req, res) => {
     const user = req.user;
 
-
     // const info = await knex("school_user_info").where("userId", id).select("*");
 
     // const result = {
@@ -120,7 +119,6 @@ router.get(
       expiresIn: "15m",
     });
 
-
     // const refresh_token = jwt.sign(loggedInUser, process.env.JWT_REFRESH_SECRET, {
     //   expiresIn: "1m",
     // });
@@ -131,14 +129,13 @@ router.get(
       token,
     });
   })
-)
+);
 
 // GET School Information
 router.get(
   "/school",
   asyncHandler(async (req, res) => {
     const school = await School.findOne();
-
 
     res.status(200).json(school);
   })
@@ -152,7 +149,6 @@ router.get(
     const { id } = req.params;
 
     const user = await User.findById(id).select("-password");
-
 
     // const info = await knex("users").where("userId", id).select("*");
 
@@ -176,11 +172,28 @@ router.get(
     //   userUpdatedAt: info[0]?.userUpdatedAt,
     // }
 
-    res.status(200).json(user);
+    const loggedInUser = {
+      _id: user._id?.toString(),
+      id: user._id?.toString(),
+      profile: user.profile,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      fullname: user.fullname,
+      username: user.username,
+      dateofbirth: user.dateofbirth,
+      gender: user.gender,
+      email: user.email,
+      phonenumber: user.phonenumber,
+      address: user.address,
+      residence: user.residence,
+      nationality: user.nationality,
+      role: user.role,
+      active: user.active,
+    };
+
+    res.status(200).json(loggedInUser);
   })
 );
-
-
 
 //@GET user by username
 router.post(
@@ -212,7 +225,6 @@ router.post(
 
     const refreshData = {
       id: user._id?.toString(),
-
     };
     const loggedInUser = {
       _id: user._id?.toString(),
@@ -230,19 +242,23 @@ router.post(
       active: user.active,
     };
 
-
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
       expiresIn: "15m",
     });
 
-    const refresh_token = jwt.sign(refreshData, process.env.JWT_REFRESH_SECRET, {
-      expiresIn: "180d",
-    });
+    const refresh_token = jwt.sign(
+      refreshData,
+      process.env.JWT_REFRESH_SECRET,
+      {
+        expiresIn: "180d",
+      }
+    );
 
     // loggedInUser.token = token;
 
     res.status(200).json({
-      token, refresh_token
+      token,
+      refresh_token,
     });
   })
 );
@@ -278,14 +294,13 @@ router.post(
     const hashedPassword = await bcrypt.hash(newUser.password, 10);
     newUser.password = hashedPassword;
 
-
-    let userPhoto = "https://firebasestorage.googleapis.com/v0/b/fir-system-54b99.appspot.com/o/download.png?alt=media&token=c3f23cd6-8973-4681-9900-98dbadc93d2a"
+    let userPhoto =
+      "https://firebasestorage.googleapis.com/v0/b/fir-system-54b99.appspot.com/o/download.png?alt=media&token=c3f23cd6-8973-4681-9900-98dbadc93d2a";
     if (req.file) {
       const filename = req.file?.filename;
-      userPhoto = await uploadFile(filename, 'users/');
-      newUser.profile = userPhoto
+      userPhoto = await uploadFile(filename, "users/");
+      newUser.profile = userPhoto;
     }
-
 
     const user = await User.create(newUser);
     // await knex('users').insert(newUser);
@@ -305,8 +320,6 @@ router.put(
   asyncHandler(async (req, res) => {
     const { _id, password, isOnlyUpdate, iat, exp, ...rest } = req.body;
 
-
-
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       rest.password = hashedPassword;
@@ -314,39 +327,26 @@ router.put(
       delete req.body.password;
     }
 
-
-    const updatedUser = await User.findByIdAndUpdate(_id, {
-      $set: rest
-    }, {
-
-      new: true,
-    });
-    // const updatedUser = await knex("users").where("_id", _id).update(req.body);
+    const updatedUser = await User.findByIdAndUpdate(
+      _id,
+      {
+        $set: {
+          ...rest,
+        },
+      },
+      {
+        new: true,
+      }
+    );
 
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info.Try Again Later.");
     }
 
-    if (rest?.role === 'teacher') {
-
-      await Teacher.findByIdAndUpdate(_id, {
-        $set: {
-          ...rest,
-          surname: rest.lastname
-        }
-      }, {
-        new: true,
-      });
-    }
     if (isOnlyUpdate) {
-      return res.status(404).json("Profile Updated!!!");
+      return res.status(201).json("Profile Updated!!!");
     }
-    // const updatedTeacher = await knex("teachers")
-    //   .where("_id", _id)
-    //   .update(req.body);
-
-    // console.log(updatedUser)
-    // return res.status(400).json('error');
+ 
 
     const loggedInUser = {
       id: updatedUser._id?.toString(),
@@ -362,7 +362,6 @@ router.put(
       role: updatedUser.role,
       active: updatedUser.active,
     };
-
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
       expiresIn: "15m",
@@ -380,19 +379,16 @@ router.put(
   asyncHandler(async (req, res) => {
     const { _id, user } = req.body;
 
-
-
     if (_.isEmpty(req.file)) {
       return res.status(400).json("Please upload a file");
     }
 
-
     const filename = req.file?.filename;
-    const userPhoto = await uploadFile(filename, 'users/');
+    const userPhoto = await uploadFile(filename, "users/");
 
     const updatedUser = await User.findByIdAndUpdate(_id, {
       $set: {
-        profile: userPhoto
+        profile: userPhoto,
       },
     });
 
@@ -408,11 +404,10 @@ router.put(
         .json("Error updating profile image.Try again later.");
     }
 
-    if (updatedUser.role === 'teacher') {
-
+    if (updatedUser.role === "teacher") {
       await Teacher.findByIdAndUpdate(_id, {
         $set: {
-          profile: userPhoto
+          profile: userPhoto,
         },
       });
     }
@@ -424,7 +419,6 @@ router.put(
     //   });
 
     if (!_.isEmpty(user)) {
-
       const loggedInUser = {
         _id: updatedUser._id,
         id: updatedUser._id?.toString(),
@@ -440,7 +434,6 @@ router.put(
         role: updatedUser.role,
         active: updatedUser.active,
       };
-
 
       const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
         expiresIn: "15m",
@@ -491,7 +484,6 @@ router.put(
     const user = await User.findById(id);
     // const user = await knex('users').where('id', id).first();
 
-
     if (_.isEmpty(user)) {
       return res.status(404).json("User does not exist");
     }
@@ -508,7 +500,6 @@ router.put(
     //   const updatedUser = await knex('users')
     // .where({ id: id })
     // .update({ password: hashedPassword });
-
 
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info.Try Again Later.");
@@ -540,8 +531,6 @@ router.put(
     // .where({ _id: id })
     // .update({ password: hashedPassword });
 
-
-
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info.Try Again Later.");
     }
@@ -550,15 +539,13 @@ router.put(
   })
 );
 
-
 router.put(
   "/logout",
   verifyJWT,
   asyncHandler(async (req, res) => {
-
-    req.user = null
-    delete req.session
-    res.sendStatus(204)
+    req.user = null;
+    delete req.session;
+    res.sendStatus(204);
   })
 );
 
@@ -583,7 +570,6 @@ router.patch(
     //   const updatedUser = await knex('users')
     // .where({ id: id })
     // .update({ password: hashedPassword });
-
 
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info.Try Again Later.");
@@ -632,7 +618,6 @@ router.put(
     // .where({ id: id })
     // .update({ active: active }, ['*']);
 
-
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info");
     }
@@ -650,7 +635,6 @@ router.delete(
   "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
-
 
     if (!isValidObjectId(id)) {
       return res.status(401).json("Invalid User information");
@@ -670,8 +654,6 @@ router.delete(
     res.status(200).json("User has been removed successfully !!!");
   })
 );
-
-
 
 // EDIT School Information
 router.put(
@@ -700,6 +682,5 @@ router.put(
     res.status(200).json("School Information Updated!!!");
   })
 );
-
 
 module.exports = router;

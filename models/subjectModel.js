@@ -27,12 +27,18 @@ const SubjectSchema = new mongoose.Schema(
       required: true,
       // unique: true, // Ensures subject names are distinct
       uppercase: true,
-      trim: true,
       maxlength: 100, // Avoids excessively long names
+      trim: true,
     },
     isCore: {
       type: Boolean,
       default: false,
+      set: (value) => {
+        const core = value || "";
+        return ["yes", "Yes", "True", true, "true"].includes(core)
+          ? true
+          : false;
+      },
       index: true, // Optimized for core subject filtering
     },
   },

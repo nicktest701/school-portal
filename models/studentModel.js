@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const db = require("../db/DBConnection");
-const _ = require('lodash')
+const _ = require("lodash");
 
 const StudentSchema = new mongoose.Schema(
   {
@@ -49,7 +49,11 @@ const StudentSchema = new mongoose.Schema(
     gender: {
       type: String,
       lowercase: true,
-      enum: ["male", "female", "other"], // Ensures valid gender values
+      enum: ["male", "female", "other"],
+      set: (value) => {
+        const lower = value.toLowerCase();
+        return ["male", "female"].includes(lower) ? lower : "other";
+      },
       required: true,
     },
     email: {
@@ -107,12 +111,13 @@ const StudentSchema = new mongoose.Schema(
 
 // 🔹 Virtual Full Name Field (No Lodash Dependency)
 StudentSchema.virtual("fullName").get(function () {
-  const name = `${this.surname} ${this.firstname} ${this.othername || ""}`.trim();
-  return _.upperCase(name)
+  const name = `${this.surname} ${this.firstname} ${
+    this.othername || ""
+  }`.trim();
+  return _.upperCase(name);
 });
 
 // 🔹 Compound Indexes for Performance
 StudentSchema.index({ school: 1, indexnumber: 1 }); // Fast lookup within a school
-
 
 module.exports = db.model("Student", StudentSchema);

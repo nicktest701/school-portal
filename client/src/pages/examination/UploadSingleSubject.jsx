@@ -51,10 +51,15 @@ const UploadSingleSubject = () => {
   const [mainError, setMainError] = useState("");
 
   const scorePreference = session?.exams?.scorePreference?.split("/");
-  const classScorePreference = scorePreference[0];
-  const examsScorePreference = scorePreference[1];
+  const classScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[0]
+    : 50;
+  const examsScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[1]
+    : 50;
 
-  const { levelLoading, levelName, gradeSystem, subjects } =
+
+  const { levelName, gradeSystem, subjects } =
     useLevelById(levelId);
 
   const subject = subjects?.find((s) => s?._id === searchParams.get("_id"));
@@ -236,7 +241,14 @@ const UploadSingleSubject = () => {
         right={<Typography variant="h6">{subject?.name}</Typography>}
       />
 
-      <Stack spacing={2} py={4} px={2} my={4} border="1px solid lightgray" borderRadius={2}>
+      <Stack
+        spacing={2}
+        py={4}
+        px={2}
+        my={4}
+        border="1px solid lightgray"
+        borderRadius={2}
+      >
         <Typography>
           Select an <b>EXCEL</b> OR <b>CSV</b> file containing students'{" "}
           {subject?.name} results information. Make sure the columns matches the

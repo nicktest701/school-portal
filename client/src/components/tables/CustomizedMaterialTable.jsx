@@ -55,6 +55,7 @@ function CustomizedMaterialTable({
         buttonText={addButtonText}
         onClick={onAddButtonClicked}
         showAddButton={showAddButton}
+        otherButtons={otherButtons}
       />
     );
   }

@@ -63,6 +63,7 @@ const TeacherAssignCourse = () => {
       title: "Assign Course",
       text: "Proceed with Course Assignment?",
       showCancelButton: true,
+      backdrop:false
     }).then((data) => {
       if (data.isConfirmed) {
         const info = {

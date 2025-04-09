@@ -23,12 +23,15 @@ import CustomImageChooser from "@/components/inputs/CustomImageChooser";
 import { UserContext } from "@/context/providers/UserProvider";
 import { useSearchParams } from "react-router-dom";
 import LoadingSpinner from "../spinners/LoadingSpinner";
+import CustomDatePicker from "../inputs/CustomDatePicker";
+import moment from "moment";
 
 const UpdateUserProfile = () => {
   const { user, logInUser } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queryClient = useQueryClient();
+  const [dob, setDob] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPasswordErr, setConfirmPasswordError] = useState("");
   const [profileImage, setProfileImage] = useState(null);
@@ -36,6 +39,7 @@ const UpdateUserProfile = () => {
 
   useEffect(() => {
     setProfileImage(user?.profile);
+    setDob(moment(user?.dateofbirth));
   }, [user]);
 
   const { mutateAsync, isPending } = useMutation({
@@ -47,10 +51,10 @@ const UpdateUserProfile = () => {
       options.setSubmitting(false);
       return;
     }
-    values.fullname = `${values?.firstname} ${values?.lastname}`;
+
     delete values.profile;
     delete values.confirmPassword;
-
+    values.dateofbirth = moment(dob).format("L");
     values._id = user?.id;
     mutateAsync(values, {
       onSettled: () => {
@@ -106,6 +110,7 @@ const UpdateUserProfile = () => {
   const handleToggle = () => {
     setShowPassword((prev) => !prev);
   };
+
 
   return (
     <Dialog open={searchParams.get("e_p")} maxWidth="md" fullWidth>
@@ -189,14 +194,11 @@ const UpdateUserProfile = () => {
                     error={Boolean(touched.username && errors.username)}
                     helperText={touched.username && errors.username}
                   />
-                  <TextField
-                    type="date"
-                    label="Date of birth"
-                    fullWidth
-                    size="small"
-                    InputLabelProps={{ shrink: true }}
-                    value={values.dateofbirth || ""}
-                    onChange={handleChange("dateofbirth")}
+                  <CustomDatePicker
+                    label="Date of Birth"
+                    date={dob}
+                    setDate={setDob}
+                    disableFuture={true}
                     error={Boolean(touched.dateofbirth && errors.dateofbirth)}
                     helperText={touched.dateofbirth && errors.dateofbirth}
                   />

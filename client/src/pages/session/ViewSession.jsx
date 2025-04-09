@@ -3,11 +3,9 @@ import moment from "moment";
 import {
   Stack,
   Typography,
-  Divider,
   Container,
   TextField,
   Button,
-  ListItemText,
   FormControl,
   Box,
 } from "@mui/material";
@@ -205,10 +203,18 @@ const ViewSession = () => {
                   value={session?.data?.headmaster?.phone}
                 />
               </Stack>
-              <Box>
+              <Box border='1px solid var(--primary)' p={2}>
+                <Typography textAlign="center">Headmaster's Signature</Typography>
                 <img
-                  alt="headmaster signature"
+                  alt="headmaster's signature"
                   src={session?.data?.headmaster?.signature}
+                  style={{
+                    maxWidth: "100%",
+                    width: 200,
+                    height: 200,
+                    objectFit: "contain",
+                    aspectRatio: "1/1",
+                  }}
                 />
               </Box>
             </Stack>

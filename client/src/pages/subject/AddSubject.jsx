@@ -17,6 +17,7 @@ import {
   ListItemText,
   FormLabel,
   Input,
+  Link,
 } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash";
@@ -122,19 +123,26 @@ const AddSubject = ({ open, setOpen }) => {
       reader.onload = (e) => {
         const binaryStr = e.target?.result;
         if (binaryStr) {
-          const workbook = XLSX.read(binaryStr, { type: "binary" });
+          const workbook = XLSX.read(binaryStr, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-          const headers = jsonData[0].map((header) => _.camelCase(header));
-          const rows = jsonData.slice(1);
+          const modifiedData = jsonData.filter((row) =>
+            Object.values(row).some(
+              (value) => value !== undefined && value !== ""
+            )
+          );
+
+          const headers = modifiedData[0].map((header) => _.camelCase(header));
+          const rows = modifiedData.slice(1);
 
           const formattedData = rows.map((row) => {
-            const rowData = {};
+            const rowData = {
+              code: _.uniqueId("10"),
+            };
             headers.forEach((header, index) => {
-              rowData.code = _.uniqueId("10");
-              rowData[header] = row[index];
+              rowData[header] = row[index]
             });
             return rowData;
           });
@@ -236,14 +244,16 @@ const AddSubject = ({ open, setOpen }) => {
               />
             </FormLabel>
           </Button>
-          <Button
-            sx={{ alignSelf: "flex-end", textDecoration: "underline" }}
-            variant="text"
+          <Link
+            sx={{
+              alignSelf: "flex-end",
+              textDecoration: "underline",
+              fontSize: 13,
+            }}
             onClick={handleDownloadTemplate}
-            endIcon={<Download />}
           >
-            Download Template here
-          </Button>
+            Download Subject Template here
+          </Link>
           <List sx={{ maxHeight: 400 }}>
             {_.isEmpty(subjectList) ? (
               <Typography>No Subject selected</Typography>

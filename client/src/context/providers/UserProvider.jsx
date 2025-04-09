@@ -3,17 +3,19 @@ import Swal from "sweetalert2";
 import UserReducer from "../reducers/UserReducer";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { generateNewCurrentLevelDetailsFromLevels } from "@/api/levelAPI";
-import { logOut } from "@/api/userAPI";
+import { getUser as getUserAuth, logOut } from "@/api/userAPI";
 import { useNavigate } from "react-router-dom";
 import { getUser, parseJwt } from "@/config/sessionHandler";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLevel from "@/components/hooks/useLevel";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { getSchool } from "@/api/schoolAPI";
+import { getTerm } from "@/api/termAPI";
 export const UserContext = React.createContext();
 
 const UserProvider = ({ children }) => {
   const [session, setSession] = useLocalStorage("@school_session", null);
+
   const [schoolInformation, setSchoolInformation] = useLocalStorage(
     "@school_info",
     null
@@ -22,6 +24,7 @@ const UserProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(
     getUser() || {
+      _id: "",
       id: "",
       profile: "",
       username: "",
@@ -38,6 +41,29 @@ const UserProvider = ({ children }) => {
     initialData: schoolInformation,
     enabled: !!schoolInformation?._id,
     staleTime: 1000 * 60 * 5, // 5 minutes cache
+  });
+
+  const schoolSession = useQuery({
+    queryKey: ["terms/:id", session?.termId],
+    queryFn: () => getTerm(session?.termId),
+    initialData: session,
+    enabled: !!schoolInfo?._id && !!session?.sessionId && !!session?.termId,
+    select: (sess) => {
+      if (!sess?.termId) return session;
+      const { core, ...rest } = sess;
+
+      return {
+        ...core,
+        ...rest,
+      };
+    },
+  });
+
+  const currentUser = useQuery({
+    queryKey: ["user/:id", user?._id],
+    queryFn: () => getUserAuth(user?._id),
+    initialData: user,
+    enabled: !!schoolInfo?._id,
   });
 
   const { levelLoading, students } = useLevel();
@@ -120,12 +146,12 @@ const UserProvider = ({ children }) => {
     <UserContext
       value={{
         userState,
-        session,
+        school_info: schoolInfo?.data,
+        session: schoolSession?.data,
+        user: currentUser?.data,
         updateSession,
-        user,
         logInUser,
         logOutUser,
-        school_info: schoolInfo?.data,
         updateSchoolInformation,
         userDispatch,
         students,
@@ -137,6 +163,5 @@ const UserProvider = ({ children }) => {
     </UserContext>
   );
 };
-
 
 export default UserProvider;

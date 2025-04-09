@@ -40,6 +40,7 @@ const TeacherAdd = ({ setTab }) => {
     mutationFn: postTeacher,
   });
   const onSubmit = (values, options) => {
+    console.log(values)
 
     values.dateofbirth = moment(dob).format("L");
     mutateAsync(values, {
@@ -85,6 +86,7 @@ const TeacherAdd = ({ setTab }) => {
             handleSubmit,
             handleReset,
           }) => {
+           
             const uploadProfile = (e) => {
               setFieldValue("profile", e.target.files[0]);
               setProfieImg(URL.createObjectURL(e.target.files[0]));

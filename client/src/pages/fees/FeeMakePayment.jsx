@@ -43,7 +43,6 @@ const schema = yup.object().shape({
   student: yup.object().shape({
     _id: yup.string().required("Student ID is required"),
     fullName: yup.string().required("Full Name is required"),
-    profile: yup.string().url("Profile must be a valid URL").optional(),
   }),
   amount: yup
     .number()
@@ -83,9 +82,9 @@ const FeeMakePayment = () => {
     },
   });
 
-  const currentAmount = watch("amount");
   const currentLevel = watch("level");
   const studentInfo = watch("student");
+
 
   ///Get Student fees info
   const studentFees = useQuery({
@@ -138,6 +137,7 @@ const FeeMakePayment = () => {
       title: "Making Payment",
       text: "Do you want to proceed with the payment?",
       showCancelButton: true,
+      backdrop:false
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         mutateAsync(payment, {

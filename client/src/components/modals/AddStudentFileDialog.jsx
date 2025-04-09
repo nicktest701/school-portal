@@ -73,7 +73,7 @@ function AddStudentFileDialog() {
       },
       type: fileData.type,
     };
-    console.log(studentInfo)
+
     // return;
 
     Swal.fire({
@@ -87,6 +87,7 @@ function AddStudentFileDialog() {
             schoolSessionDispatch(alertSuccess(data));
             schoolSessionDispatch({ type: "closeAddStudentFileDialog" });
             queryClient.invalidateQueries(["all-students"]);
+            setFieldValue({ _id: "", type: "" });
           },
           onError: (error) => {
             if (error?.isDuplicateError) {

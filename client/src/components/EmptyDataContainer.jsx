@@ -12,6 +12,7 @@ const EmptyDataContainer = ({
   img,
   message,
   showAddButton,
+  otherButtons
 }) => {
   const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
@@ -37,16 +38,19 @@ const EmptyDataContainer = ({
         <Typography variant="body1" color="primary" textAlign="center" pt={2}>
           {message || "No data available !"}
         </Typography>
-        {showAddButton && (
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={onClick}
-            sx={{ width: { xs: 150, md: 200 } }}
-          >
-            {buttonText}
-          </Button>
-        )}
+        <Stack direction='row' spacing={2}>
+          {showAddButton && (
+            <Button
+              variant="contained"
+              startIcon={<Add />}
+              onClick={onClick}
+              sx={{ width: { xs: 150, md: 200 } }}
+            >
+              {buttonText}
+            </Button>
+          )}
+          {otherButtons && <>{otherButtons}</>}
+        </Stack>
       </Stack>
     </Box>
   );

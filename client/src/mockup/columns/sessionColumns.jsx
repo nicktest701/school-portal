@@ -306,24 +306,24 @@ export const SUBJECT_OPTIONS = [
   "English Language",
   "Reading",
   "Writing",
-  "Music & Dance",
-  "Orals & Rhymes",
+  "Music and Dance",
+  "Orals and Rhymes",
   "Mathematics",
   "Integrated Science",
   "Natural Science",
   "Social Studies",
   "History",
-  "Religious & Moral Education",
-  "Creative Arts & Design",
+  "Religious and Moral Education",
+  "Creative Arts and Design",
   "Career Technology",
   "Our World,Our People",
-  "Information & Communication Technology",
+  "Information and Communication Technology",
   "Computing",
   "Ghanaian Language",
   "French",
   "Arabic",
   "Physical Education",
-  "Physical & Health Education",
+  "Physical and Health Education",
 ];
 
 export const SUBJECTS = [
@@ -359,12 +359,12 @@ export const SUBJECTS = [
   },
   {
     code: "",
-    name: "OUR WORLD,OUR PEOPLE",
+    name: "OUR WORLD OUR PEOPLE",
     isCore: false,
   },
   {
     code: "",
-    name: "RELIGIOUS & MORAL EDUCATION",
+    name: "RELIGIOUS AND MORAL EDUCATION",
     isCore: false,
   },
   {
@@ -374,7 +374,7 @@ export const SUBJECTS = [
   },
   {
     code: "",
-    name: "CREATIVE ARTS & DESIGN",
+    name: "CREATIVE ARTS AND DESIGN",
     isCore: false,
   },
   {
@@ -399,7 +399,7 @@ export const SUBJECTS = [
   },
   {
     code: "",
-    name: "PHYSICAL & HEALTH EDUCATION",
+    name: "PHYSICAL AND HEALTH EDUCATION",
     isCore: false,
   },
   {
@@ -419,12 +419,12 @@ export const SUBJECTS = [
   },
   {
     code: "",
-    name: "MUSIC & DANCE",
+    name: "MUSIC AND DANCE",
     isCore: false,
   },
   {
     code: "",
-    name: "ORALS & RHYMES",
+    name: "ORALS AND RHYMES",
     isCore: false,
   },
 ];

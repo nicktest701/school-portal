@@ -17,6 +17,7 @@ function useLevel() {
     enabled: !!session?.sessionId && !!session?.termId,
     initialData: {
       students: [],
+      subjects: 0,
       levelsOption: [],
       fees: [],
       levelSummary: {

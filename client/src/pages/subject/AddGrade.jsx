@@ -34,7 +34,7 @@ function AddGrade({ open, setOpen }) {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [grades, setGrades] = useState([]);
-  const [name, setName] = useState(uuid());
+  const [name, setName] = useState(uuid()?.split("-")[0]);
   const initialValues = {
     lowestMark: 0,
     highestMark: 0,

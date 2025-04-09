@@ -1,43 +1,44 @@
-const router = require('express').Router();
-const asyncHandler = require('express-async-handler');
-const Subject = require('../models/subjectModel');
-const _ = require('lodash');
+const router = require("express").Router();
+const asyncHandler = require("express-async-handler");
+const Subject = require("../models/subjectModel");
+const _ = require("lodash");
 
 const SUBJECT_OPTIONS = [
-  'ENGLISH LANGUAGE',
-  'MATHEMATICS',
-  'INTEGRATED SCIENCE',
-  'NATURAL SCIENCE',
-  'HISTORY',
-  'SOCIAL STUDIES',
-  'OUR WORLD,OUR PEOPLE',
-  'RELIGIOUS & MORAL EDUCATION',
-  'COMPUTING',
-  "INFORMATION & COMMUNICATION TECHNOLOGY",
-  'CREATIVE ARTS & DESIGN',
-  'CAREER TECHNOLOGY',
-  'GHANAIAN LANGUAGE',
-  'FRENCH',
-  'ARABIC',
-  'PHYSICAL EDUCATION',
-  'PHYSICAL & HEALTH EDUCATION',
-  'READING',
-  'WRITING',
-  'MUSIC & DANCE',
-  'ORALS & RHYMES',
+  "ENGLISH LANGUAGE",
+  "MATHEMATICS",
+  "INTEGRATED SCIENCE",
+  "NATURAL SCIENCE",
+  "HISTORY",
+  "SOCIAL STUDIES",
+  "OUR WORLD OUR PEOPLE",
+  "RELIGIOUS AND MORAL EDUCATION",
+  "COMPUTING",
+  "INFORMATION AND COMMUNICATION TECHNOLOGY",
+  "CREATIVE ARTS AND DESIGN",
+  "CAREER TECHNOLOGY",
+  "GHANAIAN LANGUAGE",
+  "FRENCH",
+  "ARABIC",
+  "PHYSICAL EDUCATION",
+  "PHYSICAL AND HEALTH EDUCATION",
+  "READING",
+  "WRITING",
+  "MUSIC & DANCE",
+  "ORALS & RHYMES",
 ];
 //@GET All school subjects
 router.get(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
-    const { session, term } = req.query
+    const { session, term } = req.query;
 
     if (!session || !term) {
       return res.status(200).send([]);
     }
 
     const subjects = await Subject.find({
-      session, term
+      session,
+      term,
     });
     // console.log(subjects)
     if (_.isEmpty(subjects)) {
@@ -55,7 +56,7 @@ router.get(
 
 //@GET School Subject by id
 router.get(
-  '/:name',
+  "/:name",
   asyncHandler(async (req, res) => {
     const { name } = req.params;
     const subject = await Subject.findOne({ name });
@@ -65,49 +66,56 @@ router.get(
 
 //Add new School Subject
 router.post(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     //Create new Subject
     const { session, term, subjects } = req.body;
-    const modifiedSubjects = subjects.map(async (subject) => {
 
-      const s = await Subject.findOne({ session, term, name: _.upperCase(subject?.name) })
+    const modifiedSubjects = subjects.map(async (subject) => {
+      const s = await Subject.find({
+        session,
+        term,
+        name: _.trim(_.upperCase(subject?.name)),
+      });
+      
       if (_.isEmpty(s)) {
         return await Subject.create({
           ...subject,
           session,
           term,
-        })
-      } else {
-        return sub = await Subject.findOneAndUpdate({ session, term, name: _.upperCase(subject?.name) }, {
-          $setOnInsert: {
-            ...subject,
-            session,
-            term,
-          }
-        }, {
-          new: true,
-          upsert: true,
         });
-
+      } else {
+        return await Subject.findOneAndUpdate(
+          { session, term, name: _.trim(_.upperCase(subject?.name)) },
+          {
+            $set: {
+              ...subject,
+              session,
+              term,
+            },
+          },
+          {
+            new: true,
+          }
+        );
       }
     });
 
-    const updatedSubjects = await Promise.all(modifiedSubjects)
+    const updatedSubjects = await Promise.all(modifiedSubjects);
 
     if (_.isEmpty(updatedSubjects)) {
       return res
         .status(404)
-        .send('Error creating new subjects.Try again later');
+        .send("Error creating new subjects.Try again later");
     }
     //console.log(subject);
-    res.send('Subjects Saved!');
+    res.status(200).send("Subjects Saved!");
   })
 );
 
 //@PUT Update Existing School Subject
 router.put(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const modifiedSubject = await Subject.findByIdAndUpdate(
       req.body._id,
@@ -126,20 +134,20 @@ router.put(
     if (_.isEmpty(modifiedSubject)) {
       return res
         .status(404)
-        .send('Error updating subject info.Try again later');
+        .send("Error updating subject info.Try again later");
     }
 
-    res.status(201).send('Changes Saved');
+    res.status(201).send("Changes Saved");
   })
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
     await Subject.findByIdAndDelete(id);
 
-    res.status(204).send('Subject removed');
+    res.status(204).send("Subject removed");
   })
 );
 
