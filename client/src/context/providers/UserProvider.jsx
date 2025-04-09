@@ -39,15 +39,14 @@ const UserProvider = ({ children }) => {
     queryKey: ["school-info", schoolInformation?.code],
     queryFn: () => getSchool({ code: schoolInformation?.code }),
     initialData: schoolInformation,
-    enabled: !!schoolInformation?._id,
-    staleTime: 1000 * 60 * 5, // 5 minutes cache
+    enabled: !!schoolInformation?.code,
   });
 
   const schoolSession = useQuery({
     queryKey: ["terms/:id", session?.termId],
     queryFn: () => getTerm(session?.termId),
     initialData: session,
-    enabled: !!schoolInfo?._id && !!session?.sessionId && !!session?.termId,
+    enabled: !!session?.sessionId && !!session?.termId,
     select: (sess) => {
       if (!sess?.termId) return session;
       const { core, ...rest } = sess;
@@ -60,12 +59,13 @@ const UserProvider = ({ children }) => {
   });
 
   const currentUser = useQuery({
-    queryKey: ["user/:id", user?._id],
-    queryFn: () => getUserAuth(user?._id),
+    queryKey: ["user/:id", user?.id],
+    queryFn: () => getUserAuth(user?.id),
     initialData: user,
-    enabled: !!schoolInfo?._id,
+    enabled: !!!user?.id,
   });
 
+  
   const { levelLoading, students } = useLevel();
 
   //check if current level details exists
@@ -88,8 +88,8 @@ const UserProvider = ({ children }) => {
 
   const initState = {
     isPending: true,
-    session,
-    user,
+    session: schoolSession.data,
+    user: currentUser?.data,
     school_info: schoolInfo?.data,
   };
 
@@ -134,6 +134,7 @@ const UserProvider = ({ children }) => {
               navigate("/login");
               setSchoolInformation(null);
               localStorage.removeItem("@user");
+              localStorage.removeItem("@user_refresh");
               setUser(null);
             },
           }

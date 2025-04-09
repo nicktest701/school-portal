@@ -1,4 +1,5 @@
 import { UserContext } from "@/context/providers/UserProvider";
+import _ from "lodash";
 import { use, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -8,8 +9,7 @@ const ProtectedRoute = ({ children }) => {
   const { user, session, school_info } = use(UserContext);
 
   // Replace this with your actual authentication logic
-  const isAuthenticated =
-    !!user?.id || !!school_info?._id || !!session?.sessionId; // Example: Checking if token exists
+  const isAuthenticated = !_.isEmpty(user?.id);
 
   useEffect(() => {
     if (!isAuthenticated) {

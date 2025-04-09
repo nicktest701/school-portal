@@ -69,17 +69,17 @@ function CustomEvent() {
     {
       _id: "1",
       title: `Start of ${session?.term} (${session?.academicYear})`,
-      date: moment(session?.from).format("YYYY-MM-DD"),
+      date: moment(new Date(session?.from)).format("YYYY-MM-DD"),
     },
     {
       _id: "2",
       title: `End of ${session?.term} (${session?.academicYear})`,
-      date: moment(session?.to).format("YYYY-MM-DD"),
+      date: moment(new Date(session?.to)).format("YYYY-MM-DD"),
     },
     {
       _id: "3",
       title: `Vacation Date for ${session?.term}`,
-      date: moment(session?.vacationDate).format("YYYY-MM-DD"),
+      date: moment(new Date(session?.vacationDate)).format("YYYY-MM-DD"),
     },
   ]);
 

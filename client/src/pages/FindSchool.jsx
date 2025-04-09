@@ -68,7 +68,6 @@ const FindSchool = () => {
 
   const handleProceedToLogin = () => {
     updateSchoolInformation(schoolDetails);
- 
   };
 
   const codeWatch = watch("code");

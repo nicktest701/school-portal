@@ -34,6 +34,7 @@ router.get(
       terms = await Term.find({
         school: req.user.school,
       }).populate("session");
+
     }
 
     if (_.isEmpty(terms)) {
@@ -67,6 +68,8 @@ router.get(
     res.status(200).json(sortedTerms);
   })
 );
+
+
 //@GET All school Terms
 router.get(
   "/sessions",
