@@ -1,54 +1,58 @@
-import _ from 'lodash';
+import _ from "lodash";
+import { SUBJECT_OPTIONS } from "./columns";
 
 export const getColumns = (subjects) => {
- 
-  const customColumns = subjects?.map((subject) => {
+  const modifiedSubjects = subjects?.sort(
+    (a, b) =>
+      SUBJECT_OPTIONS.indexOf(a?.name) - SUBJECT_OPTIONS.indexOf(b?.name)
+  );
+
+  const customColumns = modifiedSubjects?.map((subject) => {
     return {
       title: subject?.name,
       field: _.camelCase(subject?.name),
     };
   });
 
-
   return [
     {
-      title: 'No',
+      title: "No",
       render: (rowData) => rowData.tableData.id + 1,
     },
     {
-      title: 'STUDENT NAME',
-      field: 'fullName',
+      title: "STUDENT NAME",
+      field: "fullName",
       cellStyle: {
         width: 400,
         // color: 'blue',
-        fontWeight: 'bold',
-        whiteSpace: 'nowrap',
+        fontWeight: "bold",
+        whiteSpace: "nowrap",
         minWidth: 300,
       },
     },
     ...customColumns,
     {
-      title: 'OVERALL SCORE',
-      field: 'overallScore',
+      title: "OVERALL SCORE",
+      field: "overallScore",
       cellStyle: {
-        color: 'red',
-        fontWeight: 'bold',
+        color: "red",
+        fontWeight: "bold",
       },
     },
     {
-      title: 'GRADE',
-      field: 'grade',
+      title: "GRADE",
+      field: "grade",
       cellStyle: {
-        color: 'blue',
-        fontWeight: 'bold',
+        color: "blue",
+        fontWeight: "bold",
       },
     },
     {
-      title: 'POSITION',
-      field: 'position',
+      title: "POSITION",
+      field: "position",
       cellStyle: {
-        color: 'green',
-        fontWeight: 'bold',
+        color: "green",
+        fontWeight: "bold",
       },
       // export: false,
     },
@@ -106,5 +110,5 @@ export const getResults = (results = [], subjects = []) => {
     }
   );
 
-  return _.orderBy(customData, 'overallScore', 'desc');
+  return _.orderBy(customData, "overallScore", "desc");
 };

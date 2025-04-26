@@ -6,18 +6,24 @@ import { useNavigate, useLocation } from "react-router-dom";
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, session, school_info } = use(UserContext);
+  const { user, session } = use(UserContext);
+
 
   // Replace this with your actual authentication logic
   const isAuthenticated = !_.isEmpty(user?.id);
+
+  const isSessionAuthenticated = !_.isEmpty(session?.termId);
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login", { state: { from: location } });
     }
-  }, [isAuthenticated, navigate, location]);
+    if (!isSessionAuthenticated) {
+      navigate("/school-session");
+    }
+  }, [isAuthenticated, isSessionAuthenticated, navigate, location]);
 
-  return isAuthenticated ? children : null;
+  return isAuthenticated && isSessionAuthenticated ? children : null;
 };
 
 export default ProtectedRoute;

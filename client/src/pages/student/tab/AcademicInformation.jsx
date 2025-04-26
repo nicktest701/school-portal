@@ -14,7 +14,7 @@ import Input from "@/components/inputs/Input";
 
 const AcademicInformation = ({ watch, control, setValue, errors }) => {
   const report = watch("academic.previousSchool.report");
-  const levels = JSON.parse(localStorage.getItem("levels")) || [];
+  const levels = JSON.parse(sessionStorage.getItem("levels")) || [];
 
   const memoizedLevelsOption = useMemo(() => levels, [levels]);
 

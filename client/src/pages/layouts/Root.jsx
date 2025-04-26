@@ -1,10 +1,5 @@
 import React, { lazy, Suspense, use, useEffect } from "react";
-import {
-  Route,
-  Routes,
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import Loader from "../../config/Loader";
 import Shell from "../Shell";
@@ -20,6 +15,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import AddSession from "../session/AddSession";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import Receipt from "../fees/Receipt";
 
 //Session
 const Sessions = lazy(() => import("../session/Sessions"));
@@ -90,7 +86,6 @@ const TeacherHome = lazy(() => import("../teacher/TeacherHome"));
 const About = lazy(() => import("../About"));
 const Settings = lazy(() => import("../settings/Settings"));
 const SchoolSession = lazy(() => import("../SchoolSession"));
-
 
 const FeeHome = lazy(() => import("../fees/FeeHome"));
 const FeeMakePayment = lazy(() => import("../fees/FeeMakePayment"));
@@ -313,7 +308,6 @@ const Root = () => {
                     </Suspense>
                   }
                 />
-             
               </Route>
 
               {/* Teacher */}
@@ -474,14 +468,15 @@ const Root = () => {
                   path="level"
                 />
 
-                <Route
+                {/* <Route
                   element={
                     <Suspense fallback={<Loader />}>
                       <FeePrint />
                     </Suspense>
                   }
                   path="print"
-                />
+                /> */}
+                <Route element={<Receipt />} path="receipt" />
               </Route>
 
               {/* messages */}

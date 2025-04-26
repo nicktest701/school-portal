@@ -25,6 +25,7 @@ import Report from "./Report";
 import Core from "./Core";
 import CustomTitle from "@/components/custom/CustomTitle";
 import Headmaster from "./Headmaster";
+import FormStep from "@/components/FormStep";
 
 // Step Titles
 const steps = [
@@ -132,7 +133,7 @@ const validationSchemas = [
               /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/,
               "Invalid Phone number"
             ),
-            signature: yup.string().optional(),
+          signature: yup.string().optional(),
           // signature: yup
           //   .mixed()
           //   .required("Signature is required")
@@ -230,16 +231,6 @@ export default function EditSessionForm() {
     navigate(`/session/${id}`);
   };
 
-  const FormStep = styled("div")(({ theme, active }) => ({
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    gap: theme.spacing(2),
-    transition: "transform 0.3s ease-in-out",
-    transform: active ? "translateX(0)" : "translateX(100%)",
-    paddingBlock: theme.spacing(3),
-  }));
-
   const renderStepContent = (step) => {
     switch (step) {
       case 0:
@@ -268,11 +259,7 @@ export default function EditSessionForm() {
           <>
             {/* Financial Info Step */}
             <FormStep active={activeStep === 2}>
-              <Headmaster
-                setValue={setValue}
-                watch={watch}
-                control={control}
-              />
+              <Headmaster setValue={setValue} watch={watch} control={control} />
             </FormStep>
           </>
         );

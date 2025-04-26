@@ -48,7 +48,7 @@ const ViewScoreSheet = ({ open, setOpen, reportDetails }) => {
           actions={[]}
           search={true}
           options={{
-            pageSize: 10,
+            pageSize: details?.data?.length || 30,
           }}
         />
       </DialogContent>

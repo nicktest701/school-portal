@@ -3,21 +3,6 @@ import { Box, Button, Typography, Paper, Avatar, Stack } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 import Input from "@/components/inputs/Input";
 
-// const schema = Yup.object({
-//   name: Yup.string().required("Name is required"),
-//   phone: Yup.string()
-//     .required("Phone number is required")
-//     .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, "Invalid Phone number"),
-//   signature: Yup.mixed()
-//     .required("Signature is required")
-//     .test("fileType", "Only image files are allowed", (value) => {
-//       if (value) {
-//         return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-//       }
-//       return false;
-//     }),
-// });
-
 const Headmaster = ({ control, watch, setValue }) => {
   const previewImage = watch("headmaster.signature");
   const [signaturePreview, setSignaturePreview] = useState(previewImage);
@@ -48,8 +33,9 @@ const Headmaster = ({ control, watch, setValue }) => {
         fontStyle="italic"
         mb={3}
       >
-        Easily configure session start and end dates, set term structures, and
-        define academic periods for streamlined school management
+        Provide the headmaster's information, including their full name and
+        phone number. This information is essential for official communication
+        and documentation purposes.
       </Typography>
 
       <Paper elevation={3} sx={{ p: 4, mt: 4 }}>

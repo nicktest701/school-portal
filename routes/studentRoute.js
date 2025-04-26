@@ -163,7 +163,7 @@ router.get(
 
     //Get number of males and females
     const modifiedStudents = currentStudents.flatMap(
-      ({ levelName, students }) => {
+      ({ _id, levelName, students }) => {
         return students.map((student) => {
           if (student.gender === "male") {
             maleStudents.push(student);
@@ -175,6 +175,7 @@ router.get(
             `${student?.surname} ${student?.firstname} ${student?.othername}`
           );
           student._doc.levelName = levelName;
+          student._doc.levelId = _id;
 
           return student;
         });
@@ -204,7 +205,7 @@ router.get(
 
     const details = {
       recentStudents,
-      noOfStudentsInEachLevel:noOFStudentsInLevels,
+      noOfStudentsInEachLevel: noOFStudentsInLevels,
       noOfStudentsForEachTerm: students,
       students: modifiedStudents.length ?? 0,
       males: maleStudents.length ?? 0,

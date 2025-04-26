@@ -8,7 +8,7 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTerms } from "../api/termAPI";
@@ -19,7 +19,7 @@ import AddSchoolSession from "./session/AddSchoolSession";
 const SchoolSession = () => {
   const [loading, setLoading] = useState(false);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
-  const { user, updateSession } = use(UserContext);
+  const { session: mainSession, user, updateSession } = use(UserContext);
   const navigate = useNavigate();
   const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState("");
@@ -70,6 +70,10 @@ const SchoolSession = () => {
   };
 
   const handleOpenAddSession = () => setOpenAddSession(true);
+
+  // if (mainSession?.termId) {
+  //   return <Navigate to="/" />;
+  // }
 
   return (
     <Container

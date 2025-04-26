@@ -1,7 +1,6 @@
 import React, { use, useState } from "react";
 import { Dialog, DialogContent, DialogActions, Button } from "@mui/material";
 import Swal from "sweetalert2";
-
 import Transition from "@/components/animations/Transition";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
@@ -11,8 +10,11 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import ReportCard from "./ReportCard";
 import { useSearchParams } from "react-router-dom";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import PublishResultOption from "@/components/modals/PublishResultOption";
 
 const ExamsReport = ({ student }) => {
+  const [openPublishOption, setOpenPublishOption] = useState(false);
+  const [value, setValue] = useState("sms");
   const [searchParams] = useSearchParams();
   const [uploadProgress, setUploadProgress] = useState(0);
   const { schoolSessionState, schoolSessionDispatch } =
@@ -30,6 +32,7 @@ const ExamsReport = ({ student }) => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: publishReport,
   });
+
   const handlePublishReports = () => {
     Swal.fire({
       title: "Publishing Reports",
@@ -51,6 +54,7 @@ const ExamsReport = ({ student }) => {
         mutateAsync(
           {
             id: searchParams.get("eid"),
+            value,
             onProgress: setUploadProgress,
           },
 
@@ -64,13 +68,14 @@ const ExamsReport = ({ student }) => {
               setUploadProgress(0);
 
               schoolSessionDispatch(
-                alertSuccess("Results have been published Successfully!!!")
+                alertSuccess("Result published successfully!!!")
               );
+              handleCloseOption();
             },
             onError: () => {
               schoolSessionDispatch(
                 alertError(
-                  "An error has occured.Couldnt Generate Reports.Try again later"
+                  "An error has occured.Couldn't Generate Reports.Try again later"
                 )
               );
             },
@@ -78,6 +83,11 @@ const ExamsReport = ({ student }) => {
         );
       }
     });
+  };
+
+  const handleCloseOption = () => {
+    setOpenPublishOption(false);
+    setValue("sms");
   };
 
   return (
@@ -91,7 +101,10 @@ const ExamsReport = ({ student }) => {
       >
         <CustomDialogTitle title="Report Card" onClose={handleClose} />
         <DialogActions>
-          <Button loading={isPending} onClick={handlePublishReports}>
+          <Button
+            loading={isPending}
+            onClick={() => setOpenPublishOption(true)}
+          >
             {isPending ? "Please Wait...." : "Publish Report"}
           </Button>
         </DialogActions>
@@ -99,6 +112,15 @@ const ExamsReport = ({ student }) => {
           <ReportCard student={student} />
         </DialogContent>
       </Dialog>
+
+      <PublishResultOption
+        open={openPublishOption}
+        setOpen={setOpenPublishOption}
+        value={value}
+        setValue={setValue}
+        onClose={handleCloseOption}
+        handlePublish={handlePublishReports}
+      />
 
       {isPending && (
         <LoadingSpinner

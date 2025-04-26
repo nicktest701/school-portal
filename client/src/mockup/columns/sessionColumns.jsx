@@ -33,14 +33,6 @@ export const SCHOOL_SESSION_COLUMN = (
       hidden: true,
     },
     {
-      field: "core.from",
-      hidden: true,
-    },
-    {
-      field: "core.to",
-      hidden: true,
-    },
-    {
       field: "core.academicYear",
       title: "Academic Year",
       searchable: true,
@@ -57,13 +49,31 @@ export const SCHOOL_SESSION_COLUMN = (
           <ListItemText
             primary={data?.core?.name}
             secondary={data?.core.academicYear}
+            slotProps={{
+              primary: {
+                fontWeight: "bolder",
+                fontSize: { xs: 18, md: 20 },
+              },
+            }}
           />
         );
       },
     },
     {
+      title: "Start",
+      field: "core.from",
+      // hidden: true,
+      render: (data) => new Date(data?.core?.from).toDateString(),
+    },
+    {
+      title: "End",
+      field: "core.to",
+      // hidden: true,
+      render: (data) => new Date(data?.core?.to).toDateString(),
+    },
+    {
       field: "core.term",
-      title: "Term",
+      title: "Term / Semester",
     },
     {
       field: "core.vacationDate",

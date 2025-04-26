@@ -36,8 +36,11 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import ReportCard from "./ReportCard";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { StudentContext } from "@/context/providers/StudentProvider";
+import PublishResultOption from "@/components/modals/PublishResultOption";
 
 const ViewExamsReports = () => {
+  const [openPublishOption, setOpenPublishOption] = useState(false);
+  const [value, setValue] = useState("sms");
   const [uploadProgress, setUploadProgress] = useState(0);
   const { session } = use(UserContext);
   const [isPending, startTransition] = useTransition();
@@ -73,7 +76,7 @@ const ViewExamsReports = () => {
     Swal.fire({
       title: "Publishing Reports",
       text: `You are about to publish the report of ${
-        reports?.data?.results?.length || "all "
+        reports?.data?.results?.length || "all"
       } students.Do you wish to continue?`,
       showCancelButton: true,
       backdrop: false,
@@ -90,6 +93,7 @@ const ViewExamsReports = () => {
           sessionId: session.sessionId,
           termId: session.termId,
           levelId,
+          value,
           onProgress: setUploadProgress,
         };
 
@@ -104,17 +108,18 @@ const ViewExamsReports = () => {
             schoolSessionDispatch({
               type: "openGeneralAlert",
               payload: {
-                message: "Results have been published Successfully!!!",
+                message: "Results published Successfully!!!",
                 severity: "success",
               },
             });
+            handleCloseOption();
           },
           onError: () => {
             schoolSessionDispatch({
               type: "openGeneralAlert",
               payload: {
                 message:
-                  "An error has occured.Couldnt Generate Reports.Try again later",
+                  "An error has occured.Couldn't Generate Reports.Try again later",
                 severity: "error",
               },
             });
@@ -129,6 +134,11 @@ const ViewExamsReports = () => {
       top: 0,
       behavior: "smooth", // Optional: animated scroll
     });
+  };
+
+  const handleCloseOption = () => {
+    setOpenPublishOption(false);
+    setValue("sms");
   };
 
   const generatedReports = ({ data, index, style }) => {
@@ -213,7 +223,7 @@ const ViewExamsReports = () => {
               loading={publishIsPending}
               loadingPosition="start"
               startIcon={<Note />}
-              onClick={handlePublishReports}
+              onClick={() => setOpenPublishOption(true)}
               color="success"
             >
               {publishIsPending ? "Please Wait" : "Publish Reports"}
@@ -269,7 +279,7 @@ const ViewExamsReports = () => {
         }}
       </Grid> */}
       <FixedSizeList
-        className="report-container"
+        // className="report-container"
         height={1096}
         width={"215mm"}
         itemSize={1200}
@@ -289,6 +299,15 @@ const ViewExamsReports = () => {
         })}
       </div>
 
+      <PublishResultOption
+        open={openPublishOption}
+        setOpen={setOpenPublishOption}
+        value={value}
+        setValue={setValue}
+        onClose={handleCloseOption}
+        handlePublish={handlePublishReports}
+      />
+
       {reports?.data && (
         <ViewScoreSheet
           open={openScoreSheet}
@@ -298,6 +317,16 @@ const ViewExamsReports = () => {
       )}
       {reports.isPending && (
         <LoadingSpinner value="Loading Reports.Please Wait..." />
+      )}
+
+      {publishIsPending && (
+        <LoadingSpinner
+          value={
+            publishIsPending
+              ? `Publishing..${uploadProgress}%`
+              : "Please Wait.."
+          }
+        />
       )}
 
       <IconButton onClick={handleScrollToTop} className="scroll-to-top-button">

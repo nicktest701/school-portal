@@ -1,69 +1,53 @@
-const router = require('express').Router();
-const asyncHandler = require('express-async-handler');
-const School = require('../models/schoolModel');
-const Examination = require('../models/examinationModel');
-const Level = require('../models/levelModel');
-const _ = require('lodash');
-const pLimit = require('p-limit');
-const ordinal = require('ordinal-suffix');
-const moment = require('moment');
-const getPosition = require('../config/rank');
+const router = require("express").Router();
+const asyncHandler = require("express-async-handler");
+const School = require("../models/schoolModel");
+const Examination = require("../models/examinationModel");
+const Level = require("../models/levelModel");
+const _ = require("lodash");
+const pLimit = require("p-limit");
+const ordinal = require("ordinal-suffix");
+const moment = require("moment");
+const getPosition = require("../config/rank");
 const {
   Types: { ObjectId },
-} = require('mongoose');
-const { sendReportMail } = require('../config/mail/mail2');
-const generateTotalGrade = require('../config/generateTotalGrade');
-const generateReportTemplate = require('../config/generateReportTemplate');
-const generateReport = require('../config/generateReport');
-const generateRemarks = require('../config/generateRemarks');
-const { convertImageToBase64 } = require('../config/helper');
+} = require("mongoose");
+const { sendReportMail } = require("../config/mail/mail2");
+const generateTotalGrade = require("../config/generateTotalGrade");
+const generateReportTemplate = require("../config/generateReportTemplate");
+const generateReport = require("../config/generateReport");
+const generateRemarks = require("../config/generateRemarks");
+const { convertImageToBase64, SUBJECT_OPTIONS } = require("../config/helper");
+const { sendReportSMS } = require("../config/sms/messenger");
 
 //@GET
 
-const SUBJECT_OPTIONS = [
-  'ENGLISH LANGUAGE',
-  'MATHEMATICS',
-  'INTEGRATED SCIENCE',
-  'NATURAL SCIENCE',
-  'HISTORY',
-  'SOCIAL STUDIES',
-  'OUR WORLD,OUR PEOPLE',
-  'RELIGIOUS & MORAL EDUCATION',
-  'COMPUTING',
-  'CREATIVE ARTS & DESIGN',
-  'CAREER TECHNOLOGY',
-  'GHANAIAN LANGUAGE',
-  'FRENCH',
-  'ARABIC',
-  'PHYSICAL & HEALTH EDUCATION',
-  'PHYSICAL EDUCATION',
-  'READING',
-  'WRITING',
-  'MUSIC & DANCE',
-  'ORALS & RHYMES',
-];
-
 router.get(
-  '/details',
+  "/details",
   asyncHandler(async (req, res) => {
     const { level } = req.query;
 
     //GET all Students scores
     const students = await Examination.find({ level })
       .populate({
-        path: 'level',
-        select: ['subjects', 'level'],
+        path: "level",
+        select: ["subjects", "level"],
         populate: {
-          path: 'subjects'
-        }
+          path: "subjects",
+        },
       })
       .populate({
-        path: 'student',
-        select: ['firstname', 'surname', 'othername', "indexnumber", "profile", 'gender', 'dateofbirth'],
+        path: "student",
+        select: [
+          "firstname",
+          "surname",
+          "othername",
+          "indexnumber",
+          "profile",
+          "gender",
+          "dateofbirth",
+        ],
       })
-      .select('overallScore scores');
-
-
+      .select("overallScore scores");
 
     if (_.isEmpty(students)) {
       return res.status(200).json({
@@ -79,13 +63,12 @@ router.get(
 
     const examsDetails = {
       noOfStudents: students.length ?? 0,
-      highestMarks: _.maxBy(students, 'overallScore').overallScore ?? 0,
-      lowestMarks: _.minBy(students, 'overallScore').overallScore ?? 0,
+      highestMarks: _.maxBy(students, "overallScore").overallScore ?? 0,
+      lowestMarks: _.minBy(students, "overallScore").overallScore ?? 0,
       averageMarks: Math.round(
-        _.sumBy(students, 'overallScore') / students.length ?? 0
+        _.sumBy(students, "overallScore") / students.length ?? 0
       ),
     };
-
 
     //FIND Numnber of subjects
     const noOfSubjects = students[0]?.level?.subjects?.length ?? 0;
@@ -106,20 +89,21 @@ router.get(
     examsDetails.failStudents = studentsBelowAverage.length ?? 0;
 
     //is Results complete
-    const totalTargetResults = Number(noOfSubjects) * students?.length
-    const completedResults = _.sumBy(students, (student) => student?.scores?.length)
+    const totalTargetResults = Number(noOfSubjects) * students?.length;
+    const completedResults = _.sumBy(
+      students,
+      (student) => student?.scores?.length
+    );
     const resultsComplete = parseInt(
       Number(completedResults / totalTargetResults) * 100
-    )
-
+    );
 
     //is Results complete
-    const totalOverallScore = _.sumBy(students, 'overallScore') ?? 0
-    const totalExpectedScore = Number(noOfSubjects) * students?.length * 100
+    const totalOverallScore = _.sumBy(students, "overallScore") ?? 0;
+    const totalExpectedScore = Number(noOfSubjects) * students?.length * 100;
     const scorePercentage = parseInt(
       Number(totalOverallScore / totalExpectedScore) * 100
-    )
-
+    );
 
     const selectedStudents = students.map(
       ({ _id, student, level, scores, overallScore }) => {
@@ -144,21 +128,17 @@ router.get(
       }
     );
 
-
     res.status(200).json({
       ...examsDetails,
       students: selectedStudents,
       resultsCompleted: resultsComplete,
-      scorePercentage
-
+      scorePercentage,
     });
   })
 );
 
-
-
 router.get(
-  '/reports',
+  "/reports",
   asyncHandler(async (req, res) => {
     const { sessionId, termId, levelId } = req.query;
 
@@ -167,17 +147,25 @@ router.get(
       term: new ObjectId(termId),
       level: new ObjectId(levelId),
     })
-      .populate('term')
+      .populate("term")
       .populate({
-        path: 'level',
-        select: ['level', 'students', 'subjects'],
+        path: "level",
+        select: ["level", "students", "subjects"],
         populate: {
-          path: 'subjects', select: 'name'
-        }
+          path: "subjects",
+          select: "name",
+        },
       })
       .populate({
-        path: 'student',
-        select: ['firstname', 'surname', 'othername', "indexnumber", "email", "profile"],
+        path: "student",
+        select: [
+          "firstname",
+          "surname",
+          "othername",
+          "indexnumber",
+          "email",
+          "profile",
+        ],
       });
 
     if (_.isEmpty(studentRecords)) {
@@ -186,30 +174,28 @@ router.get(
 
     const subjects = studentRecords[0]?.level?.subjects.sort(
       (a, b) =>
-        SUBJECT_OPTIONS.indexOf(a.name) -
-        SUBJECT_OPTIONS.indexOf(b.name)
-    )
-
+        SUBJECT_OPTIONS.indexOf(a.name) - SUBJECT_OPTIONS.indexOf(b.name)
+    );
 
     const studentOverallScores = await Examination.find({
       term: termId,
-      level: levelId
-    }).select(['overallScore'])
+      level: levelId,
+    }).select(["overallScore"]);
 
     //GET student position
     const positions = getPosition(studentOverallScores);
 
-
     const generatedResults = studentRecords.map(async (report) => {
-
       //GENERATE STUDENT RESULTS
-      const generatedResult = await studentReportDetails(report, positions, 'preview')
+      const generatedResult = await studentReportDetails(
+        report,
+        positions,
+        "preview"
+      );
       return generatedResult;
     });
 
-
     const results = await Promise.all(generatedResults);
-
 
     res.status(200).json({
       subjects,
@@ -219,8 +205,9 @@ router.get(
 );
 
 router.get(
-  '/publish',
+  "/publish",
   asyncHandler(async (req, res) => {
+    const publishType = req.query.type || "sms";
     const { sessionId, termId, levelId } = req.query;
 
     const studentRecords = await Examination.find({
@@ -228,14 +215,22 @@ router.get(
       term: new ObjectId(termId),
       level: new ObjectId(levelId),
     })
-      .populate('term')
+      .populate("term")
       .populate({
-        path: 'level',
-        select: ['level', 'students'],
+        path: "level",
+        select: ["level", "students"],
       })
       .populate({
-        path: 'student',
-        select: ['firstname', 'surname', 'othername', "indexnumber", "email", "profile"],
+        path: "student",
+        select: [
+          "firstname",
+          "surname",
+          "othername",
+          "indexnumber",
+          "phonenumber",
+          "email",
+          "profile",
+        ],
       });
 
     if (_.isEmpty(studentRecords)) {
@@ -243,11 +238,23 @@ router.get(
     }
     const school = await School.findById(req.user.school);
 
+    const scorePreference =
+      studentRecords[0]?.term?.exams?.scorePreference?.split("/") || [
+        "50",
+        "50",
+      ];
+    const termDetails = {
+      report: studentRecords[0]?.term?.report,
+      class: scorePreference[0],
+      exams: scorePreference[1],
+      headmaster: studentRecords[0]?.term?.headmaster,
+    };
+    school.termDetails = termDetails;
+
     //CONVERT IMAGE TO BASE64
-    let SCHOOL_PHOTO = '';
+    let SCHOOL_PHOTO = "";
 
     if (!_.isEmpty(school)) {
-
       if (school.badge) {
         SCHOOL_PHOTO = await convertImageToBase64(school.badge);
       }
@@ -257,21 +264,22 @@ router.get(
 
     const studentOverallScores = await Examination.find({
       term: termId,
-      level: levelId
-
-    }).select(['overallScore'])
+      level: levelId,
+    }).select(["overallScore"]);
 
     //GET student position
     const positions = getPosition(studentOverallScores);
-
 
     try {
       //GENERATE STUDENT RESULTS
 
       const generatedResults = studentRecords.map(async (report) => {
-
         //GENERATE STUDENT RESULTS
-        const generatedResult = await studentReportDetails(report, positions, 'print')
+        const generatedResult = await studentReportDetails(
+          report,
+          positions,
+          "print"
+        );
         return generatedResult;
       });
 
@@ -280,9 +288,19 @@ router.get(
 
       const limit = pLimit(5);
 
-      const tra = results;
+      //SEND REPORTS TO STUDENT SMS
+      if (publishType === "sms") {
+        const response = _.take(results, 1).map(async (result) => {
+          return limit(() => sendReportSMS(result, school));
+        });
+
+        await Promise.all(response);
+
+        return res.status(200).json("ok");
+      }
+
       //GENERATE ALL REPORT TEMPLATES
-      const allTemplates = tra.map(async (result) => {
+      const allTemplates = results.map(async (result) => {
         try {
           const template = await generateReportTemplate({
             report: result,
@@ -310,13 +328,48 @@ router.get(
 
       const allReports = await Promise.all(generatedReports);
 
-      if (allReports) {
-        const mailedReports = _.take(tra, 2).map(
-          async ({ _id, fullName, email, report_id }) => {
+      if (publishType === "email") {
+        if (allReports) {
+          const mailedReports = _.take(results, 1).map(
+            async ({ fullName, email, report_id }) => {
+              const mailResults = limit(() =>
+                sendReportMail({
+                  school: {
+                    name: school?.name,
+                    email: school?.email,
+                    phonenumber: school?.phonenumber,
+                  },
+                  id: report_id,
+                  email: email,
+                  fullName,
+                })
+              );
+
+              return mailResults?.messageId;
+            }
+          );
+
+          await Promise.all(mailedReports);
+        }
+      }
+
+      if (publishType === "both") {
+        //SEND REPORTS TO STUDENT SMS
+        const response = results.map(async (result) => {
+          return limit(() => sendReportSMS(result, school));
+        });
+
+        const mailedReports = _.take(results, 1).map(
+          async ({ fullName, email, report_id }) => {
             const mailResults = limit(() =>
               sendReportMail({
+                school: {
+                  name: school?.name,
+                  email: school?.email,
+                  phonenumber: school?.phonenumber,
+                },
                 id: report_id,
-                email: 'nicktest701@gmail.com',
+                email: email,
                 fullName,
               })
             );
@@ -325,81 +378,87 @@ router.get(
           }
         );
 
-        await Promise.all(mailedReports);
+        await Promise.all([mailedReports, response]);
       }
 
-      return res.send('ok');
+      return res.status(200).json("ok");
     } catch (error) {
-      return res.status(400).json('An unknown error has occured.');
+      console.log(error);
+      return res.status(400).json("An unknown error has occured.");
     }
   })
 );
 
-
 //@GET students results by subject
 router.get(
-  '/subject',
+  "/subject",
   asyncHandler(async (req, res) => {
     const { id, subject } = req.query;
 
     const studentRecord = await Examination.find({
       level: new ObjectId(id),
-    }).
-      populate('level', 'level').
-      populate({
-        path: 'student',
-        select: ['firstname', 'surname', 'othername', 'indexnumber']
-      }).select('scores')
+    })
+      .populate("level", "level")
+      .populate({
+        path: "student",
+        select: ["firstname", "surname", "othername", "indexnumber"],
+      })
+      .select("scores");
 
     const levelSubjects = await Level.findById(id)
       .populate({
-        path: 'subjects',
-        select: ['name'],
-        match: { _id: subject }
-      }).select('subjects')
-
+        path: "subjects",
+        select: ["name"],
+        match: { _id: subject },
+      })
+      .select("subjects");
 
     const selectedSubject = levelSubjects?.subjects[0];
 
-    const result = studentRecord.map(async ({ _id, scoresWithTotal, scores, student }) => {
-      const newGenerateScore = await scoresWithTotal
-      const course = newGenerateScore?.find((course) => course?._id === subject);
+    const result = studentRecord.map(
+      async ({ _id, scoresWithTotal, scores, student }) => {
+        const newGenerateScore = await scoresWithTotal;
+        const course = newGenerateScore?.find(
+          (course) => course?._id === subject
+        );
 
-      return {
-        _id: _id,
-        studentId: student?._id,
-        indexnumber: student?.indexnumber,
-        student: student?.fullName,
-        course:
-          course !== undefined
-            ? course
-            : {
-              _id: selectedSubject?._id,
-              subject: selectedSubject?.name,
-              classScore: '',
-              examsScore: '',
-              totalScore: '',
-              grade: '',
-              remarks: '',
-            },
-      };
-    });
-    const results = await Promise.all(result)
-    const isCompleted = _.filter(results, (result) => _.isNumber(result?.course?.totalScore))
-    const overallScore = _.sumBy(results, 'course.totalScore')
-    const totalOverAllScore = results?.length * 100
-    const topScore = _.maxBy(results, 'course.totalScore')
-    const lowScore = _.minBy(results, 'course.totalScore')
-  
+        return {
+          _id: _id,
+          studentId: student?._id,
+          indexnumber: student?.indexnumber,
+          student: student?.fullName,
+          course:
+            course !== undefined
+              ? course
+              : {
+                  _id: selectedSubject?._id,
+                  subject: selectedSubject?.name,
+                  classScore: "",
+                  examsScore: "",
+                  totalScore: "",
+                  grade: "",
+                  remarks: "",
+                },
+        };
+      }
+    );
+    const results = await Promise.all(result);
+    const isCompleted = _.filter(results, (result) =>
+      _.isNumber(result?.course?.totalScore)
+    );
+    const overallScore = _.sumBy(results, "course.totalScore");
+    const totalOverAllScore = results?.length * 100;
+    const topScore = _.maxBy(results, "course.totalScore");
+    const lowScore = _.minBy(results, "course.totalScore");
 
-    const scores = _.map(results, 'course.totalScore')
+    const scores = _.map(results, "course.totalScore");
     const totalPossibleScore = scores.length * 100;
 
-    const totalScore = _.sum(scores)
-    const overallPerformancePercentage = (totalScore / totalPossibleScore) * 100;
+    const totalScore = _.sum(scores);
+    const overallPerformancePercentage =
+      (totalScore / totalPossibleScore) * 100;
 
     const isCompletedPercentage = (isCompleted?.length / results?.length) * 100;
-
 
     res.status(200).json({
       students: studentRecord?.length,
@@ -414,45 +473,56 @@ router.get(
   })
 );
 
-
 //@GET
 router.get(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
-    const publish = req.query.publish || ''
+    const publish = req.query.publish || "";
+    const publishType = req.query.type || "sms";
     const { id } = req.params;
 
     const studentRecord = await Examination.findById(id)
-      .populate('term')
+      .populate("term")
       .populate({
-        path: 'level',
-        select: ['level', 'students', 'subjects'],
+        path: "level",
+        select: ["level", "students", "subjects"],
         populate: {
-          path: 'level'
-        }
+          path: "level",
+        },
       })
       .populate({
-        path: 'student',
-        select: ['firstname', 'surname', 'othername', "indexnumber", "email", "profile"],
+        path: "student",
+        select: [
+          "firstname",
+          "surname",
+          "othername",
+          "indexnumber",
+          "phonenumber",
+          "email",
+          "profile",
+        ],
       });
 
+    // console.log(studentRecord.term);
 
     const studentOverallScores = await Examination.find({
       term: studentRecord?.term?._id,
       level: studentRecord?.level?._id,
-
-    }).select(['overallScore'])
+    }).select(["overallScore"]);
     //GET student position
     const positions = getPosition(studentOverallScores);
 
-    let generatedResult = await studentReportDetails(studentRecord, positions, publish ? 'print' : 'preview')
-
+    let generatedResult = await studentReportDetails(
+      studentRecord,
+      positions,
+      publish ? "print" : "preview"
+    );
 
     if (_.isEmpty(publish)) {
       const expectedScore = studentRecord?.level.subjects?.length * 100;
       const scorePercentage = parseInt(
         Number(generatedResult.overallScore / expectedScore) * 100
-      )
+      );
 
       const noOfSubjects = studentRecord?.level?.subjects?.length || 0;
       const noOfScores = generatedResult?.scores?.length || 0;
@@ -463,27 +533,33 @@ router.get(
         entry: {
           completed: noOfScores || 0,
           total: noOfSubjects,
-          percent: parseInt(
-            Number(noOfScores / noOfSubjects) * 100
-          ),
-          bestScoreSubject: _.maxBy(generatedResult?.scores, 'totalScore'),
-          worstScoreSubject: _.minBy(generatedResult?.scores, 'totalScore'),
+          percent: parseInt(Number(noOfScores / noOfSubjects) * 100),
+          bestScoreSubject: _.maxBy(generatedResult?.scores, "totalScore"),
+          worstScoreSubject: _.minBy(generatedResult?.scores, "totalScore"),
         },
-      }
-
+      };
 
       return res.status(200).json(generatedResult);
     }
 
-
-
     const school = await School.findById(req.user.school);
 
+    const scorePreference = studentRecord?.term?.exams?.scorePreference?.split(
+      "/"
+    ) || ["50", "50"];
+    const termDetails = {
+      report: studentRecord?.term?.report,
+      class: scorePreference[0],
+      exams: scorePreference[1],
+      headmaster: studentRecord?.term?.headmaster,
+    };
+
+    school.termDetails = termDetails;
+
     //CONVERT IMAGE TO BASE64
-    let SCHOOL_PHOTO = '';
+    let SCHOOL_PHOTO = "";
 
     if (!_.isEmpty(school)) {
-
       if (school.badge) {
         SCHOOL_PHOTO = await convertImageToBase64(school.badge);
       }
@@ -491,6 +567,12 @@ router.get(
 
     school.badge = SCHOOL_PHOTO;
 
+    //SEND REPORTS TO STUDENT SMS
+    if (publishType === "sms") {
+      await sendReportSMS(generatedResult, school);
+
+      return res.status(200).json("ok");
+    }
 
     //GENERATE ALL REPORT TEMPLATES
     const template = await generateReportTemplate({
@@ -498,69 +580,51 @@ router.get(
       school,
     });
 
-
     //GENERATE REPORTS
     const generatedReports = await generateReport({
       id: generatedResult?.report_id,
       template,
-    })
+    });
 
-    if (generatedReports) {
-      const mailResults =
-        sendReportMail({
+    if (publishType === "email") {
+      if (generatedReports) {
+        //SEND REPORTS TO STUDENT EMAIL
+        await sendReportMail({
+          school: {
+            name: school?.name,
+            email: school?.email,
+            phonenumber: school?.phonenumber,
+          },
           id: generatedResult.report_id,
-          email: 'nicktest701@gmail.com',
-          // email: generatedResult?.email,
+          email: generatedResult?.email,
           fullName: generatedResult?.fullName,
-        })
-
+        });
+      }
     }
 
+    if (publishType === "both") {
+      await sendReportSMS(generatedResult, school);
+      if (generatedReports) {
+        //SEND REPORTS TO STUDENT EMAIL
+        await sendReportMail({
+          school: {
+            name: school?.name,
+            email: school?.email,
+            phonenumber: school?.phonenumber,
+          },
+          id: generatedResult.report_id,
+          email: generatedResult?.email,
+          fullName: generatedResult?.fullName,
+        });
+      }
+    }
 
-
-    return res.status(200).json('ok');
-
-
-
+    return res.status(200).json("ok");
   })
 );
 
-
-// router.post(
-//   '/student/current',
-//   asyncHandler(async (req, res) => {
-//     const { sessionId, termId, studentId, levelId } = req.body;
-//     const studentRecord = await Examination.findOne({
-//       session: new ObjectId(sessionId),
-//       term: new ObjectId(termId),
-//       student: new ObjectId(studentId),
-//     })
-//       .populate('term')
-//       .populate('level')
-//       .populate('student');
-
-//     if (_.isEmpty(studentRecord)) {
-//       return res.status(200).json({});
-//     }
-
-//     const studentOverallScores = await Examination.find({
-//       term: termId,
-//       level: levelId
-
-//     }).select(['overallScore'])
-
-//     //GET student position
-//     const positions = getPosition(studentOverallScores);
-
-//     //GENERATE STUDENT RESULTS
-//     const generatedResult = await studentReportDetails(studentRecord, positions, 'preview')
-
-//     res.status(200).json(generatedResult);
-//   })
-// );
-
 router.post(
-  '/student/academics',
+  "/student/academics",
   asyncHandler(async (req, res) => {
     const { session, term, level, student } = req.body;
 
@@ -585,13 +649,11 @@ router.post(
     }
 
     const examination = await Examination.find({
-      student
+      student,
     })
-      .populate('term', 'term')
-      .populate('session', 'academicYear')
-      .populate('level')
-
-
+      .populate("term", "term")
+      .populate("session", "academicYear")
+      .populate("level");
 
     const modifiedTerms = examination.map(({ _id, session, term, level }) => {
       return {
@@ -603,13 +665,12 @@ router.post(
       };
     });
 
-
     //Group selected terms in ascending order
     const groupedTerms = _.groupBy(
-      _.sortBy(modifiedTerms, 'term'),
-      'academicYear'
+      _.sortBy(modifiedTerms, "term"),
+      "academicYear"
     );
-    const results = Object.entries(groupedTerms)
+    const results = Object.entries(groupedTerms);
 
     res.status(200).json(results);
   })
@@ -618,7 +679,7 @@ router.post(
 //@POST
 
 router.post(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const newExamsScore = req.body;
 
@@ -628,11 +689,11 @@ router.post(
     // Merge scores with  with same subjects
     const newScores = _.values(
       _.merge(
-        _.keyBy([...examsInfo.scores, ...newExamsScore.scores], 'subject')
+        _.keyBy([...examsInfo.scores, ...newExamsScore.scores], "subject")
       )
     );
 
-    const overallScore = _.sumBy(newScores, 'totalScore');
+    const overallScore = _.sumBy(newScores, "totalScore");
     const comments = generateRemarks(overallScore);
 
     const updatedScores = await Examination.findByIdAndUpdate(
@@ -654,14 +715,14 @@ router.post(
 );
 
 router.post(
-  '/bulk',
+  "/bulk",
   asyncHandler(async (req, res) => {
     const { session, term, level, results } = req.body;
 
     //Extract student index numbers from a specific level
     const selectedLevel = await Level.findById(level)
-      .populate('students', 'indexnumber')
-      .select('students');
+      .populate("students", "indexnumber")
+      .select("students");
 
     const r = selectedLevel.students?.map(async (student) => {
       if (_.isEmpty(student)) return;
@@ -671,8 +732,8 @@ router.post(
         level,
         student: new ObjectId(student?._id),
       })
-        .populate('student', 'indexnumber')
-        .select(['student', 'scores']);
+        .populate("student", "indexnumber")
+        .select(["student", "scores"]);
 
       const result = results?.find(
         ({ indexnumber }) => indexnumber === exams?.student?.indexnumber
@@ -691,10 +752,10 @@ router.post(
       ];
 
       const newScores = _.values(
-        _.merge(_.keyBy([...exams.scores, ...scores], 'subject'))
+        _.merge(_.keyBy([...exams.scores, ...scores], "subject"))
       );
 
-      const overallScore = _.sumBy(newScores, 'totalScore');
+      const overallScore = _.sumBy(newScores, "totalScore");
       const comments = generateRemarks(overallScore);
       const updatedScores = await Examination.findByIdAndUpdate(
         exams._id,
@@ -716,26 +777,21 @@ router.post(
 
     await Promise.all(r);
 
-    return res.status(200).json('Results uploaded!');
+    return res.status(200).json("Results uploaded!");
   })
 );
 
 router.post(
-  '/update',
+  "/update",
   asyncHandler(async (req, res) => {
     const { session, scores } = req.body;
 
-
-    let examsInfo = {}
+    let examsInfo = {};
 
     if (session.examsId) {
-
       // Find if student exam details exists
       examsInfo = await Examination.findById(session.examsId);
-
     } else {
-
-
       // Find if student exam details exists
       examsInfo = await Examination.findOne({
         session: new ObjectId(session.sessionId),
@@ -744,16 +800,15 @@ router.post(
       });
     }
 
-
-
     // Merge scores with  with same subjects
     const newScores = _.merge(
-      _.keyBy([...examsInfo?.scores, ...scores], '_id')
+      _.keyBy([...examsInfo?.scores, ...scores], "_id")
     );
 
-
     const latestScores = _.values(newScores);
-    const overallScore = _.sumBy(latestScores, (score) => Number(score?.totalScore));
+    const overallScore = _.sumBy(latestScores, (score) =>
+      Number(score?.totalScore)
+    );
     const comments = generateRemarks(overallScore);
 
     const t = await Examination.findByIdAndUpdate(
@@ -771,16 +826,14 @@ router.post(
       }
     );
 
-
-
-    res.status(201).json('Exams Scores updated!!!');
+    res.status(201).json("Exams Scores updated!!!");
   })
 );
 
 //@POST
 
 router.put(
-  '/comments',
+  "/comments",
   asyncHandler(async (req, res) => {
     const newExamsComments = req.body;
 
@@ -797,64 +850,65 @@ router.put(
       }
     );
     if (_.isEmpty(updatedScores)) {
-      return res.status(400).json('Error saving remarks.Try again later!!!');
+      return res.status(400).json("Error saving remarks.Try again later!!!");
     }
 
-    res.status(201).json('Remarks updated successfully!!!');
+    res.status(201).json("Remarks updated successfully!!!");
   })
 );
 
+const studentReportDetails = async (
+  report,
+  positions,
+  reportType = "preview"
+) => {
+  const {
+    _id,
+    term,
+    level,
+    scores,
+    scoresWithTotal,
+    overallScore,
+    comments,
+    student,
+  } = report;
 
-
-const studentReportDetails = async (report, positions, reportType = 'preview') => {
-  const { _id, term, level, scores, scoresWithTotal, overallScore, comments, student } =
-    report;
-
-
-  const newGenerateScore = await scoresWithTotal
-
-
+  const newGenerateScore = await scoresWithTotal;
 
   //CONVERT IMAGE TO BASE64
-  let STUDENT_PHOTO = '';
-  if (student?.profile && reportType === 'print') {
-
+  let STUDENT_PHOTO = "";
+  if (student?.profile && reportType === "print") {
     STUDENT_PHOTO = await convertImageToBase64(student?.profile);
   }
 
   //GET Student Grade
   const grade = await generateTotalGrade(scores, level?._id);
 
-
   const position =
     positions.find((exams) => {
       return exams._id.toString() === _id.toString();
-    }).position || '';
-
+    }).position || "";
 
   const modifiedStudentRecord = {
     _id,
     academicYear: term.academicYear,
     term: term.term,
-    vacationDate: moment(new Date(term.vacationDate)).format(
-      'Do MMMM,YYYY'
-    ),
-    reOpeningDate: moment(new Date(term.reOpeningDate)).format(
-      'Do MMMM,YYYY'
-    ),
+    vacationDate: moment(new Date(term.vacationDate)).format("Do MMMM,YYYY"),
+    reOpeningDate: moment(new Date(term.reOpeningDate)).format("Do MMMM,YYYY"),
     report_id: `${student?.fullName}_${level?.levelName}_${term.term}`,
     rollNumber: level.noOfStudents,
     totalLevelAttendance: 0,
-    indexnumber: student?.indexnumber,
+    indexnumber: _.toUpper(student?.indexnumber),
+    phonenumber: student?.phonenumber,
     fullName: student?.fullName,
     email: student?.email,
     level: `${level?.levelName}`,
     levelId: level?._id,
-    profile: reportType === 'preview' ? student?.profile || null : STUDENT_PHOTO,
+    profile:
+      reportType === "preview" ? student?.profile || null : STUDENT_PHOTO,
     scores: newGenerateScore.sort(
       (a, b) =>
-        SUBJECT_OPTIONS.indexOf(a.subject) -
-        SUBJECT_OPTIONS.indexOf(b.subject)
+        SUBJECT_OPTIONS.indexOf(a.subject) - SUBJECT_OPTIONS.indexOf(b.subject)
     ),
 
     overallScore,
@@ -863,8 +917,7 @@ const studentReportDetails = async (report, positions, reportType = 'preview') =
     comments,
   };
 
-  return modifiedStudentRecord
-}
-
+  return modifiedStudentRecord;
+};
 
 module.exports = router;

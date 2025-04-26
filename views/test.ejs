@@ -304,8 +304,8 @@
                     <thead >
                         <tr style="font-size: 14px;">
                             <th>Subject</th>
-                            <th> Class Score (50%)</th>
-                            <th> Exams Score (50%)</th>
+                            <th> Class Score <br/> (<%= school.termDetails.class %>%)</th>
+                            <th> Exams Score <br/> (<%= school.termDetails.exams %>%)</th>
                             <th>Total Score (100%)</th>
                             <th>Grade</th>
                             <th>Remarks</th>
@@ -440,54 +440,91 @@
 
 
                 <hr />
+                    <!-- Bill  -->
+     <div style="display: flex;flex-direction: column; justify-content: center;align-items: center;z-index: 999;">
+        <p style="font-weight: bold;">Bill</p>
+        <table width='60%' border='1' style="border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>GHS</th>
+                    <th>GHP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding-left: 5px;">
+                        Tuition Fee
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 5px;">Others</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 5px;">
+                        Arrears
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Total</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
             </div>
+ 
 
-            <!-- Bill  -->
-            <div style="display: flex;flex-direction: column; justify-content: center;align-items: center;">
-                <p style="font-weight: bold;">Bill</p>
-                <table width='60%' border='1' style="border-collapse: collapse;">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>GHS</th>
-                            <th>GHP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="padding-left: 5px;">
-                                Tuition Fee
-                            </td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left: 5px;">Others</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="padding-left: 5px;">
-                                Arrears
-                            </td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Total</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+            <div
+  style="
+    position: absolute;
+    bottom: 5%;
+    left: 4%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  "
+>
+  <!-- Only show if signature exists -->
+  <img
+    src=<%= school.termDetails.headmaster.signature %>
+    alt="headmaster signature"
+    style="
+      max-width: 100%;
+      aspect-ratio: 16/9;
+      width: 100px;
+      height: 60px;
+      object-fit: contain;
+      transform: scale(1.8);
+    "
+  />
+  <span
+    style="
+      border-top: 1px #333 dashed;
+      font-size: 13px;
+    "
+  >
+  <%= school.termDetails.headmaster.name %> (Headmaster)
+  </span>
+</div>
+
+
+       
             <!-- footer  -->
             <div style="display: flex; justify-content: space-between;align-items: center;">
 
                 <p style="font-size: 10px;font-style: italic;">
-                    Powered by FrebbyTech Consults (0543772591)
+                    Powered by FrebbyTech Consults (+233543772591)
                 </p>
                 <span class="student-id" style="font-size: 10px;font-style: italic;">
                     <%= report._id %>

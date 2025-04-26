@@ -6,7 +6,7 @@ const Teacher = require('../models/teacherModel');
 const Parent = require('../models/parentModel');
 const Message = require('../models/messageModel');
 const sendMail = require('../config/mail/mailer');
-const sendSMS = require('../config/sms/messenger');
+const {sendSMS} = require('../config/sms/messenger');
 
 //POST message
 

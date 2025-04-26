@@ -1,6 +1,4 @@
-import React, { useState, useContext } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import React, { useEffect, useContext } from "react";
 import {
   Container,
   Stack,
@@ -12,33 +10,45 @@ import {
   FormHelperText,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Formik } from "formik";
 import { AddAPhoto } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 import _ from "lodash";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
-import CustomTitle from "../../components/custom/CustomTitle";
-import { EVENT_TYPE } from "../../mockup/data/data";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import CustomTitle from "@/components/custom/CustomTitle";
+import { EVENT_TYPE } from "@/mockup/data/data";
 import { useNavigate, useParams } from "react-router-dom";
-import { eventValidationSchema } from "../../config/validationSchema";
+import { eventValidationSchema } from "@/config/validationSchema";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getEvent, putEvent } from "../../api/eventAPI";
-import Back from "../../components/Back";
+import { getEvent, putEvent } from "@/api/eventAPI";
+import Back from "@/components/Back";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import TextEditor from "@/components/custom/TextEditor";
 
 function EditEvent() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const navigate = useNavigate();
-  const [type, setType] = useState("");
-  const [title, setTitle] = useState("");
-  const [caption, setCaption] = useState("");
-  const [description, setDescription] = useState("");
-  const [profile, setProfile] = useState(null);
+
+  const {
+    handleSubmit,
+    control,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(eventValidationSchema),
+    defaultValues: {
+      _id: id,
+      type: "",
+      title: "",
+      caption: "",
+      description: "",
+      album: "",
+    },
+  });
 
   const event = useQuery({
     queryKey: ["event", id],
@@ -47,45 +57,38 @@ function EditEvent() {
       .getQueryData(["events", id])
       ?.find((event) => event?._id === id),
     enabled: !!id,
-    onSuccess: (event) => {
-      setTitle(event?.title);
-      setType(event?.type);
-      setCaption(event?.caption);
-      setDescription(event?.description);
-      setProfile(event?.album);
-    },
   });
 
+  useEffect(() => {
+    reset({
+      _id: id,
+      type: event?.data?.type || "",
+      title: event?.data?.title || "",
+      caption: event?.data?.caption || "",
+      description: event?.data?.description || "",
+      album: event?.data?.album || "",
+    });
+  }, [event.data]);
+
   const { getRootProps, getInputProps, open } = useDropzone({
-    // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
     maxFiles: 1,
-    accept: {
-      "image/*": [".jpeg", ".png", ".webp"],
-    },
-    maxSize: 200000,
+    accept: { "image/*": [".jpeg", ".png", ".webp"] },
+    // maxSize: 200000,
     multiple: false,
     onDrop: (acceptedFiles) => {
+      console.log(acceptedFiles);
       if (!_.isEmpty(acceptedFiles)) {
         const reader = new FileReader();
         reader.onload = function (event) {
           const ImageURL = event.target.result;
-          setProfile(ImageURL);
+          setValue("album", ImageURL);
         };
-
         reader.readAsDataURL(acceptedFiles[0]);
       }
     },
   });
-
-  const initialValues = {
-    _id: id,
-    type,
-    title,
-    description,
-    album: profile,
-  };
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: putEvent,
@@ -93,9 +96,7 @@ function EditEvent() {
 
   const onSubmit = (values) => {
     mutateAsync(values, {
-      onSettled: () => {
-        queryClient.invalidateQueries(["events"]);
-      },
+      onSettled: () => queryClient.invalidateQueries(["events"]),
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
         navigate("/events");
@@ -110,186 +111,151 @@ function EditEvent() {
     <Container>
       <Back to="/events" color="primary.main" />
       <CustomTitle
-        title="New Events"
-        subtitle=" Send single and bulk SMS to students and parents"
+        title="Edit Event"
+        subtitle="Send single and bulk SMS to students and parents"
         color="text.main"
         backColor="#012e54"
       />
 
-      <Formik
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        enableReinitialize={true}
-        validationSchema={eventValidationSchema}
-      >
-        {({ values, errors, touched, handleSubmit }) => {
-          return (
-            <Stack px={2} py={4} spacing={4} bgcolor="#fff">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack px={2} py={4} spacing={4} bgcolor="#fff">
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
               <Autocomplete
                 freeSolo
                 fullWidth
                 size="small"
                 options={EVENT_TYPE}
-                loadingText="Please wait...."
-                noOptionsText="No Event available"
                 getOptionLabel={(option) => option || ""}
-                value={values?.type}
-                defaultValue={event?.data?.type}
-                onChange={(e, value) => setType(value)}
+                value={field.value || ""}
+                onChange={(e, value) => field.onChange(value)}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     label="Select Event Type"
                     fullWidth
                     size="small"
-                    error={Boolean(touched.type && errors.type)}
-                    helperText={touched.type && errors.type}
+                    error={Boolean(errors.type)}
+                    helperText={errors.type?.message}
                   />
                 )}
               />
+            )}
+          />
 
+          <Controller
+            name="title"
+            control={control}
+            render={({ field }) => (
               <TextField
+                {...field}
                 label="Event Title"
                 fullWidth
                 size="small"
-                row={3}
-                maxRows={3}
-                defaultValue={event?.data?.title}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                error={Boolean(touched.title && errors.title)}
-                helperText={touched.title && errors.title}
+                error={Boolean(errors.title)}
+                helperText={errors.title?.message}
               />
+            )}
+          />
 
+          <Controller
+            name="caption"
+            control={control}
+            render={({ field }) => (
               <TextField
+                {...field}
                 label="Event Caption"
                 fullWidth
                 size="small"
-                row={3}
-                maxRows={3}
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-                error={Boolean(touched.caption && errors.caption)}
-                helperText={touched.caption && errors.caption}
+                error={Boolean(errors.caption)}
+                helperText={errors.caption?.message}
               />
-              <div
-                style={{
-                  marginBottom: "32px",
-                }}
-              >
-                <FormLabel
-                  style={{
-                    color:
-                      touched.description && errors.description
-                        ? "#B72136"
-                        : "var(--primary)",
-                  }}
-                >
-                  Event Description
-                </FormLabel>
-                <ReactQuill
-                  theme="snow"
-                  value={description}
-                  onChange={(value) => setDescription(value)}
-                  defaultValue={event?.data?.description}
-                  placeholder="Description here"
-                  style={{
-                    borderRadius: 2,
-                    // height: "250px",
-                    border:
-                      touched.description && errors.description
-                        ? "1px solid #B72136"
-                        : "none",
-                  }}
-                />
-                {touched.description && errors.description && (
-                  <FormHelperText
-                    sx={{
-                      color: "#B72136",
-                    }}
-                  >
-                    {errors.description}
-                  </FormHelperText>
-                )}
-              </div>
+            )}
+          />
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <TextEditor
+                {...field}
+                label="Description"
+                touched={!!errors.description}
+                errors={errors.description?.message}
+              />
+            )}
+          />
 
-              <div>
-                <FormLabel
-                  style={{
-                    color:
-                      touched.album && errors.album
-                        ? "#B72136"
-                        : "var(--primary)",
-                  }}
-                >
-                  Event Photo/Album
-                </FormLabel>
-                <Stack
-                  {...getRootProps({ className: "dropzone" })}
-                  sx={{
-                    borderRadius: 1,
-                    border:
-                      touched.album && errors.album
-                        ? "1px solid #B72136"
-                        : "1px dotted lightgray",
-                    py: 8,
-                    px: 4,
-                  }}
-                >
+    
+
+          <div>
+            <FormLabel
+              style={{
+                color: errors.album ? "#B72136" : "var(--primary)",
+              }}
+            >
+              Event Photo/Album
+            </FormLabel>
+            <Stack
+              {...getRootProps()}
+              sx={{
+                borderRadius: 1,
+                border: errors.album
+                  ? "1px solid #B72136"
+                  : "1px dotted lightgray",
+                py: 8,
+                px: 4,
+              }}
+            >
+              <Controller
+                name="album"
+                control={control}
+                render={({ field }) => (
                   <Avatar
                     variant="square"
-                    src={profile}
-                    // src={
-                    //   _.isEmpty(profile) ? null : URL.createObjectURL(profile)
-                    // }
+                    src={field.value}
                     sx={{
                       width: { xs: 120, md: 480 },
                       height: { xs: 120, md: 480 },
-
                       objectFit: "contain",
                       alignSelf: "center",
                     }}
                   />
-                  {/* )} */}
-
-                  <input {...getInputProps()} />
-                  <Typography textAlign="center" paragraph>
-                    Drag & drop your photo here
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    onClick={open}
-                    startIcon={<AddAPhoto />}
-                  >
-                    Upload Image
-                  </Button>
-                </Stack>
-                {touched.album && errors.album && (
-                  <FormHelperText
-                    sx={{
-                      color: "#B72136",
-                    }}
-                  >
-                    {errors.album}
-                  </FormHelperText>
                 )}
-              </div>
-
-              <Stack direction="row" justifyContent="flex-end" spacing={2}>
-                <Button onClick={() => navigate("/events")}>Cancel</Button>
-                <Button
-                  loading={isPending}
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                >
-                  Save Changes
-                </Button>
-              </Stack>
+              />
+              <input {...getInputProps()} />
+              <Typography textAlign="center" paragraph>
+                Drag & drop your photo here
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={() => open()}
+                startIcon={<AddAPhoto />}
+              >
+                Upload Image
+              </Button>
             </Stack>
-          );
-        }}
-      </Formik>
+            {errors.album && (
+              <FormHelperText sx={{ color: "#B72136" }}>
+                {errors.album.message}
+              </FormHelperText>
+            )}
+          </div>
+
+          <Stack direction="row" justifyContent="flex-end" spacing={2}>
+            <Button onClick={() => navigate("/events")}>Cancel</Button>
+            <Button
+              type="submit"
+              disabled={isPending}
+              variant="contained"
+              color="primary"
+            >
+              Save Changes
+            </Button>
+          </Stack>
+        </Stack>
+      </form>
     </Container>
   );
 }

@@ -1,20 +1,11 @@
 import React from "react";
-import {
-
-  Typography,
-  Stack,
-  FormLabel,
-  Paper,
-} from "@mui/material";
+import { Typography, Stack, FormLabel, Paper } from "@mui/material";
 
 import CustomFormControl from "@/components/inputs/CustomFormControl";
 import DateInputPicker from "@/components/inputs/DateInputPicker";
 import ScoreSelection from "./ScoreSelection";
 
-
-
-const Exams = ({ watch, control, setValue, errors }) => {
-
+const Exams = ({ watch, control, errors }) => {
   return (
     <div>
       <Typography variant="h5">Exam & Assessment</Typography>
@@ -24,21 +15,22 @@ const Exams = ({ watch, control, setValue, errors }) => {
       </Typography>
 
       <Stack spacing={2} py={2}>
-        <ScoreSelection control={control} errors={errors} />
+        <ScoreSelection control={control} errors={errors} isEdit={true} />
 
-        <Paper sx={{p:2, boxShadow: 2, borderRadius: 2 }}>
+        <Paper sx={{ p: 2, boxShadow: 2, borderRadius: 2 }}>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
-            Score Distribution Preference
+            Dates & Deadlines
           </Typography>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Select your preferred score distribution for classwork and exams.
-            This determines how final grades are calculated based on your chosen
-            ratio.
+            Set the dates and deadlines for exams, assessments, and other
+            important events. This helps in organizing the academic calendar and
+            ensuring timely completion of assessments.
           </Typography>
 
           {/* Mid-term Examination */}
           {/* <FormControl component="fieldset"> */}
           <FormLabel component="legend">Mid-term Examination</FormLabel>
+
           <CustomFormControl>
             <DateInputPicker
               label="From"
@@ -97,7 +89,6 @@ const Exams = ({ watch, control, setValue, errors }) => {
           </CustomFormControl>
           {/* </FormControl> */}
         </Paper>
-
       </Stack>
     </div>
   );

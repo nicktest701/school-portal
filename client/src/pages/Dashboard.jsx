@@ -1,6 +1,6 @@
 import React, { use, useState } from "react";
 import Calendar from "react-calendar";
-import { Box, Stack, Typography, Avatar } from "@mui/material";
+import { Box, Stack, Typography, Avatar, Divider } from "@mui/material";
 import DashboardSwiper from "@/components/swiper/DashboardSwiper";
 import Birthday from "@/components/items/Birthday";
 import "react-calendar/dist/Calendar.css";
@@ -36,9 +36,6 @@ const Dashboard = () => {
             px: { xs: 1, md: 4 },
           }}
         >
-          <Typography variant="h6" sx={{ color: "primary.main" }}>
-            {session?.academicYear}-{session?.term}
-          </Typography>
           <Box
             sx={{
               width: "100%",
@@ -65,6 +62,14 @@ const Dashboard = () => {
               variant="square"
             />
           </Box>
+
+          <Divider />
+          <Typography variant="h1" sx={{ color: "primary.main" }}>
+            {session?.name}
+          </Typography>
+          <Typography variant="h6" sx={{ color: "primary.main" }}>
+            {session?.academicYear} , {session?.term}
+          </Typography>
 
           <CustomTitle
             title="Dashboard"
@@ -127,6 +132,5 @@ const Dashboard = () => {
     </>
   );
 };
-
 
 export default React.memo(Dashboard);

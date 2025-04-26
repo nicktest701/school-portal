@@ -17,13 +17,13 @@ import { useMutation } from "@tanstack/react-query";
 import { loginUserValidationSchema } from "../config/validationSchema";
 import { getUserAuth } from "../api/userAPI";
 import { UserContext } from "../context/providers/UserProvider";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import FindSchool from "./FindSchool";
 
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { school_info, logInUser } = useContext(UserContext);
+  const { school_info, user, logInUser } = useContext(UserContext);
   const initialValues = {
     username: "",
     password: "",
@@ -52,6 +52,9 @@ const Login = () => {
     });
   };
 
+  if (user?.id) {
+    return <Navigate to="/" />;
+  }
   if (!school_info?._id) {
     return <FindSchool />;
   }

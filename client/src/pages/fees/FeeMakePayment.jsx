@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import React, { use, useMemo } from "react";
+import React, { use, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import _ from "lodash";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -26,13 +26,15 @@ import { EMPTY_IMAGES } from "@/config/images";
 import { MonetizationOn, Person2Sharp } from "@mui/icons-material";
 import useLevelById from "@/components/hooks/useLevelById";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
-import { Container, useMediaQuery, useTheme } from "@mui/material";
+import { Container, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import useLevel from "@/components/hooks/useLevel";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "@/components/inputs/Input";
 import FeesDetailsSkeleton from "@/components/skeleton/FeesDetailsSkeleton";
+import PayeeDetails from "./PayeeDetails";
+import SelectInput from "@/components/inputs/SelectInput";
 
 const schema = yup.object().shape({
   // _id: yup.string().required("ID is required"),
@@ -44,10 +46,17 @@ const schema = yup.object().shape({
     _id: yup.string().required("Student ID is required"),
     fullName: yup.string().required("Full Name is required"),
   }),
+  paymentMethod: yup.string().required("Required*"),
   amount: yup
     .number()
     .min(0, "Amount cannot be negative")
     .required("Amount is required"),
+  payee: yup.object().shape({
+    name: yup.string().required("Full Name is required"),
+    phonenumber: yup
+      .string()
+      .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, "Invalid Phone number"),
+  }),
 });
 
 const FeeMakePayment = () => {
@@ -59,6 +68,7 @@ const FeeMakePayment = () => {
   const { session } = use(UserContext);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
+  const [showPayeeDetails, setShowPayeeDetails] = useState(false);
 
   const {
     control,
@@ -66,6 +76,8 @@ const FeeMakePayment = () => {
     setValue,
     handleSubmit,
     formState: { errors },
+    setError,
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -78,13 +90,14 @@ const FeeMakePayment = () => {
         fullName: "",
         profile: "",
       },
-      amount: "",
+      amount: 0,
+      paymentMethod: "Cash",
     },
   });
 
   const currentLevel = watch("level");
   const studentInfo = watch("student");
-
+  const watchAmount = watch("amount");
 
   ///Get Student fees info
   const studentFees = useQuery({
@@ -119,6 +132,18 @@ const FeeMakePayment = () => {
     return selectedFee?.fees || 0;
   }, [searchParams.get("level_id")]);
 
+  const handleOpenPayee = () => {
+    if (watchAmount <= 0) {
+      setError("amount", {
+        type: "custom",
+        message: "Amount should be more than zero",
+      });
+      return;
+    }
+
+    setShowPayeeDetails(true);
+  };
+
   //Add fees to database
   const { mutateAsync, isPending } = useMutation({
     mutationFn: postCurrentFee,
@@ -131,13 +156,15 @@ const FeeMakePayment = () => {
         paid: values.amount,
         outstanding:
           Number(studentFees?.data?.totalOutstanding) - Number(values.amount),
+        paymentMethod: values?.paymentMethod,
+        payer: values.payee,
       },
     };
     Swal.fire({
       title: "Making Payment",
       text: "Do you want to proceed with the payment?",
       showCancelButton: true,
-      backdrop:false
+      backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         mutateAsync(payment, {
@@ -149,18 +176,23 @@ const FeeMakePayment = () => {
               searchParams.get("level_id"),
             ]);
           },
-          onSuccess: async () => {
+          onSuccess: async (payment) => {
             schoolSessionDispatch(alertSuccess("Payment Done!"));
 
-            // navigate("/fee/print", {
-            //   state: {
-            //     feePrintData: {
-            //       fullName: studentInfo.fullName,
-            //       levelType: currentLevel?.levelName,
-            //       payment: payment.payment[0],
-            //     },
-            //   },
-            // });
+            const fee = {
+              ...payment,
+              fee: studentFees?.data?.current?.fees,
+              arreas: studentFees?.data?.previous?.remaining,
+              feePaid: studentFees?.data?.current?.paid,
+            };
+
+            navigate("/fee/receipt", {
+              state: {
+                fee,
+              },
+            });
+            setShowPayeeDetails(false);
+            reset();
           },
           onError: () => {
             schoolSessionDispatch(alertError("An unknown error has occurred!"));
@@ -216,6 +248,7 @@ const FeeMakePayment = () => {
         >
           <Autocomplete
             sx={{ width: { xs: "100%", sm: 300 } }}
+            size="small"
             fullWidth
             options={fees || []}
             loading={feesLoading}
@@ -252,6 +285,7 @@ const FeeMakePayment = () => {
         {/* search */}
         <Autocomplete
           fullWidth
+          size="small"
           options={students ? students : []}
           loading={levelLoading}
           disableClearable
@@ -329,13 +363,21 @@ const FeeMakePayment = () => {
                   },
                 }}
               />
-
+              <SelectInput
+                label="Payment Method"
+                name="paymentMethod"
+                control={control}
+                size="small"
+              >
+                <MenuItem value="Mobile Money">Mobile Money</MenuItem>
+                <MenuItem value="Cash">Cash</MenuItem>
+              </SelectInput>
               <Input
                 control={control}
                 name="amount"
                 type="number"
                 inputMode="numeric"
-                label="Amount"
+                label="Amount to be paid"
                 size="small"
                 placeholder="Enter Amount here"
                 InputProps={{
@@ -357,9 +399,10 @@ const FeeMakePayment = () => {
                 variant="contained"
                 startIcon={<MonetizationOnRounded />}
                 loading={isPending}
-                onClick={handleSubmit(onSubmit)}
+                onClick={handleOpenPayee}
+                // onClick={handleSubmit(onSubmit)}
               >
-                Make Payment
+                Proceed
               </Button>
             </Stack>
           </Paper>
@@ -462,6 +505,13 @@ const FeeMakePayment = () => {
           )}
         </Grid>
       </Grid>
+      <PayeeDetails
+        isPending={isPending}
+        open={showPayeeDetails}
+        onClose={() => setShowPayeeDetails(false)}
+        control={control}
+        handleMakePayment={handleSubmit(onSubmit)}
+      />
     </>
   );
 };

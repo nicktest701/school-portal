@@ -60,10 +60,11 @@ function NewEvent() {
     noClick: true,
     noKeyboard: true,
     maxFiles: 1,
-    accept: { "image/*": [".jpeg", ".png", ".webp"] },
+    accept: { "image/*": [".jpeg", ".png",".PNG", ".webp"] },
     maxSize: 200000,
     multiple: false,
     onDrop: (acceptedFiles) => {
+      console.log(acceptedFiles)
       if (!_.isEmpty(acceptedFiles)) {
         const reader = new FileReader();
         reader.onload = (event) => {

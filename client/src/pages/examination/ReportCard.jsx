@@ -13,7 +13,7 @@ import ReportItem from "@/components/list/ReportItem";
 import ReportItemUnderline from "@/components/list/ReportItemUnderline";
 import AddRemarks from "@/components/modals/AddRemarks";
 import _ from "lodash";
-import { SchoolRounded } from "@mui/icons-material";
+import { PrintRounded, SchoolRounded } from "@mui/icons-material";
 import { UserContext } from "@/context/providers/UserProvider";
 import { useReactToPrint } from "react-to-print";
 
@@ -22,6 +22,14 @@ function ReportCard({ student, style, ref }) {
   const { school_info, session } = use(UserContext);
   const { palette } = useTheme();
   const [openRemarks, setOpenRemarks] = useState(false);
+
+  const scorePreference = session?.exams?.scorePreference?.split("/");
+  const classScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[0]
+    : 50;
+  const examsScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[1]
+    : 50;
 
   const reactToPrintFn = useReactToPrint({
     documentTitle: `${student?.fullName}-${student?.level}`,
@@ -54,6 +62,7 @@ function ReportCard({ student, style, ref }) {
         <Button
           className="print-btn"
           variant="text"
+          startIcon={<PrintRounded />}
           sx={{
             position: "absolute",
             top: 3,
@@ -131,7 +140,7 @@ function ReportCard({ student, style, ref }) {
         >
           <Box>
             <Stack>
-              <ReportItem title="ID" text={student?.indexnumber} />
+              <ReportItem title="ID" text={_.toUpper(student?.indexnumber)} />
               <ReportItem title="Full Name" text={student?.fullName} />
               <ReportItem title="Class" text={`${student?.level}`} />
               <ReportItem title="No. On Roll" text={student?.rollNumber} />
@@ -173,8 +182,15 @@ function ReportCard({ student, style, ref }) {
             <thead>
               <tr style={{ fontSize: "14px" }}>
                 <th>Subject</th>
-                <th> Class Score (50%)</th>
-                <th> Exams Score (50%)</th>
+                <th>
+                  {" "}
+                  Class Score <br /> ({classScorePreference}%)
+                </th>
+                <th>
+                  {" "}
+                  Exams Score
+                  <br /> ({examsScorePreference}%)
+                </th>
                 <th>Total Score (100%)</th>
                 {/* <th>Position</th> */}
                 <th>Grade</th>
@@ -282,55 +298,63 @@ function ReportCard({ student, style, ref }) {
               Add Remarks
             </Button>
           </Stack>
+          <Stack justifyContent="center" alignItems="center" zIndex={9999} pt={2}>
+            <Typography>Bill</Typography>
+            <table
+              width="60%"
+              border="1"
+              style={{ borderCollapse: "collapse", zIndex: 9999 }}
+            >
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>GHS</th>
+                  <th>GHP</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ paddingLeft: "5px", fontSize: "13px" }}>
+                    Tuition Fee
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td style={{ paddingLeft: "5px", fontSize: "13px" }}>
+                    Others
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td style={{ paddingLeft: "5px", fontSize: "13px" }}>
+                    Arrears
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Total</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </tfoot>
+            </table>
+          </Stack>
         </Box>
-        <Divider />
-        {/* <Stack justifyContent="center" alignItems="center">
-          <Typography>Bill</Typography>
-          <table width="60%" border="1" style={{ borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>GHS</th>
-                <th>GHP</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ paddingLeft: "5px", fontSize: "13px" }}>
-                  Tuition Fee
-                </td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td style={{ paddingLeft: "5px", fontSize: "13px" }}>Others</td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td style={{ paddingLeft: "5px", fontSize: "13px" }}>
-                  Arrears
-                </td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th>Total</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </tfoot>
-          </table>
-        </Stack> */}
+        {/* <Divider /> */}
+
         <Typography
           style={{
             fontSize: "10px",
             fontStyle: "italic",
+            textAlign: "right",
           }}
         >
-          Powered by FrebbyTech Consults (0543772591)
+          Powered by FrebbyTech Consults (+233543772591)
         </Typography>
 
         <div
@@ -363,10 +387,12 @@ function ReportCard({ student, style, ref }) {
         <div
           style={{
             position: "absolute",
-            bottom: "5%",
-            leftt: 0,
-            display: "grid",
-            placeItems: "center",
+            bottom: "2%",
+            left: "4%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           {session?.headmaster?.signature && (
@@ -375,9 +401,12 @@ function ReportCard({ student, style, ref }) {
               alt="headmaster signature"
               style={{
                 maxWidth: "100%",
-                aspectRatio: "1/1",
+                aspectRatio: "16/9",
+                // marginLeft: "12px",
                 width: "100px",
-                height: "80px",
+                height: "60px",
+                objectFit: "contain",
+                transform: "scale(1.8)",
               }}
             />
           )}
@@ -387,7 +416,7 @@ function ReportCard({ student, style, ref }) {
               fontSize: "13px",
             }}
           >
-            {session?.headmaster?.name}
+            {session?.headmaster?.name || ""} (Headmaster)
           </span>
         </div>
       </Stack>

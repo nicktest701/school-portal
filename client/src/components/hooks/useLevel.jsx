@@ -29,7 +29,7 @@ function useLevel() {
     // refetchOnMount: false,
   });
 
-  localStorage.setItem(
+  sessionStorage.setItem(
     "levels",
     JSON.stringify(
       _.map(levels.levelsOption, (level) => {

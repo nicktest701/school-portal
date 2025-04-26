@@ -11,11 +11,20 @@ const PageNotFound = () => {
         alignItems: "center",
         width: "100vw",
         height: "100vh",
-        bgcolor:'primary.main'
+        bgcolor: "primary.main",
       }}
     >
-      <Typography variant="h1">Page Not Found</Typography>
-      <Link to="/">Go Home</Link>
+      <Typography variant="h1" color="#fff">
+        Page Not Found
+      </Typography>
+      <Link
+        to="/"
+        style={{
+          color: "#fff",
+        }}
+      >
+        Go Home
+      </Link>
     </Stack>
   );
 };

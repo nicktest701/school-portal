@@ -102,28 +102,9 @@ router.get(
     //   schoolUpdatedAt: info[0]?.schoolUpdatedAt,
     // };
 
-    const loggedInUser = {
-      id: user.id,
-      profile: user.profile,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      fullname: user.fullname,
-      username: user.username,
-      email: user.email,
-      phonenumber: user.phonenumber,
-      role: user.role,
-      active: user.active,
-    };
-
-    const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
+    const token = jwt.sign(user, process.env.JWT_SECRET, {
       expiresIn: "15m",
     });
-
-    // const refresh_token = jwt.sign(loggedInUser, process.env.JWT_REFRESH_SECRET, {
-    //   expiresIn: "1m",
-    // });
-
-    // loggedInUser.token = token;
 
     res.status(200).json({
       token,
@@ -240,6 +221,7 @@ router.post(
       phonenumber: user.phonenumber,
       role: user.role,
       active: user.active,
+      school: user?.school,
     };
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
@@ -361,6 +343,7 @@ router.put(
       phonenumber: updatedUser.phonenumber,
       role: updatedUser.role,
       active: updatedUser.active,
+      school: updatedUser?.school,
     };
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
@@ -433,6 +416,7 @@ router.put(
         phonenumber: updatedUser.phonenumber,
         role: updatedUser.role,
         active: updatedUser.active,
+        school: updatedUser?.school,
       };
 
       const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {

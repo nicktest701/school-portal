@@ -65,7 +65,6 @@ const UserProvider = ({ children }) => {
     enabled: !!!user?.id,
   });
 
-  
   const { levelLoading, students } = useLevel();
 
   //check if current level details exists
@@ -129,13 +128,15 @@ const UserProvider = ({ children }) => {
           {},
           {
             onSettled: () => {
-              localStorage.removeItem("@school_info");
-              localStorage.removeItem("@school_session");
               navigate("/login");
-              setSchoolInformation(null);
+              localStorage.removeItem("@school_info");
               localStorage.removeItem("@user");
+              localStorage.removeItem("@school_session");
+              setSchoolInformation(null);
               localStorage.removeItem("@user_refresh");
+              setSchoolInformation(null);
               setUser(null);
+              setSession(null);
             },
           }
         );

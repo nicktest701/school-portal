@@ -18,11 +18,10 @@ import { EMPTY_IMAGES } from "@/config/images";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import CustomTitle from "@/components/custom/CustomTitle";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Sessions = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [selectedSessions, setSelectedSessions] = useState([]);
@@ -115,17 +114,10 @@ const Sessions = () => {
   //Edit session
   const handlEditSession = (id) => {
     navigate(`/session/${id}/edit`);
-    // setSearchParams((params) => {
-    //   params.set("_id", data?.termId);
-    //   params.set("edit_session", true);
-
-    //   return params;
-    // });
   };
 
   const handleOpenSession = () => {
     navigate("/session/new");
-    // schoolSessionDispatch({ type: "displayAddSession", payload: true });
   };
 
   ///Disable or Enable User Account by id

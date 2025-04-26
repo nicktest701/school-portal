@@ -3,7 +3,7 @@ const _ = require('lodash');
 const asyncHandler = require('express-async-handler');
 const Notification = require('../models/notificationModel');
 const sendMail = require('../config/mail/mailer');
-const sendSMS = require('../config/sms/messenger');
+const {sendSMS} = require('../config/sms/messenger');
 
 //GET notification
 router.get(

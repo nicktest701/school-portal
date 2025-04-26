@@ -13,7 +13,7 @@ import {
 import _ from "lodash";
 import { gradeColor } from "@/config/gradeColor";
 import { overallScoreGradeColor } from "@/config/overallScoreGradeColor";
-
+import { Link } from "react-router-dom";
 
 export const STUDENTS_COLUMN = [
   {
@@ -214,7 +214,14 @@ export const RECENT_STUDENTS_COLUMN = [
                 fontWeight: "bold",
               }}
             >
-              {rowData.fullName}
+              <Link
+                to={`/student/view/${rowData?._id}?_l=${rowData?.levelId}`}
+                style={{
+                  color: "var(--primary)",
+                }}
+              >
+                {rowData.fullName}
+              </Link>
             </Typography>
           }
           secondary={
@@ -231,13 +238,6 @@ export const RECENT_STUDENTS_COLUMN = [
         />
       </Stack>
     ),
-  },
-
-  {
-    field: "levelName",
-    title: "Level",
-    export: true,
-    // hidden: true,
   },
 
   {
@@ -259,6 +259,12 @@ export const RECENT_STUDENTS_COLUMN = [
         }
       />
     ),
+  },
+  {
+    field: "levelName",
+    title: "Current Level",
+    export: true,
+    // hidden: true,
   },
 
   {

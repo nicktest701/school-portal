@@ -1,11 +1,5 @@
 import React from "react";
-import {
-
-  Typography,
-  Stack,
-  FormLabel,
-  Paper,
-} from "@mui/material";
+import { Typography, Stack, FormLabel, Paper } from "@mui/material";
 
 import CustomFormControl from "@/components/inputs/CustomFormControl";
 import DateInputPicker from "@/components/inputs/DateInputPicker";
@@ -26,14 +20,14 @@ const Exams = ({ watch, control, setValue, errors }) => {
       <Stack spacing={2} py={2}>
         <ScoreSelection control={control} errors={errors} />
 
-        <Paper sx={{p:2, boxShadow: 2, borderRadius: 2 }}>
+        <Paper sx={{ p: 2, boxShadow: 2, borderRadius: 2 }}>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
-            Score Distribution Preference
+            Dates & Deadlines
           </Typography>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Select your preferred score distribution for classwork and exams.
-            This determines how final grades are calculated based on your chosen
-            ratio.
+            Set the dates and deadlines for exams, assessments, and other
+            important events. This helps in organizing the academic calendar and
+            ensuring timely completion of assessments.
           </Typography>
 
           {/* Mid-term Examination */}

@@ -24,6 +24,99 @@ router.get(
   })
 );
 
+//@GET All school current fees
+router.get(
+  "/day",
+  asyncHandler(async (req, res) => {
+    const { session, term, date } = req.query;
+
+    const currentFees = await CurrentFee.find({
+      session: new ObjectId(session),
+      term: new ObjectId(term),
+    })
+      .populate({
+        path: "student",
+        select: ["firstname", "surname", "othername"],
+      })
+      .populate({
+        path: "level",
+        select: "level",
+      })
+      .select("payment");
+
+    if (_.isEmpty(currentFees)) {
+      return res.status(200).json([]);
+    }
+
+    const studentPaymentForOnADate = currentFees.map(
+      ({ student, level, payment }) => {
+        const paidForToday = payment.filter((pay) => {
+          return moment(new Date(pay?.date || pay?.createdAt)).isSame(
+            moment(new Date(date)),
+            "day"
+          );
+        });
+        if (_.isEmpty(paidForToday)) return null;
+
+        const results = paidForToday?.map((fee) => {
+          return {
+            student: student?.fullName,
+            level: level?.levelName,
+            payment: fee,
+          };
+        });
+
+        return results;
+      }
+    );
+
+    res.status(200).json(_.compact(_.flatMapDeep(studentPaymentForOnADate)));
+  })
+);
+
+//GET Student fee History
+router.get(
+  "/history",
+  asyncHandler(async (req, res) => {
+    const { studentId } = req.query;
+
+    const studFees = await CurrentFee.find({
+      student: studentId,
+    })
+      .sort({ createdAt: -1 })
+      .populate("student")
+      .populate({
+        path: "term",
+        select: ["term", "academicYear"],
+      })
+      .populate({
+        path: "level",
+        select: ["level"],
+      })
+      .select("payment");
+
+    const modifiedFees = studFees.map((fee) => {
+      return {
+        _id: fee?._id,
+        academicYear: fee?.term?.academicYear,
+        term: fee?.term?.term,
+        level: fee?.level?.levelName,
+        payment: fee?.payment,
+        paid: _.sumBy(fee?.payment, "paid"),
+      };
+    });
+
+    res.status(200).json(modifiedFees);
+  })
+);
+
+router.get(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const currentFee = await CurrentFee.findById(req.params.id);
+    res.status(200).json(currentFee);
+  })
+);
 //@GET All school current fees summary
 router.post(
   "/summary",
@@ -133,100 +226,6 @@ router.post(
   })
 );
 
-//@GET All school current fees
-router.get(
-  "/day",
-  asyncHandler(async (req, res) => {
-    const { session, term, date } = req.query;
-
-    const currentFees = await CurrentFee.find({
-      session: new ObjectId(session),
-      term: new ObjectId(term),
-    })
-      .populate({
-        path: "student",
-        select: ["firstname", "surname", "othername"],
-      })
-      .populate({
-        path: "level",
-        select: "level",
-      })
-      .select("payment");
-
-    if (_.isEmpty(currentFees)) {
-      return res.status(200).json([]);
-    }
-
-    const studentPaymentForOnADate = currentFees.map(
-      ({ student, level, payment }) => {
-        const paidForToday = payment.filter((pay) => {
-          return moment(new Date(pay?.date || pay?.createdAt)).isSame(
-            moment(new Date(date)),
-            "day"
-          );
-        });
-        if (_.isEmpty(paidForToday)) return null;
-
-        const results = paidForToday?.map((fee) => {
-          return {
-            student: student?.fullName,
-            level: level?.levelName,
-            payment: fee,
-          };
-        });
-
-        return results;
-      }
-    );
-
-    res.status(200).json(_.compact(_.flatMapDeep(studentPaymentForOnADate)));
-  })
-);
-
-//GET Student fee History
-router.get(
-  "/history",
-  asyncHandler(async (req, res) => {
-    const { studentId } = req.query;
-
-    const studFees = await CurrentFee.find({
-      student: studentId,
-    })
-      .sort({ createdAt: -1 })
-      .populate("student")
-      .populate({
-        path: "term",
-        select: ["term", "academicYear"],
-      })
-      .populate({
-        path: "level",
-        select: ["level"],
-      })
-      .select("payment");
-
-    const modifiedFees = studFees.map((fee) => {
-      return {
-        _id: fee?._id,
-        academicYear: fee?.term?.academicYear,
-        term: fee?.term?.term,
-        level: fee?.level?.levelName,
-        payment: fee?.payment,
-        paid: _.sumBy(fee?.payment, "paid"),
-      };
-    });
-
-    res.status(200).json(modifiedFees);
-  })
-);
-
-router.get(
-  "/:id",
-  asyncHandler(async (req, res) => {
-    const currentFee = await CurrentFee.findById(req.params.id);
-    res.status(200).json(currentFee);
-  })
-);
-
 //GET Student fee info
 router.post(
   "/student",
@@ -331,25 +330,34 @@ router.post(
   asyncHandler(async (req, res) => {
     const { _id, payment } = req.body;
 
+    const newPayment = {
+      ...payment,
+      createdAt: new Date(),
+      issuerID: req.user.id,
+      issuerName: req.user?.fullname,
+      id: randomUUID(),
+    };
+
     //Create new current Fees
-    const currentFee = await CurrentFee.findByIdAndUpdate(_id, {
-      $push: {
-        payment: {
-          ...payment,
-          createdAt: new Date(),
-          issuerID: req.user.id,
-          issuerName: req.user?.fullname,
-          id: randomUUID(),
+    const currentFee = await CurrentFee.findByIdAndUpdate(
+      _id,
+      {
+        $push: {
+          payment: newPayment,
         },
       },
-    });
+      {
+        new: true,
+      }
+    );
     //if Error adding new fees
     if (!currentFee) {
       return res
         .status(404)
         .send("Error creating new CurrentFee.Try again later");
     }
-    res.status(200).json(currentFee);
+
+    res.status(200).json(newPayment);
   })
 );
 
