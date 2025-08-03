@@ -322,8 +322,8 @@ const apiLimiter = rateLimit({
 });
 
 // Middlewares
-app.use(cookieParser());
 app.use(cors(corsOptions));
+app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.json({ limit: "50mb" }));
 app.use(
   express.urlencoded({

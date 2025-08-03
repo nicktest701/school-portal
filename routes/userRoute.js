@@ -175,10 +175,11 @@ router.post(
     // }
     const user = req.session;
     const cookieUser = req.cookies;
+    const signedCookie = req.signedCookies;
 
     console.log(user);
     console.log(cookieUser);
-
+    console.log(signedCookie);
 
     if (!user) {
       return res.status(401).json("Unauthorized Access.Please login again");
