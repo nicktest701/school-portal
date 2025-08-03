@@ -173,13 +173,12 @@ router.post(
     // if (!req.session || !req.session.user) {
     //   return res.status(401).json("Unauthorized Access.Please login again");
     // }
-    const user = req.session.user;
-    const cookieUser = req.session.cookie.refresh_token;
-    const refresh_token = req.session.refresh_token;
+    const user = req.session;
+    const cookieUser = req.cookies;
 
     console.log(user);
     console.log(cookieUser);
-    console.log(refresh_token);
+
 
     if (!user) {
       return res.status(401).json("Unauthorized Access.Please login again");
