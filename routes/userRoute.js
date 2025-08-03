@@ -145,16 +145,17 @@ router.post(
     });
     // console.log(req.session.user);
 
-    // res.cookie("refresh_token", refresh_token, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "none", // Cross-site allowed
-    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    //   // domain:
-    //   //   process.env.NODE_ENV === "production"
-    //   //     ? ".school-portal-chi.vercel.app" // Leading dot for subdomains
-    //   //     : "localhost",
-    // });
+    res.cookie("refresh_token", refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none", // Cross-site allowed
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: "/",
+      domain:
+        process.env.NODE_ENV === "production"
+          ? ".school-portal-chi.vercel.app" // Leading dot for subdomains
+          : undefined, // Localhost works without domain
+    });
 
     res.status(200).json({
       token,
