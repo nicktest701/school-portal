@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const _ = require("lodash");
 const User = require("../models/userModel");
+const StudentAuth = require("../models/studentAuthModel");
 
 const verifyJWT = (req, res, next) => {
   const authHeader =
@@ -25,20 +26,6 @@ const verifyJWT = (req, res, next) => {
       return res.status(403).json("Session has expired.Please login again");
     }
 
-    // const loggedInUser = {
-    //   id: user?._id,
-    //   profile: user?.profile,
-    //   firstname: user?.firstname,
-    //   lastname: user?.lastname,
-    //   fullname: user?.fullname,
-    //   username: user?.username,
-    //   email: user?.email,
-    //   phonenumber: user?.phonenumber,
-    //   role: user?.role,
-    //   active: user?.active,
-    //   school: user?.school,
-    // };
-
     req.user = user;
 
     next();
@@ -46,6 +33,13 @@ const verifyJWT = (req, res, next) => {
 };
 
 const verifyRefreshJWT = (req, res, next) => {
+  const cookieToken = req.cookies.refresh_token;
+  // console.log("Cookie Token:", cookieToken);
+  console.log("session Token:", req.session.cookie);
+
+  next();
+
+
   const authHeader =
     req.headers["authorization"] || req.headers["Authorization"];
 
@@ -67,31 +61,50 @@ const verifyRefreshJWT = (req, res, next) => {
     if (err) {
       return res.status(403).json("Session has expired.Please login again");
     }
+    let authUser = null;
+    let loggedInUser = null;
+    // Check if the user is an admin or teacher
 
-    const authUser = await User.findById(user?.id).select("-password");
+    if (["admin", "teacher"].includes(user?.role)) {
+      authUser = await User.findById(user?.id).select("-password");
 
-    if (_.isEmpty(authUser)) {
-      return res
-        .status(401)
-        .json("Unauthorized Access.Please contact administrator");
+      if (_.isEmpty(authUser)) {
+        return res
+          .status(401)
+          .json("Unauthorized Access.Please contact administrator");
+      }
+
+      loggedInUser = {
+        _id: authUser._id,
+        id: authUser._id?.toString(),
+        profile: authUser?.profile,
+        firstname: authUser?.firstname,
+        lastname: authUser?.lastname,
+        fullname: authUser?.fullname,
+        username: authUser?.username,
+        email: authUser?.email,
+        dateofbirth: authUser.dateofbirth,
+        gender: authUser.gender,
+        phonenumber: authUser?.phonenumber,
+        role: authUser?.role,
+        active: authUser?.active,
+        school: authUser?.school,
+      };
+    } else {
+      authUser = await StudentAuth.findById(user?.id).select("-password");
+
+      if (_.isEmpty(authUser)) {
+        return res
+          .status(401)
+          .json("Unauthorized Access.Please contact administrator");
+      }
+
+      loggedInUser = {
+        _id: authUser._id,
+        id: authUser._id?.toString(),
+        user: authUser?.studentId,
+      };
     }
-
-    const loggedInUser = {
-      _id: authUser._id,
-      id: authUser._id?.toString(),
-      profile: authUser?.profile,
-      firstname: authUser?.firstname,
-      lastname: authUser?.lastname,
-      fullname: authUser?.fullname,
-      username: authUser?.username,
-      email: authUser?.email,
-      dateofbirth: authUser.dateofbirth,
-      gender: authUser.gender,
-      phonenumber: authUser?.phonenumber,
-      role: authUser?.role,
-      active: authUser?.active,
-      school: authUser?.school,
-    };
 
     req.user = loggedInUser;
 

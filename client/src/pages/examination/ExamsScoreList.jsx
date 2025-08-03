@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 
 import student_icon from "../../assets/images/header/student_ico.svg";
 import { gradeColor } from "../../config/gradeColor";

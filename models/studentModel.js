@@ -60,8 +60,8 @@ const StudentSchema = new mongoose.Schema(
       type: String,
       lowercase: true,
       trim: true,
-      unique: true,
-      sparse: true, // Allows null values but enforces uniqueness
+      // unique: true,
+      // sparse: true, // Allows null values but enforces uniqueness
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"], // Basic email validation
     },
     phonenumber: {

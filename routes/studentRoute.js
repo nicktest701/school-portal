@@ -258,9 +258,14 @@ router.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
 
+    console.log(req.user)
+
     //Personal Info
     const student = await Student.findById(id);
 
+    if (_.isEmpty(student)) {
+      return res.status(400).json("No Such Student exists");
+    }
     //School Fees
     const fees = await CurrentFee.find({
       student: id,
@@ -323,10 +328,6 @@ router.get(
     const parents = await Parent.find({
       student: id,
     });
-
-    if (_.isEmpty(student)) {
-      return res.status(400).json("No Such Student exists");
-    }
 
     res.status(200).json({
       profile: student || [],

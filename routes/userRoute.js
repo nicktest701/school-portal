@@ -29,86 +29,11 @@ router.get(
   "/",
   verifyJWT,
   asyncHandler(async (req, res) => {
-    // const users = await knex("users")
-    //   .select(
-    //     "_id",
-    //     "firstname",
-    //     "lastname",
-    //     "name",
-    //     "username",
-    //     "dateofbirth",
-    //     "gender",
-    //     "email",
-    //     "role",
-    //     "phonenumber",
-    //     "address",
-    //     "residence",
-    //     "nationality",
-    //     "active",
-    //     "schoolId",
-    //     "createdAt",
-    //     "updatedAt"
-    //   )
-    //   .orderBy("createdAt", "desc");
-
     const users = await User.find({ school: req.user.school })
       .select("-password")
       .sort({ createdAt: -1 });
-    // console.log(users)
 
     res.status(200).json(users);
-  })
-);
-
-//@GET all users
-router.get(
-  "/verify",
-  verifyRefreshJWT,
-  asyncHandler(async (req, res) => {
-    const user = req.user;
-
-    // const info = await knex("school_user_info").where("userId", id).select("*");
-
-    // const result = {
-    //   userId: info[0]?.userId,
-    //   profile: info[0]?.profile,
-    //   firstname: info[0]?.firstname,
-    //   lastname: info[0]?.lastname,
-    //   fullName: info[0]?.name,
-    //   username: info[0]?.username,
-    //   dateofbirth: info[0]?.dateofbirth,
-    //   gender: info[0]?.gender,
-    //   userEmail: info[0]?.userEmail,
-    //   role: info[0]?.role,
-    //   userPhonenumber: info[0]?.userPhonenumber,
-    //   userAddress: info[0]?.userAddress,
-    //   userResidence: info[0]?.userResidence,
-    //   nationality: info[0]?.nationality,
-    //   userActive: info[0]?.userActive,
-    //   userCreatedAt: info[0]?.userCreatedAt,
-    //   userUpdatedAt: info[0]?.userUpdatedAt,
-    //   schoolId: info[0]?.schoolId,
-    //   schoolName: info[0]?.schoolName,
-    //   schoolAddress: info[0]?.schoolAddress,
-    //   schoolPhonenumber: info[0]?.schoolPhonenumber,
-    //   schoolEmail: info[0]?.schoolEmail,
-    //   badge: info[0]?.badge,
-    //   principalName: info[0]?.principalName,
-    //   motto: info[0]?.motto,
-    //   schoolActive: info[0]?.schoolActive,
-    //   schoolType: info[0]?.type,
-    //   schoolStatus: info[0]?.schoolStatus,
-    //   schoolCreatedAt: info[0]?.schoolCreatedAt,
-    //   schoolUpdatedAt: info[0]?.schoolUpdatedAt,
-    // };
-
-    const token = jwt.sign(user, process.env.JWT_SECRET, {
-      expiresIn: "15m",
-    });
-
-    res.status(200).json({
-      token,
-    });
   })
 );
 
@@ -130,28 +55,6 @@ router.get(
     const { id } = req.params;
 
     const user = await User.findById(id).select("-password");
-
-    // const info = await knex("users").where("userId", id).select("*");
-
-    // const result = {
-    //   userId: info[0]?.userId,
-    //   profile: info[0]?.profile,
-    //   firstname: info[0]?.firstname,
-    //   lastname: info[0]?.lastname,
-    //   fullName: info[0]?.name,
-    //   username: info[0]?.username,
-    //   dateofbirth: info[0]?.dateofbirth,
-    //   gender: info[0]?.gender,
-    //   userEmail: info[0]?.userEmail,
-    //   role: info[0]?.role,
-    //   userPhonenumber: info[0]?.userPhonenumber,
-    //   userAddress: info[0]?.userAddress,
-    //   userResidence: info[0]?.userResidence,
-    //   nationality: info[0]?.nationality,
-    //   userActive: info[0]?.userActive,
-    //   userCreatedAt: info[0]?.userCreatedAt,
-    //   userUpdatedAt: info[0]?.userUpdatedAt,
-    // }
 
     const loggedInUser = {
       _id: user._id?.toString(),
@@ -182,9 +85,6 @@ router.post(
   asyncHandler(async (req, res) => {
     const username = req.body.username;
     const user = await User.findByUsername(username);
-    //   const user = await knex('users')
-    // .where('username', username)
-    // .first();
 
     if (_.isEmpty(user)) {
       return res.status(404).json(" Username or Password is incorrect !");
@@ -204,9 +104,6 @@ router.post(
 
     // console.log(user)
 
-    const refreshData = {
-      id: user._id?.toString(),
-    };
     const loggedInUser = {
       _id: user._id?.toString(),
       id: user._id?.toString(),
@@ -224,23 +121,79 @@ router.post(
       school: user?.school,
     };
 
+    // Generate JWT token
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "2m",
     });
 
     const refresh_token = jwt.sign(
-      refreshData,
+      loggedInUser,
       process.env.JWT_REFRESH_SECRET,
       {
-        expiresIn: "180d",
+        expiresIn: "7d",
       }
     );
 
-    // loggedInUser.token = token;
+    req.session.user = {
+      ...loggedInUser,
+    };
+    req.user = loggedInUser;
+    req.session.refresh_token = refresh_token;
+    req.session.save((err) => {
+      if (err) console.error(err);
+      // Send response here
+    });
+    // console.log(req.session.user);
+
+    // res.cookie("refresh_token", refresh_token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "none", // Cross-site allowed
+    //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    //   // domain:
+    //   //   process.env.NODE_ENV === "production"
+    //   //     ? ".school-portal-chi.vercel.app" // Leading dot for subdomains
+    //   //     : "localhost",
+    // });
 
     res.status(200).json({
       token,
       refresh_token,
+      // user: loggedInUser,
+    });
+  })
+);
+
+//@GET all users
+router.post(
+  "/verify",
+  // verifyRefreshJWT,
+  asyncHandler(async (req, res) => {
+    // if (!req.session || !req.session.user) {
+    //   return res.status(401).json("Unauthorized Access.Please login again");
+    // }
+    const user = req.session.user;
+    const cookieUser = req.session.cookie.refresh_token;
+    const refresh_token = req.session.refresh_token;
+
+    console.log(user);
+    console.log(cookieUser);
+    console.log(refresh_token);
+
+    if (!user) {
+      return res.status(401).json("Unauthorized Access.Please login again");
+    }
+    const token = jwt.sign(user, process.env.JWT_SECRET, {
+      expiresIn: "2m",
+    });
+
+    // Update session with new user data
+    req.session.user = {
+      ...user,
+    };
+
+    res.status(200).json({
+      token,
     });
   })
 );
@@ -255,23 +208,12 @@ router.post(
     const username = req.body.username;
 
     const itExists = await User.findOne({ username });
-    // const user = await knex("users").where({ username }).first();
-    // const itExists = !!user;
 
     if (!_.isEmpty(itExists)) {
       return res
         .status(400)
         .json("An account with this Username already exits!");
     }
-
-    // const user = await knex("users").where({ email }).first();
-    // const itExists = !!user;
-
-    // if (!_.isEmpty(itExists)) {
-    //   return res
-    //     .status(404)
-    //     .json("An account with this email already exits!");
-    // }
 
     const hashedPassword = await bcrypt.hash(newUser.password, 10);
     newUser.password = hashedPassword;
@@ -328,7 +270,6 @@ router.put(
     if (isOnlyUpdate) {
       return res.status(201).json("Profile Updated!!!");
     }
- 
 
     const loggedInUser = {
       id: updatedUser._id?.toString(),
@@ -347,7 +288,7 @@ router.put(
     };
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "2m",
     });
 
     res.status(200).json({ token });
@@ -375,12 +316,6 @@ router.put(
       },
     });
 
-    // const updatedUser = await knex("users")
-    //   .where({ _id })
-    //   .update({
-    //     profile: req.file ? req.file.filename : knex.raw("profile"),
-    //   });
-
     if (_.isEmpty(updatedUser)) {
       return res
         .status(400)
@@ -394,12 +329,6 @@ router.put(
         },
       });
     }
-
-    // const updatedUser = await knex("teachers")
-    //   .where({ _id })
-    //   .update({
-    //     profile: req.file ? req.file.filename : knex.raw("profile"),
-    //   });
 
     if (!_.isEmpty(user)) {
       const loggedInUser = {
@@ -420,7 +349,7 @@ router.put(
       };
 
       const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-        expiresIn: "15m",
+        expiresIn: "2m",
       });
 
       return res.status(200).json({ token });
@@ -481,10 +410,6 @@ router.put(
       password: hashedPassword,
     });
 
-    //   const updatedUser = await knex('users')
-    // .where({ id: id })
-    // .update({ password: hashedPassword });
-
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info.Try Again Later.");
     }
@@ -511,10 +436,6 @@ router.put(
       }
     );
 
-    // const updatedUser = await knex('users')
-    // .where({ _id: id })
-    // .update({ password: hashedPassword });
-
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info.Try Again Later.");
     }
@@ -527,9 +448,16 @@ router.put(
   "/logout",
   verifyJWT,
   asyncHandler(async (req, res) => {
-    req.user = null;
-    delete req.session;
-    res.sendStatus(204);
+    req.session.destroy((err) => {
+      req.user = null;
+      res.clearCookie("sid", {
+        path: "/",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      });
+      return res.sendStatus(err ? 500 : 200);
+    });
   })
 );
 
@@ -551,10 +479,6 @@ router.patch(
       password: hashedPassword,
     });
 
-    //   const updatedUser = await knex('users')
-    // .where({ id: id })
-    // .update({ password: hashedPassword });
-
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info.Try Again Later.");
     }
@@ -570,10 +494,6 @@ router.patch(
     const updatedUser = await User.findByIdAndUpdate(req.body.id, req.body, {
       new: true,
     });
-
-    //   const updatedUser = await knex('users')
-    // .where('id', req.body.id)
-    // .update(req.body)
 
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info");
@@ -597,10 +517,6 @@ router.put(
         new: true,
       }
     );
-
-    //   const updatedUser = await knex('users')
-    // .where({ id: id })
-    // .update({ active: active }, ['*']);
 
     if (_.isEmpty(updatedUser)) {
       return res.status(404).json("Error updating user info");
@@ -627,10 +543,6 @@ router.delete(
     const user = await User.findByIdAndDelete(id, {
       new: true,
     });
-
-    // const deletedUser = await knex('users')
-    // .where('_id', id)
-    // .del();
 
     if (_.isEmpty(user)) {
       return res.status(403).json("No User with such id");

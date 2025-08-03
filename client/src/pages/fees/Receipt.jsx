@@ -95,10 +95,21 @@ export default function Receipt() {
               <Typography fontSize={12}>{school_info?.phonenumber}</Typography>
             </Box>
           </Box>
-          <Box pt={2}>
-            <Typography fontSize={12}>Invoice No:{state?.fee?.id}</Typography>
+          <Box
+            pt={2}
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-end"
+          >
+            <Typography fontWeight="bold" fontSize={12}>
+              Invoice No:
+            </Typography>
+            <Typography fontSize={12}>{state?.fee?.id}</Typography>
+            <Typography fontWeight="bold" fontSize={12}>
+              Invoice Date:
+            </Typography>
             <Typography fontSize={12}>
-              Invoice Date: {moment(state?.fee?.createdAt).format("LLL")}
+              {moment(state?.fee?.createdAt).format("LLL")}
             </Typography>
           </Box>
         </Box>

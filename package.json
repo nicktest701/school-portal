@@ -7,7 +7,9 @@
     "start": "node server.js",
     "server": "console-ninja nodemon server.js ",
     "client": "npm run dev --prefix client",
+    "student": "npm run dev --prefix student",
     "dev": "concurrently \"npm run server\" \"npm run client\" ",
+    "stud-dev": "concurrently \"npm run server\" \"npm run student\" ",
     "lint": "eslint --max-warnings=0"
   },
   "engines": {
@@ -33,6 +35,7 @@
     "express-validator": "^7.2.1",
     "firebase": "^11.3.0",
     "googleapis": "^144.0.0",
+    "helmet": "^8.1.0",
     "http-errors": "^2.0.0",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",

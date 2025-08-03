@@ -23,7 +23,8 @@ import FindSchool from "./FindSchool";
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { school_info, user, logInUser } = useContext(UserContext);
+  const { school_info, user, logInUser, setAccessToken, scheduleRefresh } =
+    useContext(UserContext);
   const initialValues = {
     username: "",
     password: "",
@@ -44,6 +45,8 @@ const Login = () => {
     mutateAsync(values, {
       onSuccess: (data) => {
         logInUser(data?.token);
+        setAccessToken(data?.token);
+        scheduleRefresh(data?.token);
         navigate("/school-session", { replace: true });
       },
       onError: (error) => {
