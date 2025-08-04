@@ -342,7 +342,7 @@ const sessionConfig = {
   cookie: {
     domain:
       process.env.NODE_ENV === "production"
-        ? ".school-portal-chi.vercel.app" // Leading dot for subdomains
+        ? ".vercel.app" // Leading dot for subdomains
         : undefined, // Localhost works without domain
     path: "/",
     secure: true,
