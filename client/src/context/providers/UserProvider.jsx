@@ -85,26 +85,36 @@ const UserProvider = ({ children }) => {
 
   const refreshAccessToken = async () => {
     try {
-      const res = await api.post("/users/verify");
+      const res = await api.post(
+        "/users/verify",
+        {
+          refresh_token: refreshTimeoutRef.current,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const token = res.data.token;
       setAccessToken(token);
       scheduleRefresh(token);
     } catch (err) {
       console.error("Token refresh failed", err);
       // logOutUser();
-       setAccessToken(null);
-            if (refreshTimeoutRef.current)
-              clearTimeout(refreshTimeoutRef.current);
+      setAccessToken(null);
+      if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
 
-            navigate("/login");
-            localStorage.removeItem("@school_info");
-            localStorage.removeItem("@user");
-            localStorage.removeItem("@school_session");
-            setSchoolInformation(null);
-            localStorage.removeItem("@user_refresh");
-            setSchoolInformation(null);
-            setUser(null);
-            setSession(null);
+      navigate("/login");
+      localStorage.removeItem("@school_info");
+      localStorage.removeItem("@user");
+      localStorage.removeItem("@school_session");
+      setSchoolInformation(null);
+      localStorage.removeItem("@user_refresh");
+      setSchoolInformation(null);
+      setUser(null);
+      setSession(null);
     }
   };
 

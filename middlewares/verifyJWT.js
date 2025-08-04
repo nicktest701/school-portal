@@ -33,23 +33,7 @@ const verifyJWT = (req, res, next) => {
 };
 
 const verifyRefreshJWT = (req, res, next) => {
-  const cookieToken = req.cookies.refresh_token;
-  // console.log("Cookie Token:", cookieToken);
-  console.log("session Token:", req.session.cookie);
-
-  next();
-
-
-  const authHeader =
-    req.headers["authorization"] || req.headers["Authorization"];
-
-  if (!authHeader) {
-    return res
-      .status(401)
-      .json("Unauthorized Access.Please contact administrator");
-  }
-
-  const token = authHeader?.split(" ")[1];
+  const token = req.cookies.refresh_token;
 
   if (!token) {
     return res
@@ -65,7 +49,7 @@ const verifyRefreshJWT = (req, res, next) => {
     let loggedInUser = null;
     // Check if the user is an admin or teacher
 
-    if (["admin", "teacher"].includes(user?.role)) {
+    if (["administrator", "teacher"].includes(user?.role)) {
       authUser = await User.findById(user?.id).select("-password");
 
       if (_.isEmpty(authUser)) {

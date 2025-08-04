@@ -345,7 +345,7 @@ const sessionConfig = {
         ? ".school-portal-chi.vercel.app" // Leading dot for subdomains
         : undefined, // Localhost works without domain
     path: "/",
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     httpOnly: true,
     sameSite: "none", // Cross-site allowed
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days

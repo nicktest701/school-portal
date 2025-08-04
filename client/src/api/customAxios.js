@@ -11,13 +11,13 @@ import {
 // import { isOnline } from "../config/detectOnlineStatus";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-
+axios.defaults.withCredentials = true;
 export const api = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
 });
 
-api.defaults.headers.common["Authorization"] = `Bearer ${getToken()}`;
+// api.defaults.headers.common["Authorization"] = `Bearer ${getToken()}`;
 api.defaults.withCredentials = true;
 
 // Set a common authorization header for all requests

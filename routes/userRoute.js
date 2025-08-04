@@ -123,7 +123,7 @@ router.post(
 
     // Generate JWT token
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "2m",
+      expiresIn: "15m",
     });
 
     const refresh_token = jwt.sign(
@@ -138,16 +138,15 @@ router.post(
       ...loggedInUser,
     };
     req.user = loggedInUser;
-    req.session.refresh_token = refresh_token;
+    req.session.user = user;
     req.session.save((err) => {
       if (err) console.error(err);
       // Send response here
     });
-    // console.log(req.session.user);
 
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "none", // Cross-site allowed
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: "/",
@@ -159,8 +158,6 @@ router.post(
 
     res.status(200).json({
       token,
-      refresh_token,
-      // user: loggedInUser,
     });
   })
 );
@@ -168,24 +165,15 @@ router.post(
 //@GET all users
 router.post(
   "/verify",
-  // verifyRefreshJWT,
+  verifyRefreshJWT,
   asyncHandler(async (req, res) => {
-    // if (!req.session || !req.session.user) {
-    //   return res.status(401).json("Unauthorized Access.Please login again");
-    // }
-    const user = req.session;
-    const cookieUser = req.cookies;
-    const signedCookie = req.signedCookies;
-
-    console.log(user);
-    console.log(cookieUser);
-    console.log(signedCookie);
+    const user = req.user;
 
     if (!user) {
       return res.status(401).json("Unauthorized Access.Please login again");
     }
     const token = jwt.sign(user, process.env.JWT_SECRET, {
-      expiresIn: "2m",
+      expiresIn: "15m",
     });
 
     // Update session with new user data
@@ -289,7 +277,7 @@ router.put(
     };
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "2m",
+      expiresIn: "15m",
     });
 
     res.status(200).json({ token });
@@ -350,7 +338,7 @@ router.put(
       };
 
       const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-        expiresIn: "2m",
+        expiresIn: "15m",
       });
 
       return res.status(200).json({ token });
