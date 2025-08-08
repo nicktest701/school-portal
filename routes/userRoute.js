@@ -134,25 +134,15 @@ router.post(
       }
     );
 
-    req.session.user = {
-      ...loggedInUser,
-    };
-    req.user = loggedInUser;
-    req.session.user = user;
-    req.session.save((err) => {
-      if (err) console.error(err);
-      // Send response here
-    });
-
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
       secure: true,
       sameSite: "none", // Cross-site allowed
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: "/",
+      path: "/api/frebbys/v1/users/verify",
       domain:
         process.env.NODE_ENV === "production"
-          ? ".vercel.app" // Leading dot for subdomains
+          ? "school-portal-aivn.onrender.com" // Leading dot for subdomains
           : undefined, // Localhost works without domain
     });
 

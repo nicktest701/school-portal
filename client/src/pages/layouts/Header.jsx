@@ -19,7 +19,6 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import QuickMessage from "@/components/modals/QuickMessage";
 import HorizontalSidebar from "./HorizontalSidebar";
 import NotificationDrawer from "@/components/dropdowns/NotificationDrawer";
-import { UserContext } from "@/context/providers/UserProvider";
 import AccountDropdown from "@/components/dropdowns/AccountDropdown";
 import AddSectionDropdown from "@/components/dropdowns/AddSectionDropdown";
 import SchoolSessionDropdown from "@/components/dropdowns/SchoolSession";
@@ -28,11 +27,13 @@ import NoteFormModal from "@/components/notes/NoteForm";
 import { useCreateNote } from "@/hooks/useNotes";
 import { useNotifications } from "@/hooks/useNotifications";
 import HomeLinks from "@/components/HomeLinks";
+import { useAuth } from "@/hooks/useAuth";
+import _ from "lodash";
 
 function Header() {
   const { palette } = useTheme();
-  const { user } = use(UserContext);
-  const { data } = useNotifications();
+  const { user } = useAuth();
+  const { data, isError, isPending } = useNotifications();
   const [modalOpen, setModalOpen] = useState(false);
   const [openMiniBar, setOpenMiniBar] = useState(false);
   const [openNotificationDrawer, setOpenNotificationDrawer] = useState(false);
@@ -59,7 +60,15 @@ function Header() {
     createNote.mutate(data);
   };
 
-  const activeNotifications = data?.filter((notif) => notif?.active);
+  if (isPending) {
+    return <Alert severity="info">Loading notifications...</Alert>;
+  }
+  if (isError) {
+    return <Alert severity="error">Failed to load notifications</Alert>;
+  }
+
+  const activeNotifications =
+    _.isArray(data) && data?.filter((notif) => notif?.active);
 
   return (
     <>

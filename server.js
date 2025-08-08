@@ -335,16 +335,16 @@ app.use(
 
 // Session configuration
 const sessionConfig = {
-  name: "refresh_token",
+  name: "session_id",
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
     domain:
       process.env.NODE_ENV === "production"
-        ? ".vercel.app" // Leading dot for subdomains
+        ? "school-portal-aivn.onrender.com" // Leading dot for subdomains
         : undefined, // Localhost works without domain
-    path: "/",
+    path: "/api/frebbys/v1/users/verify",
     secure: true,
     httpOnly: true,
     sameSite: "none", // Cross-site allowed

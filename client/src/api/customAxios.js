@@ -11,31 +11,29 @@ import {
 // import { isOnline } from "../config/detectOnlineStatus";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-axios.defaults.withCredentials = true;
-export const api = axios.create({
+const api = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
 });
 
-// api.defaults.headers.common["Authorization"] = `Bearer ${getToken()}`;
+axios.defaults.withCredentials = true;
 api.defaults.withCredentials = true;
-
 // Set a common authorization header for all requests
-api.interceptors.request.use(
-  (config) => {
-    // if (!isOnline()) {
-    //   throw new Error("Device offline");
-    // }
+// api.interceptors.request.use(
+//   (config) => {
+//     // if (!isOnline()) {
+//     //   throw new Error("Device offline");
+//     // }
 
-    const token = getToken();
-    config.headers.Authorization = token ? `Bearer ${token}` : "";
-    return config;
-  },
-  (error) => {
-    // Do something with request error
-    return Promise.reject(error);
-  }
-);
+//     const token = getToken();
+//     config.headers.Authorization = token ? `Bearer ${token}` : "";
+//     return config;
+//   },
+//   (error) => {
+//     // Do something with request error
+//     return Promise.reject(error);
+//   }
+// );
 
 // Response interceptor to handle token expiration and refresh
 // api.interceptors.response.use(

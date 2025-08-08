@@ -13,6 +13,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { getSchool } from "@/api/schoolAPI";
 import { getTerm } from "@/api/termAPI";
 import api from "@/api/customAxios";
+import axios from "axios";
 
 export const UserContext = React.createContext();
 
@@ -28,18 +29,16 @@ const UserProvider = ({ children }) => {
   );
 
   const navigate = useNavigate();
-  const [user, setUser] = useState(
-    getUser() || {
-      _id: "",
-      id: "",
-      profile: "",
-      username: "",
-      firstname: "",
-      lastname: "",
-      permissions: [],
-      role: "",
-    }
-  );
+  const [user, setUser] = useState({
+    _id: "",
+    id: "",
+    profile: "",
+    username: "",
+    firstname: "",
+    lastname: "",
+    permissions: [],
+    role: "",
+  });
 
   const schoolInfo = useQuery({
     queryKey: ["school-info", schoolInformation?.code],
@@ -87,9 +86,7 @@ const UserProvider = ({ children }) => {
     try {
       const res = await api.post(
         "/users/verify",
-        {
-          refresh_token: refreshTimeoutRef.current,
-        },
+        {},
         {
           withCredentials: true,
           headers: {
@@ -100,21 +97,30 @@ const UserProvider = ({ children }) => {
       const token = res.data.token;
       setAccessToken(token);
       scheduleRefresh(token);
+      setUser(parseJwt(token));
     } catch (err) {
       console.error("Token refresh failed", err);
-      // logOutUser();
+
       setAccessToken(null);
       if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
 
-      navigate("/login");
       localStorage.removeItem("@school_info");
-      localStorage.removeItem("@user");
       localStorage.removeItem("@school_session");
       setSchoolInformation(null);
       localStorage.removeItem("@user_refresh");
-      setSchoolInformation(null);
       setUser(null);
       setSession(null);
+      setLoading(false);
+
+      // Show a warning and redirect to login
+      Swal.fire({
+        title: "Session Expired",
+        text: "Please log in again.",
+        icon: "warning",
+        confirmButtonText: "Login",
+      }).then(() => {
+        navigate("/login");
+      });
     }
   };
 
@@ -222,6 +228,8 @@ const UserProvider = ({ children }) => {
       (config) => {
         if (accessToken) {
           config.headers.Authorization = `Bearer ${accessToken}`;
+          api.defaults.headers.Authorization = `Bearer ${accessToken}`;
+          axios.defaults.headers.Authorization = `Bearer ${accessToken}`;
         }
         return config;
       },
@@ -236,7 +244,7 @@ const UserProvider = ({ children }) => {
         userState,
         school_info: schoolInfo?.data,
         session: schoolSession?.data,
-        user: currentUser?.data,
+        user: parseJwt(accessToken),
         updateSession,
         logInUser,
         logOutUser,

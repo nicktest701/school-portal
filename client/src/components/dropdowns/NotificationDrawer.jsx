@@ -33,6 +33,8 @@ const NotificationDrawer = ({ open, setOpen }) => {
     deleteNotification.mutate(user?.id);
   };
 
+  const notifications = _.isArray(data) ? data : [];
+
   return (
     <Drawer
       open={open}
@@ -98,7 +100,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
           </Tooltip>
         </Stack>
 
-        {data?.length === 0 ? (
+        {notifications?.length === 0 ? (
           <Stack
             spacing={2}
             height="80svh"
@@ -111,7 +113,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
         ) : (
           <AnimatePresence>
             <Stack spacing={1} height="90svh" overflow="auto" px={1.5}>
-              {data?.map((notification, index) => {
+              {notifications?.map((notification, index) => {
                 return (
                   <CustomNotificationItem
                     key={notification?._id}
