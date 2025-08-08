@@ -34,9 +34,6 @@ const verifyJWT = (req, res, next) => {
 
 const verifyRefreshJWT = (req, res, next) => {
   const token = req.cookies.refresh_token;
-  const session_id = req.cookies.session_id;
-  console.log("Refresh Token:", token);
-  console.log("Session ID:", session_id);
 
   if (!token) {
     return res
