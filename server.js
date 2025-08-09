@@ -262,19 +262,17 @@ const port = process.env.PORT || 8002;
 // Security headers
 app.use(
   helmet({
-    // contentSecurityPolicy: {
-    //   directives: {
-    //     defaultSrc: ["'self'"],
-    //     scriptSrc: ["'self'", "'unsafe-inline'", "trusted-cdn.com"],
-    //     styleSrc: ["'self'", "'unsafe-inline'"],
-    //     imgSrc: ["'self'", "data:"],
-    //     connectSrc: ["'self'", process.env.CLIENT_URL],
-    //   },
-    // },
-    // crossOriginResourcePolicy: { policy: "same-site" },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "trusted-cdn.com"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'", process.env.CLIENT_URL],
+      },
+    },
+    crossOriginResourcePolicy: { policy: "same-site" },
 
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
   })
 );
 

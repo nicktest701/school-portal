@@ -53,6 +53,7 @@ router.get(
   verifyJWT,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
+    if (!id) return res.status(404).json("Not Found!");
 
     const user = await User.findById(id).select("-password");
 
@@ -130,7 +131,7 @@ router.post(
       loggedInUser,
       process.env.JWT_REFRESH_SECRET,
       {
-        expiresIn: "7d",
+        expiresIn: "1d",
       }
     );
 
@@ -427,16 +428,20 @@ router.put(
   "/logout",
   verifyJWT,
   asyncHandler(async (req, res) => {
-    req.session.destroy((err) => {
-      req.user = null;
-      res.clearCookie("sid", {
-        path: "/",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-      });
-      return res.sendStatus(err ? 500 : 200);
+    // res.clearCookie("refresh_token");
+    req.user = null;
+    res.clearCookie("refresh_token", {
+      domain:
+        process.env.NODE_ENV === "production"
+          ? "school-portal-aivn.onrender.com" // Leading dot for subdomains
+          : undefined, // Localhost works without domain
+      path: "/api/frebbys/v1/users/verify",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
     });
+
+    return res.sendStatus(204);
   })
 );
 

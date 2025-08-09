@@ -16,15 +16,21 @@ import { Formik } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import { loginUserValidationSchema } from "../config/validationSchema";
 import { getUserAuth } from "../api/userAPI";
-import { UserContext } from "../context/providers/UserProvider";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import FindSchool from "./FindSchool";
+import { useAuth } from "@/hooks/useAuth";
+import _ from "lodash";
 
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { school_info, user, logInUser, setAccessToken, scheduleRefresh } =
-    useContext(UserContext);
+  const {
+    school_info,
+    user,
+    schoolInformation,
+    setAccessToken,
+    scheduleRefresh,
+  } = useAuth();
   const initialValues = {
     username: "",
     password: "",
@@ -44,7 +50,6 @@ const Login = () => {
     setMsg("");
     mutateAsync(values, {
       onSuccess: (data) => {
-        logInUser(data?.token);
         setAccessToken(data?.token);
         scheduleRefresh(data?.token);
         navigate("/school-session", { replace: true });
@@ -58,7 +63,7 @@ const Login = () => {
   if (user?.id) {
     return <Navigate to="/" />;
   }
-  if (!school_info?._id) {
+  if (_.isEmpty(schoolInformation)) {
     return <FindSchool />;
   }
 

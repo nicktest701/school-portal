@@ -6,7 +6,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 // import { generateNewCurrentLevelDetailsFromLevels } from "@/api/levelAPI";
 import { getUser as getUserAuth, logOut } from "@/api/userAPI";
 import { useNavigate } from "react-router-dom";
-import { getUser, parseJwt } from "@/config/sessionHandler";
+import {
+  deleteUser,
+  getUser,
+  parseJwt,
+  saveUser,
+} from "@/config/sessionHandler";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLevel from "@/components/hooks/useLevel";
 import useLocalStorage from "@/hooks/useLocalStorage";
@@ -14,6 +19,7 @@ import { getSchool } from "@/api/schoolAPI";
 import { getTerm } from "@/api/termAPI";
 import api from "@/api/customAxios";
 import axios from "axios";
+import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 
 export const UserContext = React.createContext();
 
@@ -29,16 +35,7 @@ const UserProvider = ({ children }) => {
   );
 
   const navigate = useNavigate();
-  const [user, setUser] = useState({
-    _id: "",
-    id: "",
-    profile: "",
-    username: "",
-    firstname: "",
-    lastname: "",
-    permissions: [],
-    role: "",
-  });
+  const [user, setUser] = useState(getUser());
 
   const schoolInfo = useQuery({
     queryKey: ["school-info", schoolInformation?.code],
@@ -99,17 +96,12 @@ const UserProvider = ({ children }) => {
       scheduleRefresh(token);
       setUser(parseJwt(token));
     } catch (err) {
-      console.error("Token refresh failed", err);
-
+      deleteUser();
       setAccessToken(null);
-      if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
-
-      localStorage.removeItem("@school_info");
-      localStorage.removeItem("@school_session");
       setSchoolInformation(null);
-      localStorage.removeItem("@user_refresh");
       setUser(null);
       setSession(null);
+      if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
       setLoading(false);
 
       // Show a warning and redirect to login
@@ -123,13 +115,6 @@ const UserProvider = ({ children }) => {
       });
     }
   };
-
-  const currentUser = useQuery({
-    queryKey: ["user/:id", user?.id],
-    queryFn: () => getUserAuth(user?.id),
-    initialData: user,
-    enabled: !!!user?.id,
-  });
 
   const { levelLoading, students } = useLevel();
 
@@ -154,14 +139,16 @@ const UserProvider = ({ children }) => {
   const initState = {
     isPending: true,
     session: schoolSession.data,
-    user: currentUser?.data,
+    user: user,
     school_info: schoolInfo?.data,
   };
 
   const [userState, userDispatch] = useReducer(UserReducer, initState);
 
   const logInUser = (data) => {
-    setUser(parseJwt(data));
+    const user = parseJwt(data);
+    setUser(user);
+    saveUser({ _id: user?._id, id: user?.id });
   };
 
   const updateSession = (data) => {
@@ -194,19 +181,16 @@ const UserProvider = ({ children }) => {
           {},
           {
             onSettled: () => {
-              setAccessToken(null);
-              if (refreshTimeoutRef.current)
-                clearTimeout(refreshTimeoutRef.current);
-
+              deleteUser();
               navigate("/login");
-              localStorage.removeItem("@school_info");
-              localStorage.removeItem("@user");
-              localStorage.removeItem("@school_session");
+              setAccessToken(null);
               setSchoolInformation(null);
-              localStorage.removeItem("@user_refresh");
               setSchoolInformation(null);
               setUser(null);
               setSession(null);
+              if (refreshTimeoutRef.current) {
+                clearTimeout(refreshTimeoutRef.current);
+              }
             },
           }
         );
@@ -217,7 +201,9 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     const tryInitialRefresh = async () => {
       setLoading(true);
-      await refreshAccessToken();
+      if (user._id) {
+        await refreshAccessToken();
+      }
       setLoading(false);
     };
     tryInitialRefresh();
@@ -230,6 +216,8 @@ const UserProvider = ({ children }) => {
           config.headers.Authorization = `Bearer ${accessToken}`;
           api.defaults.headers.Authorization = `Bearer ${accessToken}`;
           axios.defaults.headers.Authorization = `Bearer ${accessToken}`;
+
+          saveUser(parseJwt(accessToken));
         }
         return config;
       },
@@ -239,30 +227,34 @@ const UserProvider = ({ children }) => {
   }, [accessToken]);
 
   return (
-    <UserContext
-      value={{
-        userState,
-        school_info: schoolInfo?.data,
-        session: schoolSession?.data,
-        user: parseJwt(accessToken),
-        updateSession,
-        logInUser,
-        logOutUser,
-        updateSchoolInformation,
-        userDispatch,
-        students,
+    <>
+      <UserContext
+        value={{
+          userState,
+          school_info: schoolInfo?.data,
+          session: schoolSession?.data,
+          user: parseJwt(accessToken),
+          updateSession,
+          logInUser,
+          logOutUser,
+          updateSchoolInformation,
+          schoolInformation,
+          userDispatch,
+          students,
 
-        accessToken,
-        setAccessToken,
-        scheduleRefresh,
-        loading,
-      }}
-    >
-      {children}
+          accessToken,
+          setAccessToken,
+          scheduleRefresh,
+          loading,
+        }}
+      >
+        {children}
+      </UserContext>
+
+      {loading && <GlobalSpinner />}
       {isPending && <LoadingSpinner value="Signing Out" />}
-      {loading && <LoadingSpinner />}
       {levelLoading && <LoadingSpinner />}
-    </UserContext>
+    </>
   );
 };
 

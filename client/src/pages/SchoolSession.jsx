@@ -8,7 +8,7 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTerms } from "../api/termAPI";
@@ -154,6 +154,7 @@ const SchoolSession = () => {
           fullWidth
           onClick={handleSession}
           loading={loading}
+          disabled={!session?.termId}
         >
           Continue
         </Button>
