@@ -29,7 +29,7 @@ export const getNote = async (id) => {
 };
 
 export const postNote = async (newNote) => {
-  console.log(newNote);
+
   try {
     const res = await api({
       method: "POST",

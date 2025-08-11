@@ -24,13 +24,7 @@ import _ from "lodash";
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const {
-    school_info,
-    user,
-    schoolInformation,
-    setAccessToken,
-    scheduleRefresh,
-  } = useAuth();
+  const { school_info, user, schoolInformation, authenticateUser } = useAuth();
   const initialValues = {
     username: "",
     password: "",
@@ -50,8 +44,7 @@ const Login = () => {
     setMsg("");
     mutateAsync(values, {
       onSuccess: (data) => {
-        setAccessToken(data?.token);
-        scheduleRefresh(data?.token);
+        authenticateUser(data?.token);
         navigate("/school-session", { replace: true });
       },
       onError: (error) => {

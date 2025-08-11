@@ -19,7 +19,7 @@ const LevelSchema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "User", // Changed from `Mixed` to a proper reference
       // type: mongoose.SchemaTypes.Mixed,
-      index: true,
+      // index: true,
     },
     fee: {
       type: mongoose.SchemaTypes.ObjectId,

@@ -177,11 +177,16 @@ router.post(
     const totalfeesForMonth = _.sumBy(feesForMonth, "paid");
 
     ///GET all fees for the term
-    const feesFrom = moment(from);
-    const feesTo = moment(to);
+    const feesFrom = moment(new Date(from));
+    const feesTo = moment(new Date(to));
 
     const feesForTerm = _.filter(allPayments, ({ createdAt }) => {
-      return moment(createdAt).isBetween(feesFrom, feesTo, null, "[]");
+      return moment(new Date(createdAt)).isBetween(
+        feesFrom,
+        feesTo,
+        null,
+        "[]"
+      );
     });
     const totalfeesForTerm = _.sumBy(feesForTerm, "paid");
 

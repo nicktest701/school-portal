@@ -33,7 +33,7 @@ export default function ForgotPassword() {
       },
       onSettled: () => {
         // Optionally, you can reset the form or show a success message
-        console.log("Request sent successfully");
+        // console.log("Request sent successfully");
       },
     });
   };

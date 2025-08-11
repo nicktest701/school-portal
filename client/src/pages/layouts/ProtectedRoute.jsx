@@ -1,3 +1,5 @@
+import GlobalSpinner from "@/components/spinners/GlobalSpinner";
+import { getUser } from "@/config/sessionHandler";
 import { useAuth } from "@/hooks/useAuth";
 import _ from "lodash";
 import { useEffect } from "react";
@@ -5,8 +7,9 @@ import { useNavigate, useLocation, Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
+  const user = getUser();
   const location = useLocation();
-  const { user, session } = useAuth();
+  const { session, loading } = useAuth();
 
   const isAuthenticated = !_.isEmpty(user?.id);
   const isSessionAuthenticated = !_.isEmpty(session?.termId);
@@ -20,6 +23,8 @@ const ProtectedRoute = ({ children }) => {
       navigate("/school-session", { replace: true });
     }
   }, [isAuthenticated, isSessionAuthenticated, navigate, location]);
+
+  if (loading) return <GlobalSpinner />;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;

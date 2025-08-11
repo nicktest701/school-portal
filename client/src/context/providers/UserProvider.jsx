@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import UserReducer from "../reducers/UserReducer";
 import { useMutation, useQuery } from "@tanstack/react-query";
 // import { generateNewCurrentLevelDetailsFromLevels } from "@/api/levelAPI";
-import { getUser as getUserAuth, logOut } from "@/api/userAPI";
+import { logOut, getUser as getUserProfile } from "@/api/userAPI";
 import { useNavigate } from "react-router-dom";
 import {
   deleteUser,
@@ -37,6 +37,40 @@ const UserProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(getUser());
 
+  useEffect(() => {
+    const tryInitialRefresh = async () => {
+      setLoading(true);
+
+      if (user?.id) {
+        await refreshAccessToken();
+      }
+      setLoading(false);
+    };
+    tryInitialRefresh();
+  }, []);
+
+  useEffect(() => {
+    const interceptor = api.interceptors.request.use(
+      (config) => {
+        if (accessToken) {
+          config.headers.Authorization = `Bearer ${accessToken}`;
+          api.defaults.headers.Authorization = `Bearer ${accessToken}`;
+          axios.defaults.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+    return () => api.interceptors.request.eject(interceptor);
+  }, [accessToken]);
+
+  // const userInfo = useQuery({
+  //   queryKey: ["user", user?.id, accessToken],
+  //   queryFn: () => getUserProfile(user?.id || user?._id),
+  //   initialData: user,
+  //   enabled: !!user?.id && !!accessToken,
+  // });
+
   const schoolInfo = useQuery({
     queryKey: ["school-info", schoolInformation?.code],
     queryFn: () => getSchool({ code: schoolInformation?.code }),
@@ -65,10 +99,9 @@ const UserProvider = ({ children }) => {
 
     const decoded = parseJwt(token);
 
-    // const decoded = jwtDecode(token);
     const expInMs = decoded.exp * 1000;
     const now = Date.now();
-    const delay = expInMs - now - 60000; // 1 min before expiration
+    const delay = expInMs - now - 60000;
 
     if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
 
@@ -94,7 +127,11 @@ const UserProvider = ({ children }) => {
       const token = res.data.token;
       setAccessToken(token);
       scheduleRefresh(token);
-      setUser(parseJwt(token));
+
+      const user = parseJwt(token);
+      const { iat, exp, ...rest } = user;
+      setUser(user);
+      saveUser({ _id: user?.id, id: user?.id });
     } catch (err) {
       deleteUser();
       setAccessToken(null);
@@ -145,10 +182,12 @@ const UserProvider = ({ children }) => {
 
   const [userState, userDispatch] = useReducer(UserReducer, initState);
 
-  const logInUser = (data) => {
-    const user = parseJwt(data);
+  const authenticateUser = (token) => {
+    const user = parseJwt(token);
     setUser(user);
-    saveUser({ _id: user?._id, id: user?.id });
+    saveUser({ _id: user?.id, id: user?.id });
+    setAccessToken(token);
+    scheduleRefresh(token);
   };
 
   const updateSession = (data) => {
@@ -198,34 +237,7 @@ const UserProvider = ({ children }) => {
     });
   };
 
-  useEffect(() => {
-    const tryInitialRefresh = async () => {
-      setLoading(true);
-      if (user._id) {
-        await refreshAccessToken();
-      }
-      setLoading(false);
-    };
-    tryInitialRefresh();
-  }, []);
-
-  useEffect(() => {
-    const interceptor = api.interceptors.request.use(
-      (config) => {
-        if (accessToken) {
-          config.headers.Authorization = `Bearer ${accessToken}`;
-          api.defaults.headers.Authorization = `Bearer ${accessToken}`;
-          axios.defaults.headers.Authorization = `Bearer ${accessToken}`;
-
-          saveUser(parseJwt(accessToken));
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
-    return () => api.interceptors.request.eject(interceptor);
-  }, [accessToken]);
-
+  // const authLoading = loading || userInfo.isPending;
   return (
     <>
       <UserContext
@@ -233,18 +245,15 @@ const UserProvider = ({ children }) => {
           userState,
           school_info: schoolInfo?.data,
           session: schoolSession?.data,
-          user: parseJwt(accessToken),
+          user: user,
           updateSession,
-          logInUser,
+          authenticateUser,
           logOutUser,
           updateSchoolInformation,
           schoolInformation,
           userDispatch,
           students,
-
           accessToken,
-          setAccessToken,
-          scheduleRefresh,
           loading,
         }}
       >

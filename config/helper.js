@@ -152,8 +152,8 @@ const processWeeklyFees = (payments) => {
 
 // Function to process data for the chart
 const processFeeForTerm = (from, to, payments) => {
-  const startDate = moment(from);
-  const endDate = moment(to);
+  const startDate = moment(new Date(from));
+  const endDate = moment(new Date(to));
 
   const filteredPayments = payments.filter(({ createdAt, date }) => {
     const paymentDate = moment(createdAt || date);

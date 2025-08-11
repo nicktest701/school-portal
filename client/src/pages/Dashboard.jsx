@@ -13,9 +13,10 @@ import CustomEvent from "@/components/calendar/CustomEvent";
 import CustomTitle from "@/components/custom/CustomTitle";
 import Announcement from "@/components/calendar/Announcement";
 import Event from "@/components/calendar/Event";
+import { useAuth } from "@/hooks/useAuth";
 
 const Dashboard = () => {
-  const { user, session } = use(UserContext);
+  const { user, session } = useAuth();
 
   const [value, onChange] = useState(new Date());
 

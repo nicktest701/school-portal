@@ -26,6 +26,9 @@ export default function AccountDropdown() {
       navigate(path);
     }
   };
+
+
+
   return (
     <>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>

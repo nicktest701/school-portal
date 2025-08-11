@@ -27,9 +27,7 @@ import { getAllTeachers } from "@/api/teacherAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const AddLevel = ({ open, setOpen }) => {
-  const {
-    session
-  } = use(UserContext);
+  const { session } = use(UserContext);
 
   const queryClient = useQueryClient();
   const { schoolSessionDispatch } = use(SchoolSessionContext);
@@ -73,8 +71,10 @@ const AddLevel = ({ open, setOpen }) => {
         name: values.level,
         type: values.type,
       },
-      teacher: values.teacher,
     };
+    if (values?.teacher?._id) {
+      newLevel.teacher = values?.teacher?._id;
+    }
 
     mutateAsync(newLevel, {
       onSettled: () => {
