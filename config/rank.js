@@ -13,6 +13,7 @@ function getPosition(students) {
     };
   });
 }
+
 module.exports = getPosition;
 
 //  function rankings(arr) {

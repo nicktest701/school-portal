@@ -33,7 +33,7 @@ function useLevel() {
     "levels",
     JSON.stringify(
       _.map(levels.levelsOption, (level) => {
-        return { _id: level?._id, type: level?.type };
+        return { _id: level?._id, type: level?.type || "" };
       })
     )
   );

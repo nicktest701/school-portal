@@ -20,6 +20,7 @@ const TeacherHome = () => {
   const teachers = useQuery({
     queryKey: ["teachers"],
     queryFn: getAllTeachers,
+    refetchOnMount: false,
   });
 
   const isNotTeacher = teachers?.data?.length === 0;
@@ -30,7 +31,7 @@ const TeacherHome = () => {
   };
 
   return (
-    <Container>
+    <Container maxWidth="lg">
       <CustomTitle
         title="Facilitator Portal"
         subtitle="Explore Our Faculty: Meet the Dedicated Educators Shaping Tomorrow's Leaders"

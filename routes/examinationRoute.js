@@ -5,9 +5,7 @@ const Examination = require("../models/examinationModel");
 const Level = require("../models/levelModel");
 const _ = require("lodash");
 const pLimit = require("p-limit");
-const ordinal = require("ordinal-suffix");
 const moment = require("moment");
-const getPosition = require("../config/rank");
 const {
   Types: { ObjectId },
 } = require("mongoose");
@@ -18,6 +16,15 @@ const generateReport = require("../config/generateReport");
 const generateRemarks = require("../config/generateRemarks");
 const { convertImageToBase64, SUBJECT_OPTIONS } = require("../config/helper");
 const { sendReportSMS } = require("../config/sms/messenger");
+const {
+  getBestOverallScore,
+  getStudentPosition,
+  getAveragePerformanceIndex,
+  calculatePerformanceIndex,
+  getTopSubjects,
+  getTopOverallScores,
+  getMyPosition,
+} = require("../config/helpers/examination");
 
 //@GET
 
@@ -183,13 +190,18 @@ router.get(
     }).select(["overallScore"]);
 
     //GET student position
-    const positions = getPosition(studentOverallScores);
+    // const positions = getPosition(studentOverallScores);
+    const position = await getMyPosition(
+      termId,
+      levelId,
+      studentRecords[0]?._id
+    );
 
     const generatedResults = studentRecords.map(async (report) => {
       //GENERATE STUDENT RESULTS
       const generatedResult = await studentReportDetails(
         report,
-        positions,
+        position,
         "preview"
       );
       return generatedResult;
@@ -262,13 +274,8 @@ router.get(
 
     school.badge = SCHOOL_PHOTO;
 
-    const studentOverallScores = await Examination.find({
-      term: termId,
-      level: levelId,
-    }).select(["overallScore"]);
-
     //GET student position
-    const positions = getPosition(studentOverallScores);
+    const position =await getMyPosition(termId, levelId, studentRecords[0]?._id);
 
     try {
       //GENERATE STUDENT RESULTS
@@ -277,7 +284,7 @@ router.get(
         //GENERATE STUDENT RESULTS
         const generatedResult = await studentReportDetails(
           report,
-          positions,
+          position,
           "print"
         );
         return generatedResult;
@@ -473,6 +480,83 @@ router.get(
   })
 );
 
+//GET Student academic dashboard information
+router.get(
+  "/academic/:studentId",
+  asyncHandler(async (req, res) => {
+    const { studentId } = req.params;
+
+    const records = await Examination.find({
+      student: new ObjectId(studentId),
+    })
+      .select(["_id", "level", "scores", "overallScore"])
+      .populate({
+        path: "level",
+        select: ["level", "subjects", "active"],
+      })
+      .populate({
+        path: "term",
+        select: ["term", "academicYear"],
+      });
+
+    if (_.isEmpty(records)) {
+      return res.status(404).json("No records found for this student");
+    }
+
+    const activeLevel = records.find((record) => record.level?.active);
+    const currentPosition = await getMyPosition(
+      activeLevel?.term?._id,
+      activeLevel?.level?._id,
+      activeLevel?._id
+    );
+ 
+
+    const averagePerformanceIndex = getAveragePerformanceIndex(records);
+    const performanceIndexes = calculatePerformanceIndex(records);
+    const position = await getStudentPosition(records, studentId);
+    const bestOverall = getBestOverallScore(records);
+    const bestOverallScore = {
+      _id: bestOverall._id,
+      term: bestOverall.term.term,
+      level: bestOverall.level.level,
+      scores: bestOverall.scores,
+      overallScore: bestOverall.overallScore,
+    };
+
+    //GET best subject score
+    // const bestOverallSubject = getOverallBestSubject(records);
+    const bestOverallSubject = _.first(getTopSubjects(records, 1));
+    const bestSubjectScore = {
+      term: bestOverallSubject.term,
+      level: bestOverallSubject.level,
+      subject: bestOverallSubject.subject,
+      score: bestOverallSubject.score,
+    };
+
+    const bestSubjectsScores = getTopSubjects(records);
+
+    const bestOverallScores = getTopOverallScores(records);
+
+    res.status(200).json({
+      averagePerformanceIndex,
+      bestOverallScore,
+      bestSubjectScore,
+      bestPosition: position,
+      bestSubjectsScores,
+      bestOverallScores,
+
+      performanceTrend: {
+        labels: _.map(performanceIndexes, "levelType"),
+        dataset: _.map(performanceIndexes, "performanceIndex"),
+      },
+      activeLevel: {
+        level: activeLevel?.level?.levelName,
+        position: currentPosition,
+      },
+    });
+  })
+);
+
 //@GET
 router.get(
   "/:id",
@@ -503,18 +587,16 @@ router.get(
         ],
       });
 
-    // console.log(studentRecord.term);
-
-    const studentOverallScores = await Examination.find({
-      term: studentRecord?.term?._id,
-      level: studentRecord?.level?._id,
-    }).select(["overallScore"]);
     //GET student position
-    const positions = getPosition(studentOverallScores);
+    const position = await getMyPosition(
+      studentRecord?.term?._id,
+      studentRecord?.level?._id,
+      studentRecord._id
+    );
 
     let generatedResult = await studentReportDetails(
       studentRecord,
-      positions,
+      position,
       publish ? "print" : "preview"
     );
 
@@ -859,7 +941,7 @@ router.put(
 
 const studentReportDetails = async (
   report,
-  positions,
+  position,
   reportType = "preview"
 ) => {
   const {
@@ -884,10 +966,10 @@ const studentReportDetails = async (
   //GET Student Grade
   const grade = await generateTotalGrade(scores, level?._id);
 
-  const position =
-    positions.find((exams) => {
-      return exams._id.toString() === _id.toString();
-    }).position || "";
+  // const position =
+  //   positions.find((exams) => {
+  //     return exams._id.toString() === _id.toString();
+  //   }).position || "";
 
   const modifiedStudentRecord = {
     _id,
@@ -912,7 +994,8 @@ const studentReportDetails = async (
     ),
 
     overallScore,
-    position: ordinal(position),
+    position: position,
+    // position: ordinal(position),
     grade,
     comments,
   };

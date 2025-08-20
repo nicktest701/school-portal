@@ -35,10 +35,11 @@ function ConfirmStudent({ watch, isPending, id, hideSaveBtn, reset }) {
 
   const legendStyle = {
     width: "100%",
-    borderBottom: "1px solid black",
-    backgroundColor: "black",
+    // borderBottom: "1px solid black",
+    backgroundColor: "var(--primary)",
     color: "#fff",
     padding: "2px",
+    fontSize: 12,
   };
 
   return (
@@ -56,14 +57,16 @@ function ConfirmStudent({ watch, isPending, id, hideSaveBtn, reset }) {
           py: 2,
         }}
       >
-        <Button
-          loading={isPending}
-          variant="contained"
-          color="primary"
-          type="submit"
-        >
-          Save Student
-        </Button>
+        {!id && (
+          <Button
+            loading={isPending}
+            variant="contained"
+            color="primary"
+            type="submit"
+          >
+            Save Student
+          </Button>
+        )}
         {hideSaveBtn && (
           <>
             <Button
@@ -218,7 +221,7 @@ function ConfirmStudent({ watch, isPending, id, hideSaveBtn, reset }) {
                 />
                 <StudentViewItem
                   secondary="Gender"
-                  primary={personal?.gender}
+                  primary={_.capitalize(personal?.gender)}
                 />
                 <StudentViewItem
                   secondary="Email Address"
@@ -246,112 +249,64 @@ function ConfirmStudent({ watch, isPending, id, hideSaveBtn, reset }) {
             <div style={{ paddingBottom: "8px" }}>
               <legend style={legendStyle}>Parent/Guardian Information</legend>
 
-              <Stack>
-                <Typography
-                  color="primary.main"
-                  sx={{ fontWeight: "bold", fontSize: 11 }}
-                >
-                  Parent 1 / Guardian 1
-                </Typography>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-                  }}
-                >
-                  <StudentViewItem
-                    secondary="Surname"
-                    primary={parent?.parent1?.surname}
-                  />
-                  <StudentViewItem
-                    secondary="First Name"
-                    primary={parent?.parent1?.firstname}
-                  />
-                  <StudentViewItem
-                    secondary="Relationship"
-                    primary={parent?.parent1?.relationship}
-                  />
+              {parent?.map((p, index) => {
+                return (
+                  <Stack>
+                    <Typography
+                      color="primary.main"
+                      sx={{ fontWeight: "bold", fontSize: 11 }}
+                    >
+                      Parent / Guardian
+                    </Typography>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                          "repeat(auto-fit,minmax(260px,1fr))",
+                      }}
+                    >
+                      <StudentViewItem
+                        secondary="Surname"
+                        primary={p?.surname}
+                      />
+                      <StudentViewItem
+                        secondary="First Name"
+                        primary={p?.firstname}
+                      />
+                      <StudentViewItem
+                        secondary="Relationship"
+                        primary={p?.relationship}
+                      />
 
-                  <StudentViewItem
-                    secondary="Gender"
-                    primary={parent?.parent1?.gender}
-                  />
-                  <StudentViewItem
-                    secondary="Email Address"
-                    primary={parent?.parent1?.email}
-                  />
-                  <StudentViewItem
-                    secondary="Phone Number"
-                    primary={parent?.parent1?.phonenumber}
-                  />
+                      <StudentViewItem
+                        secondary="Gender"
+                        primary={_.capitalize(p?.gender)}
+                      />
+                      <StudentViewItem
+                        secondary="Email Address"
+                        primary={p?.email}
+                      />
+                      <StudentViewItem
+                        secondary="Phone Number"
+                        primary={p?.phonenumber}
+                      />
 
-                  <StudentViewItem
-                    secondary="Residence"
-                    primary={parent?.parent1?.residence}
-                  />
-                  <StudentViewItem
-                    secondary="Nationality"
-                    primary={parent?.parent1?.nationality}
-                  />
-                  <StudentViewItem
-                    secondary="Address"
-                    primary={parent?.parent1?.address}
-                  />
-                </div>
-              </Stack>
-              <Stack>
-                <Typography
-                  color="primary.main"
-                  sx={{ fontWeight: "bold", fontSize: 11 }}
-                >
-                  Parent 2 / Guardian 2
-                </Typography>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-                  }}
-                >
-                  <StudentViewItem
-                    secondary="Surname"
-                    primary={parent?.parent2?.surname}
-                  />
-                  <StudentViewItem
-                    secondary="First Name"
-                    primary={parent?.parent2?.firstname}
-                  />
-                  <StudentViewItem
-                    secondary="Relationship"
-                    primary={parent?.parent2?.relationship}
-                  />
-
-                  <StudentViewItem
-                    secondary="Gender"
-                    primary={parent?.parent2?.gender}
-                  />
-                  <StudentViewItem
-                    secondary="Email Address"
-                    primary={parent?.parent2?.email}
-                  />
-                  <StudentViewItem
-                    secondary="Phone Number"
-                    primary={parent?.parent2?.phonenumber}
-                  />
-
-                  <StudentViewItem
-                    secondary="Residence"
-                    primary={parent?.parent2?.residence}
-                  />
-                  <StudentViewItem
-                    secondary="Nationality"
-                    primary={parent?.parent2?.nationality}
-                  />
-                  <StudentViewItem
-                    secondary="Address"
-                    primary={parent?.parent2?.address}
-                  />
-                </div>
-              </Stack>
+                      <StudentViewItem
+                        secondary="Residence"
+                        primary={p?.residence}
+                      />
+                      <StudentViewItem
+                        secondary="Nationality"
+                        primary={p?.nationality}
+                      />
+                      <StudentViewItem
+                        secondary="Address"
+                        primary={p?.address}
+                      />
+                    </div>
+                  </Stack>
+                );
+              })}
             </div>
 
             {/* Medical Information  */}

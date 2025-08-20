@@ -30,6 +30,7 @@ import { getAllAnnouncements } from "@/api/announcementAPI";
 import { useSearchParams } from "react-router-dom";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useAuth } from "@/context/AuthProvider";
+import EmptyDataContainer from "@/components/EmptyDataContainer";
 
 const pageSize = 10;
 const Announcements = () => {
@@ -150,6 +151,7 @@ const Announcements = () => {
           value={searchTerm}
           onChange={handleSearchChange}
           sx={{ flexGrow: 1, maxWidth: { xs: "100%", sm: 300 } }}
+          size="small"
         />
 
         <FormControl
@@ -160,7 +162,7 @@ const Announcements = () => {
           }}
         >
           <InputLabel>Sort by</InputLabel>
-          <Select value={filter} onChange={handleFilterChange}>
+          <Select size="small" value={filter} onChange={handleFilterChange}>
             <MenuItem value="">All</MenuItem>
             <MenuItem value="today">Today</MenuItem>
             <MenuItem value="yesterday">Yesterday</MenuItem>
@@ -279,19 +281,7 @@ const Announcements = () => {
               </Box>
             ))
           ) : (
-            <Box
-              sx={{
-                width: "100%",
-                height: "100%",
-
-                display: "flex",
-                justifyContent: "center",
-                mx: "auto",
-              }}
-            >
-              {" "}
-              <Typography>No announcements found.</Typography>
-            </Box>
+            <EmptyDataContainer message='No announcements found.' />
           )}
         </Stack>
       </AnimatePresence>

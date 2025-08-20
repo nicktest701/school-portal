@@ -1,24 +1,23 @@
-import Box from '@mui/material/Box';
-import { useTheme,useMediaQuery } from '@mui/material';
-import { Doughnut } from 'react-chartjs-2';
+import Box from "@mui/material/Box";
+import { useTheme, useMediaQuery } from "@mui/material";
+import { Doughnut } from "react-chartjs-2";
 
 const PieChart = () => {
- const { palette, breakpoints } = useTheme();
+  const { palette, breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
-
 
   return (
     <Box
-    sx={{
-      minWidth: 100,
-      width: "100%",
- height: matches ? 200 : 400,
-    }}
+      sx={{
+        minWidth: 100,
+        width: "100%",
+        height: matches ? 200 : 400,
+      }}
     >
       <Doughnut
-        datasetIdKey='pie'
+        datasetIdKey="pie"
         data={{
-          labels: ['Sent', 'Received'],
+          labels: ["Sent", "Received"],
 
           datasets: [
             {
@@ -31,18 +30,19 @@ const PieChart = () => {
         options={{
           responsive: true,
           maintainAspectRatio: false,
+          cutout: "80%",
           layout: {
             padding: 10,
           },
           scales: {
             x: {
               ticks: {
-                display: false,
+                // display: false,
               },
             },
             y: {
               ticks: {
-                display: false,
+                // display: false,
               },
             },
           },

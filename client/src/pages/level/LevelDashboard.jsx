@@ -17,7 +17,7 @@ const LevelDashboard = () => {
   return (
     <>
       <CustomTitle
-        title="School Levels Information"
+        title="Class Levels"
         subtitle="Organize and manage different educational levels to streamline curriculum and student progress tracking."
         img={level_icon}
         color="primary.main"

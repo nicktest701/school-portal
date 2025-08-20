@@ -102,7 +102,9 @@ function Header() {
           // bgcolor: "white",
           width: "100%",
           p: 1,
-          borderBottom: "2px solid var(--secondary)",
+          py: 2,
+          zIndex: 999,
+          // borderBottom: "2px solid var(--secondary)",
           ...bgBlur({
             color: palette.background.default,
           }),
@@ -126,7 +128,7 @@ function Header() {
               px: 1,
             }}
           >
-            <HomeLinks />
+            {/* <HomeLinks /> */}
             <Box
               sx={{
                 display: { xs: "inline-flex", md: "none" },

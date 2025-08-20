@@ -1,11 +1,10 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import Calendar from "react-calendar";
 import { Box, Stack, Typography, Avatar, Divider } from "@mui/material";
 import DashboardSwiper from "@/components/swiper/DashboardSwiper";
 import Birthday from "@/components/items/Birthday";
 import "react-calendar/dist/Calendar.css";
 import "@/theme/Calendar.css";
-import { UserContext } from "@/context/providers/UserProvider";
 import DashboardCardsContainer from "@/components/cards/DashboardCardsContainer";
 import CustomCard from "@/components/cards/CustomCard";
 import { EMPTY_IMAGES } from "@/config/images";
@@ -27,7 +26,7 @@ const Dashboard = () => {
           width: "100%",
           display: "flex",
           justifyContent: "space-between",
-          gap: 2,
+          gap: 1,
           p: 2,
         }}
       >
@@ -65,7 +64,7 @@ const Dashboard = () => {
           </Box>
 
           <Divider />
-          <Typography variant="h1" sx={{ color: "primary.main" }}>
+          <Typography variant="h2" sx={{ color: "primary.main" }}>
             {session?.name}
           </Typography>
           <Typography variant="h6" sx={{ color: "primary.main" }}>
@@ -102,7 +101,7 @@ const Dashboard = () => {
 
         <Box
           sx={{
-            width: { xs: 0, sm: 270 },
+            width: { xs: 0, sm: 230 },
             // minWidth: { xs: 0, md: 250 },
             display: { xs: "none", md: "block" },
             transition: "all 0.4s ease-in-out",

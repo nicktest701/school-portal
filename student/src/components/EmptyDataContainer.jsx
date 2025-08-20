@@ -12,7 +12,7 @@ const EmptyDataContainer = ({
   img,
   message,
   showAddButton,
-  otherButtons
+  otherButtons,
 }) => {
   const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
@@ -32,13 +32,13 @@ const EmptyDataContainer = ({
         justifyContent: "center",
       }}
     >
-      <Empty width={matches ? 120 : 200} />
+      <Empty width={matches ? 120 : 150} />
 
       <Stack zIndex={999} pt={12} gap={2} alignItems="center">
-        <Typography variant="body1" color="primary" textAlign="center" pt={2}>
+        <Typography variant="body1" color="secondary" textAlign="center" pt={2}>
           {message || "No data available !"}
         </Typography>
-        <Stack direction='row' spacing={2}>
+        <Stack direction="row" spacing={2}>
           {showAddButton && (
             <Button
               variant="contained"

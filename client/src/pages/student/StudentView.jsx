@@ -48,7 +48,7 @@ const StudentView = () => {
   }, [students, currentLevel?._id]);
 
   return (
-    <Container maxWidth="xl">
+    <Container>
       <CustomTitle
         title="Students Information"
         subtitle="  Track,manage and control academic and class activities"

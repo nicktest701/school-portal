@@ -1,8 +1,14 @@
 import { useState } from "react";
-import { Box, Stack, TextField, Typography,  InputAdornment, } from "@mui/material";
+import {
+  Box,
+  Stack,
+  TextField,
+  Typography,
+  InputAdornment,
+} from "@mui/material";
 import StudentFeeReportListItem from "@/components/list/StudentFeeReportListItem";
 import { SearchRounded } from "@mui/icons-material";
-const StudentFees = ({ fees }) => {
+const StudentFees = ({ levelId, fees }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (event) => {
@@ -30,7 +36,7 @@ const StudentFees = ({ fees }) => {
         p={1}
         sx={{ fontWeight: "bold", width: "100%" }}
       >
-         Fees History
+        Fees History
       </Typography>
       <TextField
         label="Search for fees"
@@ -53,7 +59,13 @@ const StudentFees = ({ fees }) => {
         {filteredItems !== undefined ? (
           <>
             {filteredItems?.map((fee, index) => {
-              return <StudentFeeReportListItem key={index} item={fee} />;
+              return (
+                <StudentFeeReportListItem
+                  key={index}
+                  item={fee}
+                  levelId={levelId}
+                />
+              );
             })}
           </>
         ) : (

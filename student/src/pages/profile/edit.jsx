@@ -107,7 +107,7 @@ const ProfileEdit = () => {
 
   return (
     <Container fullWidth>
-      <Title
+      <CustomTitle
         title="Edit Profile"
         subtitle="Edit your profile information"
         showBack={true}
@@ -115,7 +115,7 @@ const ProfileEdit = () => {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent sx={{ p: 1.5 }}>
-          <Stack spacing={1}>
+          <Stack spacing={3}>
             <Stack alignSelf="center">
               <CustomImageChooser handleImageUpload={uploadProfile}>
                 <Avatar

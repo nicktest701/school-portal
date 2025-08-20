@@ -9,13 +9,21 @@ const Session = require("../models/sessionModel");
 const Examination = require("../models/examinationModel");
 const CurrentFee = require("../models/currentFeeModel");
 const {
-  startSession,
-
   Types: { ObjectId },
 } = require("mongoose");
 const { verifyJWT } = require("../middlewares/verifyJWT");
 const moment = require("moment/moment");
 // const knex = require("../db/knex");
+
+async function setActive(itemId, active = true) {
+  // 1️⃣ Set all items to inactive
+  await Term.updateMany({}, { $set: { active: false } });
+  await Level.updateMany({}, { $set: { active: false } });
+
+  // 2️⃣ Set the specific item to active
+  await Term.updateOne({ _id: itemId }, { $set: { active } });
+  await Level.updateMany({ term: itemId }, { $set: { active } });
+}
 
 //@GET All school Terms
 router.get(
@@ -34,7 +42,6 @@ router.get(
       terms = await Term.find({
         school: req.user.school,
       }).populate("session");
-
     }
 
     if (_.isEmpty(terms)) {
@@ -68,7 +75,6 @@ router.get(
     res.status(200).json(sortedTerms);
   })
 );
-
 
 //@GET All school Terms
 router.get(
@@ -195,7 +201,7 @@ router.post(
       }
     }
 
-    const { name, from, to, term, isPromotionTerm } = core;
+    const { name, from, to, term, isPromotionTerm, active } = core;
     const { grade, ...examsRest } = exams;
 
     const academicStart = moment(new Date(from)).year();
@@ -258,6 +264,7 @@ router.post(
       vacationDate: to,
       reOpeningDate: to,
       isPromotionTerm,
+      active: active === "Yes" ? true : false,
       exams: {
         scorePreference: "50/50",
         ...examsRest,
@@ -269,6 +276,11 @@ router.post(
       return res
         .status(404)
         .json("Error creating new session.Try again later!!!");
+    }
+
+    if (newTerm?.active) {
+      // Set the new term as active
+      await setActive(newTerm._id);
     }
 
     let grades = null;
@@ -321,7 +333,7 @@ router.post(
           term: newTerm._id,
           level,
           students: studentIds,
-          grades: grades._id,
+          grades: grades,
           createdBy: req.user.id,
         });
 
@@ -400,6 +412,8 @@ router.put(
         new: true,
       }
     );
+
+    await setActive(id, active);
 
     if (_.isEmpty(updatedTerm)) {
       return res.status(404).json("Error updating Session info");

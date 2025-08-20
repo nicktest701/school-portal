@@ -9,6 +9,8 @@ import {
   Tab,
   Box,
   IconButton,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   MessageRounded,
@@ -37,6 +39,8 @@ const StudentDetails = () => {
   const [tab, setTab] = useLocalStorage("student_profile_tab", "1");
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.up("md"));
   ///Params
   const { studentId } = useParams();
 
@@ -146,19 +150,19 @@ const StudentDetails = () => {
               <Tab
                 value="1"
                 label="Profile"
-                icon={<PersonRounded />}
+                icon={matches ? <PersonRounded /> : null}
                 iconPosition="start"
               />
               <Tab
                 value="2"
                 label="Academic Records"
-                icon={<ReportRounded />}
+                icon={matches ? <ReportRounded /> : null}
                 iconPosition="start"
               />
               <Tab
                 value="3"
                 label="Fees History"
-                icon={<NoteRounded />}
+                icon={matches ? <NoteRounded /> : null}
                 iconPosition="start"
               />
             </TabList>
@@ -179,7 +183,7 @@ const StudentDetails = () => {
             </TabPanel>
             <TabPanel value="3" sx={{ px: 0 }}>
               {student?.exams?.length > 0 ? (
-                <StudentFees fees={student?.fees} />
+                <StudentFees fees={student?.fees} levelId={id} />
               ) : (
                 <EmptyDataContainer message="No Academic Records Found!" />
               )}

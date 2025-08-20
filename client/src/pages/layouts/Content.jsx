@@ -6,7 +6,7 @@ function Content({ children }) {
         py: 2,
         flex: 1,
         minHeight: "100svh",
-        bgcolor: "whitesmoke",
+        bgcolor: "#f5f5f5",
       }}
     >
       {children}

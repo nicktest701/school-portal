@@ -22,12 +22,13 @@ import "swiper/css/pagination";
 import { useAuth } from "@/context/AuthProvider";
 
 function DashboardSwiper() {
-  const { school_info } = useAuth();
+  const { school_info, user } = useAuth();
 
   const events = useQuery({
     queryKey: ["events"],
     queryFn: () => getAllEvents(),
     initialData: [],
+    enabled: !!user?.id,
   });
 
   return (

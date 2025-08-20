@@ -143,7 +143,7 @@ const StudentInfo = () => {
       getStudentByIndexNumber(watchedValues?.personal?.indexnumber),
   });
 
-  const { mutateAsync, isPending, isSuccess } = useMutation({
+  const { mutateAsync, isPending, isSuccess ,data} = useMutation({
     mutationFn: postNewStudent,
   });
 
@@ -206,6 +206,7 @@ const StudentInfo = () => {
     } else {
       localStorage.setItem("@student-data", JSON.stringify(watchedValues));
     }
+    // console.log(watchedValues?.personal);
   }, [watchedValues]);
 
   const handleNext = async () => {

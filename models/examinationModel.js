@@ -1,6 +1,6 @@
 const db = require("../db/DBConnection");
 const mongoose = require("mongoose");
-const Level = require('./levelModel');
+const Level = require("./levelModel");
 const generateCustomGrade = require("../config/generateCustomGrade");
 const ExaminationSchema = new mongoose.Schema(
   {
@@ -30,7 +30,7 @@ const ExaminationSchema = new mongoose.Schema(
     },
     scores: {
       type: Array,
-      default: []
+      default: [],
     },
     overallScore: {
       type: Number,
@@ -68,19 +68,35 @@ ExaminationSchema.virtual("totalScore").get(function () {
 
 // 🔹 Virtual field to calculate totalScore dynamically
 ExaminationSchema.virtual("scoresWithTotal").get(async function () {
+  if (this.scores?.length === 0) return [];
 
-  if (this.scores?.length === 0) return []
-  
-  const level = await Level.findById(this.level).populate('grades')
+  const level = await Level.findById(this.level).populate("grades");
   return this.scores.map((score) => ({
     ...score,
     totalScore: score.classScore + score.examsScore, // Auto-generated field
-    ...generateCustomGrade(Number(score.classScore + score.examsScore), level?.grades?.ratings)
+    ...generateCustomGrade(
+      Number(score.classScore + score.examsScore),
+      level?.grades?.ratings
+    ),
   }));
 });
 
+// // 🔹 Virtual for student Position
+// ExaminationSchema.virtual("position").get(async function () {
+//   const studentOverallScores = await ExaminationSchema.find({
+//     level: this.level,
+//     term: this.term,
+//   }).select(["overallScore"]);
 
+//   //GET student position
+//   const positions = getPosition(studentOverallScores);
+//   const position =
+//     positions.find((exams) => {
+//       return exams._id.toString() === this.student.toString();
+//     }).position || "";
 
+//   return await Promise.all(ordinal(position));
+// });
 
 // 🔹 Compound Indexes for Optimized Queries
 ExaminationSchema.index({ session: 1, term: 1, level: 1, student: 1 });

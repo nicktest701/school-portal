@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx";
-import _ from 'lodash'
+import _ from "lodash";
 export const readXLSX = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -8,25 +8,25 @@ export const readXLSX = (file) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
-        const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-          header: 1,
-        });
+        const sheetData = XLSX.utils
+          .sheet_to_json(workbook.Sheets[sheetName], {
+            header: 1,
+            defval: "", // Default value for empty cells
+            blankrows: false, // Skip rows that are completely empty
+          })
+          .filter((row) =>
+            Object.values(row).some(
+              (value) => value !== undefined && value !== ""
+            )
+          );
 
         if (sheetData.length === 0) {
-          resolve([])
+          resolve([]);
         }
         // Function to filter out empty or undefined rows
 
-        const modifiedData = sheetData.filter((row) =>
-          Object.values(row).some(
-            (value) => value !== undefined && value !== ""
-          )
-        );
-
-        const headers = modifiedData[0].map((header) =>
-          _.lowerCase(header)
-        );
-        const rows = modifiedData.slice(1);
+        const headers = sheetData[0].map((header) => _.lowerCase(header));
+        const rows = sheetData.slice(1);
 
         const results = rows.map((row) => {
           const rowData = {};
@@ -47,7 +47,3 @@ export const readXLSX = (file) => {
     reader.readAsArrayBuffer(file);
   });
 };
-
-
-
-

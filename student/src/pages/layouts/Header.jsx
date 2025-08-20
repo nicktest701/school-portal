@@ -22,7 +22,6 @@ import { useCreateNote } from "@/hooks/useNotes";
 import { useNotifications } from "@/hooks/useNotifications";
 import HomeLinks from "@/components/HomeLinks";
 
-
 function Header() {
   const { palette } = useTheme();
   const { data } = useNotifications();
@@ -51,13 +50,14 @@ function Header() {
       <AppBar
         position="sticky"
         sx={{
-      
           width: "100%",
+          zIndex: 999999,
           p: 1,
-          borderBottom: "2px solid var(--secondary)",
+          // borderBottom: "2px solid var(--secondary)",
           ...bgBlur({
             color: palette.background.default,
           }),
+          boxShadow: "0 0 20px rgba(0, 0, 0, 0.08)",
           // backgroundColor: "var(--primary)",
           // backdropFilter: "blur(10px)",
         }}
@@ -70,7 +70,6 @@ function Header() {
             justifyContent: { xs: "flex-start", sm: "flex-end" },
             alignItems: "center",
             gap: 0.5,
-            
           }}
         >
           <Box
@@ -81,7 +80,7 @@ function Header() {
               px: 1,
             }}
           >
-            <HomeLinks />
+            {/* <HomeLinks /> */}
             <Box
               sx={{
                 display: { xs: "inline-flex", md: "none" },
@@ -102,9 +101,7 @@ function Header() {
               // flexGrow: 1,
               // px: 1,
             }}
-          >
-        
-          </Box>
+          ></Box>
           <Tooltip title="Search">
             <IconButton>
               <SearchRounded />
@@ -115,7 +112,6 @@ function Header() {
               <DescriptionRounded />
             </IconButton>
           </Tooltip>
-   
 
           <div style={{ position: "relative" }}>
             <Tooltip title="Notifications">

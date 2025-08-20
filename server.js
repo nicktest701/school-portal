@@ -272,7 +272,6 @@ app.use(
       },
     },
     crossOriginResourcePolicy: { policy: "same-site" },
-
   })
 );
 
@@ -440,15 +439,21 @@ app.use((req, res, next) => {
 });
 
 // Global error handler
-app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  const message =
-    process.env.NODE_ENV === "production"
-      ? "An unexpected error occurred"
-      : err.message;
+app.use((error, req, res, next) => {
+  const status = error.status || 500;
+
+  let message = "An unexpected error occurred";
+
+  if (error.name === "MongoServerError" && error.code === 11000) {
+    const field = Object.keys(error.keyValue)[0];
+    const value = error.keyValue[field];
+    message = `The ${field} "${value}" is already taken.`;
+  } else {
+    message = process.env.NODE_ENV === "production" ? message : error.message;
+  }
 
   if (process.env.NODE_ENV !== "test") {
-    console.error(`[${new Date().toISOString()}] ${err.stack || err}`);
+    console.error(`[${new Date().toISOString()}] ${error.stack || error}`);
   }
 
   res.status(status).json({

@@ -14,6 +14,11 @@ const {
   processWeeklyFees,
   getTotalFeesForWeek,
 } = require("../config/helper");
+const {
+  getTotalPaidFees,
+  getFeePaymentTrend,
+  getTopFeePayments,
+} = require("../config/helpers/fees");
 
 //@GET All school current fees
 router.get(
@@ -95,18 +100,98 @@ router.get(
       })
       .select("payment");
 
-    const modifiedFees = studFees.map((fee) => {
+    const modifiedFees = studFees.map(async (currentFee) => {
+      const fee = await Fee.findOne({
+        level: currentFee?.level?._id,
+        term: currentFee?.term?._id,
+      });
+
       return {
-        _id: fee?._id,
-        academicYear: fee?.term?.academicYear,
-        term: fee?.term?.term,
-        level: fee?.level?.levelName,
-        payment: fee?.payment,
-        paid: _.sumBy(fee?.payment, "paid"),
+        _id: currentFee?._id,
+        academicYear: currentFee?.term?.academicYear,
+        term: currentFee?.term?.term,
+        level: currentFee?.level?.levelName,
+        fees: _.sumBy(fee?.amount, "amount"),
+        payment: currentFee?.payment,
+        paid: _.sumBy(currentFee?.payment, "paid"),
       };
     });
+    const fees = await Promise.all(modifiedFees);
 
-    res.status(200).json(modifiedFees);
+    res.status(200).json(fees);
+  })
+);
+
+//GET Student fee History
+router.get(
+  "/current/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const studFees = await CurrentFee.find({
+      student: id,
+    })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "term",
+        select: ["term", "academicYear"],
+      })
+      .populate({
+        path: "level",
+        select: ["level", "active"],
+      })
+      .select(["student", "payment"]);
+
+    let activeLevel = null;
+
+    const modifiedFees = studFees.map(async (currentFee) => {
+      const fee = await Fee.findOne({
+        level: currentFee?.level?._id,
+        term: currentFee?.term?._id,
+      });
+
+      const fees = _.sumBy(fee?.amount, "amount");
+      const paid = _.sumBy(currentFee?.payment, "paid");
+      if (currentFee?.level?.active) {
+        activeLevel = {
+          term: currentFee?.term?.term,
+          level: currentFee?.level?.levelName,
+          fees: fees,
+          paid: paid,
+          arrears: fees - paid,
+          percentage: (paid / fees) * 100,
+        };
+      }
+      return {
+        _id: currentFee?._id,
+        academicYear: currentFee?.term?.academicYear,
+        term: currentFee?.term?.term,
+        level: currentFee?.level?.levelName,
+        payment: currentFee?.payment,
+        fees: fees,
+        paid: paid,
+      };
+    });
+    const fees = await Promise.all(modifiedFees);
+
+    //Sum of fees for each term
+    const totalFees = _.sumBy(fees, "fees");
+    const totalPaid = getTotalPaidFees(fees);
+    const totalArrears = totalFees - totalPaid;
+    const feePaymentTrend = getFeePaymentTrend(fees);
+    const topFeePayments = getTopFeePayments(fees);
+
+    const lastFeePaid = _.first(topFeePayments);
+
+    res.status(200).json({
+      totalFees,
+      totalPaid,
+      lastFeePaid,
+      totalArrears,
+      feePaymentTrend,
+      topFeePayments,
+      activeLevel,
+    });
   })
 );
 

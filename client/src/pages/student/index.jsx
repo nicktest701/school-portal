@@ -33,5 +33,3 @@ function Student() {
 
 export default Student;
 
-// <Container maxWidth="lg">
-// </Container>

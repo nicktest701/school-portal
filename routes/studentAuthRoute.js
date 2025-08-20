@@ -8,38 +8,35 @@ const StudentAuth = require("../models/studentAuthModel");
 const { sendVerificationEmail } = require("../config/mail/mails");
 const Student = require("../models/studentModel");
 const expressAsyncHandler = require("express-async-handler");
+const crypto = require("crypto");
 
 // Helper functions
 const generateAccessToken = (user) => {
-  return jwt.sign(
-    { id: user._id, user: user?.studentId, school: user?.school },
-    process.env.JWT_SECRET,
-    {
-      // expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-      expiresIn: "30d",
-    }
-  );
+  return jwt.sign(user, process.env.JWT_SECRET, {
+    // expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    expiresIn: "15m",
+  });
 };
 
 const generateRefreshToken = (user) => {
-  return jwt.sign(
-    { id: user._id, user: user?.studentId, school: user?.school },
-    process.env.REFRESH_TOKEN_SECRET,
-    {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
-    }
-  );
+  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+  });
 };
 
 // Generate token helpers
-const generateResetToken = () => crypto.randomBytes(20).toString("hex");
+const generateResetToken = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
 
 //@GET student by student id
 router.get(
   "/:id",
   expressAsyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const id = req.params?.id;
 
+    if (_.isEmpty(id)) {
+      return res.status(400).json({ message: "Student ID is required" });
+    }
     //Personal Info
     const student = await Student.findById(id).populate("school");
 
@@ -67,51 +64,95 @@ router.post("/login", async (req, res) => {
   const isMatch = await bcrypt.compare(password, student?.password);
   if (!isMatch)
     return res.status(401).json({ message: "Invalid student ID or password" });
-  const school = await Student.findById(student.studentId).select("school");
+
+  const authStudent = await Student.findById(student._id).populate("school");
+
+  const { school, ...rest } = authStudent?._doc;
 
   const data = {
-    ...student?._doc,
-    school: school.school,
+    _id: authStudent._id,
+    id: authStudent._id,
   };
 
+  const fullName =
+    _.capitalize(`${rest?.firstname} ${rest?.surname} ${rest?.othername}`) ||
+    "No Name";
+  const authUser = {
+    student: {
+      ...rest,
+      fullName: fullName,
+    },
+    school: school,
+  };
   const accessToken = generateAccessToken(data);
   const refreshToken = generateRefreshToken(data);
 
   req.user = data;
 
   // Send refresh token in HTTP-only cookie
-  res.cookie("refreshToken", refreshToken, {
+  res.cookie("refresh_token", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: "none", // Cross-site allowed
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: "/api/frebbys/v1/student-auth/refresh", // Ensure path matches refresh route
+    // Set domain for subdomains if needed
+    domain:
+      process.env.NODE_ENV === "production"
+        ? "school-portal-aivn.onrender.com" // Leading dot for subdomains
+        : undefined, // Localhost works without domain
   });
 
-  res.json({ accessToken, studentId: student.studentId });
+  res.json({
+    accessToken,
+    data: authUser,
+  });
 });
 
 // ✅ REFRESH TOKEN
 router.post("/refresh", async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
+  const refreshToken = req.cookies.refresh_token;
 
   if (!refreshToken)
-    return res.status(401).json({ message: "No refresh token provided" });
+    return res.status(401).json({ message: "Unauthorized access " });
 
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+    if (!decoded || !decoded.id) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
     const student = await StudentAuth.findById(decoded.id).select("-password");
 
     if (!student) return res.status(401).json({ message: "Invalid token" });
-    const school = await Student.findById(decoded.studentId).select("school");
+    const authStudent = await Student.findById(student._id).populate("school");
+
+    const { school, ...rest } = authStudent?._doc;
 
     const data = {
-      ...student?._doc,
-      school: school.school,
+      _id: authStudent._id,
+      id: authStudent._id,
     };
+
+    const fullName =
+      _.capitalize(`${rest?.firstname} ${rest?.surname} ${rest?.othername}`) ||
+      "No Name";
+    const authUser = {
+      student: {
+        ...rest,
+        fullName: fullName,
+      },
+      school: school,
+    };
+
+    // Generate new access token
     const newAccessToken = generateAccessToken(data);
     req.user = data;
 
-    res.json({ accessToken: newAccessToken });
+    res.json({
+      token: newAccessToken,
+      data: authUser,
+    });
   } catch (err) {
     res.status(403).json({ message: "Token expired or invalid" });
   }
@@ -145,6 +186,7 @@ router.post("/reset-password-request", async (req, res) => {
 // ✅ Confirm code
 router.post("/confirm-reset-code", async (req, res) => {
   const { studentId, code } = req.body;
+  console.log("Confirming reset code for:", studentId, "Code:", code);
 
   const student = await StudentAuth.findOne({
     indexnumber: studentId,

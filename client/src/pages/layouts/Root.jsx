@@ -16,6 +16,7 @@ import AddSession from "../session/AddSession";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import Receipt from "../fees/Receipt";
+import StudentFeesReport from "../student/StudentFeesReport";
 
 //Session
 const Sessions = lazy(() => import("../session/Sessions"));
@@ -24,7 +25,6 @@ const EditSessionForm = lazy(() =>
   import("../session/edit-form/EditSessionForm")
 );
 
-const FeePrint = lazy(() => import("../fees/FeePrint"));
 const LevelFeeInformation = lazy(() => import("../fees/LevelFeeInformation"));
 const Subject_Grade = lazy(() => import("../subject"));
 const NewAttendance = lazy(() => import("../level/NewAttendance"));
@@ -34,7 +34,6 @@ const Teacher = lazy(() => import("../teacher"));
 const TeacherView = lazy(() => import("../teacher/TeacherView"));
 const TeacherEdit = lazy(() => import("../teacher/TeacherEdit"));
 const Profile = lazy(() => import("../profile"));
-const Notifications = lazy(() => import("../notifications"));
 const Event = lazy(() => import("../events"));
 const EventHome = lazy(() => import("../events/EventHome"));
 const NewEvent = lazy(() => import("../events/NewEvent"));
@@ -307,6 +306,15 @@ const Root = () => {
                       <StudentDetails />
                     </Suspense>
                   }
+                />
+
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <StudentFeesReport />
+                    </Suspense>
+                  }
+                  path="view/:studentId/fees"
                 />
               </Route>
 

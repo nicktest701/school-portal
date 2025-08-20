@@ -1,17 +1,18 @@
-const router = require('express').Router();
-const _ = require('lodash');
-const moment = require('moment');
-const asyncHandler = require('express-async-handler');
-const Attendance = require('../models/attendanceModel');
-const Level = require('../models/levelModel');
+const router = require("express").Router();
+const _ = require("lodash");
+const moment = require("moment");
+const asyncHandler = require("express-async-handler");
+const Attendance = require("../models/attendanceModel");
+const Level = require("../models/levelModel");
+const User = require("../models/userModel");
 const {
   Types: { ObjectId },
-} = require('mongoose');
-const { isWeekend } = require('../config/helper');
+} = require("mongoose");
+const { isWeekend } = require("../config/helper");
 
 //@GET All school Attendance
 router.get(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const attendance = await Attendance.find({ active: true });
     if (_.isEmpty(attendance)) {
@@ -24,7 +25,7 @@ router.get(
 
 //@GET School Attendance History
 router.get(
-  '/history/:id',
+  "/history/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { session, term } = req.query;
@@ -33,53 +34,64 @@ router.get(
       session,
       term,
       level: new ObjectId(id),
+      active: true,
     });
 
     // console.log(attendance);
-    const modifiedAttendance = attendance.map(({ status, date }) => {
-      const present = _.filter(
-        status,
-        ({ status }) => status === 'Present'
-      ).length;
-      const absent = _.filter(
-        status,
-        ({ status }) => status === 'Absent'
-      ).length;
-      return {
-        date,
-        present,
-        absent,
-      };
-    });
+    const modifiedAttendance = attendance.map(
+      async ({ _id, status, date, createdBy }) => {
+        const user = await User.findById(createdBy).select([
+          "firstname",
+          "lastname",
+        ]);
 
-    const attendanceHistory = _.orderBy(modifiedAttendance, 'date', 'desc');
+        const present = _.filter(
+          status,
+          ({ status }) => status === "Present"
+        ).length;
+        const absent = _.filter(
+          status,
+          ({ status }) => status === "Absent"
+        ).length;
+        return {
+          _id,
+          date,
+          present,
+          absent,
+          createdBy: {
+            id: user?._id,
+            name: user?.fullname,
+          },
+        };
+      }
+    );
+
+    const attendances = await Promise.all(modifiedAttendance);
+    const attendanceHistory = _.orderBy(attendances, "date", "desc");
 
     res.status(200).json(attendanceHistory);
   })
 );
 //@GET School Attendance by id
 router.get(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { date, session, term } = req.query;
 
     const attendance = await Attendance.findOne({
       level: new ObjectId(id),
-      date: moment(new Date(date)).format("YYYY-MM-DD"),
+      date: date,
     });
-
 
     if (_.isEmpty(attendance)) {
       //Select students from the level with this id
       const level = await Level.findById(id).populate({
-        path: 'students',
+        path: "students",
         match: { active: true },
       });
 
-
       if (isWeekend(new Date(date))) {
-
         return res.status(200).json({
           level: id,
           date,
@@ -88,21 +100,21 @@ router.get(
       }
 
       const students = level.students.map((student) => {
-
         return {
           _id: student?._id,
           fullName: student?.fullName,
           gender: student?.gender,
-          status: '',
+          status: "",
         };
       });
 
       const selectedAttendance = {
-        session, term,
+        session,
+        term,
         level: id,
-        date: moment(new Date(date)).format("YYYY-MM-DD"),
+        date: date,
         status: students,
-        createdBy: req.user.id
+        createdBy: req.user.id,
       };
       const savedAttendance = await Attendance.create(selectedAttendance);
       return res.status(200).json(savedAttendance);
@@ -113,20 +125,21 @@ router.get(
 );
 //Add new School Attendance
 router.post(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const { date, level, status, session, term } = req.body;
 
     const attendance = await Attendance.findOneAndUpdate(
       {
-        session, term,
+        session,
+        term,
         level,
-        date: moment(new Date(date)).format("YYYY-MM-DD"),
-
+        date,
       },
       {
         $set: {
           status: status,
+          active: true,
         },
       },
       {
@@ -138,18 +151,20 @@ router.post(
     if (_.isEmpty(attendance)) {
       return res
         .status(404)
-        .json('Error creating new attendance.Try again later!!!');
+        .json("Error creating new attendance.Try again later!!!");
     }
 
-    return res.status(201).json('Attendance saved Successfully!!!');
+    return res.status(201).json("Attendance saved Successfully!!!");
   })
 );
 
 //Add new School Attendance
 router.post(
-  '/student',
+  "/student",
   asyncHandler(async (req, res) => {
     const { date, level, status, session, term } = req.body;
+
+    console.log(req.body);
 
     const exists = await Attendance.findOne({
       level,
@@ -158,20 +173,22 @@ router.post(
 
     if (_.isEmpty(exists)) {
       const attendance = {
-        session, term,
+        session,
+        term,
         level,
         date: moment(new Date(date)).format("YYYY-MM-DD"),
-        status: [status],
-        createdBy: req.user?.id
+        status: status,
+        createdBy: req.user?.id,
+        active: true,
       };
 
       await Attendance.create(attendance);
 
-      return res.status(200).json('Attendance Saved!');
+      return res.status(200).json("Attendance Saved!");
     }
 
     const updatedAttendance = _.values(
-      _.merge(_.keyBy([...exists?.status, status], '_id'))
+      _.merge(_.keyBy([...exists?.status, ...status], "_id"))
     );
 
     const attendance = await Attendance.findOneAndUpdate(
@@ -182,6 +199,7 @@ router.post(
       {
         $set: {
           status: updatedAttendance,
+          active: true,
         },
       },
       {
@@ -193,16 +211,16 @@ router.post(
     if (_.isEmpty(attendance)) {
       return res
         .status(404)
-        .json('Error creating new attendance.Try again later!!!');
+        .json("Error creating new attendance.Try again later!!!");
     }
 
-    return res.status(201).json('Attendance saved Successfully!!!');
+    return res.status(201).json("Attendance saved Successfully!!!");
   })
 );
 
 //@PUT Update Existing School Attendance
 router.put(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const modifiedAttendance = await Attendance.findByIdAndUpdate(
       req.body.id,
@@ -212,17 +230,17 @@ router.put(
     if (_.isEmpty(modifiedAttendance)) {
       return res
         .status(404)
-        .send('Error updating attendance info.Try again later');
+        .send("Error updating attendance info.Try again later");
     }
 
     res
       .status(201)
-      .json('Attendance information has been updated successfully!!!');
+      .json("Attendance information has been updated successfully!!!");
   })
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
     const deletedAttendance = await Attendance.findByIdAndUpdate(id, {
@@ -234,10 +252,10 @@ router.delete(
     if (_.isEmpty(deletedAttendance)) {
       return res
         .status(404)
-        .json('Error removing attendance info.Try again later');
+        .json("Error removing attendance info.Try again later");
     }
 
-    res.status(201).json(' Attendance have been removed successfully!!!');
+    res.status(201).json(" Attendance removed successfully!!!");
   })
 );
 

@@ -439,6 +439,9 @@ export const newSessionSchemas = [
       isPromotionTerm: string()
         .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
         .required("This field is required"),
+      active: string()
+        .oneOf(["Yes", "No"], "Please select either 'Yes' or 'No'")
+        .required("This field is required"),
     }),
   }),
   object().shape({
@@ -453,33 +456,34 @@ export const newSessionSchemas = [
       .optional(), // ✅ Optional: Only validates if there are files
   }),
   object().shape({
-    // students:array()
-    //   .of(
-    //     object().shape({
-    //       class: object().shape({
-    //         name: string().required("Class is required"),
-    //         type: string().optional(),
-    //       }),
-    //       fileName: string().required("Class is required"),
-    //       data: array()
-    //         .of(object())
-    //         .when("class", {
-    //           is: (value) => !!value?.name, // If class is selected
-    //           then: array()
-    //             .of(object())
-    //             .min(1, "Student data is required when a class is selected"),
-    //           otherwise: array().of(object()).optional(),
-    //         }),
-    //     })
-    //   )
-    //   .optional(),
     students: array().of(object()).optional(),
   }),
   object().shape({
     exams: object().shape({
       midTermExams: object()
         .shape({
-          from: string().required("Required*"),
+          from: string()
+            .required("Required*")
+            .test("is-within-core-dates", function (value) {
+              const { core } = this.from[2].value;
+
+              if (!core?.from || !core?.to || !value) return true;
+
+              const start = moment(core.from).format("Do MMMM YYYY");
+              const end = moment(core.to).format("Do MMMM YYYY");
+
+              const isValid = moment(value).isBetween(
+                moment(core.from),
+                moment(core.to),
+                undefined,
+                "[]"
+              );
+
+              if (isValid) return true;
+              return this.createError({
+                message: `Mid Term Exams must be between ${start} and ${end}`,
+              });
+            }),
           to: string()
             .required("Required*")
             .test(
@@ -491,13 +495,52 @@ export const newSessionSchemas = [
                   !from || !value || moment(value).isSameOrAfter(moment(from))
                 );
               }
-            ),
+            )
+            .test("is-within-core-dates", function (value) {
+              const { core } = this.from[2].value;
+              if (!core?.from || !core?.to || !value) return true;
+
+              const start = moment(core.from).format("Do MMMM YYYY");
+              const end = moment(core.to).format("Do MMMM YYYY");
+
+              const isValid = moment(value).isBetween(
+                moment(core.from),
+                moment(core.to),
+                undefined,
+                "[]"
+              );
+              if (isValid) return true;
+              return this.createError({
+                message: `Mid Term Exams must be between ${start} and ${end}`,
+              });
+            }),
         })
         .optional(),
 
       revisionWeek: object()
         .shape({
-          from: string().required("Required*"),
+          from: string()
+            .required("Required*")
+            .test("is-within-core-dates", function (value) {
+              const { core } = this.from[2].value;
+              if (!core?.from || !core?.to || !value) return true;
+
+              const start = moment(core.from).format("Do MMMM YYYY");
+              const end = moment(core.to).format("Do MMMM YYYY");
+
+              const isValid = moment(value).isBetween(
+                moment(core.from),
+                moment(core.to),
+                undefined,
+                "[]"
+              );
+
+              if (isValid) return true;
+
+              return this.createError({
+                message: `Revision Week must be between ${start} and ${end}`,
+              });
+            }),
           to: string()
             .required("Required*")
             .test(
@@ -509,12 +552,51 @@ export const newSessionSchemas = [
                   !from || !value || moment(value).isSameOrAfter(moment(from))
                 );
               }
-            ),
+            )
+            .test("is-within-core-dates", function (value) {
+              const { core } = this.from[2].value;
+              if (!core?.from || !core?.to || !value) return true;
+
+              const start = moment(core.from).format("Do MMMM YYYY");
+              const end = moment(core.to).format("Do MMMM YYYY");
+
+              const isValid = moment(value).isBetween(
+                moment(core.from),
+                moment(core.to),
+                undefined,
+                "[]"
+              );
+              if (isValid) return true;
+
+              return this.createError({
+                message: `Revision Week must be between ${start} and ${end}`,
+              });
+            }),
         })
         .optional(),
 
       finalExams: object().shape({
-        from: string().required("Required*"),
+        from: string()
+          .required("Required*")
+          .test("is-within-core-dates", function (value) {
+            const { core } = this.from[2].value;
+            if (!core?.from || !core?.to || !value) return true;
+
+            const start = moment(core.from).format("Do MMMM YYYY");
+            const end = moment(core.to).format("Do MMMM YYYY");
+
+            const isValid = moment(value).isBetween(
+              moment(core.from),
+              moment(core.to),
+              undefined,
+              "[]"
+            );
+
+            if (isValid) return true;
+            return this.createError({
+              message: `Final Term Exams must be between ${start} and ${end}`,
+            });
+          }),
         to: string()
           .required("Required*")
           .test(
@@ -526,7 +608,26 @@ export const newSessionSchemas = [
                 !from || !value || moment(value).isSameOrAfter(moment(from))
               );
             }
-          ),
+          )
+          .test("is-within-core-dates", function (value) {
+            const { core } = this.from[2].value;
+            if (!core?.from || !core?.to || !value) return true;
+
+            const start = moment(core.from).format("YYYY-MM-DD");
+            const end = moment(core.to).format("YYYY-MM-DD");
+
+            const isValid = moment(value).isBetween(
+              moment(core.from),
+              moment(core.to),
+              undefined,
+              "[]"
+            );
+            if (isValid) return true;
+
+            return this.createError({
+              message: `Final Exams must be between ${start} and ${end}`,
+            });
+          }),
       }),
       scorePreference: string()
         .oneOf(["20/80", "30/70", "40/60", "50/50"], "Invalid score preference")
@@ -548,6 +649,228 @@ export const newSessionSchemas = [
         .optional(),
     }),
   }),
+  object().shape({
+    report: object().shape({
+      template: string().required("Please select a report template"),
+
+      dimension: string()
+        .oneOf(["A4", "A3", "Letter"], "Invalid report dimension")
+        .required("Report dimension is required"),
+    }),
+  }),
+];
+
+export const editSessionSchemas = [
+  object().shape({
+    core: object().shape({
+      name: string().trim().required("Required*"),
+      from: string().required("Required*"),
+      to: string()
+        .required("Required*")
+        .test(
+          "is-after-start",
+          "End of Academic Year date must be after or the same as the start of Academic Year",
+          function (value) {
+            const { from } = this.parent;
+            return !from || !value || moment(value).isSameOrAfter(moment(from));
+          }
+        ),
+      term: string().trim().required("Required*"),
+    }),
+  }),
+  object().shape({
+    exams: object().shape({
+      midTermExams: object()
+        .shape({
+          from: string()
+            .required("Required*")
+            .test("is-within-core-dates", function (value) {
+              const { core } = this.from[2].value;
+
+              if (!core?.from || !core?.to || !value) return true;
+
+              const start = moment(core.from).format("Do MMMM YYYY");
+              const end = moment(core.to).format("Do MMMM YYYY");
+
+              const isValid = moment(value).isBetween(
+                moment(core.from),
+                moment(core.to),
+                undefined,
+                "[]"
+              );
+
+              if (isValid) return true;
+              return this.createError({
+                message: `Mid Term Exams must be between ${start} and ${end}`,
+              });
+            }),
+          to: string()
+            .required("Required*")
+            .test(
+              "is-after-start",
+              "End of Mid-Term must be after or the same as the start of Mid-Term",
+              function (value) {
+                const { from } = this.parent;
+                return (
+                  !from || !value || moment(value).isSameOrAfter(moment(from))
+                );
+              }
+            )
+            .test("is-within-core-dates", function (value) {
+              const { core } = this.from[2].value;
+              if (!core?.from || !core?.to || !value) return true;
+
+              const start = moment(core.from).format("Do MMMM YYYY");
+              const end = moment(core.to).format("Do MMMM YYYY");
+
+              const isValid = moment(value).isBetween(
+                moment(core.from),
+                moment(core.to),
+                undefined,
+                "[]"
+              );
+              if (isValid) return true;
+              return this.createError({
+                message: `Mid Term Exams must be between ${start} and ${end}`,
+              });
+            }),
+        })
+        .optional(),
+
+      revisionWeek: object()
+        .shape({
+          from: string()
+            .required("Required*")
+            .test("is-within-core-dates", function (value) {
+              const { core } = this.from[2].value;
+              if (!core?.from || !core?.to || !value) return true;
+
+              const start = moment(core.from).format("Do MMMM YYYY");
+              const end = moment(core.to).format("Do MMMM YYYY");
+
+              const isValid = moment(value).isBetween(
+                moment(core.from),
+                moment(core.to),
+                undefined,
+                "[]"
+              );
+
+              if (isValid) return true;
+
+              return this.createError({
+                message: `Revision Week must be between ${start} and ${end}`,
+              });
+            }),
+          to: string()
+            .required("Required*")
+            .test(
+              "is-after-start",
+              "End of Revision Week must be after or the same as the start of Revision Week",
+              function (value) {
+                const { from } = this.parent;
+                return (
+                  !from || !value || moment(value).isSameOrAfter(moment(from))
+                );
+              }
+            )
+            .test("is-within-core-dates", function (value) {
+              const { core } = this.from[2].value;
+              if (!core?.from || !core?.to || !value) return true;
+
+              const start = moment(core.from).format("Do MMMM YYYY");
+              const end = moment(core.to).format("Do MMMM YYYY");
+
+              const isValid = moment(value).isBetween(
+                moment(core.from),
+                moment(core.to),
+                undefined,
+                "[]"
+              );
+              if (isValid) return true;
+
+              return this.createError({
+                message: `Revision Week must be between ${start} and ${end}`,
+              });
+            }),
+        })
+        .optional(),
+
+      finalExams: object().shape({
+        from: string()
+          .required("Required*")
+          .test("is-within-core-dates", function (value) {
+            const { core } = this.from[2].value;
+            if (!core?.from || !core?.to || !value) return true;
+
+            const start = moment(core.from).format("Do MMMM YYYY");
+            const end = moment(core.to).format("Do MMMM YYYY");
+
+            const isValid = moment(value).isBetween(
+              moment(core.from),
+              moment(core.to),
+              undefined,
+              "[]"
+            );
+
+            if (isValid) return true;
+            return this.createError({
+              message: `Final Term Exams must be between ${start} and ${end}`,
+            });
+          }),
+        to: string()
+          .required("Required*")
+          .test(
+            "is-after-start",
+            "End of Examination Week must be after or the same as the start of Examination Week",
+            function (value) {
+              const { from } = this.parent;
+              return (
+                !from || !value || moment(value).isSameOrAfter(moment(from))
+              );
+            }
+          )
+          .test("is-within-core-dates", function (value) {
+            const { core } = this.from[2].value;
+            if (!core?.from || !core?.to || !value) return true;
+
+            const start = moment(core.from).format("YYYY-MM-DD");
+            const end = moment(core.to).format("YYYY-MM-DD");
+
+            const isValid = moment(value).isBetween(
+              moment(core.from),
+              moment(core.to),
+              undefined,
+              "[]"
+            );
+            if (isValid) return true;
+
+            return this.createError({
+              message: `Final Exams must be between ${start} and ${end}`,
+            });
+          }),
+      }),
+      scorePreference: string()
+        .oneOf(["20/80", "30/70", "40/60", "50/50"], "Invalid score preference")
+        .required("Score preference is required"),
+    }),
+  }),
+  object()
+    .shape({
+      headmaster: object()
+        .shape({
+          name: string().required("Name is required"),
+          phone: string()
+            .required("Phone number is required")
+            .matches(
+              /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/,
+              "Invalid Phone number"
+            ),
+          signature: string().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+
   object().shape({
     report: object().shape({
       template: string().required("Please select a report template"),

@@ -1,15 +1,10 @@
 import React from "react";
 
-import {
-  Avatar,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
+import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 
 function BirthdayItem({ profile, fullname, dob }) {
   return (
-    <ListItemButton>
+    <ListItem>
       <ListItemAvatar>
         <Avatar src={profile} sx={{ width: 40, height: 40 }} />
       </ListItemAvatar>
@@ -18,16 +13,18 @@ function BirthdayItem({ profile, fullname, dob }) {
         secondary={`${
           new Date().getFullYear() - new Date(dob).getUTCFullYear()
         } years old`}
-        primaryTypographyProps={{
-          fontSize: 13,
-          color: "#012e54",
-          fontWeight: "bold",
-        }}
-        secondaryTypographyProps={{
-          fontSize: 13,
+        slotProps={{
+          primary: {
+            fontSize: 12,
+            color: "#012e54",
+            fontWeight: "bold",
+          },
+          secondary: {
+            fontSize: 12,
+          },
         }}
       />
-    </ListItemButton>
+    </ListItem>
   );
 }
 

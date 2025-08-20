@@ -26,6 +26,7 @@ import Core from "./Core";
 import CustomTitle from "@/components/custom/CustomTitle";
 import Headmaster from "./Headmaster";
 import FormStep from "@/components/FormStep";
+import { editSessionSchemas } from "@/config/validationSchema";
 
 // Step Titles
 const steps = [
@@ -33,133 +34,6 @@ const steps = [
   "Exam & Assessment",
   "Headmaster Information",
   "Report Customization",
-];
-
-// Validation Schemas for each step
-const validationSchemas = [
-  yup.object().shape({
-    core: yup.object().shape({
-      name: yup.string().trim().required("Required*"),
-      from: yup.string().required("Required*"),
-      to: yup
-        .string()
-        .required("Required*")
-        .test(
-          "is-after-start",
-          "End of Academic Year date must be after or the same as the start of Academic Year",
-          function (value) {
-            const { from } = this.parent;
-            return !from || !value || moment(value).isSameOrAfter(moment(from));
-          }
-        ),
-      term: yup.string().trim().required("Required*"),
-    }),
-  }),
-  yup.object().shape({
-    exams: yup.object().shape({
-      midTermExams: yup
-        .object()
-        .shape({
-          from: yup.string().required("Required*"),
-          to: yup
-            .string()
-            .required("Required*")
-            .test(
-              "is-after-start",
-              "End of Mid-Term must be after or the same as the start of Mid-Term",
-              function (value) {
-                const { from } = this.parent;
-                return (
-                  !from || !value || moment(value).isSameOrAfter(moment(from))
-                );
-              }
-            ),
-        })
-        .optional(),
-
-      revisionWeek: yup
-        .object()
-        .shape({
-          from: yup.string().required("Required*"),
-          to: yup
-            .string()
-            .required("Required*")
-            .test(
-              "is-after-start",
-              "End of Revision Week must be after or the same as the start of Revision Week",
-              function (value) {
-                const { from } = this.parent;
-                return (
-                  !from || !value || moment(value).isSameOrAfter(moment(from))
-                );
-              }
-            ),
-        })
-        .optional(),
-
-      finalExams: yup.object().shape({
-        from: yup.string().required("Required*"),
-        to: yup
-          .string()
-          .required("Required*")
-          .test(
-            "is-after-start",
-            "End of Examination Week must be after or the same as the start of Examination Week",
-            function (value) {
-              const { from } = this.parent;
-              return (
-                !from || !value || moment(value).isSameOrAfter(moment(from))
-              );
-            }
-          ),
-      }),
-      scorePreference: yup
-        .string()
-        .oneOf(["20/80", "30/70", "40/60", "50/50"], "Invalid score preference")
-        .required("Score preference is required"),
-    }),
-  }),
-  yup
-    .object()
-    .shape({
-      headmaster: yup
-        .object()
-        .shape({
-          name: yup.string().required("Name is required"),
-          phone: yup
-            .string()
-            .required("Phone number is required")
-            .matches(
-              /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/,
-              "Invalid Phone number"
-            ),
-          signature: yup.string().optional(),
-          // signature: yup
-          //   .mixed()
-          //   .required("Signature is required")
-          //   .test("fileType", "Only image files are allowed", (value) => {
-          //     if (value) {
-          //       return ["image/jpeg", "image/png", "image/gif"].includes(
-          //         value.type
-          //       );
-          //     }
-          //     return false;
-          //   }),
-        })
-        .optional(),
-    })
-    .optional(),
-
-  yup.object().shape({
-    report: yup.object().shape({
-      template: yup.string().required("Please select a report template"),
-
-      dimension: yup
-        .string()
-        .oneOf(["A4", "A3", "Letter"], "Invalid report dimension")
-        .required("Report dimension is required"),
-    }),
-  }),
 ];
 
 export default function EditSessionForm() {
@@ -190,6 +64,8 @@ export default function EditSessionForm() {
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess("Changes Saved"));
+        navigate(-1);
+        setActiveStep(0); // Reset to the first step after saving
       },
       onError: (error) => {
         schoolSessionDispatch(alertError(error));
@@ -206,7 +82,7 @@ export default function EditSessionForm() {
     handleSubmit,
     reset,
   } = useForm({
-    resolver: yupResolver(validationSchemas[activeStep]),
+    resolver: yupResolver(editSessionSchemas[activeStep]),
     mode: "onBlur",
   });
 
@@ -228,7 +104,8 @@ export default function EditSessionForm() {
   };
 
   const handleCancel = () => {
-    navigate(`/session/${id}`);
+    navigate(-1); // Go back to the previous page
+    setActiveStep(0); // Reset to the first step
   };
 
   const renderStepContent = (step) => {

@@ -1,20 +1,20 @@
-import moment from 'moment';
+import moment from "moment";
 import {
   messageValidationSchema,
   onlyEmailValidationSchema,
   onlyPhoneValidationSchema,
-} from './validationSchema';
+} from "./validationSchema";
 
-const session = JSON.parse(localStorage.getItem('@school_session'));
+const session = JSON.parse(localStorage.getItem("@school_session"));
 
 //session
 export const sessionInitialValues = {
-  from: '',
-  to: '',
-  term: '',
-  academicYear: '',
-  vacationDate: '',
-  reOpeningDate: '',
+  from: "",
+  to: "",
+  term: "",
+  academicYear: "",
+  vacationDate: "",
+  reOpeningDate: "",
 };
 export const sessionDefaultValues = {
   core: {
@@ -22,12 +22,11 @@ export const sessionDefaultValues = {
     from: new Date(),
     to: new Date(),
     term: "",
-    isPromotionTerm: ''
+    isPromotionTerm: "",
+    active: "No",
   },
   levels: [],
-  students: [
-
-  ],
+  students: [],
   exams: {
     midTermExams: {
       from: "",
@@ -42,9 +41,7 @@ export const sessionDefaultValues = {
       to: "",
     },
     scorePreference: "50/50",
-    grade: {
-
-    },
+    grade: {},
   },
   report: {
     template: "",
@@ -52,36 +49,35 @@ export const sessionDefaultValues = {
   },
 };
 export const parentDefaultValues = {
-  firstname: '',
-  surname: '',
-  gender: '',
-  relationship: '',
-  email: '',
-  phonenumber: '',
-  address: '',
-  residence: '',
-  nationality: '',
-}
+  firstname: "",
+  surname: "",
+  gender: "",
+  relationship: "",
+  email: "",
+  phonenumber: "",
+  address: "",
+  residence: "",
+  nationality: "",
+};
 
 export const newStudentDefaultValues = {
   personal: {
-    indexnumber: '',
-    firstname: '',
-    surname: '',
-    othername: '',
-    gender: 'male',
-    email: '',
+    indexnumber: "",
+    firstname: "",
+    surname: "",
+    othername: "",
+    gender: "male",
+    email: "",
     dateofbirth: moment(),
-    phonenumber: '',
-    address: '',
-    residence: '',
-    nationality: '',
+    phonenumber: "",
+    address: "",
+    residence: "",
+    nationality: "",
   },
   photo: {
-    profile: null
+    profile: null,
   },
-  parent: [parentDefaultValues]
-  ,
+  parent: [parentDefaultValues],
   medical: {
     heartDisease: "",
     visualImpairment: "",
@@ -90,107 +86,103 @@ export const newStudentDefaultValues = {
     seizures: "",
     physicalDisability: "",
     emergencyContact: {
-      fullname: '',
-      phonenumber: '',
-      address: '',
+      fullname: "",
+      phonenumber: "",
+      address: "",
     },
-  }
-  ,
+  },
   academic: {
     previousSchool: {
       name: "",
       location: "",
-      report: null
+      report: null,
     },
     level: {
-      _id: '',
-      type: '',
+      _id: "",
+      type: "",
     },
-  }
+  },
 };
 
-
-
 export const levelInitialValues = {
-  level: '',
-  type: '',
+  level: "",
+  type: "",
   subjects: [],
-  teacher: { _id: '', fullName: '' },
+  teacher: { _id: "", fullName: "" },
 };
 
 //student
 export const studentInitialValues = {
-  firstname: '',
-  surname: '',
-  othername: '',
-  dateofbirth: '',
-  gender: 'male',
-  email: '',
-  phonenumber: '',
-  address: '',
-  residence: '',
-  nationality: '',
+  firstname: "",
+  surname: "",
+  othername: "",
+  dateofbirth: "",
+  gender: "male",
+  email: "",
+  phonenumber: "",
+  address: "",
+  residence: "",
+  nationality: "",
   session: session,
 };
 
 // medical
 export const medicalInitialValues = {
-  heartDisease: 'No',
-  asthma: 'No',
-  siezures: 'No',
-  visualImpairment: 'No',
-  hearingImpairment: 'No',
-  physicalDisability: 'No',
+  heartDisease: "No",
+  asthma: "No",
+  siezures: "No",
+  visualImpairment: "No",
+  hearingImpairment: "No",
+  physicalDisability: "No",
   emergencyContact: {
-    fullname: '',
-    phonenumber: '',
-    address: '',
+    fullname: "",
+    phonenumber: "",
+    address: "",
   },
 };
 export const academicInitialValues = {
   level: {
-    _id: '',
-    type: '',
+    _id: "",
+    type: "",
   },
   previousSchool: {
-    name: '',
-    location: '',
+    name: "",
+    location: "",
   },
 };
 
 //student
 export const teacherInitialValues = {
   profile: null,
-  firstname: '',
-  lastname: '',
-  username: '',
-  dateofbirth: '',
-  gender: '',
-  email: '',
-  phonenumber: '',
-  address: '',
-  residence: '',
-  nationality: '',
+  firstname: "",
+  lastname: "",
+  username: "",
+  dateofbirth: "",
+  gender: "",
+  email: "",
+  phonenumber: "",
+  address: "",
+  residence: "",
+  nationality: "",
 };
 
 //student
 export const userInitialValues = {
   profile: null,
-  firstname: '',
-  lastname: '',
-  username: '',
-  dateofbirth: '',
-  gender: '',
-  role: '',
-  email: '',
-  phonenumber: '',
-  address: '',
-  residence: '',
-  nationality: '',
-  password: '',
-  confirmPassword: '',
+  firstname: "",
+  lastname: "",
+  username: "",
+  dateofbirth: "",
+  gender: "",
+  role: "",
+  email: "",
+  phonenumber: "",
+  address: "",
+  residence: "",
+  nationality: "",
+  password: "",
+  confirmPassword: "",
 };
-
 
 // export const userInitialValues = {
 
@@ -209,34 +201,32 @@ export const userInitialValues = {
 
 // }
 
-
 //parent
 export const parentInitialValues = {
   parent1: parentDefaultValues,
   parent2: parentDefaultValues,
 };
 
-
 //sms
 export const quickMessageInitialValues = (radioValue) => {
   switch (radioValue) {
-    case 'sms':
+    case "sms":
       return {
         init: {
           type: radioValue,
-          phonenumber: '',
-          title: '',
-          message: '',
+          phonenumber: "",
+          title: "",
+          message: "",
         },
         val: onlyPhoneValidationSchema,
       };
-    case 'email':
+    case "email":
       return {
         init: {
           type: radioValue,
-          title: '',
-          email: '',
-          message: '',
+          title: "",
+          email: "",
+          message: "",
         },
         val: onlyEmailValidationSchema,
       };
@@ -245,10 +235,10 @@ export const quickMessageInitialValues = (radioValue) => {
       return {
         init: {
           type: radioValue,
-          title: '',
-          email: '',
-          message: '',
-          phonenumber: '',
+          title: "",
+          email: "",
+          message: "",
+          phonenumber: "",
         },
         val: messageValidationSchema,
       };
@@ -256,6 +246,6 @@ export const quickMessageInitialValues = (radioValue) => {
 };
 
 export const bulkMessageInitialValues = {
-  title: '',
-  message: '',
+  title: "",
+  message: "",
 };

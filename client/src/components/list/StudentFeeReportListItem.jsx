@@ -1,26 +1,20 @@
 import React from "react";
 import List from "@mui/material/List";
 import ListSubheader from "@mui/material/ListSubheader";
-import PropTypes from "prop-types";
 import { ListItemButton, ListItemText } from "@mui/material";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const StudentFeeReportListItem = ({ item }) => {
-  const [searchParams] = useSearchParams();
+  const { studentId } = useParams();
   const navigate = useNavigate();
 
   //View Student Current fee info
-  const handleViewFeesDetailsByTerm = (feeId, level) => {
-    navigate(
-      `/fee/payment/student?level_id=${level}&_id=${searchParams.get(
-        "_id"
-      )}&fid=${feeId}`,
-      {
-        state: {
-          prevPath: "/fee/history",
-        },
-      }
-    );
+  const handleViewFeesDetailsByTerm = (feeId) => {
+    navigate(`/student/view/${studentId}/fees?fid=${feeId}`, {
+      state: {
+        prevPath: `/student/view/${studentId}`,
+      },
+    });
   };
 
   return (
@@ -42,7 +36,7 @@ const StudentFeeReportListItem = ({ item }) => {
           return (
             <ListItemButton
               key={_id}
-              // onClick={() => handleViewFeesDetailsByTerm(id, levelId)}
+              onClick={() => handleViewFeesDetailsByTerm(_id, level)}
             >
               {/* {JSON.stringify(item[1])} */}
               <ListItemText

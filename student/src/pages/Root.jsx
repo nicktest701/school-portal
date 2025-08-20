@@ -7,6 +7,7 @@ import Sidebar from "./layouts/Sidebar";
 import Content from "./layouts/Content";
 import { Box } from "@mui/material";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import HomeLinks from "@/components/HomeLinks";
 
 function Root() {
   return (
@@ -18,9 +19,20 @@ function Root() {
         }}
       >
         <Sidebar />
-        <Box sx={{ flex: 1, bgcolor: "whitesmoke" }}>
+        <Box sx={{ flex: 1, bgcolor: "#ffffff" }}>
           <Header />
           <Content>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                px: 2,
+                bgcolor: "#ffffff",
+              }}
+            >
+              <HomeLinks />
+            </Box>
             <Suspense fallback={<LoadingSpinner />}>
               <Outlet />
             </Suspense>

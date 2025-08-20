@@ -1,4 +1,5 @@
 import { getStudent } from "@/api/studentAPI";
+import CustomTitle from "@/components/custom/CustomTitle";
 import Title from "@/components/custom/Title";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 import StudentProfile from "@/components/tabs/student/StudentProfile";
@@ -28,11 +29,11 @@ const Profile = () => {
   }
 
   return (
-    <Container>
-      <Title
-        title="Personal Information"
-        subtitle="Welcome to your profile page! Here you can view and edit your profile
-          information."
+    <>
+      <CustomTitle
+        title="Profile Details"
+        subtitle="Here you can view and edit your profile information."
+        color="text.main"
       />
 
       {/* Add your profile details here */}
@@ -42,7 +43,7 @@ const Profile = () => {
         student={student?.profile}
         medical={student?.medical}
       />
-    </Container>
+    </>
   );
 };
 

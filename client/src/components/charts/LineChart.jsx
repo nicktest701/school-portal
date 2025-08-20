@@ -46,7 +46,7 @@ const LineChart = ({ labels, values, values2 }) => {
                 // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
             y: {
@@ -55,7 +55,7 @@ const LineChart = ({ labels, values, values2 }) => {
                 // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
           },

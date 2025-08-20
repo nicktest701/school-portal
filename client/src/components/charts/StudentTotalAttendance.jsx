@@ -68,7 +68,7 @@ function StudentTotalAttendance({ data }) {
                     // display: false,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
                 y: {
@@ -76,7 +76,7 @@ function StudentTotalAttendance({ data }) {
                     // display: false,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
               },

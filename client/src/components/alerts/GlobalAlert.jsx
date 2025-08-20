@@ -5,11 +5,15 @@ import Snackbar from "@mui/material/Snackbar";
 import ErrorRounded from "@mui/icons-material/ErrorRounded";
 import CheckCircleRounded from "@mui/icons-material/CheckCircleRounded";
 import Transition from "../animations/Transition";
+import { useMediaQuery, useTheme } from "@mui/material";
 const GlobalAlert = () => {
   const {
     schoolSessionState: { alertData },
     schoolSessionDispatch,
   } = use(SchoolSessionContext);
+
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.up("md"));
 
   const handleClose = () => {
     schoolSessionDispatch({
@@ -23,9 +27,10 @@ const GlobalAlert = () => {
     <Snackbar
       anchorOrigin={{
         horizontal: "right",
-        vertical: "top",
+        vertical: matches ? "top" : "bottom",
       }}
       open={alertData?.message ? true : false}
+      // open={true}
       autoHideDuration={5000}
       onClose={handleClose}
       TransitionComponent={Transition}

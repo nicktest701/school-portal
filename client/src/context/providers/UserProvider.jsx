@@ -64,12 +64,7 @@ const UserProvider = ({ children }) => {
     return () => api.interceptors.request.eject(interceptor);
   }, [accessToken]);
 
-  // const userInfo = useQuery({
-  //   queryKey: ["user", user?.id, accessToken],
-  //   queryFn: () => getUserProfile(user?.id || user?._id),
-  //   initialData: user,
-  //   enabled: !!user?.id && !!accessToken,
-  // });
+ 
 
   const schoolInfo = useQuery({
     queryKey: ["school-info", schoolInformation?.code],

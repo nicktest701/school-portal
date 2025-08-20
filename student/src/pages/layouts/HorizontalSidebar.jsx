@@ -3,7 +3,7 @@ import { Avatar, Drawer, IconButton, Stack } from "@mui/material";
 import {
   AnnouncementRounded,
   Close,
-  DescriptionRounded,
+
   Event,
   SchoolRounded,
 } from "@mui/icons-material";

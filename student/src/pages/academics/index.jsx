@@ -1,5 +1,5 @@
 import Title from "@/components/custom/Title";
-import {  Container,  } from "@mui/material";
+import { Container } from "@mui/material";
 import React from "react";
 import { Outlet } from "react-router-dom";
 import AcademicsNav from "./AcademicsNav";
@@ -10,7 +10,7 @@ const Academics = () => {
     <Container>
       <CustomTitle
         title="Academics"
-        subtitle=" Lorem ipsum dolor, sit amet consectetur adipisicing elit. Hic, autem!"
+        subtitle="Manage your academic records, view results, and track progress."
       />
       <AcademicsNav />
       <Outlet />

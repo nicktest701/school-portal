@@ -7,27 +7,23 @@ import {
   Button,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const StudentAcademicReportListItem = ({ item }) => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  console.log(item);
 
   const handleViewExamsDetailsByTerm = (id) => {
     navigate(`/academics/result/${id}`);
-    // setSearchParams((params) => {
-    //   params.set("report", id);
-    //   return params;
-    // });
   };
   return (
     <>
       <List
         subheader={
           <ListSubheader
-            sx={{ color: "secondary.main", bgcolor: "primary.main" }}
+            sx={{
+              color: "#ffffff",
+              background: "linear-gradient(135deg, #1976d2 0%, #0d47a1 100%)",
+            }}
           >
             {item[0]}
           </ListSubheader>
@@ -38,8 +34,14 @@ const StudentAcademicReportListItem = ({ item }) => {
           return (
             <ListItem
               key={_id}
-              onClick={() => handleViewExamsDetailsByTerm(_id)}
               secondaryAction={<Button>View</Button>}
+              onClick={() => handleViewExamsDetailsByTerm(_id)}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "whitesmoke",
+                  cursor: "pointer",
+                },
+              }}
             >
               <ListItemText
                 primary={levelName}

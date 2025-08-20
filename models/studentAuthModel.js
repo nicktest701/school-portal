@@ -4,12 +4,6 @@ const db = require("../db/DBConnection");
 
 const StudentAuthSchema = new mongoose.Schema(
   {
-    studentId: {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: "Student",
-      required: true,
-      index: true,
-    },
     indexnumber: {
       type: String,
       required: true,

@@ -6,8 +6,8 @@ function Circle({ label, value, color, m }) {
     <Stack justifyContent="space-between" alignItems="center" spacing={3}>
       <Box
         sx={{
-          width: { xs: 100, sm: 120, md: 150 },
-          height: { xs: 100, sm: 120, md: 150 },
+          width: { xs: 100, sm: 120, md: 140 },
+          height: { xs: 100, sm: 120, md: 140 },
           borderRadius: "50%",
           bgcolor: color || "primary.main",
           display: "flex",

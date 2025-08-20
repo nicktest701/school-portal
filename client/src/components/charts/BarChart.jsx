@@ -49,18 +49,18 @@ const LineChart = ({ data }) => {
           scales: {
             x: {
               ticks: {
-                display: false,
+                // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
             y: {
               ticks: {
-                display: false,
+                // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
           },

@@ -9,11 +9,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
 import { EVENTS } from "../../mockup/columns/sessionColumns";
-import { SchoolSessionContext } from "../../context/providers/SchoolSessionProvider";
+
 import {
   alertError,
   alertSuccess,
 } from "../../context/actions/globalAlertActions";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 
 function EventHome() {
   const navigate = useNavigate();
@@ -102,10 +103,7 @@ function EventHome() {
         onAddButtonClicked={() => navigate("new")}
         options={{
           search: true,
-          // exportButton: false,
-          // columnsButton: false,
         }}
-        // onRowClick={handleViewEvent}
         onSelectionChange={handleSelectionChange}
         onDeleteClicked={handleDeleteEvents}
       />

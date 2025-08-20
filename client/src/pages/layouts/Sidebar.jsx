@@ -55,7 +55,7 @@ const Sidebar = () => {
         position: "sticky",
         top: 0,
         pt: 2,
-        height: "100dvh",
+        height: "100svh",
         display: { xs: "none", md: "inline-flex" },
         bgcolor: "primary.main",
         overflow: "hidden",

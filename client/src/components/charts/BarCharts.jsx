@@ -21,8 +21,8 @@ const BarCharts = ({ labels, data }) => {
               label: "No of Students",
               data: data,
               backgroundColor: [palette.primary.main, palette.secondary.main],
-              barThickness: 50,
-              borderRadius: 2,
+              barThickness: 20,
+              borderRadius: 5,
             },
           ],
         }}
@@ -40,7 +40,7 @@ const BarCharts = ({ labels, data }) => {
                 // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
             y: {
@@ -48,13 +48,13 @@ const BarCharts = ({ labels, data }) => {
                 // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
           },
           plugins: {
             legend: {
-              display: false,
+              // display: false,
             },
             datalabels: {
               display: true,

@@ -22,9 +22,10 @@ export default function AccountDropdown() {
   };
   const handleClose = (path) => {
     setAnchorEl(null);
-    if (path) {
-      navigate(path);
-    }
+
+    if (typeof path !== "string") return;
+
+    navigate(path);
   };
   return (
     <>

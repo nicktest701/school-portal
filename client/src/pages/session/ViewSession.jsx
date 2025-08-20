@@ -18,7 +18,6 @@ import Edit from "@mui/icons-material/Edit";
 import CustomFormControl from "@/components/inputs/CustomFormControl";
 
 const ViewSession = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { id } = useParams();
   const queryClient = useQueryClient();
@@ -52,7 +51,7 @@ const ViewSession = () => {
         // img={session_icon}
         color="primary.main"
         showBack={true}
-        to="/session"
+        to={-1}
         right={
           <Button
             startIcon={<Edit />}
@@ -203,8 +202,10 @@ const ViewSession = () => {
                   value={session?.data?.headmaster?.phone}
                 />
               </Stack>
-              <Box border='1px solid var(--primary)' p={2}>
-                <Typography textAlign="center">Headmaster's Signature</Typography>
+              <Box border="1px solid var(--primary)" p={2}>
+                <Typography textAlign="center">
+                  Headmaster's Signature
+                </Typography>
                 <img
                   alt="headmaster's signature"
                   src={session?.data?.headmaster?.signature}

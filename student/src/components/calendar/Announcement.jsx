@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllAnnouncements } from "@/api/announcementAPI";
 import dayjs from "dayjs";
+import EmptyDataContainer from "../EmptyDataContainer";
 
 const Announcement = () => {
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
@@ -74,6 +75,7 @@ const Announcement = () => {
           </Box>
         </>
       ) : (
+        // <EmptyDataContainer />
         <Stack
           sx={{ minHeight: 250 }}
           justifyContent="center"

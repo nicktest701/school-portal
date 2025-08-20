@@ -6,8 +6,6 @@ import { getTodaysBirth } from "../../api/levelAPI";
 import db from "../../assets/images/header/bd1.svg";
 import BirthdaySkeleton from "../skeleton/BirthdaySkeleton";
 const Birthday = () => {
-
-
   const students = useQuery({
     queryKey: ["birthday"],
     queryFn: getTodaysBirth,
@@ -22,12 +20,10 @@ const Birthday = () => {
         subheader={
           <Stack direction="row" spacing={2}>
             <img alt="db" src={db} style={{ width: 30, height: 30 }} />
-            <Typography>Today&lsquo;s Birthday</Typography>
+            <Typography variant="body2">Today&lsquo;s Birthday</Typography>
           </Stack>
         }
       >
-        {students.isPending && <Typography>Loading...</Typography>}
-
         {students?.data?.length !== 0 ? (
           students?.data?.map((student) => (
             <BirthdayItem key={student?._id} {...student} />

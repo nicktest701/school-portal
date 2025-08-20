@@ -30,7 +30,7 @@ const GenderAttendance = ({ data }) => {
                 // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
             y: {
@@ -38,7 +38,7 @@ const GenderAttendance = ({ data }) => {
                 // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
           },

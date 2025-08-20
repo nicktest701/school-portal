@@ -45,16 +45,18 @@ const WeeklyFeePaymentChart = ({ data }) => {
                     // display: false,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
                 y: {
                   beginAtZero: true,
                   ticks: {
-                    // display: false,
+                    callback: function (value) {
+                      return "GHS " + value;
+                    },
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
               },
@@ -73,6 +75,20 @@ const WeeklyFeePaymentChart = ({ data }) => {
                   // backgroundColor: "#000",
                   // borderRadius:'40px',
                   formatter: (value) => currencyFormatter(value), // Display the data value directly
+                },
+                tooltip: {
+                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                  titleColor: "#333",
+                  bodyColor: "#333",
+                  borderColor: "#ddd",
+                  borderWidth: 1,
+                  padding: 12,
+                  displayColors: false,
+                  callbacks: {
+                    label: function (context) {
+                      return `Amount: GHS${context.parsed.y}`;
+                    },
+                  },
                 },
               },
             }}

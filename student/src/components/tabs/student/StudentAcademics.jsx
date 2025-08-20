@@ -2,16 +2,44 @@ import React, { useState } from "react";
 import {
   Box,
   InputAdornment,
+  Skeleton,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import StudentAcademicReportListItem from "@/components/list/StudentAcademicReportListItem";
-// import ViewExamsRecord from "@/pages/examination/ViewExamsRecord";
-import { SearchRounded } from "@mui/icons-material";
+import { SearchRounded, StackedLineChart } from "@mui/icons-material";
+import EmptyDataContainer from "@/components/EmptyDataContainer";
+import { getStudent } from "@/api/studentAPI";
+import { useAuth } from "@/context/AuthProvider";
+import { useQuery } from "@tanstack/react-query";
+import ListItemSkeleton from "@/components/skeleton/ListItemSkeleton";
 
-const StudentAcademics = ({ data }) => {
+const StudentAcademics = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: exams, isPending } = useQuery({
+    queryKey: ["student-profile", user?._id],
+    queryFn: () => getStudent(user?._id),
+    enabled: !!user?._id,
+    initialData: {
+      exams: [],
+    },
+    select: (data) => {
+      return data?.exams;
+    },
+  });
+
+  if (isPending) {
+    return (
+      <ListItemSkeleton
+        title=" Records"
+        subtitle="  View your exam results, grades, and academic progress for each session
+          below."
+      />
+    );
+  }
 
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();
@@ -19,7 +47,7 @@ const StudentAcademics = ({ data }) => {
   };
 
   // Flatten and filter the data
-  const filteredItems = data?.map((items) => {
+  const filteredItems = exams?.map((items) => {
     const selectedItems = items[1].filter((item) =>
       Object.values(item).some((value) =>
         value.toString().toLowerCase().includes(searchTerm)
@@ -30,16 +58,29 @@ const StudentAcademics = ({ data }) => {
   });
 
   return (
-    <Box sx={{ minHeight: "70svh" }}>
-      <Typography
-        variant="h5"
-        color="primary.main"
-        bgcolor="lightgray"
-        p={1}
-        sx={{ fontWeight: "bold", width: "100%" }}
-      >
-         Academic Records
-      </Typography>
+    <Box sx={{ minHeight: "100svh", pt: 2 }}>
+      {/* Header */}
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            fontWeight: 700,
+            color: (theme) => theme.palette.primary.dark,
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <StackedLineChart fontSize="large" />
+          Records
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary" sx={{ mt: 1 }}>
+          View your exam results, grades, and academic progress for each session
+          below.
+        </Typography>
+      </Box>
+
       <TextField
         label="Search for record"
         variant="outlined"
@@ -67,7 +108,7 @@ const StudentAcademics = ({ data }) => {
             })}
           </>
         ) : (
-          <div>No Academic Records Available</div>
+          <EmptyDataContainer message="No Academic Records Available" />
         )}
       </Stack>
       {/* <ViewExamsRecord /> */}

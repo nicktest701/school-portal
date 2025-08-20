@@ -1,90 +1,126 @@
-import { Avatar, Container, Divider, Stack, Typography } from '@mui/material';
-// import { StudentContext } from "../../context/providers/StudentProvider";
-import avatarOne from '../../assets/images/avatars/avatar_10.png';
-import StudentFeesReportView from '../../components/modals/StudentFeesReportView';
-// import { ViewColumn } from "@mui/icons-material";
+import React, {  useRef } from "react";
+import { Avatar, Box, Button, Container } from "@mui/material";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation, useParams } from "react-router-dom";
+import { getStudentFeeHistory } from "@/api/currentFeeAPI";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { useReactToPrint } from "react-to-print";
+import { STUDENT_FEES_HISTORY } from "@/mockup/columns/sessionColumns";
+import { PrintRounded } from "@mui/icons-material";
+import history_icon from "@/assets/images/header/history_ico.svg";
+import CustomTitle from "@/components/custom/CustomTitle";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import PaymentTable from "@/components/tables/PaymentTable";
+import DataSkeleton from "@/components/skeleton/DataSkeleton";
+import { getStudent } from "@/api/studentAPI";
+import FeeReportTemplate from "../fees/layout/FeeReportTemplate";
 
 const StudentFeesReport = () => {
-  // const { studentDispatch } = useContext(StudentContext);
-  // // const [totalFees, setTotalFees] = useState(0);
-  // // const [amountPaid, setAmountPaid] = useState(0);
-  // // const [outstandingFees, setOutstandingFees] = useState(0);
-  // const [selectedFees, setSelectedFees] = useState([]);
+  const queryClient = useQueryClient();
+  const { state } = useLocation();
+  const { studentId } = useParams();
+  const componentRef = useRef();
 
-  // useEffect(() => {
-  // const totalFeesPaid = _.sumBy(studentFeesReportData, "amountPaid");
-  // }, []);
+  const studentFee = useQuery({
+    queryKey: ["student-fee-history", studentId],
+    queryFn: () => getStudentFeeHistory(studentId),
+    enabled: !!studentId,
+  });
 
-  // const handleOnRowClick = (rowData, rowState) => {
-  //    const selectedItem = studentFeesReportData[rowState.dataIndex];
-  //   if (!_.isEqualWith(selectedFees, selectedItem, _.isEqual)) {
-  //     const newFeesList = [];
-  //     newFeesList.push(selectedItem);
-  //     setSelectedFees(newFeesList);
-  //   }
-  // };
+  const { data: student, isPending } = useQuery({
+    queryKey: ["student-profile", studentId],
+    queryFn: () => getStudent(studentId),
+    enabled: !!studentId,
+    initialData: {
+      profile: queryClient
+        .getQueryData(["all-students"])
+        ?.find((student) => student?._id === studentId),
+      fees: [],
+      exams: [],
+      parents: [],
+    },
+    select: (data) => ({
+      ...data.profile,
+      fullName: data.profile?.fullName || "",
+    }),
+  });
+
+  const reactToPrintFn = useReactToPrint({
+    documentTitle: student?.fullName,
+    contentRef: componentRef,
+  });
+
+  if (isPending || studentFee.isPending) {
+    return <DataSkeleton />;
+  }
 
   return (
-    <Container sx={{ paddingY: 2 }}>
-      {/* <Typography>{selectedFees?.amountPaid}</Typography> */}
-      <div id='printPage'>
-        <Stack justifyContent='flex-end' direction='row'>
-          <Typography variant='h3'>Student Fees Report</Typography>
-        </Stack>
-        <Divider />
+    <Container maxWidth="xl">
+      {/* <Back to={state?.prevPath} color="primary.main" /> */}
+      <CustomTitle
+        title={student?.fullName || ""}
+        // subtitle={student?.levelType}
+        color="primary.main"
+        icon={
+          <Avatar srcSet={student?.profile} sx={{ width: 60, height: 60 }} />
+        }
+        showBack={true}
+        to={state?.prevPath}
+      />
 
-        <Stack paddingY={2}>
-          <Avatar src={avatarOne} sx={{ width: 80, height: 80 }} />
-          <Typography variant='h5'>Nana Akwasi</Typography>
-          <Typography variant='body2'>Class 6</Typography>
-        </Stack>
-        <Stack justifyContent='flex-end' direction='row'>
-          <Typography variant='h5'>Total Fees Summary</Typography>
-        </Stack>
-        <Divider />
-
-        <Stack>
-          <Stack spacing={1} alignItems='flex-end' paddingY={2}>
-            <Typography variant='body1'>Total Fees- $292.29</Typography>
-            <Typography variant='body1'> Fees Paid- $22.29</Typography>
-            <Typography variant='body1'> Outstanding- $202.29</Typography>
-            {/* <Typography variant="body1">
-              Status <Chip label="Paid" size="medium" color="success" />
-            </Typography> */}
-          </Stack>
-        </Stack>
+      <Box>
+        <>
+          <CustomizedMaterialTable
+            title="Fees History"
+            subtitle="Showing details of student fees transactions"
+            search
+            icon={history_icon}
+            addButtonImg={history_icon}
+            addButtonMessage="No Fees History Found"
+            isPending={studentFee.isPending}
+            exportFileName={student?.fullName}
+            columns={STUDENT_FEES_HISTORY}
+            data={studentFee?.data}
+            actions={[]}
+            handleRefresh={studentFee.refetch}
+            otherButtons={
+              <Button
+                startIcon={<PrintRounded />}
+                variant="contained"
+                onClick={() => reactToPrintFn()}
+              >
+                Print Report
+              </Button>
+            }
+            options={{
+              paging: false,
+              selection: false,
+              columnsButton: false,
+            }}
+            style={{
+              border: "none",
+            }}
+            detailPanel={(rowData) => (
+              <PaymentTable payments={rowData?.payment} />
+            )}
+          />
+        </>
+      </Box>
+      <div ref={componentRef} className="print-container">
+        {/* <FeeReport student={studentFee?.data} /> */}
+        {studentFee?.data?.map((data, index) => {
+          return (
+            <FeeReportTemplate
+              key={index}
+              feeData={data}
+              student={student?.fullName}
+            />
+          );
+        })}
       </div>
-
-      {/* <CustomizedTable
-        title="Fees Report-Term 3"
-        columns={[
-          ...studentFeesReportColumns,
-          {
-            name: "option",
-            label: "option",
-            options: {
-              empty: true,
-              customBodyRenderLite: (dataIndex) => (
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => handleViewSingleFeesReport(dataIndex)}
-                >
-                  View Fees Report
-                </Button>
-              ),
-            },
-          },
-        ]}
-        // data={studentFeesReportData}
-        options={{
-          // onRowClick: handleOnRowClick,
-          onRowSelectionChange: handleRowChange,
-          customToolbarSelect: handleToolbarSelect,
-        }}
-      /> */}
-
-      <StudentFeesReportView />
+      {studentFee.isPending && (
+        <LoadingSpinner value="Loading Fee History..." />
+      )}
     </Container>
   );
 };

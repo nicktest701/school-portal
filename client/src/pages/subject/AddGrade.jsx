@@ -81,7 +81,7 @@ function AddGrade({ open, setOpen }) {
     });
   };
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -91,9 +91,27 @@ function AddGrade({ open, setOpen }) {
           const workbook = XLSX.read(binaryStr, { type: "binary" });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          const jsonData = XLSX.utils.sheet_to_json(sheet, {
+            header: 1,
+            defval: "", // Default value for empty cells
+            blankrows: false, // Skip rows that are completely empty
+          });
 
-          const headers = jsonData[0].map((header) => _.camelCase(header));
+          if (jsonData.length === 0) {
+            schoolSessionDispatch(alertError("No data found in the file"));
+            return;
+          }
+
+          // Function to filter out empty or undefined rows
+
+          const modifiedData = jsonData.filter((row) =>
+            Object.values(row).some(
+              (value) => value !== undefined && value !== ""
+            )
+          );
+          // Convert the first row to headers and the rest to rows
+
+          const headers = modifiedData[0].map((header) => _.camelCase(header));
           const rows = jsonData.slice(1);
 
           const formattedData = rows.map((row) => {
@@ -104,7 +122,6 @@ function AddGrade({ open, setOpen }) {
             rowData.id = uuid();
             return rowData;
           });
-
           setGrades(formattedData);
         }
       };

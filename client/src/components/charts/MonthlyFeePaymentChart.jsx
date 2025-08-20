@@ -8,7 +8,7 @@ import CardHeader from "@mui/material/CardHeader";
 import { currencyFormatter } from "@/config/currencyFormatter";
 
 const MonthlyFeePaymentChart = ({ data }) => {
-  const { palette, breakpoints } = useTheme();
+  const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
   return (
     <Card elevation={1}>
@@ -45,15 +45,17 @@ const MonthlyFeePaymentChart = ({ data }) => {
                     // display: false,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
                 y: {
                   ticks: {
-                    // display: false,
+                    callback: function (value) {
+                      return "GHS " + value;
+                    },
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
               },
@@ -61,6 +63,7 @@ const MonthlyFeePaymentChart = ({ data }) => {
                 legend: {
                   display: false,
                 },
+                
                 datalabels: {
                   display: true,
                   color: "#fff",

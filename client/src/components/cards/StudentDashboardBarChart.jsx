@@ -11,13 +11,12 @@ import { UserContext } from "@/context/providers/UserProvider";
 
 const StudentDashboardBarChart = ({ data }) => {
   const { session } = useContext(UserContext);
-  const {  breakpoints } = useTheme();
+  const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
 
   const [labels, setLabels] = useState([]);
   const [dataset, setDataset] = useState([]);
 
- 
   useEffect(() => {
     if (data) {
       setLabels(_.map(data, "term"));
@@ -53,8 +52,8 @@ const StudentDashboardBarChart = ({ data }) => {
                   label: "No. of Students",
                   data: dataset,
                   backgroundColor: [" rgb(1, 46, 84)", "rgb(255, 192, 159)"],
-                  barThickness: matches ? 10 : 30,
-                  borderRadius: 2,
+                  barThickness: matches ? 10 : 20,
+                  borderRadius: 5,
                 },
               ],
             }}
@@ -68,24 +67,27 @@ const StudentDashboardBarChart = ({ data }) => {
               scales: {
                 x: {
                   ticks: {
-                    display: true,
+                    // display: true,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
                 y: {
                   ticks: {
-                    display: false,
+                    // maxTicksLimit:50
+                    stepSize: 1,
+                    // maxTicksLimit: 100,
+                    precision: 1,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
               },
               plugins: {
                 legend: {
-                  // display: false,
+                  // display: true,
                 },
                 datalabels: {
                   display: true,

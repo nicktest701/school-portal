@@ -204,3 +204,19 @@ export const deleteExams = async (id) => {
     throw error.response.data;
   }
 };
+
+//Get all level exams details
+export const getAcademicDashboardInfo = async (id) => {
+  try {
+    const res = await api({
+      method: "GET",
+      url: `/examinations/academic/${id}`,
+    });
+
+
+ 
+    return res.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};

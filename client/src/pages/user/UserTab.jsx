@@ -10,8 +10,9 @@ function UserTab() {
 
   const users = useQuery({
     queryKey: ["users"],
-    queryFn: () => getAllUsers(),
+    queryFn: getAllUsers,
     // initialData: [],
+    refetchOnMount: false,
   });
 
   const handleAddNewUser = () => {

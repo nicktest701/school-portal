@@ -51,8 +51,8 @@ const StudentDashboardLineChart = ({ data, academicYear }) => {
                   data: dataset,
                   backgroundColor: ["rgb(255, 192, 159)", " rgb(1, 46, 84)"],
                   // backgroundColor: generateRGBAColorsBetween(),
-                  barThickness: matches ? 10 : 30,
-                  borderRadius: 2,
+                  barThickness: matches ? 10 : 20,
+                  borderRadius: 5,
                 },
               ],
             }}
@@ -69,16 +69,19 @@ const StudentDashboardLineChart = ({ data, academicYear }) => {
                     // display: false,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
                 y: {
                   ticks: {
-                    display: false,
+                    // display: false,
+                    
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
+                  title: "Number of Students",
+
                 },
               },
               plugins: {

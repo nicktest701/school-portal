@@ -9,6 +9,7 @@ import {
 import { Controller } from "react-hook-form";
 import DateInputPicker from "@/components/inputs/DateInputPicker";
 import CustomFormControl from "@/components/inputs/CustomFormControl";
+import Input from "@/components/inputs/Input";
 
 const Core = ({ watch, control, errors }) => {
   const academicYear = watch("core.academicYear");
@@ -29,25 +30,17 @@ const Core = ({ watch, control, errors }) => {
       </Typography>
 
       <Stack spacing={2} py={2}>
-        <Controller
+        <Input
           name="core.name"
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              size="small"
-              label="Session Name"
-              fullWidth
-              error={!!errors.core?.name}
-              helperText={errors.core?.name?.message}
-              required
-              slotProps={{
-                input: {
-                  readOnly: true,
-                },
-              }}
-            />
-          )}
+          size="small"
+          label="Session Name"
+          fullWidth
+          slotProps={{
+            input: {
+              readOnly: true,
+            },
+          }}
         />
 
         <FormControl required>

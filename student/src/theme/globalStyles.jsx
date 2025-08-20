@@ -17,7 +17,7 @@ export default function GlobalStyles() {
           width: "100%",
           height: "100%",
           WebkitOverflowScrolling: "touch",
-           fontSize: "14px",
+          fontSize: "14px",
         },
         body: {
           margin: 0,
@@ -29,19 +29,6 @@ export default function GlobalStyles() {
           width: "100%",
           height: "100%",
         },
-        input: {
-          "&[type=number]": {
-            MozAppearance: "textfield",
-            "&::-webkit-outer-spin-button": {
-              margin: 0,
-              WebkitAppearance: "none",
-            },
-            "&::-webkit-inner-spin-button": {
-              margin: 0,
-              WebkitAppearance: "none",
-            },
-          },
-        },
         img: {
           display: "block",
           maxWidth: "100%",
@@ -50,11 +37,6 @@ export default function GlobalStyles() {
           margin: 0,
           padding: 0,
         },
-        // tr: {
-        //   "&:hover": {
-        //     backgroundColor: "red",
-        //   },
-        // },
       }}
     />
   );

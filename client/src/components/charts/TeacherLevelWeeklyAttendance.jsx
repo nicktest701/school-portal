@@ -26,7 +26,7 @@ const TeacherLevelWeeklyAttendance = ({ data }) => {
                 // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
             y: {
@@ -34,7 +34,7 @@ const TeacherLevelWeeklyAttendance = ({ data }) => {
                 // display: false,
               },
               grid: {
-                display: false,
+                // display: false,
               },
             },
           },

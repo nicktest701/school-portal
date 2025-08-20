@@ -35,6 +35,7 @@ import NotesBoard from "./pages/notes";
 import AcademicsDashboard from "./pages/academics/academic-dashboard";
 import FeesDashboard from "./pages/fees/FeesDashboard";
 import Payments from "./pages/fees/payments";
+import Report from "./pages/fees/Report";
 
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
@@ -78,7 +79,7 @@ function App() {
           children: [
             { index: true, Component: FeesDashboard },
             { path: "payment", Component: Payments },
-            { path: "payment/:id", Component: Payment },
+            { path: "payment/:id", Component: Report },
           ],
         },
         { path: "events", Component: Events },

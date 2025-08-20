@@ -1,7 +1,13 @@
 import React, { use } from "react";
 import _ from "lodash";
-import { Refresh } from "@mui/icons-material";
-import { Container, ListItemText, IconButton, Box } from "@mui/material";
+import { DeleteOutlineRounded, Refresh } from "@mui/icons-material";
+import {
+  Container,
+  ListItemText,
+  IconButton,
+  Box,
+  Button,
+} from "@mui/material";
 import {
   Table,
   TableBody,
@@ -13,17 +19,22 @@ import {
 } from "@mui/material";
 import { PropTypes } from "prop-types";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getAttendanceHistory } from "@/api/attendanceAPI";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteAttendance, getAttendanceHistory } from "@/api/attendanceAPI";
 import moment from "moment";
 import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { UserContext } from "@/context/providers/UserProvider";
 import DataSkeleton from "@/components/skeleton/DataSkeleton";
+import Swal from "sweetalert2";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
 function AttendanceHistory() {
   const { user, session } = use(UserContext);
+  const { schoolSessionDispatch } = use(SchoolSessionContext);
+  const queryClient = useQueryClient();
   const { id } = useParams();
 
   const attendanceHistory = useQuery({
@@ -37,9 +48,36 @@ function AttendanceHistory() {
     enabled: !!id,
   });
 
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: deleteAttendance,
+  });
+
+  const handleDeleteAttendance = (id) => {
+    Swal.fire({
+      title: "Removing Attendance",
+      text: `You are about to remove the selected attendance.Changes cannot be undone.`,
+      showCancelButton: true,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        mutateAsync(id, {
+          onSettled: () => {
+            queryClient.invalidateQueries(["attendance-history", id]);
+          },
+          onSuccess: (data) => {
+            schoolSessionDispatch(alertSuccess(data));
+          },
+          onError: (error) => {
+            schoolSessionDispatch(alertError(error));
+          },
+        });
+      }
+    });
+  };
+
   if (attendanceHistory.isPending) {
     return <DataSkeleton />;
   }
+
   return (
     <Container>
       {user?.role === "administrator" && (
@@ -88,6 +126,8 @@ function AttendanceHistory() {
                 <TableCell>Date</TableCell>
                 <TableCell>Present</TableCell>
                 <TableCell>Absent</TableCell>
+                <TableCell>Marked By</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -105,6 +145,23 @@ function AttendanceHistory() {
                     </TableCell>
                     <TableCell>{attendance.present}</TableCell>
                     <TableCell>{attendance.absent}</TableCell>
+                    <TableCell>
+                      {attendance.createdBy?.id === user.id
+                        ? "You"
+                        : attendance.createdBy?.name}
+                    </TableCell>
+                    <TableCell>
+                      {attendance.createdBy?.id === user.id && (
+                        <IconButton
+                          color="error"
+                          onClick={() =>
+                            handleDeleteAttendance(attendance?._id)
+                          }
+                        >
+                          <DeleteOutlineRounded />
+                        </IconButton>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
 
@@ -117,6 +174,8 @@ function AttendanceHistory() {
                 <TableCell>
                   {_.sumBy(attendanceHistory.data, "absent")}
                 </TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -125,6 +184,7 @@ function AttendanceHistory() {
       {attendanceHistory.isPending && (
         <LoadingSpinner value="Loading Attendance History" />
       )}
+      {isPending && <LoadingSpinner value="Removing.Please Wait..." />}
     </Container>
   );
 }

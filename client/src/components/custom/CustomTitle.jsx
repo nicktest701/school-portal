@@ -3,8 +3,6 @@ import React from "react";
 import { ArrowBackRounded } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-
-
 function CustomTitle({
   title,
   titleVariant,
@@ -17,7 +15,6 @@ function CustomTitle({
   to,
   right,
 }) {
-
   const navigate = useNavigate();
   const goBack = () => navigate(to || -1);
 
@@ -33,22 +30,11 @@ function CustomTitle({
           my: 2,
           px: 2,
           bgcolor: bgColor || "#fff",
-          borderRadius: '12px',
+          borderRadius: "12px",
         }}
         gap={2}
         width="100%"
       >
-        {img ? (
-          <img
-            src={img}
-            style={{
-              width: "40px",
-              height: "40px",
-            }}
-          />
-        ) : (
-          icon
-        )}
         <Stack
           flex="1"
           // flexDirection={{ xs: "column-reverse" ,md:'column'}}
@@ -74,6 +60,17 @@ function CustomTitle({
                 </IconButton>
               </Box>
             )}
+            {img ? (
+              <img
+                src={img}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                }}
+              />
+            ) : (
+              icon
+            )}
             <Typography
               flex={1}
               color="secondary.main"
@@ -83,6 +80,7 @@ function CustomTitle({
               {title}
             </Typography>
           </Stack>
+
           <Typography textAlign={{ xs: "center", md: "left" }} variant="body2">
             {subtitle}
           </Typography>

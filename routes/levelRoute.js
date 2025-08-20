@@ -95,7 +95,6 @@ router.get(
       session: new ObjectId(session),
       term: new ObjectId(term),
     }).countDocuments();
-  
 
     if (_.isEmpty(modifiedLevels)) {
       return res.status(200).json({
@@ -129,7 +128,7 @@ router.get(
             : {
                 _id: fee?._id,
                 levelId: _id,
-                levelName: `${level?.name}${level?.type}`,
+                levelName: `${level?.name}${level?.type || ""}`,
                 amount: fee?.amount || 0,
                 fees: _.sumBy(fee?.amount, (fees) => fees.amount),
               },
@@ -158,7 +157,7 @@ router.get(
           ...student._doc,
           fullName: student.fullName,
           levelId: _id,
-          levelName: `${level?.name}${level.type}`,
+          levelName: `${level?.name}${level.type || ""}`,
         };
       });
     });
@@ -761,7 +760,7 @@ router.get(
     const month = targetDate.getMonth();
     const day = targetDate.getDate();
 
-    return res.status(200).json([]);
+    // return res.status(200).json([]);
 
     const students = await Student.find({
       $expr: {

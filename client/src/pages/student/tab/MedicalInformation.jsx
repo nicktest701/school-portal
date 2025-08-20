@@ -4,8 +4,8 @@ import Typography from "@mui/material/Typography";
 import CustomRadioInput from "@/components/items/CustomRadioInput";
 import Input from "@/components/inputs/Input";
 
-const MedicalInformation = ({ control, errors, watch, setValue }) => {
-  console.log(errors);
+const MedicalInformation = ({ control }) => {
+
   return (
     <Stack padding={2} spacing={1}>
       <Typography variant="body2" color="primary.main">

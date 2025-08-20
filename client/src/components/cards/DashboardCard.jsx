@@ -12,7 +12,6 @@ const DashboardCard = ({ title, value, icon }) => {
         borderRadius: 2,
         boxShadow: "20px 20px 60px #d9d9d9",
         // boxShadow: '20px 20px 60px #d9d9d9,-20px -20px 60px #ffffff',
-        py: 2,
       }}
       elevation={1}
     >

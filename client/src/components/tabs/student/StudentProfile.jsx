@@ -28,6 +28,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import ViewPreviousReport from "@/pages/student/tab/ViewPreviousReport";
 import ProfileItem from "@/components/typo/ProfileItem";
 import ChipItem from "@/components/list/ChipItem";
+import { IconButton, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 const StudentProfile = ({ levelName, student, parents }) => {
   const { type } = useParams();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -35,6 +36,8 @@ const StudentProfile = ({ levelName, student, parents }) => {
   const queryClient = useQueryClient();
   const [openViewParent, setOpenViewParent] = useState(false);
   const [openViewPreviousReport, setOpenViewPreviousReport] = useState(false);
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.up("md"));
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -104,24 +107,49 @@ const StudentProfile = ({ levelName, student, parents }) => {
           direction="row"
           justifyContent="flex-end"
           alignItems="center"
-          columnGap={2}
           pt={2}
+          columnGap={2}
         >
-          <Button startIcon={<EditRounded />} onClick={openStudentEdit}>
-            Edit
-          </Button>
-          <Button
-            startIcon={<Person />}
-            onClick={() => setOpenViewParent(true)}
-          >
-            Parent Info
-          </Button>
-          <Button
-            startIcon={<MedicalInformationRounded />}
-            onClick={handleOpenMedicalHistory}
-          >
-            Medical Info
-          </Button>
+          {matches ? (
+            <Button startIcon={<EditRounded />} onClick={openStudentEdit}>
+              Edit
+            </Button>
+          ) : (
+            <Tooltip title="Edit Profile">
+              <IconButton>
+                <EditRounded />
+              </IconButton>
+            </Tooltip>
+          )}
+
+          {matches ? (
+            <Button
+              startIcon={<Person />}
+              onClick={() => setOpenViewParent(true)}
+            >
+              Parent Info
+            </Button>
+          ) : (
+            <Tooltip title="View Parent Info">
+              <IconButton>
+                <Person />
+              </IconButton>
+            </Tooltip>
+          )}
+          {matches ? (
+            <Button
+              startIcon={<MedicalInformationRounded />}
+              onClick={handleOpenMedicalHistory}
+            >
+              Medical History
+            </Button>
+          ) : (
+            <Tooltip title="Medical History">
+              <IconButton>
+                <MedicalInformationRounded />
+              </IconButton>
+            </Tooltip>
+          )}
         </Stack>
 
         <ChipItem divider={true} label="Basic Info" icon={<PersonRounded />} />

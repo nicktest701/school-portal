@@ -30,7 +30,7 @@ const PaymentTable = ({ payments = [] }) => {
               <TableCell>
                 {format(
                   new Date(payment?.date || payment?.createdAt),
-                  "do MMM, yyyy"
+                  "do MMM, yyyy HH:mm a"
                 )}
               </TableCell>
               <TableCell>{currencyFormatter(payment?.paid)}</TableCell>
@@ -39,7 +39,7 @@ const PaymentTable = ({ payments = [] }) => {
               </TableCell>
               <TableCell>{currencyFormatter(payment?.balance || 0)}</TableCell>
               <TableCell sx={{ textTransform: "capitalize" }}>
-                {payment?.issuer}
+                {payment?.issuerName}
               </TableCell>
             </TableRow>
           ))}

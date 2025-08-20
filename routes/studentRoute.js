@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { randomUUID } = require("crypto");
 const asyncHandler = require("express-async-handler");
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const {
   Types: { ObjectId },
 } = require("mongoose");
@@ -15,6 +16,7 @@ const Examination = require("../models/examinationModel");
 const CurrentFee = require("../models/currentFeeModel");
 const Fee = require("../models/feeModel");
 const { uploadFile, uploadMultipleImages } = require("../config/uploadFile");
+const StudentAuth = require("../models/studentAuthModel");
 
 const LEVEL_OPTIONS = [
   "Day Care",
@@ -252,13 +254,12 @@ router.get(
   })
 );
 
+
 //@GET student by student id
 router.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-
-    console.log(req.user)
 
     //Personal Info
     const student = await Student.findById(id);
@@ -267,11 +268,11 @@ router.get(
       return res.status(400).json("No Such Student exists");
     }
     //School Fees
-    const fees = await CurrentFee.find({
+    const currentFees = await CurrentFee.find({
       student: id,
     })
       .sort({ createdAt: -1 })
-      .populate("student")
+      // .populate("student")
       .populate({
         path: "term",
         select: ["term", "academicYear"],
@@ -282,20 +283,28 @@ router.get(
       })
       .select("payment");
 
-    const modifiedFees = fees.map((fee) => {
+    const modifiedFees = currentFees.map(async (currentFee) => {
+      const fee = await Fee.findOne({
+        level: currentFee?.level?._id,
+        term: currentFee?.term?._id,
+      });
+
       return {
-        _id: fee?._id,
-        academicYear: fee?.term?.academicYear,
-        term: fee?.term?.term,
-        level: fee?.level?.levelName,
-        payment: fee?.payment,
-        paid: _.sumBy(fee?.payment, "paid"),
+        _id: currentFee?._id,
+        academicYear: currentFee?.term?.academicYear,
+        term: currentFee?.term?.term,
+        levelId: currentFee?.level?._id,
+        level: currentFee?.level?.levelName,
+        fee: _.sumBy(fee?.amount, "amount"),
+        payment: currentFee?.payment,
+        paid: _.sumBy(currentFee?.payment, "paid"),
       };
     });
 
+    const allFees = await Promise.all(modifiedFees);
     //Group selected terms in ascending order
     const groupfeesByTerms = _.groupBy(
-      _.sortBy(modifiedFees, "term"),
+      _.sortBy(allFees, "term"),
       "academicYear"
     );
     const feesDetails = Object.entries(groupfeesByTerms);
@@ -386,6 +395,25 @@ router.post(
     if (_.isEmpty(student)) {
       return res.status(404).json("Error adding student info.Try again later");
     }
+    const hashedPassword = await bcrypt.hash(
+      personal?.phonenumber || personal?.indexnumber,
+      10
+    );
+
+    //Save student auth
+    const studentAuth = new StudentAuth({
+      _id: student._id,
+      id: student._id,
+      indexnumber: personal?.indexnumber,
+      email: personal?.email,
+      phonenumber: personal?.phonenumber,
+      password: hashedPassword,
+    });
+    const savedStudentAuth = await studentAuth.save();
+
+    if (_.isEmpty(savedStudentAuth)) {
+      return res.status(404).json("Error adding student info.Try again later");
+    }
 
     //Add Student to current class
     const level = await Level.findByIdAndUpdate(
@@ -452,6 +480,22 @@ router.post(
         };
       });
       const newStudents = await Student.create(modifiedStudents);
+
+      const studentAuths = newStudents.map((student) => {
+        const hashedPassword = bcrypt.hashSync(
+          student?.phonenumber || student?.indexnumber,
+          10
+        );
+        return {
+          _id: student._id,
+          id: student._id,
+          email: student?.email,
+          phonenumber: student?.phonenumber,
+          password: hashedPassword,
+        };
+      });
+
+      await StudentAuth.insertMany(studentAuths);
 
       if (_.isEmpty(newStudents)) {
         return res

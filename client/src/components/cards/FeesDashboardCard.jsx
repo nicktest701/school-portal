@@ -10,7 +10,7 @@ const FeesDashboardCard = ({ text, value }) => {
       sx={{
         backgroundColor: "#fff",
         px: 2,
-        py: 4,
+        py: 2,
         borderRadius: "8px",
         boxShadow: "0px 1px 20px 10px rgba(84,84,84,0.10)",
       }}

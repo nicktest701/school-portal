@@ -21,7 +21,7 @@ function CustomizedMaterialTable({
   columns,
   data,
   options,
-  actions,
+  actions = [],
   onRowClick,
   onDeleteClicked,
   onSelectionChange,
@@ -187,13 +187,15 @@ function CustomizedMaterialTable({
                     </Stack>
                   </Box>
                   <Divider />
-                  <Box
-                    sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}
-                  >
-                    {autoCompleteComponent}
-                  </Box>
+                  {autoCompleteComponent && (
+                    <Box
+                      sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}
+                    >
+                      {autoCompleteComponent}
+                    </Box>
+                  )}
 
-                  <div style={{ paddingBottom: "16px" }}>
+                  <div style={{ paddingBottom: "12px" }}>
                     <MTableToolbar {...props} className="hide-on-print" />
                   </div>
                 </>

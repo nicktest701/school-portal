@@ -15,11 +15,11 @@ const AttendanceSchema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Level",
     },
-    date: String,
+    date: Date,
     status: Array,
     active: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     createdBy: {
       type: mongoose.SchemaTypes.ObjectId,

@@ -1,17 +1,11 @@
 import React from "react";
 import {
-  TextField,
   Typography,
   MenuItem,
   FormLabel,
   Stack,
   FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  FormHelperText,
 } from "@mui/material";
-import { Controller } from "react-hook-form";
 import DateInputPicker from "@/components/inputs/DateInputPicker";
 import SelectInput from "@/components/inputs/SelectInput";
 import { SCHOOL_TERMS } from "@/mockup/columns/sessionColumns";
@@ -46,14 +40,6 @@ const Core = ({ watch, control, errors }) => {
           size="small"
           label="Session Name"
           fullWidth
-          // render={({ field }) => (
-          //   <TextField
-          //     {...field}
-          //     error={!!errors.core?.name}
-          //     helperText={errors.core?.name?.message}
-          //     required
-          //   />
-          // )}
         />
 
         <FormControl required>
@@ -112,6 +98,11 @@ const Core = ({ watch, control, errors }) => {
         <CustomRadioInput
           name="core.isPromotionTerm"
           title="Promotion Term / Semester?"
+          control={control}
+        />
+        <CustomRadioInput
+          name="core.active"
+          title="Set as Active Session?"
           control={control}
         />
       </Stack>

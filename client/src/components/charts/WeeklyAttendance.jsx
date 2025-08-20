@@ -46,7 +46,7 @@ function WeeklyAttendance({ data }) {
                     // display: false,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
                 y: {
@@ -54,7 +54,7 @@ function WeeklyAttendance({ data }) {
                     // display: false,
                   },
                   grid: {
-                    display: false,
+                    // display: false,
                   },
                 },
               },

@@ -1,26 +1,21 @@
 import React from "react";
 import List from "@mui/material/List";
 import ListSubheader from "@mui/material/ListSubheader";
-import PropTypes from "prop-types";
-import { ListItemButton, ListItemText } from "@mui/material";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { Button, ListItem, ListItemText } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthProvider";
 
 const StudentFeeReportListItem = ({ item }) => {
-  const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   //View Student Current fee info
-  const handleViewFeesDetailsByTerm = (feeId, level) => {
-    navigate(
-      `/fee/payment/student?level_id=${level}&_id=${searchParams.get(
-        "_id"
-      )}&fid=${feeId}`,
-      {
-        state: {
-          prevPath: "/fee/history",
-        },
-      }
-    );
+  const handleViewFees = () => {
+    navigate(`/fees/payment/${user?._id}`, {
+      state: {
+        prevPath: "/fees/payment",
+      },
+    });
   };
 
   return (
@@ -29,8 +24,8 @@ const StudentFeeReportListItem = ({ item }) => {
         subheader={
           <ListSubheader
             sx={{
-              bgcolor: "primary.main",
-              color: "secondary.main",
+              color: "#ffffff",
+              background: "linear-gradient(135deg, #1976d2 0%, #0d47a1 100%)",
             }}
           >
             {item[0]}
@@ -40,11 +35,17 @@ const StudentFeeReportListItem = ({ item }) => {
       >
         {item[1]?.map(({ term, level, _id }) => {
           return (
-            <ListItemButton
+            <ListItem
               key={_id}
-              // onClick={() => handleViewFeesDetailsByTerm(id, levelId)}
+              secondaryAction={<Button>View</Button>}
+              onClick={handleViewFees}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "whitesmoke",
+                  cursor:'pointer'
+                },
+              }}
             >
-              {/* {JSON.stringify(item[1])} */}
               <ListItemText
                 primary={level}
                 secondary={term}
@@ -56,12 +57,10 @@ const StudentFeeReportListItem = ({ item }) => {
                   },
                 }}
               />
-            </ListItemButton>
+            </ListItem>
           );
         })}
       </List>
-
-      {/* <StudentFeesHistory open={openFeesHistory} setOpen={setOpenFeesHistory} /> */}
     </>
   );
 };

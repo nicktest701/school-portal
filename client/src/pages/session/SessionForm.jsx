@@ -176,8 +176,9 @@ function SessionForm() {
       backdrop: false,
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
-        navigate("/session");
         localStorage.removeItem("@session-data");
+        localStorage.removeItem("@session-state");
+        navigate("/session");
       }
     });
   };
