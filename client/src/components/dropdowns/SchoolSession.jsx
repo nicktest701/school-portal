@@ -1,22 +1,17 @@
 import React, { useContext, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { useNavigate, Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTerms } from "@/api/termAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import { UserContext } from "@/context/providers/UserProvider";
+import { useAuth } from "@/hooks/useAuth";
 
 const SchoolSessionDropdown = () => {
-  const {pathname}=useLocation()
+  const { pathname } = useLocation();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const {
-    userDispatch,
-    user,
-    session: currentSession,
-  } = useContext(UserContext);
- 
+  const { userDispatch, user, session: currentSession } = useAuth();
 
   const [sessionError, setSessionError] = useState("");
   const [session, setSession] = useState({
@@ -26,8 +21,11 @@ const SchoolSessionDropdown = () => {
   });
 
   const sessions = useQuery({
-    queryKey: ["terms"],
+    queryKey: ["terms", !!user?._id],
     queryFn: () => getAllTerms(),
+    enabled: !!user?._id,
+    refetchOnMount: false,
+    initialData: () => [],
     select: (sessions) => {
       if (sessions?.length > 0) {
         const modifieldSessions = sessions?.map(({ core, ...rest }) => {
@@ -59,26 +57,24 @@ const SchoolSessionDropdown = () => {
       // customClass: {
       //   container: "my-swal",
       // },
-    })
-      .then(({ isConfirmed }) => {
-        if (isConfirmed) {
-          setSessionError("");
-          if (value?.termId === "") {
-            setSessionError("Session is Required*");
-            return;
-          }
-          schoolSessionDispatch({
-            type: "setCurrentSession",
-            payload: value,
-          });
-          localStorage.setItem("@school_session", JSON.stringify(value));
-          userDispatch({ type: "setSession", payload: value });
-
-          setSession(value);
-          window.location.href = pathname||"/";
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        setSessionError("");
+        if (value?.termId === "") {
+          setSessionError("Session is Required*");
+          return;
         }
-      })
-      
+        schoolSessionDispatch({
+          type: "setCurrentSession",
+          payload: value,
+        });
+        localStorage.setItem("@school_session", JSON.stringify(value));
+        userDispatch({ type: "setSession", payload: value });
+
+        setSession(value);
+        window.location.href = pathname || "/";
+      }
+    });
   };
 
   return (

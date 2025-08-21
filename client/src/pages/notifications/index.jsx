@@ -16,18 +16,21 @@ import {
   alertError,
   alertSuccess,
 } from "../../context/actions/globalAlertActions";
+import { useAuth } from "@/hooks/useAuth";
 
 function Notifications() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [selectedNotifications, setSelectedNotifications] = useState([]);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const queryClient = useQueryClient();
-  
+
   const notifications = useQuery({
-    queryKey: ["notifications"],
+    queryKey: ["notifications", user?._id],
     queryFn: () => getAllNotifications(),
     initialData: [],
+    enabled: false,
   });
 
   const handleViewNotification = (id) => {

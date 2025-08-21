@@ -47,8 +47,10 @@ function FeePaymentHistory() {
       <>
         <Box
           display="flex"
+          flexDirection={{ xs: "column", md: "row" }}
           justifyContent="space-between"
-          alignItems="center"
+          alignItems={{ xs: "start", md: "center" }}
+          gap={2}
           my={4}
         >
           <CustomDatePicker

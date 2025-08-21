@@ -1,10 +1,8 @@
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import Swal from "sweetalert2";
-// import jwtDecode from "jwt-decode";
 import UserReducer from "../reducers/UserReducer";
 import { useMutation, useQuery } from "@tanstack/react-query";
-// import { generateNewCurrentLevelDetailsFromLevels } from "@/api/levelAPI";
-import { logOut, getUser as getUserProfile } from "@/api/userAPI";
+import { logOut } from "@/api/userAPI";
 import { useNavigate } from "react-router-dom";
 import {
   deleteUser,
@@ -64,20 +62,20 @@ const UserProvider = ({ children }) => {
     return () => api.interceptors.request.eject(interceptor);
   }, [accessToken]);
 
- 
-
   const schoolInfo = useQuery({
     queryKey: ["school-info", schoolInformation?.code],
     queryFn: () => getSchool({ code: schoolInformation?.code }),
     initialData: schoolInformation,
-    enabled: !!schoolInformation?.code,
+    enabled: !!schoolInformation?.code && !!accessToken,
+    // refetchOnMount: false,
   });
 
   const schoolSession = useQuery({
     queryKey: ["terms/:id", session?.termId],
     queryFn: () => getTerm(session?.termId),
     initialData: session,
-    enabled: !!session?.sessionId && !!session?.termId,
+    enabled: !!session?.sessionId && !!session?.termId && !!accessToken,
+    // enabled: false,
     select: (sess) => {
       if (!sess?.termId) return session;
       const { core, ...rest } = sess;
@@ -87,6 +85,7 @@ const UserProvider = ({ children }) => {
         ...rest,
       };
     },
+    // refetchOnMount: false,
   });
 
   const scheduleRefresh = (token) => {
@@ -148,7 +147,10 @@ const UserProvider = ({ children }) => {
     }
   };
 
-  const { levelLoading, students } = useLevel();
+  // const {
+  //   levelLoading,
+  //   students: [],
+  // } = useLevel();
 
   //check if current level details exists
   // useQuery({
@@ -247,7 +249,7 @@ const UserProvider = ({ children }) => {
           updateSchoolInformation,
           schoolInformation,
           userDispatch,
-          students,
+          students: [],
           accessToken,
           loading,
         }}
@@ -257,7 +259,7 @@ const UserProvider = ({ children }) => {
 
       {loading && <GlobalSpinner />}
       {isPending && <LoadingSpinner value="Signing Out" />}
-      {levelLoading && <LoadingSpinner />}
+      {/* {levelLoading && <LoadingSpinner />} */}
     </>
   );
 };

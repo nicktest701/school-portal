@@ -72,6 +72,7 @@ router.post("/login", async (req, res) => {
   const data = {
     _id: authStudent._id,
     id: authStudent._id,
+    school: school._id,
   };
 
   const fullName =
@@ -132,6 +133,7 @@ router.post("/refresh", async (req, res) => {
     const data = {
       _id: authStudent._id,
       id: authStudent._id,
+      school: school._id,
     };
 
     const fullName =
@@ -159,7 +161,10 @@ router.post("/refresh", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  res.clearCookie("refreshToken", { path: "/refresh" });
+  req.user = null;
+  res.clearCookie("refreshToken", {
+    path: "/api/frebbys/v1/student-auth/refresh",
+  });
   res.sendStatus(204);
 });
 

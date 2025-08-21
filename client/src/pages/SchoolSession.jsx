@@ -13,13 +13,13 @@ import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTerms } from "../api/termAPI";
 import { SchoolSessionContext } from "../context/providers/SchoolSessionProvider";
-import { UserContext } from "../context/providers/UserProvider";
 import AddSchoolSession from "./session/AddSchoolSession";
+import { useAuth } from "@/hooks/useAuth";
 
 const SchoolSession = () => {
   const [loading, setLoading] = useState(false);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
-  const { session: mainSession, user, updateSession } = use(UserContext);
+  const { user, updateSession } = useAuth();
   const navigate = useNavigate();
   const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState("");
@@ -30,8 +30,10 @@ const SchoolSession = () => {
   });
 
   const sessions = useQuery({
-    queryKey: ["terms"],
+    queryKey: ["terms", user?._id],
     queryFn: () => getAllTerms(),
+    enabled: !!user?._id,
+    refetchOnMount: false,
     select: (sessions) => {
       if (sessions?.length > 0) {
         const modifieldSessions = sessions?.map(({ core, ...rest }) => {

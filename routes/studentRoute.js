@@ -254,7 +254,6 @@ router.get(
   })
 );
 
-
 //@GET student by student id
 router.get(
   "/:id",
@@ -408,6 +407,7 @@ router.post(
       email: personal?.email,
       phonenumber: personal?.phonenumber,
       password: hashedPassword,
+      school: req.user.school,
     });
     const savedStudentAuth = await studentAuth.save();
 
@@ -492,6 +492,7 @@ router.post(
           email: student?.email,
           phonenumber: student?.phonenumber,
           password: hashedPassword,
+          school: req.user.school,
         };
       });
 

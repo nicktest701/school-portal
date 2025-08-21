@@ -32,8 +32,8 @@ function App() {
   const { reset } = useQueryErrorResetBoundary();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ErrorBoundary FallbackComponent={Error} onReset={reset}>
+    <ErrorBoundary FallbackComponent={Error} onReset={reset}>
+      <QueryClientProvider client={queryClient}>
         <UserProvider>
           <ThemeProvider>
             <SchoolSessionProvider>
@@ -45,8 +45,8 @@ function App() {
             </SchoolSessionProvider>
           </ThemeProvider>
         </UserProvider>
-      </ErrorBoundary>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

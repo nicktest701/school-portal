@@ -24,6 +24,7 @@ import {
   AnnouncementRounded,
   ListAltSharp,
   NoteAdd,
+  DetailsRounded,
 } from "@mui/icons-material";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthProvider";
@@ -220,6 +221,12 @@ const Sidebar = () => {
               title="School Fees"
               icon={<PaymentsRounded />}
               to="/fees"
+              isSmall={toggleWidth}
+            />
+            <DrawerItem
+              title="Attendance"
+              icon={<DetailsRounded />}
+              to="/attendance"
               isSmall={toggleWidth}
             />
 

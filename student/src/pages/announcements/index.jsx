@@ -50,9 +50,10 @@ const Announcements = () => {
   const [selectedAnnouncements, setSelectedAnnouncements] = useState([]);
 
   const { data: announcements } = useQuery({
-    queryKey: ["announcements"],
-    queryFn: () => getAllAnnouncements(),
-    initialData: [],
+    queryKey: ["announcements", user?._id],
+    queryFn: getAllAnnouncements,
+    initialData: () => [],
+    enabled: !!user?._id,
   });
 
   const handleCloseModal = () => setSelectedAnnouncement(null);
@@ -281,7 +282,7 @@ const Announcements = () => {
               </Box>
             ))
           ) : (
-            <EmptyDataContainer message='No announcements found.' />
+            <EmptyDataContainer message="No announcements found." />
           )}
         </Stack>
       </AnimatePresence>

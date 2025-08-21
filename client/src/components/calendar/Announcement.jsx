@@ -14,14 +14,17 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllAnnouncements } from "@/api/announcementAPI";
 import dayjs from "dayjs";
+import { useAuth } from "@/hooks/useAuth";
 
 const Announcement = () => {
+  const { user } = useAuth();
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
 
   const { data: announcements } = useQuery({
-    queryKey: ["announcements"],
-    queryFn: () => getAllAnnouncements(),
-    initialData: [],
+    queryKey: ["announcements", user?._id],
+    queryFn: getAllAnnouncements,
+    initialData: () => [],
+    enabled: !!user?._id,
   });
 
   const handleOpenModal = (announcement) => {

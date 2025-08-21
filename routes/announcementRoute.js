@@ -1,18 +1,21 @@
-const router = require('express').Router();
-const _ = require('lodash');
-const asyncHandler = require('express-async-handler');
-const User = require('../models/userModel');
-const Announcement = require('../models/announcementModel');
-const Notification = require('../models/notificationModel');
-const { truncateWords } = require('../config/helper');
+const router = require("express").Router();
+const _ = require("lodash");
+const asyncHandler = require("express-async-handler");
+const User = require("../models/userModel");
+const Announcement = require("../models/announcementModel");
+const Notification = require("../models/notificationModel");
+const StudentAuth = require("../models/studentAuthModel");
+const { truncateWords } = require("../config/helper");
 
 //GET announcement
 router.get(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const announcements = await Announcement.find({
-      school: req.user.school
+      school: req.user.school,
     }).sort({ createdAt: -1 });
+
+    // console.log(req.user);
 
     res.status(200).json(announcements);
   })
@@ -20,7 +23,7 @@ router.get(
 
 //@GET Announcement by id
 router.get(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
     const announcement = await Announcement.findById(id);
@@ -28,11 +31,9 @@ router.get(
   })
 );
 
-
-
 //POST announcement
 router.post(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const newAnnouncement = req.body;
 
@@ -45,17 +46,24 @@ router.post(
     if (_.isEmpty(announcement)) {
       return res
         .status(404)
-        .json('Couldnt create announcement.Please try again later...');
+        .json("Couldnt create announcement.Please try again later...");
     }
 
-    const users = await User.find({}, "_id"); // Get all user IDs
-  
+    let users = await User.find({}, "_id"); // Get all user IDs
+    console.log(newAnnouncement.group);
+
+    if (["all", "students"].includes(newAnnouncement.group)) {
+      const student = await StudentAuth.find({}, "_id");
+
+      users.push(student);
+    }
+
     const notifications = users.map((user) => ({
       user: user._id,
       school: req.user.school,
       session: newAnnouncement?.session,
       term: newAnnouncement?.term,
-      type: 'Announcement',
+      type: "Announcement",
       title: newAnnouncement?.title,
       description: truncateWords(newAnnouncement?.description, 20),
       album: null,
@@ -63,60 +71,65 @@ router.post(
       createdBy: req.user.id,
     }));
 
-
     await Notification.insertMany(notifications);
 
-    res.status(200).json('Announcement Created!');
-
+    res.status(200).json("Announcement Created!");
   })
 );
-
 
 //Edit announcement
 
 router.put(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const announcement = req.body;
 
-    const updatedAnnouncement = await Announcement.findByIdAndUpdate(announcement?._id, {
-      $set: { ...announcement }
-    }, {
-      new: true
-    })
+    const updatedAnnouncement = await Announcement.findByIdAndUpdate(
+      announcement?._id,
+      {
+        $set: { ...announcement },
+      },
+      {
+        new: true,
+      }
+    );
 
     if (_.isEmpty(updatedAnnouncement)) {
-      return res.status(404).json('Error occurred.Try again later...');
+      return res.status(404).json("Error occurred.Try again later...");
     }
 
-    res.status(200).json('Chnages Saved!');
+    res.status(200).json("Chnages Saved!");
   })
 );
 //DELETE announcement
 
 router.put(
-  '/remove',
+  "/remove",
   asyncHandler(async (req, res) => {
     const { announcements } = req.body;
 
-
-    const announcement = await Announcement.deleteMany({
-      _id: { $in: announcements }
-    }, {
-      new: true
-    })
+    const announcement = await Announcement.deleteMany(
+      {
+        _id: { $in: announcements },
+      },
+      {
+        new: true,
+      }
+    );
 
     if (_.isEmpty(announcement)) {
-      return res.status(404).json('Error removing announcement.Try again later...');
+      return res
+        .status(404)
+        .json("Error removing announcement.Try again later...");
     }
 
-    res.status(200).json('Announcement Removed!');
+    res.status(200).json("Announcement Removed!");
   })
 );
 //DELETE announcement
 
 router.delete(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
 
@@ -125,10 +138,12 @@ router.delete(
     });
 
     if (_.isEmpty(announcement)) {
-      return res.status(404).json('Error removing announcement.Try again later...');
+      return res
+        .status(404)
+        .json("Error removing announcement.Try again later...");
     }
 
-    res.status(200).json('Announcement deleted successfully!!!');
+    res.status(200).json("Announcement deleted successfully!!!");
   })
 );
 

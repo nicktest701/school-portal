@@ -36,6 +36,9 @@ import AcademicsDashboard from "./pages/academics/academic-dashboard";
 import FeesDashboard from "./pages/fees/FeesDashboard";
 import Payments from "./pages/fees/payments";
 import Report from "./pages/fees/Report";
+import Attendance from "./pages/attendance";
+import AttendanceDashboard from "./pages/attendance/attendance-dashboard";
+import AttendanceHistory from "./pages/attendance/attendance-history";
 
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
@@ -80,6 +83,14 @@ function App() {
             { index: true, Component: FeesDashboard },
             { path: "payment", Component: Payments },
             { path: "payment/:id", Component: Report },
+          ],
+        },
+        {
+          path: "attendance",
+          Component: Attendance,
+          children: [
+            { index: true, Component: AttendanceDashboard },
+            { path: "history", Component: AttendanceHistory },
           ],
         },
         { path: "events", Component: Events },

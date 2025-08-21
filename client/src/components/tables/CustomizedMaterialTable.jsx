@@ -172,7 +172,7 @@ function CustomizedMaterialTable({
                       />
                     )}
 
-                    <Stack direction="row" gap={1}>
+                    <Stack direction={{ xs: "column", md: "row" }} gap={1}>
                       {otherButtons}
                       {showAddButton && (
                         <Button

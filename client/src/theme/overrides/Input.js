@@ -9,7 +9,6 @@ export default function Input(theme) {
         sx: {
           borderRadius: 1,
           autoComplete: false,
-          py: 0.0001,
           fontSize: 14,
         },
       },

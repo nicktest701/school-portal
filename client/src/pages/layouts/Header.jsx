@@ -26,13 +26,12 @@ import { bgBlur } from "@/theme/css";
 import NoteFormModal from "@/components/notes/NoteForm";
 import { useCreateNote } from "@/hooks/useNotes";
 import { useNotifications } from "@/hooks/useNotifications";
-import HomeLinks from "@/components/HomeLinks";
 import { useAuth } from "@/hooks/useAuth";
 import _ from "lodash";
 
 function Header() {
   const { palette } = useTheme();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { data, isError, isPending } = useNotifications();
   const [modalOpen, setModalOpen] = useState(false);
   const [openMiniBar, setOpenMiniBar] = useState(false);

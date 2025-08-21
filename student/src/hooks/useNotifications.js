@@ -12,7 +12,7 @@ import { useAlert } from "@/context/AlertProvider";
 export const useNotifications = () => {
   const { user } = useAuth();
   return useQuery({
-    queryKey: ["notifications"],
+    queryKey: ["notifications", user?._id],
     queryFn: getAllNotifications,
     initialData: [],
     enabled: !!user?._id,

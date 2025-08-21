@@ -151,7 +151,7 @@ const FindSchool = () => {
                   placeholder="School Code"
                   fullWidth
                   margin="normal"
-                  size="small"
+                 
                 />
 
                 <Button

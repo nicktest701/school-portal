@@ -4,6 +4,11 @@ const db = require("../db/DBConnection");
 
 const StudentAuthSchema = new mongoose.Schema(
   {
+    school: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "School",
+      index: true, // Optimized for school-based queries
+    },
     indexnumber: {
       type: String,
       required: true,

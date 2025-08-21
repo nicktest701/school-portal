@@ -19,8 +19,10 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import CustomTitle from "@/components/custom/CustomTitle";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Sessions = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
@@ -29,7 +31,9 @@ const Sessions = () => {
   const sessions = useQuery({
     queryKey: ["terms"],
     queryFn: () => getAllTerms(),
-    // initialData: [],
+    initialData: [],
+    enabled: !!user?._id,
+    // refetchOnMount: false,
   });
 
   ///Delete session by id

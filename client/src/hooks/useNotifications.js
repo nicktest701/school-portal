@@ -12,19 +12,20 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { useAuth } from "./useAuth";
 
 export const useNotifications = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   // Ensure user is defined before making the query
-  if (!user?.id) {
-    return {
-      data: [],
-    };
-  }
+
+  return {
+    data: [],
+    // isPending: true,
+  };
+
   return useQuery({
-    queryKey: ["notifications"],
+    queryKey: ["notifications", user?._id],
     queryFn: getAllNotifications,
     initialData: [],
-    enabled: !!user?.id,
+    enabled: !!user?._id,
   });
 };
 

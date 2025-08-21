@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import _ from "lodash";
 import {
   Avatar,
@@ -38,13 +38,13 @@ import {
   Person3Rounded,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import { UserContext } from "@/context/providers/UserProvider";
 import NavLinkItemCollapse from "@/components/dropdowns/NavLinkItemCollapse";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Sidebar = () => {
   const [toggleWidth, setToggleWidth] = useState(false);
-  const { user, logOutUser, school_info } = use(UserContext);
+  const { user, logOutUser, school_info } = useAuth();
   const handleClose = () => {
     setToggleWidth(!toggleWidth);
   };

@@ -1,9 +1,19 @@
-const mongoose = require('mongoose');
-const db = require('../db/DBConnection');
+const mongoose = require("mongoose");
+const db = require("../db/DBConnection");
 
 const NotificationSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: "onModel", // 'onModel' is the field that determines the target model
+      required: true,
+    },
+    onModel: {
+      type: String,
+      required: true,
+      enum: ["User", "StudentAuth"], // Possible models for 'product'
+    },
+    // user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     school: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "School",

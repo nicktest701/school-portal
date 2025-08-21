@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllLevels } from "@/api/levelAPI";
 import _ from "lodash";
+import { useAuth } from "@/hooks/useAuth";
 
 function useLevel() {
+  const { user } = useAuth();
   const session = JSON.parse(localStorage.getItem("@school_session"));
 
   const {
@@ -12,9 +14,9 @@ function useLevel() {
     refetch,
     data: levels,
   } = useQuery({
-    queryKey: ["levels", session?.sessionId, session?.termId],
+    queryKey: ["levels", session?.sessionId, session?.termId, user?._id],
     queryFn: () => getAllLevels(session?.sessionId, session?.termId),
-    enabled: !!session?.sessionId && !!session?.termId,
+    enabled: !!session?.sessionId && !!session?.termId && !!user?._id,
     initialData: {
       students: [],
       subjects: 0,

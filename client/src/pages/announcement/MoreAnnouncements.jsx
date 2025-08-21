@@ -24,7 +24,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
-import {AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import CustomTitle from "@/components/custom/CustomTitle";
 import exams_icon from "../../assets/images/header/exams_ico.svg";
 import { Add } from "@mui/icons-material";
@@ -36,13 +36,13 @@ import {
   getAllAnnouncements,
 } from "@/api/announcementAPI";
 import { useSearchParams } from "react-router-dom";
-import { UserContext } from "@/context/providers/UserProvider";
 import Swal from "sweetalert2";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import EditAnnouncementModal from "./EditAnnouncementModal";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { useAuth } from "@/hooks/useAuth";
 
 const pageSize = 10;
 const MoreAnnouncements = () => {
@@ -50,7 +50,7 @@ const MoreAnnouncements = () => {
     "announcement-text",
     "#333"
   );
-  const { user } = useContext(UserContext);
+  const { user, accessToken } = useAuth();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -65,9 +65,16 @@ const MoreAnnouncements = () => {
   const [selectedAnnouncements, setSelectedAnnouncements] = useState([]);
 
   const { data: announcements } = useQuery({
-    queryKey: ["announcements"],
-    queryFn: () => getAllAnnouncements(),
-    initialData: [],
+    queryKey: ["announcements", user?._id],
+    queryFn: getAllAnnouncements,
+    initialData: () => [],
+    // refetchOnMount: false,
+    retry: 2,
+    enabled: !!user?._id,
+    select: (data) => {
+      if (typeof data === "string") return [];
+      return data;
+    },
   });
 
   const handleCloseModal = () => setSelectedAnnouncement(null);
@@ -218,7 +225,7 @@ const MoreAnnouncements = () => {
   };
 
   return (
-    <Container maxWidth='lg' >
+    <Container maxWidth="lg">
       <CustomTitle
         title="Announcements"
         subtitle="Organize and oversee exams, schedule, and results to ensure a fair and efficient examination process."
@@ -267,7 +274,7 @@ const MoreAnnouncements = () => {
           }}
         >
           <InputLabel>Sort by</InputLabel>
-          <Select value={filter} onChange={handleFilterChange} >
+          <Select value={filter} onChange={handleFilterChange}>
             <MenuItem value="">All</MenuItem>
             <MenuItem value="today">Today</MenuItem>
             <MenuItem value="yesterday">Yesterday</MenuItem>
@@ -341,7 +348,7 @@ const MoreAnnouncements = () => {
           spacing={2}
           sx={{ minHeight: "50svh", mb: 10, overflowY: "auto" }}
         >
-          {sortedAnnouncement.announcements.length > 0 ? (
+          {sortedAnnouncement?.announcements?.length > 0 ? (
             sortedAnnouncement.announcements.map((announcement, index) => (
               <Box key={announcement._id}>
                 <motion.div

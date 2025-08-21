@@ -17,11 +17,12 @@ import {
   useNotifications,
 } from "@/hooks/useNotifications";
 import { useAuth } from "@/context/AuthProvider";
+import GlobalSpinner from "../spinners/GlobalSpinner";
 
 const NotificationDrawer = ({ open, setOpen }) => {
   const { user } = useAuth();
   // console.log(user);
-  const { data, refetch } = useNotifications();
+  const { data, refetch, isPending } = useNotifications();
   const markAllAsRead = useMarkAll();
   const deleteNotification = useDeleteAllNotifications();
   const handleClose = () => setOpen(false);
@@ -32,6 +33,10 @@ const NotificationDrawer = ({ open, setOpen }) => {
   const handleRemoveAll = () => {
     deleteNotification.mutate(user?.id);
   };
+
+  if (isPending) {
+    return <GlobalSpinner />;
+  }
 
   return (
     <Drawer

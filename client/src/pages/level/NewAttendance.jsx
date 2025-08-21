@@ -9,8 +9,15 @@ import {
   Divider,
   FormControlLabel,
   Radio,
-  RadioGroup,
   Typography,
+  Popover,
+  TextField,
+  RadioGroup,
+  Stack,
+  useTheme,
+  useMediaQuery,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { SchoolRounded, SaveAsRounded } from "@mui/icons-material";
 import SaveAltRounded from "@mui/icons-material/SaveAltRounded";
@@ -34,6 +41,8 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import useLevelById from "@/components/hooks/useLevelById";
 
 function NewAttendance({ to }) {
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.up("md"));
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -43,6 +52,11 @@ function NewAttendance({ to }) {
 
   const [date, setDate] = useState(moment().format("YYYY-MM-DD"));
   const [allStudents, setAllStudents] = useState([]);
+
+  // Popover state
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [reason, setReason] = useState("");
 
   // Fetch Attendance
   const attendance = useQuery({
@@ -97,10 +111,33 @@ function NewAttendance({ to }) {
     });
   };
 
-  const handleCheckAttendance = (value, student) => {
-    setAllStudents((prev) =>
-      prev.map((s) => (s._id === student._id ? { ...s, status: value } : s))
-    );
+  const handleCheckAttendance = (value, student, eventTarget) => {
+    if (value === "Absent") {
+      // Show popover for reason
+      setSelectedStudent(student);
+      setReason(student.reason || "");
+      setAnchorEl(eventTarget);
+    } else {
+      // Directly update
+      setAllStudents((prev) =>
+        prev.map((s) =>
+          s._id === student._id ? { ...s, status: value, reason: "" } : s
+        )
+      );
+    }
+  };
+
+  const handleReasonSubmit = () => {
+    if (selectedStudent) {
+      setAllStudents((prev) =>
+        prev.map((s) =>
+          s._id === selectedStudent._id ? { ...s, status: "Absent", reason } : s
+        )
+      );
+    }
+    setAnchorEl(null);
+    setSelectedStudent(null);
+    setReason("");
   };
 
   const navigateToHistory = () => {
@@ -173,44 +210,79 @@ function NewAttendance({ to }) {
             field: "status",
             title: "Status",
             render: (rowData) => (
-              <RadioGroup
-                row
-                value={rowData.status || ""}
-                onChange={(e) => handleCheckAttendance(e.target.value, rowData)}
-              >
-                <FormControlLabel
-                  value="Present"
-                  control={<Radio size="small" />}
-                  label="Present"
-                />
-                <FormControlLabel
-                  value="Absent"
-                  control={<Radio size="small" />}
-                  label="Absent"
-                />
-              </RadioGroup>
+              <>
+                <RadioGroup
+                  row
+                  value={rowData.status || ""}
+                  onChange={(e) =>
+                    handleCheckAttendance(
+                      e.target.value,
+                      rowData,
+                      e.currentTarget
+                    )
+                  }
+                >
+                  <FormControlLabel
+                    value="Present"
+                    control={<Radio size="small" />}
+                    label="Present"
+                  />
+                  <FormControlLabel
+                    value="Absent"
+                    control={<Radio size="small" />}
+                    label="Absent"
+                  />
+                </RadioGroup>
+                {rowData?.reason && (
+                  <Stack direction="row" gap={1}>
+                    <Typography variant="body2" fontWeight="bold">
+                      Reason:
+                    </Typography>
+                    <Typography variant="body2">{rowData?.reason}</Typography>
+                  </Stack>
+                )}
+              </>
             ),
           },
           {
             title: "Action",
-            render: (rowData) => (
-              <Button
-                size="small"
-                startIcon={<SaveAltRounded color="secondary" />}
-                onClick={() => {
-                  const student = {
-                    _id: rowData?._id,
-                    fullName: rowData?.fullName,
-                    gender: rowData?.gender,
-                    status: rowData?.status,
-                  };
-                  handleSave([student], saveStudentAttendance);
-                }}
-                disabled={isPending}
-              >
-                Save
-              </Button>
-            ),
+            render: (rowData) =>
+              matches ? (
+                <Button
+                  size="small"
+                  startIcon={<SaveAltRounded color="secondary" />}
+                  onClick={() => {
+                    const student = {
+                      _id: rowData?._id,
+                      fullName: rowData?.fullName,
+                      gender: rowData?.gender,
+                      status: rowData?.status,
+                      reason: rowData?.reason,
+                    };
+                    handleSave([student], saveStudentAttendance);
+                  }}
+                  disabled={isPending}
+                >
+                  Save
+                </Button>
+              ) : (
+                <Tooltip title="Save">
+                  <IconButton
+                    onClick={() => {
+                      const student = {
+                        _id: rowData?._id,
+                        fullName: rowData?.fullName,
+                        gender: rowData?.gender,
+                        status: rowData?.status,
+                      };
+                      handleSave([student], saveStudentAttendance);
+                    }}
+                    disabled={isPending}
+                  >
+                    <SaveAltRounded color="secondary" />
+                  </IconButton>
+                </Tooltip>
+              ),
           },
         ]}
         autoCompleteComponent={
@@ -250,6 +322,29 @@ function NewAttendance({ to }) {
         options={{ pageSize: 10, selection: false }}
         handleRefresh={attendance.refetch}
       />
+
+      {/* Absence Reason Popover */}
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Box p={2} display="flex" flexDirection="column" gap={2}>
+          <Typography variant="subtitle1">Reason for Absence</Typography>
+          <TextField
+            size="small"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            placeholder="Enter reason"
+            fullWidth
+            multiline
+          />
+          <Button variant="contained" size="small" onClick={handleReasonSubmit}>
+            Save Reason
+          </Button>
+        </Box>
+      </Popover>
 
       {(isPending || isPostingAttendance) && (
         <LoadingSpinner value="Saving Attendance. Please Wait..." />
