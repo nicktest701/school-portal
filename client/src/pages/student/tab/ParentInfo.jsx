@@ -1,12 +1,9 @@
 import React from "react";
 import {
   Stack,
-  Typography,
   TextField,
   MenuItem,
   Autocomplete,
-  Avatar,
-  Link,
 } from "@mui/material";
 
 import CustomFormControl from "@/components/inputs/CustomFormControl";
@@ -17,7 +14,7 @@ import { Controller } from "react-hook-form";
 import Input from "@/components/inputs/Input";
 import SelectInput from "@/components/inputs/SelectInput";
 
-const ParentInfo = ({ control, errors, watch, index }) => {
+const ParentInfo = ({ control, watch, index }) => {
   const gender = watch(`parent.${index}.gender`);
 
   const renderTextField = (

@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import _ from "lodash";
-import * as yup from "yup";
 import {
   Stepper,
   Step,
@@ -10,10 +8,8 @@ import {
   DialogActions,
   Container,
 } from "@mui/material";
-import { styled } from "@mui/system";
 import { motion } from "framer-motion";
 import { yupResolver } from "@hookform/resolvers/yup";
-import moment from "moment";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTerm, putTerm } from "@/api/termAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
@@ -62,7 +58,7 @@ export default function EditSessionForm() {
         queryClient.invalidateQueries(["terms"]);
         queryClient.invalidateQueries(["terms/:id", id]);
       },
-      onSuccess: (data) => {
+      onSuccess: () => {
         schoolSessionDispatch(alertSuccess("Changes Saved"));
         navigate(-1);
         setActiveStep(0); // Reset to the first step after saving
@@ -86,7 +82,6 @@ export default function EditSessionForm() {
     mode: "onBlur",
   });
 
-  const watchedValues = watch(); // Watch all form fields
 
   // Save to localStorage whenever form values change
   useEffect(() => {

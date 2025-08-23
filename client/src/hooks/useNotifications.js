@@ -12,14 +12,7 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { useAuth } from "./useAuth";
 
 export const useNotifications = () => {
-  const { user, loading } = useAuth();
-
-  // Ensure user is defined before making the query
-
-  return {
-    data: [],
-    // isPending: true,
-  };
+  const { user } = useAuth();
 
   return useQuery({
     queryKey: ["notifications", user?._id],

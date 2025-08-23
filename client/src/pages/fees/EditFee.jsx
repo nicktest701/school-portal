@@ -3,7 +3,6 @@ import {
   Stack,
   Dialog,
   DialogContent,
-  DialogTitle,
   DialogActions,
   TextField,
   Autocomplete,

@@ -28,7 +28,7 @@ import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import { postSubjects } from "@/api/subjectAPI";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import { Download, NoteRounded } from "@mui/icons-material";
+import {  NoteRounded } from "@mui/icons-material";
 import { downloadTemplate } from "@/api/userAPI";
 import { UserContext } from "@/context/providers/UserProvider";
 

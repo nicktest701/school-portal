@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import _ from "lodash";
+import * as XLSX from "xlsx";
 import {
   Button,
   TextField,
@@ -38,7 +39,6 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
   const [inputMethod, setInputMethod] = useState("file");
   const [uploadedFiles, setUploadedFiles] = useState(_.compact(levelWatch));
   const [filteredData, setFilteredData] = useState(_.compact(levelWatch));
-  const [searchQuery, setSearchQuery] = useState("");
 
   const [session, setSession] = useState({
     _id: "",
@@ -86,6 +86,7 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
           setValue("levels", levels);
         }
       } catch (error) {
+        console.log(error);
       } finally {
         setIsLoading(false);
       }
@@ -131,7 +132,6 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
   // Handle Search Functionality
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
 
     if (!query) {
       setFilteredData(uploadedFiles);

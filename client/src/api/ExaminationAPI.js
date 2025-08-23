@@ -18,7 +18,7 @@ export const getAllExams = async (id) => {
 };
 
 //Get Exams by exams id
-export const getExam = async (examsId, publish = "") => {
+export const getExam = async (examsId) => {
   try {
     const res = await api({
       method: "GET",

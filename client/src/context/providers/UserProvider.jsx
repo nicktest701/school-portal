@@ -11,7 +11,6 @@ import {
   saveUser,
 } from "@/config/sessionHandler";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
-import useLevel from "@/components/hooks/useLevel";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { getSchool } from "@/api/schoolAPI";
 import { getTerm } from "@/api/termAPI";
@@ -123,7 +122,6 @@ const UserProvider = ({ children }) => {
       scheduleRefresh(token);
 
       const user = parseJwt(token);
-      const { iat, exp, ...rest } = user;
       setUser(user);
       saveUser({ _id: user?.id, id: user?.id });
     } catch (err) {

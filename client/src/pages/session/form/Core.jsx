@@ -14,7 +14,7 @@ import moment from "moment";
 import CustomRadioInput from "@/components/items/CustomRadioInput";
 import Input from "@/components/inputs/Input";
 
-const Core = ({ watch, control, errors }) => {
+const Core = ({ watch, control }) => {
   const sT = watch("core.from");
   const eT = watch("core.to");
 

@@ -251,7 +251,7 @@ function ConfirmStudent({ watch, isPending, id, hideSaveBtn, reset }) {
 
               {parent?.map((p, index) => {
                 return (
-                  <Stack>
+                  <Stack key={index}>
                     <Typography
                       color="primary.main"
                       sx={{ fontWeight: "bold", fontSize: 11 }}

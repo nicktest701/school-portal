@@ -4,11 +4,10 @@ import { NavLink, useLocation } from "react-router-dom";
 
 function MiniDrawerItem({ title, to, handleClose }) {
   const { pathname } = useLocation();
-  const myLinkStyles = ({ isActive }) => {
+  const myLinkStyles = () => {
     return {
       textDecoration: "none",
       color: pathname === to ? `var(--secondary)` : "var(--primary)",
-      // color: `${palette.text.primary}`,
       backgroundColor: pathname.match(to) ? "rgba(255,255,255,0.3)" : '#fff',
       fontWeight: pathname.match(to) ? "bold" : "400",
       whiteSpace: "nowrap",

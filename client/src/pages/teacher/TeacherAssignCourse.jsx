@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import _ from "lodash";
 import {
   Autocomplete,
   Container,

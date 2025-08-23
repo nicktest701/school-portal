@@ -53,7 +53,7 @@ const FindSchool = () => {
         }
       },
       onError: (error) => {
-        setMsg(error);
+       
         setError("code", {
           type: "custom",
           message: error,
@@ -248,7 +248,7 @@ const FindSchool = () => {
         </Box>
       </Modal>
       {/* <CustomParticle /> */}
-      {isPending && <LoadingSpinner value="Seaching for your School" />}
+      {isPending && <LoadingSpinner value="Searching for your School.Please wait.." />}
     </>
   );
 };

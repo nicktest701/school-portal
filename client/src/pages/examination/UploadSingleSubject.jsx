@@ -58,14 +58,13 @@ const UploadSingleSubject = () => {
     ? scorePreference[1]
     : 50;
 
-
-  const { levelName, gradeSystem, subjects } =
-    useLevelById(levelId);
+  const { levelName, gradeSystem, subjects } = useLevelById(levelId);
 
   const subject = subjects?.find((s) => s?._id === searchParams.get("_id"));
 
   //LOAD Results from file excel,csv
   async function handleLoadFile(e) {
+    const file = e?.target.files[0];
     if (subject?.name === "") {
       setFieldError("Please select a Subject!");
 
@@ -120,7 +119,7 @@ const UploadSingleSubject = () => {
           });
 
           setData(modifiedResults);
-          sessionStorage.setItem("course-upload-data", JSON.stringify(values));
+          sessionStorage.setItem("course-upload-data", JSON.stringify(modifiedResults));
         }
       } catch (error) {
         setMainError(error);
@@ -250,7 +249,7 @@ const UploadSingleSubject = () => {
         borderRadius={2}
       >
         <Typography>
-          Select an <b>EXCEL</b> OR <b>CSV</b> file containing students'{" "}
+          Select an <b>EXCEL</b> OR <b>CSV</b> file containing students&apos;{" "}
           {subject?.name} results information. Make sure the columns matches the
           accepted fields.
         </Typography>

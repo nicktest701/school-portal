@@ -14,7 +14,7 @@ import {
   Tooltip,
   Button,
 } from "@mui/material";
-import { DeleteRounded, RefreshRounded } from "@mui/icons-material";
+import {  RefreshRounded } from "@mui/icons-material";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { useParams } from "react-router-dom";

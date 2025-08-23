@@ -9,7 +9,7 @@ import {
   FormControl,
   Box,
 } from "@mui/material";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTerm } from "@/api/termAPI";
 
@@ -204,7 +204,7 @@ const ViewSession = () => {
               </Stack>
               <Box border="1px solid var(--primary)" p={2}>
                 <Typography textAlign="center">
-                  Headmaster's Signature
+                  Headmaster&apos;s Signature
                 </Typography>
                 <img
                   alt="headmaster's signature"

@@ -90,7 +90,7 @@ const TeacherEdit = () => {
       onSuccess: () => {
         schoolSessionDispatch(alertSuccess("Profile Updated!"));
       },
-      onError: (error) => {
+      onError: () => {
         schoolSessionDispatch(alertError("An unknown error has occurred!"));
       },
     });

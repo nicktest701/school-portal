@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Skeleton, Button } from "@mui/material";
+import { Card, CardContent, Typography, Skeleton } from "@mui/material";
 
 const FeesDetailsSkeleton = () => {
   return (

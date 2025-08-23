@@ -9,7 +9,6 @@ import {
   TextField,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import _ from "lodash";
 
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
@@ -25,7 +24,7 @@ import { UserContext } from "@/context/providers/UserProvider";
 const AssignLevelGrade = ({ levelName }) => {
   const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const { levelId, level } = useParams();
+  const { levelId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [selectedGrade, setSelectedGrade] = useState({

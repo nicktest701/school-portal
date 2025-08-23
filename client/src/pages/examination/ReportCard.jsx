@@ -2,7 +2,6 @@ import React, { use, useRef, useState } from "react";
 import {
   Stack,
   Typography,
-  Divider,
   useTheme,
   Avatar,
   Box,
@@ -17,7 +16,7 @@ import { PrintRounded, SchoolRounded } from "@mui/icons-material";
 import { UserContext } from "@/context/providers/UserProvider";
 import { useReactToPrint } from "react-to-print";
 
-function ReportCard({ student, style, ref }) {
+function ReportCard({ student, style }) {
   const componentRef = useRef();
   const { school_info, session } = use(UserContext);
   const { palette } = useTheme();

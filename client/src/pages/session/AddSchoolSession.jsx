@@ -38,7 +38,6 @@ const AddSchoolSession = ({ open, setOpen }) => {
   const {
     control,
     watch,
-    formState: { isSubmitting, errors },
     handleSubmit,
   } = useForm({
     resolver: yupResolver(sessionValidationSchema),

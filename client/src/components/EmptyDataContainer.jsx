@@ -9,7 +9,6 @@ import { Box, useMediaQuery, useTheme } from "@mui/material";
 const EmptyDataContainer = ({
   onClick,
   buttonText,
-  img,
   message,
   showAddButton,
   otherButtons,

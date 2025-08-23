@@ -30,8 +30,6 @@ import {
   Search as SearchIcon,
 } from "@mui/icons-material";
 import { downloadTemplate } from "@/api/userAPI";
-import { getAllStudentID } from "@/api/studentAPI";
-import useSessionStorage from "@/hooks/useSessionStorage";
 import { useQuery } from "@tanstack/react-query";
 import { getPreviousLevels } from "@/api/levelAPI";
 import { getAllSessions } from "@/api/termAPI";
@@ -52,7 +50,7 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   const [previewFileIndex, setPreviewFileIndex] = useState(null);
   const [level, setLevel] = useState({ name: "", type: "" });
   const [visibleRows, setVisibleRows] = useState(20);
-  const [searchQuery, setSearchQuery] = useState("");
+
 
   const previewTableRef = useRef(null);
 
@@ -84,12 +82,6 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
     initialData: [],
   });
 
-  const { data: studentIds } = useQuery({
-    queryKey: ["students-ids"],
-    queryFn: getAllStudentID,
-    initialData: [],
-    // staleTime: 20 * 60 * 1000,
-  });
 
   // Handle file selection
   const handleFileChange = async (e) => {
@@ -97,7 +89,6 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
 
     if (uploadedFile) {
       setIsLoading(true);
-      parseFile(uploadedFile);
       setFile(uploadedFile);
 
       try {
@@ -109,6 +100,7 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
           setVisibleRows(20); // Reset rows on new file
         }
       } catch (error) {
+        console.log(error)
       } finally {
         setIsLoading(false);
       }
@@ -121,7 +113,6 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
     setPreviewData(uploadedFiles[index]?.data || []);
     setFilteredData(uploadedFiles[index]?.data || []);
     setVisibleRows(20); // Reset rows when opening modal
-    setSearchQuery(""); // Clear search on new preview
     setModalOpen(true);
   };
   const handleCloseModal = () => setModalOpen(false);
@@ -171,7 +162,7 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   };
 
   // Delete a row from the preview
-  const handleDeleteRow = (rowIndex, idx) => {
+  const handleDeleteRow = (rowIndex) => {
     const updatedData = filteredData.filter((_, i) => i !== rowIndex);
     setFilteredData(updatedData);
 
@@ -202,7 +193,7 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   // Handle Search Functionality
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
+
 
     if (!query) {
       setFilteredData(previewData);
@@ -496,13 +487,13 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
                     {Object.values(row).map((val, j) => (
                       <TableCell
                         key={j}
-                        sx={{
-                          color: duplicates?.includes(
-                            row["indexnumber"]?.toString()
-                          )
-                            ? "rgba(255,0,0,0.8)"
-                            : "none",
-                        }}
+                        // sx={{
+                        //   color: duplicates?.includes(
+                        //     row["indexnumber"]?.toString()
+                        //   )
+                        //     ? "rgba(255,0,0,0.8)"
+                        //     : "none",
+                        // }}
                       >
                         {val}
                       </TableCell>

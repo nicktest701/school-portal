@@ -7,7 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Formik } from "formik";
 import { assignTeacherLevel } from "@/api/levelAPI";
@@ -17,16 +17,13 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import useLevel from "@/components/hooks/useLevel";
 import CustomTitle from "@/components/custom/CustomTitle";
 import Back from "@/components/Back";
-import { getTeacher } from "@/api/teacherAPI";
 import TeacherLevels from "./TeacherLevels";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import Swal from "sweetalert2";
 import { UserContext } from "@/context/providers/UserProvider";
 
 const TeacherAssignLevel = () => {
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [currentLevel, setCurrentLevel] = useState({
@@ -36,15 +33,6 @@ const TeacherAssignLevel = () => {
   const { id } = useParams();
 
   const { levelsOption, levelLoading } = useLevel();
-
-  const teacher = useQuery({
-    queryKey: ["teacher", id],
-    queryFn: () => getTeacher(id),
-    initialData: queryClient
-      .getQueryData(["teachers", id])
-      ?.find((teacher) => teacher?._id === id),
-    enabled: !!id,
-  });
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: assignTeacherLevel,

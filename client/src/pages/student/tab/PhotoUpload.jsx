@@ -7,7 +7,7 @@ import { Avatar, Link } from "@mui/material";
 import { AddAPhoto } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 
-const PhotoUpload = ({ setValue, errors, handleNext, watch }) => {
+const PhotoUpload = ({ setValue, handleNext, watch }) => {
   const photo = watch("photo.display");
 
   const { getRootProps, getInputProps, open } = useDropzone({

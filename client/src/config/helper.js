@@ -18,21 +18,21 @@ export const isWeekend = (date) => {
 };
 
 // Convert Base64 to Blob and create Object URL
-const base64ToBlobUrl = (base64) => {
-  // Split the Base64 string into parts
-  const parts = base64.split(";base64,");
-  const contentType = parts[0].split(":")[1];
-  const raw = window.atob(parts[1]);
-  const rawLength = raw.length;
-  const uInt8Array = new Uint8Array(rawLength);
+// const base64ToBlobUrl = (base64) => {
+//   // Split the Base64 string into parts
+//   const parts = base64.split(";base64,");
+//   const contentType = parts[0].split(":")[1];
+//   const raw = window.atob(parts[1]);
+//   const rawLength = raw.length;
+//   const uInt8Array = new Uint8Array(rawLength);
 
-  for (let i = 0; i < rawLength; ++i) {
-    uInt8Array[i] = raw.charCodeAt(i);
-  }
+//   for (let i = 0; i < rawLength; ++i) {
+//     uInt8Array[i] = raw.charCodeAt(i);
+//   }
 
-  const blob = new Blob([uInt8Array], { type: contentType });
-  return URL.createObjectURL(blob);
-};
+//   const blob = new Blob([uInt8Array], { type: contentType });
+//   return URL.createObjectURL(blob);
+// };
 
 export const getLastPathname = (path) => {
   const segments = path.split("/").filter(Boolean); // Remove empty segments
@@ -46,7 +46,7 @@ export function generateRandomRGBAColors(count = 10) {
     const r = Math.floor(Math.random() * 256); // Red: 0-255
     const g = Math.floor(Math.random() * 256); // Green: 0-255
     const b = Math.floor(Math.random() * 256); // Blue: 0-255
-    const a = Math.random().toFixed(2); // Alpha: 0.00-1.00
+    // const a = Math.random().toFixed(2); // Alpha: 0.00-1.00
 
     colors.push(`rgb(${r}, ${g}, ${b})`);
   }

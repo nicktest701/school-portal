@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import _ from "lodash";
 import Swal from "sweetalert2";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -143,7 +142,7 @@ const StudentInfo = () => {
       getStudentByIndexNumber(watchedValues?.personal?.indexnumber),
   });
 
-  const { mutateAsync, isPending, isSuccess ,data} = useMutation({
+  const { mutateAsync, isPending, isSuccess } = useMutation({
     mutationFn: postNewStudent,
   });
 

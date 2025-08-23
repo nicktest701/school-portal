@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 
 function StudentCountChart({ data }) {
-  const { palette, breakpoints } = useTheme();
+  const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
 
   return (

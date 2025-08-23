@@ -6,7 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 
 function WeeklyAttendance({ data }) {
-  const { palette, breakpoints } = useTheme();
+  const {  breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
 
   return (

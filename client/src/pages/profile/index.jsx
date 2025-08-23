@@ -3,19 +3,16 @@ import {
   Avatar,
   Container,
   Typography,
-  Stack,
   Button,
   Card,
   CardContent,
   Grid,
   Box,
   useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import { UserContext } from "@/context/providers/UserProvider";
 import FormDisplayItem from "@/components/inputs/FormDisplayItem";
 import { Edit } from "@mui/icons-material";
-import CustomTitle from "@/components/custom/CustomTitle";
 import { useSearchParams } from "react-router-dom";
 import UpdateUserProfile from "@/components/dialog/UpdateUserProfile";
 import moment from "moment";
@@ -55,7 +52,7 @@ function Profile() {
   const { user } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
 
   const handleOpenEdit = () => {
     setSearchParams((params) => {

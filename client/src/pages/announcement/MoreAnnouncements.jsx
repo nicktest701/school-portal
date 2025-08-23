@@ -5,7 +5,6 @@ import {
   Typography,
   Card,
   CardContent,
-  Grid2 as Grid,
   Button,
   Modal,
   Select,
@@ -50,7 +49,7 @@ const MoreAnnouncements = () => {
     "announcement-text",
     "#333"
   );
-  const { user, accessToken } = useAuth();
+  const { user } = useAuth();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();

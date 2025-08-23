@@ -2,7 +2,6 @@ import { Box, IconButton } from '@mui/material';
 import React from 'react';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SubjectIcon from '@mui/icons-material/Subject';
-import Person3 from '@mui/icons-material/Person3';
 import DashboardCard from '../../components/cards/DashboardCard';
 import { ListAltRounded } from '@mui/icons-material';
 

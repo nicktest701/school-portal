@@ -24,7 +24,6 @@ export const SCHOOL_SESSION_COLUMN = (
   handleActive,
   handleView,
   handleEdit,
-  handleDelete
 ) => {
   return [
     {

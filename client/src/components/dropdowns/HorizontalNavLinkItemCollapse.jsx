@@ -2,17 +2,15 @@ import React from "react";
 import {
   Collapse,
   List,
-  useTheme,
   Stack,
   Typography,
   Tooltip,
 } from "@mui/material";
 
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function HorizontalNavLinkItemCollapse({ title, children }) {
-  const { breakpoints } = useTheme();
 
   const [open, setOpen] = React.useState(false);
 

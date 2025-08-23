@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
-import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTerms } from "@/api/termAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";

@@ -9,7 +9,6 @@ import {
   Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getAllTerms } from "../api/termAPI";
 import { SchoolSessionContext } from "../context/providers/SchoolSessionProvider";

@@ -1,9 +1,7 @@
 import { useContext } from "react";
 import {
-  Button,
   Chip,
   Dialog,
-  DialogActions,
   DialogContent,
   IconButton,
   ListItemText,
@@ -54,8 +52,9 @@ function SMSView() {
     });
   };
 
-  const { mutateAsync: deleteMutateAsync, isPending: dLoading } =
-    useMutation(deleteMessage);
+  const { mutateAsync: deleteMutateAsync, isPending: dLoading } = useMutation({
+    mutationFn: deleteMessage,
+  });
   const handleDelete = () => {
     Swal.fire({
       title: "Removing Message",
@@ -179,6 +178,7 @@ function SMSView() {
         </Stack>
       </DialogContent>
       {isPending && <LoadingSpinner value="Resending Message..." />}
+      {dLoading && <LoadingSpinner value="Resending Message..." />}
     </Dialog>
   );
 }

@@ -8,8 +8,8 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { format } from "date-fns";
 import { currencyFormatter } from "@/config/currencyFormatter";
+import moment from "moment";
 
 const PaymentTable = ({ payments = [] }) => {
   return (
@@ -28,10 +28,9 @@ const PaymentTable = ({ payments = [] }) => {
           {payments.map((payment, index) => (
             <TableRow key={index}>
               <TableCell>
-                {format(
-                  new Date(payment?.date || payment?.createdAt),
-                  "do MMM, yyyy"
-                )}
+                    {moment(new Date(payment?.date || payment?.createdAt)).format(
+                                   "do MMM, yyyy"
+                                 )}
               </TableCell>
               <TableCell>{currencyFormatter(payment?.paid)}</TableCell>
               <TableCell>

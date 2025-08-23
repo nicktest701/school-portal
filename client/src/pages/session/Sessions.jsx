@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { use } from "react";
 import { Container } from "@mui/material";
-import _ from "lodash";
 import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import session_icon from "@/assets/images/header/session_ico.svg";
 import { SCHOOL_SESSION_COLUMN } from "@/mockup/columns/sessionColumns";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import {
-  deleteManyTerms,
+
   deleteTerm,
   disableSessionAccount,
   getAllTerms,
@@ -26,7 +25,7 @@ const Sessions = () => {
   const navigate = useNavigate();
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
-  const [selectedSessions, setSelectedSessions] = useState([]);
+
 
   const sessions = useQuery({
     queryKey: ["terms"],
@@ -37,7 +36,7 @@ const Sessions = () => {
   });
 
   ///Delete session by id
-  const { mutateAsync: deleteMutate } = useMutation({
+  const { mutateAsync: deleteMutate,isPending } = useMutation({
     mutationFn: deleteTerm,
   });
 
@@ -79,37 +78,34 @@ const Sessions = () => {
     });
   };
 
-  const handleSelectionChange = (rows) => {
-    setSelectedSessions(rows);
-  };
 
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: deleteManyTerms,
-  });
+  // const { mutateAsync, isPending } = useMutation({
+  //   mutationFn: deleteManyTerms,
+  // });
 
-  const handleMultipleDeleteSession = () => {
-    Swal.fire({
-      title: "Removing Session",
-      text: "You are about to remove the selected sessions. Removing session will delete all of its related content.Changes cannot be undone. Do you want to remove?",
-      showCancelButton: true,
-      backdrop: false,
-    }).then(({ isConfirmed }) => {
-      const sessions = _.map(selectedSessions, "termId");
-      if (isConfirmed) {
-        mutateAsync(sessions, {
-          onSettled: () => {
-            queryClient.invalidateQueries(["terms"]);
-          },
-          onSuccess: (data) => {
-            schoolSessionDispatch(alertSuccess(data));
-          },
-          onError: (error) => {
-            schoolSessionDispatch(alertError(error));
-          },
-        });
-      }
-    });
-  };
+  // const handleMultipleDeleteSession = () => {
+  //   Swal.fire({
+  //     title: "Removing Session",
+  //     text: "You are about to remove the selected sessions. Removing session will delete all of its related content.Changes cannot be undone. Do you want to remove?",
+  //     showCancelButton: true,
+  //     backdrop: false,
+  //   }).then(({ isConfirmed }) => {
+  //     const sessions = _.map(selectedSessions, "termId");
+  //     if (isConfirmed) {
+  //       mutateAsync(sessions, {
+  //         onSettled: () => {
+  //           queryClient.invalidateQueries(["terms"]);
+  //         },
+  //         onSuccess: (data) => {
+  //           schoolSessionDispatch(alertSuccess(data));
+  //         },
+  //         onError: (error) => {
+  //           schoolSessionDispatch(alertError(error));
+  //         },
+  //       });
+  //     }
+  //   });
+  // };
 
   //Edit session
   const handleViewSession = (data) => {
@@ -188,7 +184,6 @@ const Sessions = () => {
             addButtonText="New Session"
             onAddButtonClicked={handleOpenSession}
             handleRefresh={sessions.refetch}
-            onSelectionChange={handleSelectionChange}
             // onDeleteClicked={handleMultipleDeleteSession}
             options={{
               search: true,

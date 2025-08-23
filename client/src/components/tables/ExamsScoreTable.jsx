@@ -8,15 +8,12 @@ import {
   TableRow,
   Paper,
   IconButton,
-  useMediaQuery,
-  useTheme,
   Box,
 } from "@mui/material";
 import { DeleteRounded } from "@mui/icons-material";
 
 const ExamsScoreTable = ({ data, setData }) => {
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up("md"));
+
   const title = {
     subject: "Subject",
     classScore: "Class Score",
@@ -24,10 +21,6 @@ const ExamsScoreTable = ({ data, setData }) => {
     totalScore: "Total",
     grade: "Grade",
     remarks: "Remarks",
-    // ...(matches && {
-    //   grade: "Grade",
-    //   remarks: "Remarks",
-    // }),
   };
 
   //Remove Subject from Score List

@@ -2,14 +2,12 @@ import React, { useState, useEffect, use } from "react";
 import * as Yup from "yup";
 import {
   Box,
-  Button,
   Typography,
   Container,
   Paper,
-  InputAdornment,
   Avatar,
 } from "@mui/material";
-import { CloudUpload } from "@mui/icons-material";
+
 import Input from "@/components/inputs/Input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -38,11 +36,11 @@ const Headmaster = () => {
   const { updateSession, session } = use(UserContext);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
-  const [signaturePreview, setSignaturePreview] = useState(
+  const [signaturePreview, ] = useState(
     session?.headmaster?.signature
   );
 
-  const { handleSubmit, reset, control, isSubmitting, setValue } = useForm({
+  const { handleSubmit, reset, control } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
@@ -59,7 +57,7 @@ const Headmaster = () => {
     });
   }, [session, reset]);
 
-  const { mutateAsync, isPending } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: putTerm,
   });
 
@@ -91,19 +89,6 @@ const Headmaster = () => {
     });
   };
 
-  // Handle file input change
-  const handleFileChange = (event) => {
-    const file = event.currentTarget.files[0];
-    if (!file) return;
-
-    setValue("signature", file);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setSignaturePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
 
   return (
     <Container

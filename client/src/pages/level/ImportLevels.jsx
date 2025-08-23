@@ -47,7 +47,6 @@ const ImportLevels = ({ open, onClose }) => {
   const [inputMethod, setInputMethod] = useState("file");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [newSession, setNewSession] = useState({
     _id: "",
     sessionId: "",
@@ -182,7 +181,7 @@ const ImportLevels = ({ open, onClose }) => {
   // Handle Search Functionality
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
+ 
 
     if (!query) {
       setFilteredData(uploadedFiles);

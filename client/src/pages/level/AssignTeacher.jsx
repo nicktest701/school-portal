@@ -8,18 +8,15 @@ import {
   Autocomplete,
   Button,
 } from "@mui/material";
-import _ from "lodash";
 import { Formik } from "formik";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AssignTeacherValidationSchema,
-  levelValidationSchema,
 } from "@/config/validationSchema";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { assignTeacherLevel } from "@/api/levelAPI";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
-import { UserContext } from "@/context/providers/UserProvider";
 import { getAllTeachers } from "@/api/teacherAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -70,7 +67,7 @@ const AssignTeacher = ({ levelName }) => {
             });
             options.setSubmitting(false);
           },
-          onSuccess: (data) => {
+          onSuccess: () => {
             schoolSessionDispatch(alertSuccess("Assigment done!"));
           },
           onError: (error) => {
@@ -105,7 +102,7 @@ const AssignTeacher = ({ levelName }) => {
         onSubmit={onSubmit}
         validationSchema={AssignTeacherValidationSchema}
       >
-        {({ values, errors, touched, handleSubmit, setFieldValue }) => {
+        {({ values, handleSubmit, setFieldValue }) => {
           return (
             <>
               <DialogContent sx={{ p: 1 }}>

@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import _ from "lodash";
 import { Box, Container, Divider, IconButton, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";

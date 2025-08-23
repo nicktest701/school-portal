@@ -7,7 +7,6 @@ import CardHeader from "@mui/material/CardHeader";
 import { Bar } from "react-chartjs-2";
 import _ from "lodash";
 import { Typography, useTheme, useMediaQuery } from "@mui/material";
-import { generateRGBAColorsBetween } from "@/config/helper";
 const StudentDashboardLineChart = ({ data, academicYear }) => {
   const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));

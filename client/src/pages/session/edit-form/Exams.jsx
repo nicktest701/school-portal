@@ -5,7 +5,7 @@ import CustomFormControl from "@/components/inputs/CustomFormControl";
 import DateInputPicker from "@/components/inputs/DateInputPicker";
 import ScoreSelection from "./ScoreSelection";
 
-const Exams = ({ watch, control, errors }) => {
+const Exams = ({ control, errors }) => {
   return (
     <div>
       <Typography variant="h5">Exam & Assessment</Typography>

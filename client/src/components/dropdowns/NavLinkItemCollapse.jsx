@@ -26,7 +26,6 @@ function NavLinkItemCollapse({ to, title, children, icon, toggleWidth }) {
     return {
       textDecoration: "none",
       color: pathname === to ? `${palette.secondary.main}` : "#fff",
-      // color: `${palette.text.primary}`,
       backgroundColor: pathname.match(to) ? "rgba(255,255,255,0.3)" : null,
       fontWeight: pathname.match(to) ? "bold" : "400",
       whiteSpace: "nowrap",

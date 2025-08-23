@@ -23,8 +23,6 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { readXLSX } from "@/config/readXLSX";
 import {
-  CloudSyncRounded,
-  NoteRounded,
   UploadFileRounded,
 } from "@mui/icons-material";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";

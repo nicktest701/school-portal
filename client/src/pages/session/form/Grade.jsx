@@ -28,7 +28,6 @@ import { downloadTemplate } from "@/api/userAPI";
 const Grade = ({ setValue, data }) => {
   const [uploadedFiles, setUploadedFiles] = useState(data?.ratings);
   const [filteredData, setFilteredData] = useState(data?.ratings);
-  const [searchQuery, setSearchQuery] = useState("");
 
   // Handle file selection
   const handleFileChange = (e) => {
@@ -100,7 +99,6 @@ const Grade = ({ setValue, data }) => {
   // Handle Search Functionality
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
 
     if (!query) {
       setFilteredData(uploadedFiles);

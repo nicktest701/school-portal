@@ -1,17 +1,15 @@
-import { Container, Tab, useMediaQuery, useTheme } from "@mui/material";
+import { Container, Tab } from "@mui/material";
 import CustomTitle from "../../components/custom/CustomTitle";
 import settings_icon from "../../assets/images/header/settings_ico.svg";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import Logo from "./Logo";
 import Holidays from "./Holidays";
 import Headmaster from "./Headmaster";
-import ReportTemplates from "./ReportTemplates";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import BasicInformation from "./BasicInformation";
 
 const Settings = () => {
-  const { breakpoints } = useTheme();
-  // const matches = useMediaQuery(breakpoints.);
+
   const [st, setSt] = useLocalStorage("settings_tab", "1");
 
   return (

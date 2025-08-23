@@ -141,7 +141,7 @@ const ViewExamsReports = () => {
     setValue("sms");
   };
 
-  const generatedReports = ({ data, index, style }) => {
+  const generatedReports = ({ data, index }) => {
     return <ReportCard key={index} student={data[index]} />;
   };
 

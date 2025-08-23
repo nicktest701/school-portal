@@ -1,7 +1,7 @@
 import { currencyFormatter } from "@/config/currencyFormatter";
 import { UserContext } from "@/context/providers/UserProvider";
+import moment from "moment";
 import React, { use } from "react";
-import { format } from "date-fns";
 
 const FeeReportTemplate = ({ student, feeData = [] }) => {
   const { school_info } = use(UserContext);
@@ -68,8 +68,7 @@ const FeeReportTemplate = ({ student, feeData = [] }) => {
             {feeData?.payment.map((payment, index) => (
               <tr key={index}>
                 <td>
-                  {format(
-                    new Date(payment?.date || payment?.createdAt),
+                  {moment(new Date(payment?.date || payment?.createdAt)).format(
                     "do MMM, yyyy"
                   )}
                 </td>

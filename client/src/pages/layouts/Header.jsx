@@ -31,7 +31,7 @@ import _ from "lodash";
 
 function Header() {
   const { palette } = useTheme();
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const { data, isError, isPending } = useNotifications();
   const [modalOpen, setModalOpen] = useState(false);
   const [openMiniBar, setOpenMiniBar] = useState(false);

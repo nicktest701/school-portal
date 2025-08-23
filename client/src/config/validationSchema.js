@@ -1,5 +1,5 @@
 import moment from "moment";
-import { object, number, mixed, boolean, string, array, ref } from "yup";
+import { object, number, mixed, string, array, ref } from "yup";
 
 const phoneRegex = /^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/;
 

@@ -1,5 +1,4 @@
 import React from "react";
-import _ from "lodash";
 import { Outlet } from "react-router-dom";
 import Footer from "./layouts/Footer";
 import Sidebar from "./layouts/Sidebar";

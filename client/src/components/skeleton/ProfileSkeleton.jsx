@@ -1,5 +1,4 @@
-import { Skeleton, Box, Button, IconButton, Typography } from "@mui/material";
-import { Edit, Person, ContactMail, School, Info, Delete } from "@mui/icons-material";
+import { Skeleton, Box, Button,Typography } from "@mui/material";
 
 const ProfileSkeleton = () => {
   return (

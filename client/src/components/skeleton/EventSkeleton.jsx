@@ -5,8 +5,6 @@ import {
   Grid,
   Card,
   CardContent,
-  Typography,
-  Button,
 } from "@mui/material";
 
 export default function EventSkeleton() {

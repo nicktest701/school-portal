@@ -141,7 +141,7 @@ function CustomEvent() {
         )}
         // eventMouseEnter={handleEventMouseEnter}
         // eventMouseLeave={handleEventMouseLeave}
-        eventClick={({ event: { extendedProps, id } }) => {
+        eventClick={({ event: { extendedProps,} }) => {
           if (["1", "2", "3", "4"].includes(extendedProps?._id)) {
             return;
           }

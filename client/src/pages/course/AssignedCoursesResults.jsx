@@ -268,7 +268,7 @@ function AssignedCoursesResults() {
           {/* Progress Section */}
           <Box mt={2}>
             <Typography variant="body2" color="text.secondary">
-              Gain insights into students' academic progress and achievements.
+              Gain insights into students&apos; academic progress and achievements.
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Monitor grades, assessments, and overall performance to support

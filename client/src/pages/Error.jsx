@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Box, Button,Typography } from "@mui/material";
 
 const Error = ({ _error, resetErrorBoundary }) => {
   return (

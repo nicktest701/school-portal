@@ -8,7 +8,7 @@ import CardHeader from "@mui/material/CardHeader";
 import { currencyFormatter } from "@/config/currencyFormatter";
 
 const WeeklyFeePaymentChart = ({ data }) => {
-  const { palette, breakpoints } = useTheme();
+  const {  breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.down("md"));
   return (
     <Card elevation={1}>

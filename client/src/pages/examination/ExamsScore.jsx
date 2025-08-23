@@ -180,7 +180,7 @@ function ExamsScore() {
                 {/* Progress Section */}
                 <Box mt={2}>
                   <Typography variant="body2" color="text.secondary">
-                    Gain insights into students' academic progress and
+                    Gain insights into students&apos; academic progress and
                     achievements. Below is the state of {exams?.data?.fullName}{" "}
                     results in the {session?.academicYear} ,{session.term}.
                   </Typography>
