@@ -6,7 +6,7 @@
   "display": "standalone",
   "description": "The all-in-one solution for managing student information and improving school operations. With FrebbyTech School Manager, you can quickly access and update student records, track attendance, and manage schedules",
   "background_color": "#fff",
-  "theme_color": "#32D583",
+  "theme_color": "#012e54",
   "orientation": "portrait",
   "scope": "/",
   "id": "/",

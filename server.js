@@ -52,7 +52,7 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'", "trusted-cdn.com"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         imgSrc: ["'self'", "data:"],
-        connectSrc: ["'self'", process.env.CLIENT_URL],
+        connectSrc: ["'self'", process.env.CLIENT_URL, process.env.STUDENT_URL],
       },
     },
     crossOriginResourcePolicy: { policy: "same-site" },
@@ -68,6 +68,7 @@ const whitelist = process.env.CORS_WHITELIST
   ? process.env.CORS_WHITELIST.split(",")
   : [
       "https://frebbys-school-portal.vercel.app/",
+      "https://frebbys-student-portal.vercel.app/",
       "https://school-portal-aivn.onrender.com",
     ];
 
