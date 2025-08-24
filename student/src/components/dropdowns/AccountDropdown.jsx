@@ -103,12 +103,12 @@ export default function AccountDropdown() {
         </MenuItem>
         <Divider />
 
-        <MenuItem onClick={() => handleClose("/settings")}>
+        {/* <MenuItem onClick={() => handleClose("/settings")}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
           Settings
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem onClick={logout}>
           <ListItemIcon>

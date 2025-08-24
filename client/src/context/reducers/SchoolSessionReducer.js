@@ -2,45 +2,11 @@ import _ from 'lodash';
 
 const SchoolSessionReducer = (state, { type, payload }) => {
   switch (type) {
-    case 'displayAddSession':
-      return {
-        ...state,
-        displayAddSession: payload,
-      };
-    case 'setCurrentSession':
-      return {
-        ...state,
-        currentSession: payload,
-      };
-
-    case 'subjectsWithScore':
-      return {
-        ...state,
-        subjectsWithScore: payload,
-      };
-
-    case 'setFeesReceiptData':
-      return {
-        ...state,
-        feesReceiptData: payload,
-      };
 
     case 'setFeeEditData':
       return {
         ...state,
         feeEditData: payload,
-      };
-
-    case 'setStudentFeesHistoryId':
-      return {
-        ...state,
-        studentFeesHistoryId: payload,
-      };
-
-    case 'printFees':
-      return {
-        ...state,
-        feePrintData: payload,
       };
 
     case 'openViewReport':

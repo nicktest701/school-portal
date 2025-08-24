@@ -40,7 +40,8 @@ const TeacherAdd = ({ setTab }) => {
     mutationFn: postTeacher,
   });
   const onSubmit = (values, options) => {
-    console.log(values)
+    
+ 
 
     values.dateofbirth = moment(dob).format("L");
     mutateAsync(values, {

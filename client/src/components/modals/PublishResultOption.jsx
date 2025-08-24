@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import PropTypes from "prop-types";
 
 function PublishResultOption({
   open,
@@ -77,5 +78,12 @@ function PublishResultOption({
     </Modal>
   );
 }
+PublishResultOption.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  value: PropTypes.string,
+  setValue: PropTypes.func.isRequired,
+  handlePublish: PropTypes.func.isRequired,
+};
 
 export default PublishResultOption;

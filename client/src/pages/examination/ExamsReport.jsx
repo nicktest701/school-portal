@@ -11,6 +11,7 @@ import ReportCard from "./ReportCard";
 import { useSearchParams } from "react-router-dom";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import PublishResultOption from "@/components/modals/PublishResultOption";
+import PropTypes from "prop-types";
 
 const ExamsReport = ({ student }) => {
   const [openPublishOption, setOpenPublishOption] = useState(false);
@@ -129,6 +130,9 @@ const ExamsReport = ({ student }) => {
       )}
     </>
   );
+};
+ExamsReport.propTypes = {
+  student: PropTypes.object,
 };
 
 export default React.memo(ExamsReport);

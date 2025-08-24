@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import _ from "lodash";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,8 @@ import { getExam } from "@/api/ExaminationAPI";
 import ReportCard from "./ReportCard";
 import { useSearchParams } from "react-router-dom";
 import { gradeColor } from "@/config/gradeColor";
+import { useAuth } from "@/hooks/useAuth";
+import PropTypes from "prop-types";
 
 const ExamsItem = ({ item }) => (
   <TableRow>
@@ -38,7 +41,20 @@ const ExamsItem = ({ item }) => (
     <TableCell sx={{ fontSize: 12 }}>{item.remarks}</TableCell>
   </TableRow>
 );
+
+ExamsItem.propTypes = {
+  item: PropTypes.shape({
+    subject: PropTypes.string.isRequired,
+    classScore: PropTypes.number.isRequired,
+    examsScore: PropTypes.number.isRequired,
+    totalScore: PropTypes.number.isRequired,
+    grade: PropTypes.string.isRequired,
+    remarks: PropTypes.string,
+  }).isRequired,
+};
+
 const ViewExamsRecord = () => {
+  const { session } = useAuth();
   const componentRef = useRef();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -47,6 +63,14 @@ const ViewExamsRecord = () => {
     queryFn: () => getExam(searchParams.get("report")),
     enabled: !!searchParams.get("report"),
   });
+
+  const scorePreference = session?.exams?.scorePreference?.split("/");
+  const classScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[0]
+    : 50;
+  const examsScorePreference = !_.isUndefined(scorePreference)
+    ? scorePreference[1]
+    : 50;
 
   //close dialog
   const handleClose = () => {
@@ -90,8 +114,8 @@ const ViewExamsRecord = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>SUBJECT</TableCell>
-                  <TableCell>CLASS SCORE (50%)</TableCell>
-                  <TableCell>EXAMS SCORE (50%)</TableCell>
+                  <TableCell>CLASS SCORE ({classScorePreference}%)</TableCell>
+                  <TableCell>EXAMS SCORE ({examsScorePreference}%)</TableCell>
                   <TableCell>TOTAL SCORE (100%)</TableCell>
                   <TableCell>GRADE</TableCell>
                   <TableCell>REMARKS</TableCell>
@@ -132,6 +156,5 @@ const ViewExamsRecord = () => {
     </>
   );
 };
-
 
 export default React.memo(ViewExamsRecord);

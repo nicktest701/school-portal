@@ -24,9 +24,9 @@ router.post(
   ],
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
-    console.log(req.body);
+
     if (!errors.isEmpty())
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ message: errors.array()[0].msg });
 
     try {
       const note = new Note({
@@ -36,6 +36,7 @@ router.post(
       await note.save();
       res.status(201).json(note);
     } catch (err) {
+      console.log(err);
       res.status(400).json({ message: err.message });
     }
   })

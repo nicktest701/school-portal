@@ -277,32 +277,7 @@ export const studentPersonalDataValidationSchema = object().shape({
 });
 
 export const guardianValidationSchema = object().shape({
-  parent1: object({
-    firstname: string().required("Required*"),
-    surname: string().required("Required*"),
-    gender: string().required("Required*"),
-    relationship: string().required("Required*"),
-    email: string().email("Invalid email address!!!"),
-    phonenumber: string()
-      .required("Required*")
-      .matches(phoneRegex, "Invalid Phone number"),
-    address: string().required("Required*"),
-    residence: string().required("Required*"),
-    nationality: string().required("Required*"),
-  }),
-  parent2: object({
-    firstname: string().required("Required*"),
-    surname: string().required("Required*"),
-    gender: string().required("Required*"),
-    relationship: string().required("Required*"),
-    email: string().email("Invalid email address!!!"),
-    phonenumber: string()
-      .required("Required*")
-      .matches(phoneRegex, "Invalid Phone number"),
-    address: string().required("Required*"),
-    residence: string().required("Required*"),
-    nationality: string().required("Required*"),
-  }),
+  parents: array().of(parentValidationSchema),
 });
 
 export const medicalValidationSchema = object().shape({

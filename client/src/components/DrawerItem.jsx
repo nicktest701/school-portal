@@ -22,7 +22,7 @@ const DrawerItem = ({ title, icon, to }) => {
 
   return (
     <Tooltip title={title} placement="right">
-      <NavLink to={to} style={myLinkStyles} >
+      <NavLink to={to} style={myLinkStyles} end>
         <Stack
           direction="row"
           justifyContent="flex-start"
@@ -44,7 +44,6 @@ const DrawerItem = ({ title, icon, to }) => {
           <Tooltip
             title={getLastPathname(to)}
             placement="right"
-            
             slotProps={{
               tooltip: {
                 sx: {

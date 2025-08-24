@@ -1,18 +1,12 @@
-import React, { useReducer } from 'react';
-import PropTypes from 'prop-types';
-import StudentReducer from '../reducers/StudentReducer';
+import React, { useReducer } from "react";
+import PropTypes from "prop-types";
+import StudentReducer from "../reducers/StudentReducer";
 
 export const StudentContext = React.createContext();
 
 const StudentProvider = ({ children }) => {
-  const session = JSON.parse(localStorage.getItem('@school_session'));
-
   const studentValues = {
-    allStudents: [],
-    currentStudentId: '',
-    currentLevelId: '',
-    studentCurrentLevelId: '',
-    currentStudentSubjects: [],
+
     showCurrentStudentFeeReportView: {
       show: false,
       data: [],
@@ -26,89 +20,13 @@ const StudentProvider = ({ children }) => {
     viewStudentFeeHistory: {
       open: false,
       data: {
-        id: '',
-        level: '',
-        feeId: '',
+        id: "",
+        level: "",
+        feeId: "",
       },
     },
     ///new student
 
-    newStudent: {
-      personal: {
-        indexnumber: '',
-        firstname: '',
-        surname: '',
-        othername: '',
-        dateofbirth: new Date(),
-        gender: '',
-        email: '',
-        phonenumber: '',
-        address: '',
-        residence: '',
-        nationality: '',
-        session: {
-          sessionId: session?.sessionId,
-          termId: session?.termId,
-        },
-        isCompleted: false,
-      },
-      photo: { profile: null, isCompleted: false },
-      parent: {
-        parent1: {
-          firstname: '',
-          surname: '',
-          gender: '',
-          relationship: '',
-          email: '',
-          phonenumber: '',
-          address: '',
-          residence: '',
-          nationality: '',
-        },
-        parent2: {
-          firstname: '',
-          surname: '',
-          gender: '',
-          relationship: '',
-          email: '',
-          phonenumber: '',
-          address: '',
-          residence: '',
-          nationality: '',
-        },
-
-        isCompleted: false,
-      },
-      medical: {
-        heartDisease: 'No',
-        asthma: 'No',
-        siezures: 'No',
-        visualImpairment: 'No',
-        hearingImpairment: 'No',
-        physicalDisability: 'No',
-        emergencyContact: {
-          fullname: '',
-          phonenumber: '',
-          address: '',
-        },
-
-        isCompleted: false,
-      },
-      academic: {
-        level: {
-          _id: '',
-          type: '',
-        },
-        previousSchool: {
-          name: '',
-          location: '',
-          report: null,
-        },
-
-        isCompleted: false,
-      },
-      isCompleted: false,
-    },
     ///Edit Student data
     editStudentData: {
       open: false,

@@ -200,12 +200,9 @@ const MoreEvents = () => {
                         {event.title}
                       </Typography>
 
-                      <div
-                        style={{ overflow: "hidden" }}
-                        dangerouslySetInnerHTML={{
-                          __html: event.description.substring(0, 50) + "...",
-                        }}
-                      ></div>
+                      <Typography variant="body2" className="truncate-lines">
+                        {event?.caption?.substring(0, 50) + "..."}
+                      </Typography>
                       <Typography
                         variant="body2"
                         color="secondary"

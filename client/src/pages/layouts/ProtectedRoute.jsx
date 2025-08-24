@@ -1,3 +1,4 @@
+import React from "react";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 import { getUser } from "@/config/sessionHandler";
 import { useAuth } from "@/hooks/useAuth";

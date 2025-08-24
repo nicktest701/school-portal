@@ -1,6 +1,5 @@
 import React from "react";
 import { Dialog, DialogContent } from "@mui/material";
-import Transition from "@/components/animations/Transition";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import ReportCard from "./ReportCard";
 
@@ -12,13 +11,7 @@ const ExamsReport = ({ open, setOpen, student }) => {
 
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        fullWidth
-        maxWidth="md"
-        TransitionComponent={Transition}
-      >
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <CustomDialogTitle title="Report Card" onClose={handleClose} />
 
         <DialogContent>

@@ -12,11 +12,11 @@ import {
 } from "@/config/sessionHandler";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { getSchool } from "@/api/schoolAPI";
 import { getTerm } from "@/api/termAPI";
 import api from "@/api/customAxios";
 import axios from "axios";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
+import PropTypes from "prop-types";
 
 export const UserContext = React.createContext();
 
@@ -60,14 +60,6 @@ const UserProvider = ({ children }) => {
     );
     return () => api.interceptors.request.eject(interceptor);
   }, [accessToken]);
-
-  const schoolInfo = useQuery({
-    queryKey: ["school-info", schoolInformation?.code],
-    queryFn: () => getSchool({ code: schoolInformation?.code }),
-    initialData: schoolInformation,
-    enabled: !!schoolInformation?.code && !!accessToken,
-    // refetchOnMount: false,
-  });
 
   const schoolSession = useQuery({
     queryKey: ["terms/:id", session?.termId],
@@ -132,6 +124,7 @@ const UserProvider = ({ children }) => {
       setSession(null);
       if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
       setLoading(false);
+      alert(err?.message);
 
       // Show a warning and redirect to login
       Swal.fire({
@@ -145,39 +138,18 @@ const UserProvider = ({ children }) => {
     }
   };
 
-  // const {
-  //   levelLoading,
-  //   students: [],
-  // } = useLevel();
-
-  //check if current level details exists
-  // useQuery({
-  //   queryKey: [
-  //     "generate-current-level-details",
-  //     session?.sessionId,
-  //     session?.termId,
-  //   ],
-  //   queryFn: () =>
-  //     generateNewCurrentLevelDetailsFromLevels({
-  //       sessionId: session?.sessionId,
-  //       termId: session?.termId,
-  //     }),
-  //   enabled:
-  //     !!session?.sessionId &&
-  //     !!session?.termId &&
-  //     !!user?.role === "administrator",
-  // });
-
   const initState = {
     isPending: true,
     session: schoolSession.data,
     user: user,
-    school_info: schoolInfo?.data,
+    school_info: schoolInformation,
   };
 
   const [userState, userDispatch] = useReducer(UserReducer, initState);
 
-  const authenticateUser = (token) => {
+  const authenticateUser = (token, school) => {
+    setSchoolInformation(school);
+
     const user = parseJwt(token);
     setUser(user);
     saveUser({ _id: user?.id, id: user?.id });
@@ -238,7 +210,7 @@ const UserProvider = ({ children }) => {
       <UserContext
         value={{
           userState,
-          school_info: schoolInfo?.data,
+          school_info: schoolInformation,
           session: schoolSession?.data,
           user: user,
           updateSession,
@@ -260,6 +232,9 @@ const UserProvider = ({ children }) => {
       {/* {levelLoading && <LoadingSpinner />} */}
     </>
   );
+};
+UserProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default UserProvider;

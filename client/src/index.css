@@ -364,6 +364,14 @@ tbody tr:hover svg {
   fill: rgb(1, 46, 84) !important;
 }
 
+.truncate-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .print-container {
   display: none;
 }
@@ -431,9 +439,9 @@ tbody tr:hover svg {
   .report-logo {
     visibility: visible;
   }
-  .fee-receipt{
-    border:none;
-    box-shadow:none;
+  .fee-receipt {
+    border: none;
+    box-shadow: none;
   }
 }
 

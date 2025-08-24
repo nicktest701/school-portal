@@ -76,6 +76,8 @@ router.post(
 
     const hashedPassword = await bcrypt.hash(newTeacher?.phonenumber, 10);
 
+    console.log(newTeacher)
+
     const user = {
       school: req.user.school,
       profile: teacherPhoto,

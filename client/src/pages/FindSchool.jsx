@@ -1,4 +1,4 @@
-import React, { useState, use } from "react";
+import React, { useState } from "react";
 import { SchoolRounded, Search } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import {
@@ -17,10 +17,10 @@ import { findSchoolValidationSchema } from "../config/validationSchema";
 import Input from "@/components/inputs/Input";
 import { getSchool } from "@/api/schoolAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
-import { UserContext } from "@/context/providers/UserProvider";
+import { useAuth } from "@/hooks/useAuth";
 
 const FindSchool = () => {
-  const { updateSchoolInformation } = use(UserContext);
+  const { updateSchoolInformation } = useAuth();
   const [schoolDetails, setSchoolDetails] = useState({
     _id: "",
     badge: null,
@@ -53,7 +53,6 @@ const FindSchool = () => {
         }
       },
       onError: (error) => {
-       
         setError("code", {
           type: "custom",
           message: error,
@@ -151,7 +150,6 @@ const FindSchool = () => {
                   placeholder="School Code"
                   fullWidth
                   margin="normal"
-                 
                 />
 
                 <Button
@@ -248,7 +246,9 @@ const FindSchool = () => {
         </Box>
       </Modal>
       {/* <CustomParticle /> */}
-      {isPending && <LoadingSpinner value="Searching for your School.Please wait.." />}
+      {isPending && (
+        <LoadingSpinner value="Searching for your School.Please wait.." />
+      )}
     </>
   );
 };

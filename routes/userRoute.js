@@ -122,6 +122,8 @@ router.post(
       school: user?.school,
     };
 
+    const schoolInfo = await School.findById(user?.school);
+
     // Generate JWT token
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
       expiresIn: "15m",
@@ -149,6 +151,7 @@ router.post(
 
     res.status(200).json({
       token,
+      school: schoolInfo,
     });
   })
 );

@@ -1,15 +1,15 @@
-const router = require('express').Router();
-const _ = require('lodash');
-const asyncHandler = require('express-async-handler');
-const Parent = require('../models/parentModel');
+const router = require("express").Router();
+const _ = require("lodash");
+const asyncHandler = require("express-async-handler");
+const Parent = require("../models/parentModel");
 
 const {
   Types: { ObjectId },
-} = require('mongoose');
+} = require("mongoose");
 
 //@GET All  Parents
 router.get(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const parents = await Parent.find();
 
@@ -21,10 +21,9 @@ router.get(
   })
 );
 
-
 //@GET Parent by student ID
 router.get(
-  '/student',
+  "/student",
   asyncHandler(async (req, res) => {
     const id = req.query.id;
     const parents = await Parent.find({
@@ -41,7 +40,7 @@ router.get(
 
 //@GET  Parent by id
 router.get(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
 
@@ -57,37 +56,23 @@ router.get(
 
 //Add new School Parent
 router.post(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
-
-
-    const newParent = await Parent.insertMany([
-      {
-        ...req.body.parent1,
-        school: req.user.school,
-
-      },
-      {
-        ...req.body.parent2,
-        school: req.user.school,
-
-      }
-
-    ]);
+    const newParent = await Parent.insertMany(req.body.parents);
 
     if (_.isEmpty(newParent)) {
       return res
         .status(404)
-        .json('Error creating new parent.Try again later!!!');
+        .json("Error creating new parent.Try again later!!!");
     }
 
-    res.status(201).json('New Parents created Successfully!!!');
+    res.status(201).json("New Parents created Successfully!!!");
   })
 );
 
 //@PUT Update Existing School Parent
 router.put(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const modifiedParent = await Parent.findByIdAndUpdate(
       req.body._id,
@@ -95,16 +80,16 @@ router.put(
     );
 
     if (_.isEmpty(modifiedParent)) {
-      return res.status(404).send('Error updating parent info.Try again later');
+      return res.status(404).send("Error updating parent info.Try again later");
     }
 
-    res.status(201).json('Parent information has been updated successfully!!!');
+    res.status(201).json("Parent information has been updated successfully!!!");
   })
 );
 
 0;
 router.delete(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
     const deletedParent = await Parent.findByIdAndUpdate(id, {
@@ -114,10 +99,10 @@ router.delete(
     });
 
     if (_.isEmpty(deletedParent)) {
-      return res.status(404).json('Error removing parent info.Try again later');
+      return res.status(404).json("Error removing parent info.Try again later");
     }
 
-    res.status(201).json(' Parent have been removed successfully!!!');
+    res.status(201).json(" Parent have been removed successfully!!!");
   })
 );
 

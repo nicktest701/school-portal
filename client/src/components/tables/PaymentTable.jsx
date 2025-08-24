@@ -38,7 +38,7 @@ const PaymentTable = ({ payments = [] }) => {
               </TableCell>
               <TableCell>{currencyFormatter(payment?.balance || 0)}</TableCell>
               <TableCell sx={{ textTransform: "capitalize" }}>
-                {payment?.issuer}
+                {payment?.issuerName}
               </TableCell>
             </TableRow>
           ))}

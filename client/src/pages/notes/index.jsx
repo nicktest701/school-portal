@@ -1,3 +1,4 @@
+import React from "react";
 import {
   useNotes,
   useCreateNote,
@@ -146,7 +147,7 @@ export default function NotesBoard() {
                 >
                   {notes.map((note, index) => (
                     <Draggable
-                      key={note._id}
+                      key={index + note?._id}
                       draggableId={note._id}
                       index={index}
                     >

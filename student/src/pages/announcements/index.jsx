@@ -23,14 +23,13 @@ import {
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
 import CustomTitle from "@/components/custom/CustomTitle";
-import exams_icon from "../../assets/images/header/exams_ico.svg";
-
 import { useQuery } from "@tanstack/react-query";
 import { getAllAnnouncements } from "@/api/announcementAPI";
 import { useSearchParams } from "react-router-dom";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useAuth } from "@/context/AuthProvider";
 import EmptyDataContainer from "@/components/EmptyDataContainer";
+import announcement_ico from "../../assets/images/header/sms_ico.svg";
 
 const pageSize = 10;
 const Announcements = () => {
@@ -130,7 +129,7 @@ const Announcements = () => {
       <CustomTitle
         title="Announcements"
         subtitle="Organize and oversee exams, schedule, and results to ensure a fair and efficient examination process."
-        img={exams_icon}
+        img={announcement_ico}
         color="primary.main"
       />
 
@@ -152,7 +151,7 @@ const Announcements = () => {
           value={searchTerm}
           onChange={handleSearchChange}
           sx={{ flexGrow: 1, maxWidth: { xs: "100%", sm: 300 } }}
-          size="small"
+          // size="small"
         />
 
         <FormControl
@@ -163,7 +162,7 @@ const Announcements = () => {
           }}
         >
           <InputLabel>Sort by</InputLabel>
-          <Select size="small" value={filter} onChange={handleFilterChange}>
+          <Select  value={filter} onChange={handleFilterChange}>
             <MenuItem value="">All</MenuItem>
             <MenuItem value="today">Today</MenuItem>
             <MenuItem value="yesterday">Yesterday</MenuItem>

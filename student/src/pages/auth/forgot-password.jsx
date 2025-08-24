@@ -44,7 +44,7 @@ export default function ForgotPassword() {
         setTimeout(
           () =>
             navigate("/confirm-code", { state: { studentId: data.studentId } }),
-          2000
+          1000
         );
       },
     });

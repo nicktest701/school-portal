@@ -33,7 +33,7 @@ export const postTeacher = async (teacher) => {
   //Teacher
   formData.append('profile', teacher.profile);
   formData.append('firstname', teacher.firstname);
-  formData.append('surname', teacher.surname);
+  formData.append('lastname', teacher.lastname);
   formData.append('username', teacher.username);
   formData.append('dateofbirth', teacher.dateofbirth);
   formData.append('gender', teacher.gender);

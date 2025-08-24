@@ -1,10 +1,10 @@
 import { getStudent } from "@/api/studentAPI";
 import CustomTitle from "@/components/custom/CustomTitle";
-import Title from "@/components/custom/Title";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 import StudentProfile from "@/components/tabs/student/StudentProfile";
 import { useAuth } from "@/context/AuthProvider";
-import { Avatar, Box, Container, Typography } from "@mui/material";
+import {  Container } from "@mui/material";
+import student_ico from "../../assets/images/header/student_ico.svg";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
@@ -29,11 +29,12 @@ const Profile = () => {
   }
 
   return (
-    <>
+    <Container>
       <CustomTitle
         title="Profile Details"
         subtitle="Here you can view and edit your profile information."
         color="text.main"
+        img={student_ico}
       />
 
       {/* Add your profile details here */}
@@ -43,7 +44,7 @@ const Profile = () => {
         student={student?.profile}
         medical={student?.medical}
       />
-    </>
+    </Container>
   );
 };
 

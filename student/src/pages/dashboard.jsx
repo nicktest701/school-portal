@@ -277,7 +277,8 @@ const Dashboard = () => {
 
         <Box
           sx={{
-            width: { xs: 0, sm: 270, md: 300 },
+            minWidth: { xs: 0, sm: 270, md: 300 },
+
             // minWidth: { xs: 0, md: 250 },
             display: { xs: "none", md: "block" },
             transition: "all 0.4s ease-in-out",

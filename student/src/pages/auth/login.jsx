@@ -13,8 +13,6 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Divider,
-  Grid,
   Fade,
   Link,
 } from "@mui/material";
@@ -23,8 +21,6 @@ import {
   VisibilityOff,
   Person,
   Lock,
-  Google,
-  Facebook,
 } from "@mui/icons-material";
 import { useLogin } from "@/hooks/useStudentAuth";
 import { useAuth } from "@/context/AuthProvider";

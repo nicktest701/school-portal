@@ -101,7 +101,7 @@ const FeesDashboard = () => {
     },
     {
       title: "Last Fee Paid",
-      value: currencyFormatter(feesRecord.data?.lastFeePaid?.paid),
+      value: currencyFormatter(feesRecord.data?.lastFeePaid?.paid ?? 0),
       icon: <CheckCircleIcon fontSize="large" />,
       color: theme.palette.primary.main,
       bgColor: "rgba(25, 118, 210, 0.1)",

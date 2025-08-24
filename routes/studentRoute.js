@@ -64,6 +64,9 @@ const LEVEL_OPTIONS = [
   "J.H.S 1",
   "J.H.S 2",
   "J.H.S 3",
+  "S.H.S 1",
+  "S.H.S 2",
+  "S.H.S 3",
 ];
 
 const Storage = multer.diskStorage({
@@ -489,6 +492,7 @@ router.post(
         return {
           _id: student._id,
           id: student._id,
+          indexnumber: student?.indexnumber,
           email: student?.email,
           phonenumber: student?.phonenumber,
           password: hashedPassword,
@@ -620,7 +624,7 @@ router.put(
 //@POST Update Student bulk profile
 router.put(
   "/bulk-profile",
-  upload.array("profile", 20),
+  upload.array("profile", 10),
   asyncHandler(async (req, res) => {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json("No files uploaded");

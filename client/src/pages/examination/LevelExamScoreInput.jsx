@@ -22,9 +22,7 @@ import {
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { readXLSX } from "@/config/readXLSX";
-import {
-  UploadFileRounded,
-} from "@mui/icons-material";
+import { UploadFileRounded } from "@mui/icons-material";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { EMPTY_IMAGES } from "@/config/images";
 import { postBulkExams } from "@/api/ExaminationAPI";
@@ -49,7 +47,8 @@ const LevelExamScoreInput = () => {
   const [mainError, setMainError] = useState("");
   const [subject, setSubject] = useState({ _id: "", name: "" });
 
-  const { levelLoading, subjects, gradeSystem } = useLevelById(levelId);
+  const { levelLoading, levelName, subjects, gradeSystem, students } =
+    useLevelById(levelId);
 
   const scorePreference = session?.exams?.scorePreference?.split("/");
   const classScorePreference = !_.isUndefined(scorePreference)
@@ -61,6 +60,8 @@ const LevelExamScoreInput = () => {
 
   //LOAD Results from file excel,csv
   async function handleLoadFile(e) {
+    setMainError("");
+    setData([]);
     setFieldError("");
     const file = e.target.files[0];
 
@@ -74,10 +75,18 @@ const LevelExamScoreInput = () => {
 
     if (file) {
       try {
+        //Get existing students ids
+        const studentsIndexs = _.map(students, "indexnumber");
         // console.log(results);
         const results = await readXLSX(file, "camel-case");
+        
+        const filteredResults = results.filter(
+          (result) =>
+            studentsIndexs.includes(result["index number"]) ||
+            studentsIndexs.includes(result["indexnumber"])
+        );
 
-        if (results.length !== 0) {
+        if (filteredResults.length !== 0) {
           const modifiedResults = results.map((item) => {
             const classScore = Number(
               item["class score"] || item["classscore"] || 0
@@ -119,6 +128,8 @@ const LevelExamScoreInput = () => {
           });
 
           setData(modifiedResults);
+        } else {
+          setMainError(`No student in ${levelName} was found!`);
         }
       } catch (error) {
         setMainError(error);

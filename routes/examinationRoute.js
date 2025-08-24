@@ -184,20 +184,8 @@ router.get(
         SUBJECT_OPTIONS.indexOf(a.name) - SUBJECT_OPTIONS.indexOf(b.name)
     );
 
-    const studentOverallScores = await Examination.find({
-      term: termId,
-      level: levelId,
-    }).select(["overallScore"]);
-
-    //GET student position
-    // const positions = getPosition(studentOverallScores);
-    const position = await getMyPosition(
-      termId,
-      levelId,
-      studentRecords[0]?._id
-    );
-
     const generatedResults = studentRecords.map(async (report) => {
+      const position = await getMyPosition(termId, levelId, report?._id);
       //GENERATE STUDENT RESULTS
       const generatedResult = await studentReportDetails(
         report,
@@ -274,13 +262,16 @@ router.get(
 
     school.badge = SCHOOL_PHOTO;
 
-    //GET student position
-    const position =await getMyPosition(termId, levelId, studentRecords[0]?._id);
-
     try {
       //GENERATE STUDENT RESULTS
 
       const generatedResults = studentRecords.map(async (report) => {
+        //GET student position
+        const position = await getMyPosition(
+          termId,
+          levelId,
+          studentRecords?._id
+        );
         //GENERATE STUDENT RESULTS
         const generatedResult = await studentReportDetails(
           report,
@@ -291,13 +282,18 @@ router.get(
       });
 
       //WAIT FOR ALL RESULTS TO FINISH
-      const results = await Promise.all(generatedResults);
+      const mainResults = await Promise.all(generatedResults);
+
+      const results =
+        process.env.NODE_ENV === "production"
+          ? mainResults
+          : _.take(mainResults, 1);
 
       const limit = pLimit(5);
 
       //SEND REPORTS TO STUDENT SMS
       if (publishType === "sms") {
-        const response = _.take(results, 1).map(async (result) => {
+        const response = results.map(async (result) => {
           return limit(() => sendReportSMS(result, school));
         });
 
@@ -337,7 +333,7 @@ router.get(
 
       if (publishType === "email") {
         if (allReports) {
-          const mailedReports = _.take(results, 1).map(
+          const mailedReports = results.map(
             async ({ fullName, email, report_id }) => {
               const mailResults = limit(() =>
                 sendReportMail({
@@ -366,7 +362,7 @@ router.get(
           return limit(() => sendReportSMS(result, school));
         });
 
-        const mailedReports = _.take(results, 1).map(
+        const mailedReports = results.map(
           async ({ fullName, email, report_id }) => {
             const mailResults = limit(() =>
               sendReportMail({
@@ -509,7 +505,6 @@ router.get(
       activeLevel?.level?._id,
       activeLevel?._id
     );
- 
 
     const averagePerformanceIndex = getAveragePerformanceIndex(records);
     const performanceIndexes = calculatePerformanceIndex(records);
@@ -527,8 +522,8 @@ router.get(
     // const bestOverallSubject = getOverallBestSubject(records);
     const bestOverallSubject = _.first(getTopSubjects(records, 1));
     const bestSubjectScore = {
-      term: bestOverallSubject.term,
-      level: bestOverallSubject.level,
+      term: bestOverallSubject?.term,
+      level: bestOverallSubject?.level,
       subject: bestOverallSubject.subject,
       score: bestOverallSubject.score,
     };
@@ -965,11 +960,6 @@ const studentReportDetails = async (
 
   //GET Student Grade
   const grade = await generateTotalGrade(scores, level?._id);
-
-  // const position =
-  //   positions.find((exams) => {
-  //     return exams._id.toString() === _id.toString();
-  //   }).position || "";
 
   const modifiedStudentRecord = {
     _id,

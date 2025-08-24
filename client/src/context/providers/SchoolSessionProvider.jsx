@@ -3,13 +3,7 @@ import PropTypes from "prop-types";
 import SchoolSessionReducer from "../reducers/SchoolSessionReducer";
 export const SchoolSessionContext = React.createContext();
 const SchoolSessionProvider = ({ children }) => {
-
-
   const schoolSessionValues = {
-    displayAddSession: false,
-    currentSession: {},
-    subjectsWithScore: [],
-
     levelFeeInfo: {
       open: false,
       data: {
@@ -27,23 +21,10 @@ const SchoolSessionProvider = ({ children }) => {
       open: false,
       data: {},
     },
-    //Receipt
-    feesReceiptData: {
-      open: false,
-      data: {},
-    },
 
     feeEditData: {
       open: false,
       data: {},
-    },
-    //view fees history
-    studentFeesHistoryId: "",
-
-    //View exams record
-    examsRecord: {
-      open: false,
-      id: "",
     },
 
     //View  Exams Report
@@ -78,8 +59,6 @@ const SchoolSessionProvider = ({ children }) => {
       type: "",
     },
 
-    ///fee details to be print
-    feePrintData: {},
     viewLevel: {
       open: false,
       data: {},
@@ -135,14 +114,11 @@ const SchoolSessionProvider = ({ children }) => {
     schoolSessionValues
   );
 
-
-
   return (
     <SchoolSessionContext.Provider
       value={{
         schoolSessionState,
         schoolSessionDispatch,
-     
       }}
     >
       {children}

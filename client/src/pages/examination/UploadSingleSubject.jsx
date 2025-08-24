@@ -25,18 +25,18 @@ import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable
 import { EMPTY_IMAGES } from "@/config/images";
 import { postBulkExams } from "@/api/ExaminationAPI";
 import { generateCustomGrade } from "@/config/generateCustomGrade";
-import { UserContext } from "@/context/providers/UserProvider";
 import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import useLevelById from "@/components/hooks/useLevelById";
 import { readXLSX } from "@/config/readXLSX";
 import { UploadFileRounded } from "@mui/icons-material";
+import { useAuth } from "@/hooks/useAuth";
 
 const UploadSingleSubject = () => {
   const uploadedData = sessionStorage.getItem("course-upload-data");
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const { session } = useContext(UserContext);
+  const { session } = useAuth()
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { levelId } = useParams();
@@ -58,12 +58,14 @@ const UploadSingleSubject = () => {
     ? scorePreference[1]
     : 50;
 
-  const { levelName, gradeSystem, subjects } = useLevelById(levelId);
+  const { levelName, gradeSystem, subjects, students } = useLevelById(levelId);
 
   const subject = subjects?.find((s) => s?._id === searchParams.get("_id"));
 
   //LOAD Results from file excel,csv
   async function handleLoadFile(e) {
+    setMainError("");
+    setData([]);
     const file = e?.target.files[0];
     if (subject?.name === "") {
       setFieldError("Please select a Subject!");
@@ -74,10 +76,16 @@ const UploadSingleSubject = () => {
     setIsLoading(true);
     if (file) {
       try {
-        // console.log(results);
+        const studentsIndexs = _.map(students, "indexnumber");
         const results = await readXLSX(file);
 
-        if (results.length !== 0) {
+        const filteredResults = results.filter(
+          (result) =>
+            studentsIndexs.includes(result["index number"]) ||
+            studentsIndexs.includes(result["indexnumber"])
+        );
+
+        if (filteredResults.length !== 0) {
           const modifiedResults = results.map((item) => {
             const classScore = Number(
               item["class score"] || item["classscore"] || 0
@@ -119,7 +127,12 @@ const UploadSingleSubject = () => {
           });
 
           setData(modifiedResults);
-          sessionStorage.setItem("course-upload-data", JSON.stringify(modifiedResults));
+          sessionStorage.setItem(
+            "course-upload-data",
+            JSON.stringify(modifiedResults)
+          );
+        } else {
+          setMainError(`No student in ${levelName} was found!`);
         }
       } catch (error) {
         setMainError(error);

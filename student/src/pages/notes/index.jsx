@@ -17,6 +17,7 @@ import {
   ToggleButtonGroup,
   Stack,
 } from "@mui/material";
+import level_ico from "@/assets/header/level_ico.svg";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
@@ -43,12 +44,12 @@ export default function NotesBoard() {
   const updateNote = useUpdateNote();
   const deleteNote = useDeleteNote();
 
-  const handleSubmit = (data) => {
-  
+  const handleSubmit = async (data) => {
     if (editingNote) {
       updateNote.mutate({ id: editingNote._id, ...data });
     } else {
-      createNote.mutateAsync(data);
+      console.log(data);
+      createNote.mutateAsync({ ...data });
     }
   };
 
@@ -71,7 +72,7 @@ export default function NotesBoard() {
       <CustomTitle
         title="Notes Board"
         subtitle="Manage user accounts, roles, and permissions to ensure secure and appropriate access to the system."
-        // img={users_icon}
+        img={level_ico}
         color="text.main"
         right={
           <Button

@@ -304,8 +304,8 @@ const AcademicDashboard = () => {
               </Typography>
               <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
                 You're performing in the top 5% of your class. Your consistent
-                improvement in Class XII shows exceptional dedication to your
-                studies.
+                improvement in {academicRecord?.data?.activeLevel?.level} shows
+                exceptional dedication to your studies.
               </Typography>
 
               <Grid container spacing={2} sx={{ mt: 3 }}>
@@ -458,7 +458,7 @@ const AcademicDashboard = () => {
                   fontWeight: 500,
                 }}
               >
-                Class XII
+                {academicRecord?.data?.activeLevel?.level}
               </Typography>
               <Typography
                 variant="body2"

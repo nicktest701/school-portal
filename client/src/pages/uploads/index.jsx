@@ -58,7 +58,7 @@ const Uploads = () => {
     // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
-    maxFiles: 20,
+    maxFiles: 10,
     accept:
       dataType === "personal-data"
         ? {
@@ -505,7 +505,7 @@ const Uploads = () => {
                             paddingBottom: "4px",
                           }}
                         >
-                          (You can upload up to 20 photos at time)
+                          (You can upload up to 10 photos at time)
                         </small>
                       )}
                       <Button

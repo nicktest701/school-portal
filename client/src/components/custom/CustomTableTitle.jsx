@@ -1,7 +1,7 @@
-
+import React from "react";
 import { ListItemText, Stack } from "@mui/material";
 import PropTypes from "prop-types";
-function CustomTableTitle({  title, subtitle }) {
+function CustomTableTitle({ title, subtitle }) {
   return (
     <Stack
       direction={{ xs: "column", sm: "row" }}
@@ -11,8 +11,6 @@ function CustomTableTitle({  title, subtitle }) {
       p={2}
       className="hide-on-print"
     >
-    
-
       <ListItemText
         primary={title}
         primaryTypographyProps={{

@@ -51,7 +51,7 @@ function Header() {
         position="sticky"
         sx={{
           width: "100%",
-          zIndex: 999999,
+          zIndex: 999,
           p: 1,
           // borderBottom: "2px solid var(--secondary)",
           ...bgBlur({

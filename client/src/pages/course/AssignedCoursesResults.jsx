@@ -132,6 +132,7 @@ function AssignedCoursesResults() {
       },
     });
   };
+  
 
   const columns = [
     ...STUDENT_RESULT_COLUMNS,
@@ -268,7 +269,8 @@ function AssignedCoursesResults() {
           {/* Progress Section */}
           <Box mt={2}>
             <Typography variant="body2" color="text.secondary">
-              Gain insights into students&apos; academic progress and achievements.
+              Gain insights into students&apos; academic progress and
+              achievements.
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Monitor grades, assessments, and overall performance to support
@@ -365,7 +367,7 @@ function AssignedCoursesResults() {
         isPending={scores.isPending}
         title={levelName}
         subtitle={subject?.name}
-        exportFileName={`${levelName}-${subject?.name}` || ""}
+        exportFileName={`${levelName}-${subject?.name}`}
         columns={columns}
         data={scores?.data.results}
         actions={[]}

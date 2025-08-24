@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
   useTransition,
+  useMemo,
 } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import {
@@ -16,6 +17,7 @@ import {
   ButtonGroup,
   TextField,
   IconButton,
+  Grid2 as Grid,
 } from "@mui/material";
 import Swal from "sweetalert2";
 import { useReactToPrint } from "react-to-print";
@@ -31,16 +33,20 @@ import {
   RefreshRounded,
   Search,
 } from "@mui/icons-material";
+import ViewModuleIcon from "@mui/icons-material/ViewModule";
+import ViewListIcon from "@mui/icons-material/ViewList";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import CustomTitle from "@/components/custom/CustomTitle";
 import ReportCard from "./ReportCard";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { StudentContext } from "@/context/providers/StudentProvider";
 import PublishResultOption from "@/components/modals/PublishResultOption";
+import { debounce } from "lodash";
 
 const ViewExamsReports = () => {
   const [openPublishOption, setOpenPublishOption] = useState(false);
   const [value, setValue] = useState("sms");
+  const [viewMode, setViewMode] = useState("list");
   const [uploadProgress, setUploadProgress] = useState(0);
   const { session } = use(UserContext);
   const [isPending, startTransition] = useTransition();
@@ -141,6 +147,41 @@ const ViewExamsReports = () => {
     setValue("sms");
   };
 
+  const handlOpenScoreSheet = () => setOpenScoreSheet(true);
+
+  const reactToPrintFn = useReactToPrint({
+    documentTitle: "Student Report",
+    contentRef: componentRef,
+  });
+
+  // ✅ Optimized search with debounce
+  const handleSearch = useMemo(
+    () =>
+      debounce((value) => {
+        // console.log(reports.data?.results);
+        startTransition(() => {
+          const lower = value.toLowerCase();
+          const results = reports.data?.results?.filter(
+            (item) =>
+              item?.fullName?.toLowerCase().includes(lower) ||
+              item?.indexnumber?.toLowerCase().includes(lower)
+          );
+          setFilteredData(results);
+        });
+      }, 300),
+    [reports.data]
+  );
+
+  const onSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    handleSearch(value);
+  };
+
+  // Example fixed-size array
+  // const columnCount = 2; // Number of columns in the grid
+  // const rowCount = Math.ceil(reports?.data?.results?.length / columnCount); // Total rows
+
   const generatedReports = ({ data, index }) => {
     return <ReportCard key={index} student={data[index]} />;
   };
@@ -152,32 +193,6 @@ const ViewExamsReports = () => {
     [reports?.data?.results]
   );
 
-  const handlOpenScoreSheet = () => setOpenScoreSheet(true);
-
-  const reactToPrintFn = useReactToPrint({
-    documentTitle: "Student Report",
-    contentRef: componentRef,
-  });
-
-  const handleSearch = useCallback((e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchTerm(value);
-
-    startTransition(() => {
-      const results = reports.data?.results?.filter((item) =>
-        Object.values(item).some((val) =>
-          String(val).toLowerCase().includes(value)
-        )
-      );
-
-      setFilteredData(results);
-    });
-  }, []);
-
-  // Example fixed-size array
-  // const columnCount = 2; // Number of columns in the grid
-  // const rowCount = Math.ceil(reports?.data?.results?.length / columnCount); // Total rows
-
   return (
     <>
       <Container maxWidth="lg">
@@ -186,9 +201,25 @@ const ViewExamsReports = () => {
           subtitle="Show details of student performance"
           color="primary.main"
           right={
-            <IconButton size="large" onClick={reports.refetch}>
-              <RefreshRounded sx={{ width: 36, height: 36 }} />
-            </IconButton>
+            <Stack direction="row" spacing={1}>
+              <IconButton
+                size="large"
+                onClick={() => {
+                  reports.refetch();
+                }}
+              >
+                <RefreshRounded sx={{ width: 36, height: 36 }} />
+              </IconButton>
+              {/* 🔑 Toggle button */}
+              <IconButton
+                size="large"
+                onClick={() =>
+                  setViewMode((prev) => (prev === "list" ? "grid" : "list"))
+                }
+              >
+                {viewMode === "list" ? <ViewModuleIcon /> : <ViewListIcon />}
+              </IconButton>
+            </Stack>
           }
           showBack={true}
         />
@@ -229,11 +260,10 @@ const ViewExamsReports = () => {
               {publishIsPending ? "Please Wait" : "Publish Reports"}
             </Button>
           </ButtonGroup>
-
           <TextField
             placeholder="Search for Report"
             value={searchTerm}
-            onChange={handleSearch}
+            onChange={onSearchChange}
             slotProps={{
               input: {
                 startAdornment: (
@@ -259,39 +289,39 @@ const ViewExamsReports = () => {
         <Typography>No Report Available.....</Typography>
       )}
 
-      {/* <Grid
-        columnCount={columnCount}
-        rowCount={rowCount}
-        columnWidth={816} // Report card width in pixels
-        rowHeight={1096} // Report card height in pixels
-        width={816 * columnCount} // Grid container width
-        height={1096 * 2} // Visible viewport height (adjust as needed)
-        itemCount={reports?.data?.results?.length}
-        itemData={reports?.data?.results}
-      >
-        {({ data, columnIndex, rowIndex, style }) => {
-          const index = rowIndex * columnCount + columnIndex;
-          if (index >= data?.length) return null;
-
-          const card = data[index];
-
-          return <ReportCard key={index} student={card} />;
-        }}
-      </Grid> */}
-      <FixedSizeList
-        // className="report-container"
-        height={1096}
-        width={"215mm"}
-        itemSize={1200}
-        itemCount={filteredData?.length}
-        itemData={filteredData}
-        style={{
-          marginInline: "auto",
-          backgroundColor: "#fff",
-        }}
-      >
-        {generatedReports}
-      </FixedSizeList>
+      {viewMode === "list" ? (
+        <FixedSizeList
+          height={1096}
+          width={"215mm"}
+          itemSize={1200}
+          itemCount={filteredData?.length}
+          itemData={filteredData}
+          style={{
+            marginInline: "auto",
+            backgroundColor: "#fff",
+          }}
+        >
+          {generatedReports}
+        </FixedSizeList>
+      ) : (
+        <Container maxWidth="lg" sx={{ py: 2 }}>
+          <Grid container spacing={2}>
+            {filteredData?.map((report) => (
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 6,
+                  md: 6,
+                }}
+                sx={{ bgcolor: "#fff" }}
+                key={report._id}
+              >
+                <ReportCard student={report} compact />
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      )}
 
       <div ref={componentRef} className="print-container">
         {filteredData?.map((report) => {

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Stack,
   Typography,
@@ -8,45 +8,77 @@ import {
   Avatar,
   DialogContent,
   Dialog,
-  Button,
   DialogActions,
+  Button,
+  IconButton,
 } from "@mui/material";
 
+import { Add, Delete } from "@mui/icons-material";
+
 import CustomFormControl from "@/components/inputs/CustomFormControl";
-import { Formik } from "formik";
-import { StudentContext } from "@/context/providers/StudentProvider";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { NATIONALITY } from "@/mockup/data/nationality";
 import { TOWNS } from "@/mockup/data/towns";
 import { RELATIONSHIP } from "@/mockup/columns/sessionColumns";
 import { guardianValidationSchema } from "@/config/validationSchema";
-import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postParent } from "@/api/parentAPI";
-import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+
+import PropTypes from "prop-types";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { newStudentDefaultValues } from "@/config/initialValues";
+import { useAuth } from "@/hooks/useAuth";
 
 const ParentNew = ({ open, setOpen }) => {
-  const {
-    studentState: {
-      newStudent: { parent },
-    },
-  } = useContext(StudentContext);
+  const { school_info } = useAuth();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const { studentId } = useParams();
 
   const { isPending, mutateAsync } = useMutation({ mutationFn: postParent });
 
-  const onSubmit = (values, options) => {
-    values.parent1.student = studentId;
-    values.parent2.student = studentId;
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+    watch,
+  } = useForm({
+    defaultValues: newStudentDefaultValues.parent,
+    resolver: yupResolver(guardianValidationSchema),
+  });
 
-    mutateAsync(values, {
+  // manage dynamic parents
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "parents",
+  });
+
+  useEffect(() => {
+    reset({
+      parents: newStudentDefaultValues.parent,
+    });
+  }, [parent, reset]);
+
+  const onSubmit = async (values) => {
+    // attach studentId to each parent before sending
+    const payload = {
+      parents: values.parents.map((p) => ({
+        ...p,
+        student: studentId,
+        school: school_info?._id,
+      })),
+    };
+
+    await mutateAsync(payload, {
       onSettled: () => {
         queryClient.invalidateQueries(["student-profile", studentId]);
-        options.setSubmitting(false);
       },
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
@@ -59,482 +91,298 @@ const ParentNew = ({ open, setOpen }) => {
   };
 
   const handleClose = () => setOpen(false);
+
   return (
-    <Dialog
-      maxWidth="md"
-      fullWidth
-      open={open}
-      onClose={handleClose}
-      // TransitionComponent={Transition}
-    >
+    <Dialog maxWidth="md" fullWidth open={open} onClose={handleClose}>
       <CustomDialogTitle
         title="New Parent/Guardian Information"
         onClose={handleClose}
+        subtitle="Fill in parent/guardian details below"
       />
-      <DialogContent xs={{ p: 1 }}>
-        <Formik
-          initialValues={parent}
-          onSubmit={onSubmit}
-          enableReinitialize={true}
-          validationSchema={guardianValidationSchema}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            setFieldValue,
-            handleChange,
-            handleSubmit,
-          }) => {
-            return (
-              <Stack py={2} spacing={1}>
-                <div style={{ overflowY: "auto" }}>
-                  <Stack py={2} spacing={1}>
-                    <Stack
-                      direction="row"
-                      justifyContent="flex-start"
-                      alignItems="center"
-                      spacing={2}
-                    >
-                      <Typography
-                        variant="body2"
-                        color="primary.main"
-                        sx={{ fontWeight: "bold" }}
-                      >
-                        Parent/Guardian Information
-                      </Typography>
-                      <Avatar
-                        sx={{ width: 30, height: 30, bgcolor: "primary.main" }}
-                      >
-                        1
-                      </Avatar>
-                    </Stack>
-
-                    <CustomFormControl>
-                      <TextField
-                        label="Firstname"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        value={values?.parent1?.firstname}
-                        onChange={handleChange("parent1.firstname")}
-                        error={Boolean(
-                          touched.parent1?.firstname &&
-                            errors.parent1?.firstname
-                        )}
-                        helperText={
-                          touched.parent1?.firstname &&
-                          errors.parent1?.firstname
-                        }
-                      />
-                      <TextField
-                        label="Surname"
-                        fullWidth
-                        size="small"
-                        value={values?.parent1?.surname}
-                        onChange={handleChange("parent1.surname")}
-                        error={Boolean(
-                          touched.parent1?.surname && errors.parent1?.surname
-                        )}
-                        helperText={
-                          touched.parent1?.surname && errors.parent1?.surname
-                        }
-                      />
-                    </CustomFormControl>
-                    <CustomFormControl>
-                      <TextField
-                        label="Gender"
-                        select
-                        fullWidth
-                        size="small"
-                        value={values?.parent1?.gender}
-                        onChange={handleChange("parent1.gender")}
-                        error={Boolean(
-                          touched.parent1?.gender && errors.parent1?.gender
-                        )}
-                        helperText={
-                          touched.parent1?.gender && errors.parent1?.gender
-                        }
-                      >
-                        <MenuItem value="male">Male</MenuItem>
-                        <MenuItem value="female">Female</MenuItem>
-                      </TextField>
-
-                      <Autocomplete
-                        freeSolo
-                        fullWidth
-                        size="small"
-                        options={RELATIONSHIP(values?.parent1?.gender)}
-                        loadingText="Please wait...."
-                        noOptionsText="No Relationship available"
-                        getOptionLabel={(option) => option || ""}
-                        value={values?.parent1?.relationship}
-                        onInputChange={(e, value) =>
-                          setFieldValue("parent1.relationship", value)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Relationship"
-                            fullWidth
-                            size="small"
-                            error={Boolean(
-                              touched.parent1?.relationship &&
-                                errors.parent1?.relationship
-                            )}
-                            helperText={
-                              touched.parent1?.relationship &&
-                              errors.parent1?.relationship
-                            }
-                          />
-                        )}
-                      />
-                    </CustomFormControl>
-                    <CustomFormControl>
-                      <TextField
-                        label="Email"
-                        fullWidth
-                        size="small"
-                        row={3}
-                        maxRows={3}
-                        value={values?.parent1?.email}
-                        onChange={handleChange("parent1.email")}
-                        error={Boolean(
-                          touched.parent1?.email && errors.parent1?.email
-                        )}
-                        helperText={
-                          touched.parent1?.email && errors.parent1?.email
-                        }
-                      />
-                      <TextField
-                        label="Telephone No."
-                        inputMode="tel"
-                        type="tel"
-                        fullWidth
-                        size="small"
-                        value={values?.parent1?.phonenumber}
-                        onChange={handleChange("parent1.phonenumber")}
-                        error={Boolean(
-                          touched.parent1?.phonenumber &&
-                            errors.parent1?.phonenumber
-                        )}
-                        helperText={
-                          touched.parent1?.phonenumber &&
-                          errors.parent1?.phonenumber
-                        }
-                      />
-                    </CustomFormControl>
-                    <TextField
-                      label="Address"
-                      fullWidth
-                      size="small"
-                      value={values?.parent1?.address}
-                      onChange={handleChange("parent1.address")}
-                      error={Boolean(
-                        touched.parent1?.address && errors.parent1?.address
-                      )}
-                      helperText={
-                        touched.parent1?.address && errors.parent1?.address
-                      }
-                    />
-
-                    <CustomFormControl>
-                      <Autocomplete
-                        freeSolo
-                        fullWidth
-                        size="small"
-                        options={TOWNS}
-                        loadingText="Please wait...."
-                        noOptionsText="No Town available"
-                        getOptionLabel={(option) => option || ""}
-                        value={values?.parent1?.residence}
-                        onChange={(e, value) =>
-                          setFieldValue("parent1.residence", value)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Residence"
-                            fullWidth
-                            size="small"
-                            error={Boolean(
-                              touched.parent1?.residence &&
-                                errors.parent1?.residence
-                            )}
-                            helperText={
-                              touched.parent1?.residence &&
-                              errors.parent1?.residence
-                            }
-                          />
-                        )}
-                      />
-
-                      <Autocomplete
-                        freeSolo
-                        fullWidth
-                        size="small"
-                        loadingText="Please wait...."
-                        options={NATIONALITY}
-                        noOptionsText="No Nationality available"
-                        getOptionLabel={(option) => option || ""}
-                        value={values?.parent1?.nationality}
-                        onChange={(e, value) =>
-                          setFieldValue("parent1.nationality", value)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Nationality"
-                            fullWidth
-                            size="small"
-                            error={Boolean(
-                              touched.parent1?.nationality &&
-                                errors.parent1?.nationality
-                            )}
-                            helperText={
-                              touched.parent1?.nationality &&
-                              errors.parent1?.nationality
-                            }
-                          />
-                        )}
-                      />
-                    </CustomFormControl>
-                  </Stack>
-                  {/* Parent 2  */}
-                  <Stack py={2} spacing={1}>
-                    <Stack
-                      direction="row"
-                      justifyContent="flex-start"
-                      alignItems="center"
-                      spacing={2}
-                    >
-                      <Typography
-                        variant="body2"
-                        color="primary.main"
-                        sx={{ fontWeight: "bold" }}
-                      >
-                        Parent/Guardian Information
-                      </Typography>
-                      <Avatar
-                        sx={{ width: 30, height: 30, bgcolor: "primary.main" }}
-                      >
-                        2
-                      </Avatar>
-                    </Stack>
-
-                    <CustomFormControl>
-                      <TextField
-                        label="Firstname"
-                        type="text"
-                        fullWidth
-                        size="small"
-                        value={values?.parent2?.firstname}
-                        onChange={handleChange("parent2.firstname")}
-                        error={Boolean(
-                          touched.parent2?.firstname &&
-                            errors.parent2?.firstname
-                        )}
-                        helperText={
-                          touched.parent2?.firstname &&
-                          errors.parent2?.firstname
-                        }
-                      />
-                      <TextField
-                        label="Surname"
-                        fullWidth
-                        size="small"
-                        value={values?.parent2?.surname}
-                        onChange={handleChange("parent2.surname")}
-                        error={Boolean(
-                          touched.parent2?.surname && errors.parent2?.surname
-                        )}
-                        helperText={
-                          touched.parent2?.surname && errors.parent2?.surname
-                        }
-                      />
-                    </CustomFormControl>
-                    <CustomFormControl>
-                      <TextField
-                        label="Gender"
-                        select
-                        fullWidth
-                        size="small"
-                        value={values?.parent2?.gender}
-                        onChange={handleChange("parent2.gender")}
-                        error={Boolean(
-                          touched.parent2?.gender && errors.parent2?.gender
-                        )}
-                        helperText={
-                          touched.parent2?.gender && errors.parent2?.gender
-                        }
-                      >
-                        <MenuItem value="male">Male</MenuItem>
-                        <MenuItem value="female">Female</MenuItem>
-                      </TextField>
-
-                      <Autocomplete
-                        freeSolo
-                        fullWidth
-                        size="small"
-                        options={RELATIONSHIP(values?.parent2?.gender)}
-                        loadingText="Please wait...."
-                        noOptionsText="No Relationship available"
-                        getOptionLabel={(option) => option || ""}
-                        value={values?.parent2?.relationship}
-                        onInputChange={(e, value) =>
-                          setFieldValue("parent2.relationship", value)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Relationship"
-                            fullWidth
-                            size="small"
-                            error={Boolean(
-                              touched.parent2?.relationship &&
-                                errors.parent2?.relationship
-                            )}
-                            helperText={
-                              touched.parent2?.relationship &&
-                              errors.parent2?.relationship
-                            }
-                          />
-                        )}
-                      />
-                    </CustomFormControl>
-                    <CustomFormControl>
-                      <TextField
-                        label="Email"
-                        fullWidth
-                        size="small"
-                        row={3}
-                        maxRows={3}
-                        value={values?.parent2?.email}
-                        onChange={handleChange("parent2.email")}
-                        error={Boolean(
-                          touched.parent2?.email && errors.parent2?.email
-                        )}
-                        helperText={
-                          touched.parent2?.email && errors.parent2?.email
-                        }
-                      />
-                      <TextField
-                        label="Telephone No."
-                        inputMode="tel"
-                        type="tel"
-                        fullWidth
-                        size="small"
-                        value={values?.parent2?.phonenumber}
-                        onChange={handleChange("parent2.phonenumber")}
-                        error={Boolean(
-                          touched.parent2?.phonenumber &&
-                            errors.parent2?.phonenumber
-                        )}
-                        helperText={
-                          touched.parent2?.phonenumber &&
-                          errors.parent2?.phonenumber
-                        }
-                      />
-                    </CustomFormControl>
-                    <TextField
-                      label="Address"
-                      fullWidth
-                      size="small"
-                      value={values?.parent2?.address}
-                      onChange={handleChange("parent2.address")}
-                      error={Boolean(
-                        touched.parent2?.address && errors.parent2?.address
-                      )}
-                      helperText={
-                        touched.parent2?.address && errors.parent2?.address
-                      }
-                    />
-
-                    <CustomFormControl>
-                      <Autocomplete
-                        freeSolo
-                        fullWidth
-                        size="small"
-                        options={TOWNS}
-                        loadingText="Please wait...."
-                        noOptionsText="No Town available"
-                        getOptionLabel={(option) => option || ""}
-                        value={values?.parent2?.residence}
-                        onChange={(e, value) =>
-                          setFieldValue("parent2.residence", value)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Residence"
-                            fullWidth
-                            size="small"
-                            error={Boolean(
-                              touched.parent2?.residence &&
-                                errors.parent2?.residence
-                            )}
-                            helperText={
-                              touched.parent2?.residence &&
-                              errors.parent2?.residence
-                            }
-                          />
-                        )}
-                      />
-
-                      <Autocomplete
-                        freeSolo
-                        fullWidth
-                        size="small"
-                        loadingText="Please wait...."
-                        options={NATIONALITY}
-                        noOptionsText="No Nationality available"
-                        getOptionLabel={(option) => option || ""}
-                        value={values?.parent2?.nationality}
-                        onChange={(e, value) =>
-                          setFieldValue("parent2.nationality", value)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Nationality"
-                            fullWidth
-                            size="small"
-                            error={Boolean(
-                              touched.parent2?.nationality &&
-                                errors.parent2?.nationality
-                            )}
-                            helperText={
-                              touched.parent2?.nationality &&
-                              errors.parent2?.nationality
-                            }
-                          />
-                        )}
-                      />
-                    </CustomFormControl>
-                  </Stack>
-                </div>
-
-                <DialogActions>
-                  <Button disabled={isPending} onClick={handleClose}>
-                    Cancel
-                  </Button>
-                  <Button
-                    loading={isPending}
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSubmit}
+      <DialogContent sx={{ p: 1 }}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack py={2} spacing={3}>
+            {fields.map((field, index) => (
+              <Stack
+                key={field.id}
+                spacing={2}
+                sx={{
+                  border: "1px solid #e0e0e0",
+                  borderRadius: 2,
+                  p: 2,
+                  position: "relative",
+                }}
+              >
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <Typography
+                    variant="body2"
+                    color="primary.main"
+                    sx={{ fontWeight: "bold" }}
                   >
-                    Save
-                  </Button>
-                </DialogActions>
+                    Parent/Guardian {index + 1}
+                  </Typography>
+                  <Avatar
+                    sx={{ width: 30, height: 30, bgcolor: "primary.main" }}
+                  >
+                    {index + 1}
+                  </Avatar>
+                  {fields.length > 1 && (
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => remove(index)}
+                      sx={{ ml: "auto" }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  )}
+                </Stack>
+
+                <CustomFormControl>
+                  {/* Firstname */}
+                  <Controller
+                    name={`parents.${index}.firstname`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Firstname"
+                        size="small"
+                        fullWidth
+                        error={!!errors?.parents?.[index]?.firstname}
+                        helperText={
+                          errors?.parents?.[index]?.firstname?.message
+                        }
+                      />
+                    )}
+                  />
+                  {/* Surname */}
+                  <Controller
+                    name={`parents.${index}.surname`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Surname"
+                        size="small"
+                        fullWidth
+                        error={!!errors?.parents?.[index]?.surname}
+                        helperText={errors?.parents?.[index]?.surname?.message}
+                      />
+                    )}
+                  />
+                </CustomFormControl>
+
+                <CustomFormControl>
+                  {/* Gender */}
+                  <Controller
+                    name={`parents.${index}.gender`}
+                    control={control}
+                    render={({ field }) => {
+                      setValue(`parents.${index}.relationship`, "");
+                      return (
+                        <TextField
+                          {...field}
+                          select
+                          label="Gender"
+                          size="small"
+                          fullWidth
+                          error={!!errors?.parents?.[index]?.gender}
+                          helperText={errors?.parents?.[index]?.gender?.message}
+                        >
+                          <MenuItem value="male">Male</MenuItem>
+                          <MenuItem value="female">Female</MenuItem>
+                        </TextField>
+                      );
+                    }}
+                  />
+
+                  {/* Relationship */}
+                  <Controller
+                    name={`parents.${index}.relationship`}
+                    control={control}
+                    render={({ field }) => {
+                      const gender = watch(`parents.${index}.gender`);
+                      return (
+                        <Autocomplete
+                          freeSolo
+                          fullWidth
+                          options={RELATIONSHIP(gender)}
+                          value={field.value || ""}
+                          onInputChange={(_, value) => field.onChange(value)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Relationship"
+                              size="small"
+                              fullWidth
+                              error={!!errors?.parents?.[index]?.relationship}
+                              helperText={
+                                errors?.parents?.[index]?.relationship?.message
+                              }
+                            />
+                          )}
+                        />
+                      );
+                    }}
+                  />
+                </CustomFormControl>
+
+                <CustomFormControl>
+                  {/* Email */}
+                  <Controller
+                    name={`parents.${index}.email`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Email"
+                        size="small"
+                        fullWidth
+                        error={!!errors?.parents?.[index]?.email}
+                        helperText={errors?.parents?.[index]?.email?.message}
+                      />
+                    )}
+                  />
+
+                  {/* Phone */}
+                  <Controller
+                    name={`parents.${index}.phonenumber`}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Telephone No."
+                        size="small"
+                        fullWidth
+                        inputMode="tel"
+                        error={!!errors?.parents?.[index]?.phonenumber}
+                        helperText={
+                          errors?.parents?.[index]?.phonenumber?.message
+                        }
+                      />
+                    )}
+                  />
+                </CustomFormControl>
+
+                {/* Address */}
+                <Controller
+                  name={`parents.${index}.address`}
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Address"
+                      size="small"
+                      fullWidth
+                      error={!!errors?.parents?.[index]?.address}
+                      helperText={errors?.parents?.[index]?.address?.message}
+                    />
+                  )}
+                />
+
+                <CustomFormControl>
+                  {/* Residence */}
+                  <Controller
+                    name={`parents.${index}.residence`}
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        freeSolo
+                        options={TOWNS}
+                        fullWidth
+                        value={field.value || ""}
+                        onInputChange={(_, value) => field.onChange(value)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Residence"
+                            size="small"
+                            fullWidth
+                            error={!!errors?.parents?.[index]?.residence}
+                            helperText={
+                              errors?.parents?.[index]?.residence?.message
+                            }
+                          />
+                        )}
+                      />
+                    )}
+                  />
+                  {/* Nationality */}
+                  <Controller
+                    name={`parents.${index}.nationality`}
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        freeSolo
+                        fullWidth
+                        options={NATIONALITY}
+                        value={field.value || ""}
+                        onInputChange={(_, value) => field.onChange(value)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Nationality"
+                            size="small"
+                            fullWidth
+                            error={!!errors?.parents?.[index]?.nationality}
+                            helperText={
+                              errors?.parents?.[index]?.nationality?.message
+                            }
+                          />
+                        )}
+                      />
+                    )}
+                  />
+                </CustomFormControl>
               </Stack>
-            );
-          }}
-        </Formik>
+            ))}
+
+            {/* Add Parent Button */}
+            <Button
+              variant="outlined"
+              startIcon={<Add />}
+              onClick={() =>
+                append({
+                  firstname: "",
+                  surname: "",
+                  gender: "",
+                  relationship: "",
+                  email: "",
+                  phonenumber: "",
+                  address: "",
+                  residence: "",
+                  nationality: "",
+                })
+              }
+              sx={{ alignSelf: "flex-start" }}
+            >
+              Add New Parent
+            </Button>
+          </Stack>
+
+          <DialogActions>
+            <Button onClick={handleClose} color="inherit">
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isPending}
+              startIcon={isPending && <LoadingSpinner size={20} />}
+            >
+              Save Data
+            </Button>
+          </DialogActions>
+        </form>
       </DialogContent>
-      {isPending && <LoadingSpinner value="Please Wait..." />}
     </Dialog>
   );
+};
+
+ParentNew.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
 };
 
 export default ParentNew;

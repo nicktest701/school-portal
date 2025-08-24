@@ -1,59 +1,18 @@
 const StudentReducer = (state, action) => {
   switch (action.type) {
-    case 'addNewStudent':
-      // eslint-disable-next-line no-case-declarations
-      const data = {
-        ...state,
-        newStudent: {
-          ...state.newStudent,
-          ...action.payload,
-        },
-      };
-
-      localStorage.setItem('@student', JSON.stringify(data?.newStudent));
-
-      return data;
-    case 'getAllStudents':
-      return {
-        ...state,
-        allStudents: action.payload,
-      };
-
-    case 'getCurrentStudentId':
-      return {
-        ...state,
-        currentStudentId: action.payload,
-      };
-
-    case 'editStudent':
+    case "editStudent":
       return {
         ...state,
         editStudentData: action.payload,
       };
 
-    case 'editParent':
+    case "editParent":
       return {
         ...state,
         editParentData: action.payload,
       };
 
-    case 'getCurrentLevel':
-      return {
-        ...state,
-        currentLevelId: action.payload,
-      };
-    case 'getStudentCurrentLevelId':
-      return {
-        ...state,
-        studentCurrentLevelId: action.payload,
-      };
-    case 'getCurrentStudentSubjects':
-      return {
-        ...state,
-        currentStudentSubjects: action.payload,
-      };
-
-    case 'showCurrentStudentFeeReportView':
+    case "showCurrentStudentFeeReportView":
       return {
         ...state,
         showCurrentStudentFeeReportView: {
@@ -62,7 +21,7 @@ const StudentReducer = (state, action) => {
         },
       };
 
-    case 'showCurrentStudentAcademicsReportView':
+    case "showCurrentStudentAcademicsReportView":
       return {
         ...state,
         showCurrentStudentAcademicsReportView: {
@@ -71,13 +30,13 @@ const StudentReducer = (state, action) => {
         },
       };
 
-    case 'getReportDetails':
+    case "getReportDetails":
       return {
         ...state,
         studentReportDetails: action.payload,
       };
 
-    case 'viewStudentFeeHistory':
+    case "viewStudentFeeHistory":
       return {
         ...state,
         viewStudentFeeHistory: {

@@ -1,35 +1,31 @@
-import React, { useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React from "react";
+// import { useQuery } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
-import { getAllStudentsBySession } from "@/api/levelAPI";
-import { StudentContext } from "@/context/providers/StudentProvider";
+// import { getAllStudentsBySession } from "@/api/levelAPI";
+// import { StudentContext } from "@/context/providers/StudentProvider";
 import StudentNav from "./layout/StudentNav";
-import { UserContext } from "@/context/providers/UserProvider";
+// import { useAuth } from "@/hooks/useAuth";
 
 function Student() {
-  const {
-    session
-  } = useContext(UserContext);
-  const { studentDispatch } = useContext(StudentContext);
+  // const { session } = useAuth();
+  // const { studentDispatch } = useContext(StudentContext);
   //  console.log(students)
 
-  useQuery({
-    queryKey: ["all-students", session],
-    queryFn: () => getAllStudentsBySession(session),
-    enabled: !!session.sessionId,
-    onSuccess: (students) => {
-      studentDispatch({ type: "getAllStudents", payload: students });
-    },
-  });
+  // useQuery({
+  //   queryKey: ["all-students", session],
+  //   queryFn: () => getAllStudentsBySession(session),
+  //   enabled: !!session.sessionId,
+  //   onSuccess: (students) => {
+  //     studentDispatch({ type: "getAllStudents", payload: students });
+  //   },
+  // });
 
   return (
     <>
-      <StudentNav />  
-        <Outlet />
-    
+      <StudentNav />
+      <Outlet />
     </>
   );
 }
 
 export default Student;
-

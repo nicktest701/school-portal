@@ -3,11 +3,9 @@ import React, { memo } from "react";
 import BirthdayItem from "./BirthdayItem";
 import { useQuery } from "@tanstack/react-query";
 import { getTodaysBirth } from "../../api/levelAPI";
-// import db from "../../assets/images/header/bd1.svg";
+import db from "../../assets/images/header/bd1.svg";
 import BirthdaySkeleton from "../skeleton/BirthdaySkeleton";
 const Birthday = () => {
-
-
   const students = useQuery({
     queryKey: ["birthday"],
     queryFn: getTodaysBirth,
@@ -21,7 +19,7 @@ const Birthday = () => {
       <List
         subheader={
           <Stack direction="row" spacing={2}>
-            <img alt="db" src={null} style={{ width: 30, height: 30 }} />
+            <img alt="db" src={db} style={{ width: 30, height: 30 }} />
             <Typography>Today&lsquo;s Birthday</Typography>
           </Stack>
         }

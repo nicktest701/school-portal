@@ -14,7 +14,9 @@ export const useCreateNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data) => postNote(data),
+    mutationFn: ({ ...data }) => {
+      postNote(data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["notes"]);
       openAlert("success", "Note Created");

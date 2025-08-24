@@ -1,3 +1,4 @@
+import React from "react";
 import {
   CircleRounded,
   Delete,
@@ -20,11 +21,7 @@ import {
 import _ from "lodash";
 import { Link } from "react-router-dom";
 
-export const SCHOOL_SESSION_COLUMN = (
-  handleActive,
-  handleView,
-  handleEdit,
-) => {
+export const SCHOOL_SESSION_COLUMN = (handleActive, handleView, handleEdit) => {
   return [
     {
       field: "termId",
@@ -702,6 +699,16 @@ export const STUDENT_FEES_HISTORY = [
     title: "Level",
   },
   {
+    field: "fees",
+    title: "Fees",
+    type: "currency",
+    currencySetting: {
+      currencyCode: "GHS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
+  },
+  {
     field: "paid",
     title: "Amount Paid",
     type: "currency",
@@ -1108,14 +1115,9 @@ export const EVENTS = (handleViewEvent, handleEditEvent, handleDeleteEvent) => [
               <Typography variant="h6" color="secondary.main">
                 {data?.title}
               </Typography>
-              <div
-                style={{
-                  maxWidth: "60ch",
-                  height: "50px",
-                  overflow: "hidden",
-                }}
-                dangerouslySetInnerHTML={{ __html: data?.description }}
-              ></div>
+              <Typography variant="body2" className="truncate-lines">
+                {data?.caption?.substring(0, 50) + "..."}
+              </Typography>
             </Stack>
             {/* <ArrowForwardIosRounded /> */}
           </Stack>

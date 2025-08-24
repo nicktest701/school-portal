@@ -151,6 +151,14 @@ body {
   }
 }
 
+.truncate-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media print {
   .report-container {
     border: none;

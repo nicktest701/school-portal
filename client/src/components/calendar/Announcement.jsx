@@ -20,7 +20,7 @@ const Announcement = () => {
   const { user } = useAuth();
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
 
-  const { data: announcements } = useQuery({
+  const announcements = useQuery({
     queryKey: ["announcements", user?._id],
     queryFn: getAllAnnouncements,
     initialData: () => [],
@@ -35,12 +35,36 @@ const Announcement = () => {
     setSelectedAnnouncement(null);
   };
 
+  if (announcements.isPending) {
+    return (
+      <Stack
+        sx={{ minHeight: 250 }}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography>Loading </Typography>
+      </Stack>
+    );
+  }
+
+  if (typeof announcements.data === "string") {
+    return (
+      <Stack
+        sx={{ minHeight: 250 }}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography>No Announcement </Typography>
+      </Stack>
+    );
+  }
+
   return (
     <Box>
-      {announcements.length !== 0 ? (
+      {announcements?.data.length !== 0 ? (
         <>
           <Stack spacing={2} pt={1} sx={{ minHeight: 400 }}>
-            {_.take(announcements, 5).map((announcement) => (
+            {_.take(announcements?.data, 5).map((announcement) => (
               <Card
                 key={announcement._id}
                 sx={{

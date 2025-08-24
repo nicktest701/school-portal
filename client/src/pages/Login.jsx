@@ -1,4 +1,4 @@
-import React, {  useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { SchoolRounded } from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import {
@@ -44,7 +44,7 @@ const Login = () => {
     setMsg("");
     mutateAsync(values, {
       onSuccess: (data) => {
-        authenticateUser(data?.token);
+        authenticateUser(data?.token, data?.school);
         navigate("/school-session", { replace: true });
       },
       onError: (error) => {

@@ -72,7 +72,7 @@ async function uploadMultipleImages(files, uploadPath = "students/") {
     });
 
     // Clean up local file
-    // fs.unlinkSync(filePath);
+    fs.unlinkSync(filePath);
   }
 
   return uploadedUrls;

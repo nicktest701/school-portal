@@ -39,6 +39,7 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import { UserContext } from "@/context/providers/UserProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import useLevelById from "@/components/hooks/useLevelById";
+import PropTypes from "prop-types";
 
 function NewAttendance({ to }) {
   const { breakpoints } = useTheme();
@@ -352,6 +353,8 @@ function NewAttendance({ to }) {
     </>
   );
 }
+NewAttendance.propTypes = {
+  to: PropTypes.string.isRequired,
+};
 
 export default NewAttendance;
-

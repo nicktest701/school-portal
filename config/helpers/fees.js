@@ -103,6 +103,7 @@ function getFeePaymentTrend(data) {
 }
 
 function getTopFeePayments(data, limit = 10) {
+  // console.log(data);
   // Flatten all payments while attaching term + level
   const allPayments = data.flatMap((item) =>
     item.payment.map((pay) => ({
@@ -111,6 +112,19 @@ function getTopFeePayments(data, limit = 10) {
       level: item.level,
     }))
   );
+
+  if (allPayments.length === 0) {
+    return [
+      // {
+      //   academicYear: data[0]?.academicYear,
+      //   term: data[0]?.term,
+      //   level: data[0].level,
+      //   payment: [],
+      //   fees: 0,
+      //   paid: 0,
+      // },
+    ];
+  }
 
   // Sort by createdAt (newest first)
   allPayments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

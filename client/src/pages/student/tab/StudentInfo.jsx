@@ -172,20 +172,7 @@ const StudentInfo = () => {
             queryClient.invalidateQueries(["student-profile", data]);
             localStorage.removeItem("@student-data");
 
-            // Swal.fire({
-            //   title: "Admission Form",
-            //   text: "Print Admission Forms?",
-            //   showCancelButton: true,
-            //   backdrop: false,
-            // }).then(({ isConfirmed, isDismissed }) => {
-            //   if (isConfirmed) {
-            //     localStorage.removeItem("@student-data");
-            //     reactToPrintFn();
-            //   }
-            //   if (isDismissed) {
-            //     navigate("/student/view");
-            //   }
-            // });
+         
           }
         },
         onError: (error) => {

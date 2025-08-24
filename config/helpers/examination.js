@@ -321,11 +321,24 @@ function getTopSubjects(records, limit = 5) {
   });
 
   // Sort by totalScore descending
-  allSubjects.sort((a, b) => b.score - a.score);
+  const all = allSubjects.sort((a, b) => b.score - a.score);
+
+  if (all.length === 0) {
+    return [
+      {
+        level: records[0].level.levelName,
+        term: records[0].term.term,
+        subject: "",
+        score: [],
+      },
+    ];
+  }
+
+  return all.slice(0, limit);
 
   // Return top N
-  return allSubjects.slice(0, limit);
 }
+
 function getTopOverallScores(records, limit = 5) {
   if (!Array.isArray(records) || records.length === 0) {
     return [];

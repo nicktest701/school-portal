@@ -34,7 +34,7 @@ function NavLinkItemCollapse({ to, title, children, icon, toggleWidth }) {
   };
 
   return (
-    <>
+    <List>
       <Tooltip title={title} placement="right">
         <NavLink style={myLinkStyles} end>
           <Stack
@@ -90,12 +90,12 @@ function NavLinkItemCollapse({ to, title, children, icon, toggleWidth }) {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List
           disablePadding
-          sx={{ paddingLeft: toggleWidth || matches ? 0 : 3 }}
+          sx={{ paddingLeft: toggleWidth || matches ? 0 : 3, }}
         >
           {children}
         </List>
       </Collapse>
-    </>
+    </List>
   );
 }
 

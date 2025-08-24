@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import CustomTitle from "@/components/custom/CustomTitle";
-import exams_icon from "../../assets/images/header/exams_ico.svg";
+import subject_ico from "../../assets/images/header/subject.svg";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllEvents } from "@/api/eventAPI";
@@ -103,7 +103,7 @@ const Events = () => {
       <CustomTitle
         title="Events"
         subtitle="Organize and oversee exams, schedule, and results to ensure a fair and efficient examination process."
-        img={exams_icon}
+        img={subject_ico}
         color="primary.main"
         right={
           <IconButton onClick={refetch}>
@@ -184,14 +184,13 @@ const Events = () => {
                           <Typography variant="h6" fontWeight="bold">
                             {event.title}
                           </Typography>
+                          <Typography
+                            variant="body2"
+                            className="truncate-lines"
+                          >
+                            {event.caption.substring(0, 50) + "..."}
+                          </Typography>
 
-                          {/* <div
-                            style={{ overflow: "hidden", fontWeight: "normal" }}
-                            dangerouslySetInnerHTML={{
-                              __html:
-                                event.description.substring(0, 50) + "...",
-                            }}
-                          ></div> */}
                           <Typography
                             variant="body2"
                             color="secondary"

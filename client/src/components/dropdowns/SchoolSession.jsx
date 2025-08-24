@@ -23,7 +23,7 @@ const SchoolSessionDropdown = () => {
     queryKey: ["terms", !!user?._id],
     queryFn: () => getAllTerms(),
     enabled: !!user?._id,
-    refetchOnMount: false,
+    // refetchOnMount: false,
     initialData: () => [],
     select: (sessions) => {
       if (sessions?.length > 0) {

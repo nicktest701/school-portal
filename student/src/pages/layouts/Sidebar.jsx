@@ -254,7 +254,7 @@ const Sidebar = () => {
 
         {/* Footer Section */}
         <Box sx={{ px: 1, pb: 2 }}>
-          <Stack spacing={0.5} sx={{ mb: 2 }}>
+          {/* <Stack spacing={0.5} sx={{ mb: 2 }}>
             <DrawerItem
               title="Settings"
               icon={<SettingsRoundedIcon />}
@@ -268,40 +268,19 @@ const Sidebar = () => {
               to="/about"
               isSmall={toggleWidth}
             />
-          </Stack>
+          </Stack> */}
 
           <Divider sx={{ my: 1 }} />
 
           <Tooltip title="Log out" placement="right" arrow>
             <Button
               fullWidth
-              variant="outlined"
+              variant={toggleWidth ? "text" : "outlined"}
               color="primary"
               startIcon={<ExitToAppSharp />}
               onClick={logout}
-              sx={{
-                justifyContent: toggleWidth ? "center" : "flex-start",
-                pl: toggleWidth ? 1 : 2,
-                pr: toggleWidth ? 1 : "auto",
-                py: 1.5,
-                borderRadius: 3,
-                textTransform: "none",
-                fontWeight: 600,
-                "& .MuiButton-startIcon": {
-                  marginRight: toggleWidth ? 0 : 1,
-                  marginLeft: 0,
-                },
-                "& span": {
-                  display: toggleWidth ? "none" : "inline-block",
-                },
-                "&:hover": {
-                  backgroundColor: "rgba(239, 68, 68, 0.1)",
-                  borderColor: "rgba(239, 68, 68, 0.5)",
-                  color: "#EF4444",
-                },
-              }}
             >
-              Log out
+              {toggleWidth ? "" : "Log out"}
             </Button>
           </Tooltip>
         </Box>

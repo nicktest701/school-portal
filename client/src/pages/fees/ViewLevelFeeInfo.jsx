@@ -26,6 +26,8 @@ function ViewLevelFeeInfo() {
     });
   };
 
+  // console.log(levelFeeInfo)
+
   return (
     <Dialog
       open={levelFeeInfo.open}

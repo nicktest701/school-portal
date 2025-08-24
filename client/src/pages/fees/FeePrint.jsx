@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { use, useRef } from "react";
+import React, { useRef } from "react";
 import _ from "lodash";
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
@@ -17,11 +17,10 @@ import { Navigate, useLocation } from "react-router-dom";
 
 import { currencyFormatter } from "@/config/currencyFormatter";
 import Back from "@/components/Back";
-import { UserContext } from "@/context/providers/UserProvider";
-
+import { useAuth } from "@/hooks/useAuth";
 
 function FeePrint() {
-  const { school_info } = use(UserContext);
+  const { school_info } = useAuth();
   // const fee
   const componentRef = useRef();
   const { state } = useLocation();
@@ -82,7 +81,7 @@ function FeePrint() {
                 <SchoolRounded sx={{ width: 30, height: 30 }} />
               )}
               <Stack justifyContent="center" alignItems="center">
-                <Typography variant="h6" textAlign='center'>
+                <Typography variant="h6" textAlign="center">
                   {_.startCase(school_info?.name)}
                 </Typography>
                 <Typography variant="caption">

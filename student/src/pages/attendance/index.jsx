@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import CustomTitle from "@/components/custom/CustomTitle";
 import AnimatedContainer from "@/components/animations/AnimatedContainer";
 import AttendanceNav from "./attendance-nav";
+import attendance_ico from "@/assets/header/attendance.svg";
 
 const Attendance = () => {
   return (
@@ -11,6 +12,7 @@ const Attendance = () => {
       <CustomTitle
         title="Attendance History"
         subtitle="View and manage your attendance records"
+        img={attendance_ico}
       />
       <AttendanceNav />
       <AnimatedContainer>
