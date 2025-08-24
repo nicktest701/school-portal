@@ -4,7 +4,7 @@
 import _ from "lodash";
 
 export const getUser = () => {
-  const user = localStorage.getItem("@user");
+  const user = localStorage.getItem("@_uid");
 
   if (user === undefined || user === null || user === "undefined") {
     return {
@@ -20,11 +20,11 @@ export const saveUser = (accessToken) => {
   if (accessToken === "undefined" || accessToken === undefined) {
     return;
   }
-  localStorage.setItem("@user", JSON.stringify(accessToken));
+  localStorage.setItem("@_uid", JSON.stringify(accessToken));
 };
 
 export const deleteUser = () => {
-  localStorage.removeItem("@user");
+  localStorage.removeItem("@_uid");
   localStorage.removeItem("@school_info");
   localStorage.removeItem("@school_session");
 };

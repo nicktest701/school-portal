@@ -3,7 +3,6 @@ import { Avatar, Drawer, IconButton, Stack } from "@mui/material";
 import {
   AnnouncementRounded,
   Close,
-
   Event,
   SchoolRounded,
 } from "@mui/icons-material";
@@ -72,23 +71,37 @@ const HorizontalSidebar = ({ open, setOpen }) => {
           handleClose={handleClose}
         />
         <MiniDrawerItem
-          title="Fees History"
+          title="School Fees"
           to="/fees"
           handleClose={handleClose}
         />
 
         <MiniDrawerItem
-          title="Messages"
-          to="/messages"
+          title="Attendance"
+          to="/attendance"
           handleClose={handleClose}
         />
-        <MiniDrawerItem title="Events" icon={<Event />} to="/events" />
+        <MiniDrawerItem title="Events" to="/events" handleClose={handleClose} />
+
         <MiniDrawerItem
           title="Announcements"
           icon={<AnnouncementRounded />}
           to="/announcements"
           handleClose={handleClose}
         />
+        <MiniDrawerItem
+          title="Notes"
+          icon={<AnnouncementRounded />}
+          to="/notes"
+          handleClose={handleClose}
+        />
+
+        {/* <MiniDrawerItem
+          title="Messages"
+          to="/messages"
+          handleClose={handleClose}
+        /> */}
+        {/* <MiniDrawerItem title="Events" icon={<Event />} to="/events" /> */}
 
         {/* <MiniDrawerItem
           title={"Notes Board"}
@@ -96,13 +109,13 @@ const HorizontalSidebar = ({ open, setOpen }) => {
           to="/notes"
           handleClose={handleClose}
         /> */}
-        <MiniDrawerItem
+        {/* <MiniDrawerItem
           title="Settings"
           to="/settings"
           handleClose={handleClose}
-        />
+        /> */}
 
-        <MiniDrawerItem title="About" to="/about" handleClose={handleClose} />
+        {/* <MiniDrawerItem title="About" to="/about" handleClose={handleClose} /> */}
         <p
           className="mini-drawer-link"
           style={{ cursor: "pointer" }}

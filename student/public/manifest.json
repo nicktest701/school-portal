@@ -1,6 +1,6 @@
 {
   "name": "Frebbys Student Portal",
-  "short_name": "Frebbys Student Portal",
+  "short_name": "Student Portal",
   "start_url": ".",
   "display_override": ["fullscreen", "minimal-ui"],
   "display": "standalone",

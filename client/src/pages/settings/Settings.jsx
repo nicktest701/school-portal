@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Tab } from "@mui/material";
 import CustomTitle from "../../components/custom/CustomTitle";
 import settings_icon from "../../assets/images/header/settings_ico.svg";
@@ -9,7 +10,6 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import BasicInformation from "./BasicInformation";
 
 const Settings = () => {
-
   const [st, setSt] = useLocalStorage("settings_tab", "1");
 
   return (
@@ -26,7 +26,7 @@ const Settings = () => {
           allowScrollButtonsMobile
           selectionFollowsFocus
           scrollButtons
-          // centered={}
+          // centered
           onChange={(e, value) => setSt(value)}
           sx={{ width: { xs: 300, sm: "100%" } }}
         >

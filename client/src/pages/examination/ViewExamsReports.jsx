@@ -195,7 +195,7 @@ const ViewExamsReports = () => {
 
   return (
     <>
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ overflowX: "scroll" }}>
         <CustomTitle
           title="Student Reports"
           subtitle="Show details of student performance"
@@ -299,12 +299,16 @@ const ViewExamsReports = () => {
           style={{
             marginInline: "auto",
             backgroundColor: "#fff",
+            overflowX: "scroll",
           }}
         >
           {generatedReports}
         </FixedSizeList>
       ) : (
-        <Container maxWidth="lg" sx={{ py: 2 }}>
+        <Container
+          maxWidth="lg"
+          sx={{ minWidth: 300, py: 2, overflowX: "scroll" }}
+        >
           <Grid container spacing={2}>
             {filteredData?.map((report) => (
               <Grid

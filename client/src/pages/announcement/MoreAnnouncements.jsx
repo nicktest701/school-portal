@@ -26,7 +26,7 @@ import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
 import CustomTitle from "@/components/custom/CustomTitle";
 import exams_icon from "../../assets/images/header/exams_ico.svg";
-import { Add } from "@mui/icons-material";
+import { Add, RefreshRounded } from "@mui/icons-material";
 import AddAnnouncementModal from "./AddAnnouncementModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -42,6 +42,8 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import EditAnnouncementModal from "./EditAnnouncementModal";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useAuth } from "@/hooks/useAuth";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import EventSkeleton from "@/components/skeleton/EventSkeleton";
 
 const pageSize = 10;
 const MoreAnnouncements = () => {
@@ -63,7 +65,11 @@ const MoreAnnouncements = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [selectedAnnouncements, setSelectedAnnouncements] = useState([]);
 
-  const { data: announcements } = useQuery({
+  const {
+    data: announcements,
+    isPending: isAnnouncementLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["announcements", user?._id],
     queryFn: getAllAnnouncements,
     initialData: () => [],
@@ -98,62 +104,6 @@ const MoreAnnouncements = () => {
       return params;
     });
   };
-
-  const sortedAnnouncement = useMemo(() => {
-    const filterAnnouncementsByDate = () => {
-      const today = dayjs();
-      switch (filter) {
-        case "today":
-          return announcements.filter((a) =>
-            dayjs(a.createdAt).isSame(today, "day")
-          );
-        case "yesterday":
-          return announcements.filter((a) =>
-            dayjs(a.createdAt).isSame(today.subtract(1, "day"), "day")
-          );
-        case "thisWeek":
-          return announcements.filter((a) =>
-            dayjs(a.createdAt).isSame(today, "week")
-          );
-        case "lastWeek":
-          return announcements.filter((a) =>
-            dayjs(a.createdAt).isSame(today.subtract(1, "week"), "week")
-          );
-        case "thisMonth":
-          return announcements.filter((a) =>
-            dayjs(a.createdAt).isSame(today, "month")
-          );
-        case "lastMonth":
-          return announcements.filter((a) =>
-            dayjs(a.createdAt).isSame(today.subtract(1, "month"), "month")
-          );
-        default:
-          return announcements;
-      }
-    };
-
-    // Apply both search and date filters
-    const filteredAnnouncements = filterAnnouncementsByDate().filter(
-      (announcement) =>
-        announcement.title.toLowerCase().includes(searchTerm) ||
-        announcement.createdAt.includes(searchTerm)
-    );
-
-    // Pagination Logic
-    const paginatedAnnouncements = filteredAnnouncements.slice(
-      (page - 1) * pageSize,
-      page * pageSize
-    );
-
-    const totalPages = Math.ceil(filteredAnnouncements.length / pageSize);
-
-    return {
-      announcements: paginatedAnnouncements,
-      total: filteredAnnouncements.length,
-      totalPages,
-    };
-  }, [announcements, searchTerm, searchParams, filter, page]);
-  // Filter announcements based on date
 
   // Toggle checkbox selection
   const handleSelect = (id) => {
@@ -222,6 +172,66 @@ const MoreAnnouncements = () => {
       }
     });
   };
+
+  if (isAnnouncementLoading) {
+    return  <EventSkeleton />;
+  }
+
+  const sortedAnnouncement = useMemo(() => {
+    const filterAnnouncementsByDate = () => {
+      const today = dayjs();
+      switch (filter) {
+        case "today":
+          return announcements.filter((a) =>
+            dayjs(a.createdAt).isSame(today, "day")
+          );
+        case "yesterday":
+          return announcements.filter((a) =>
+            dayjs(a.createdAt).isSame(today.subtract(1, "day"), "day")
+          );
+        case "thisWeek":
+          return announcements.filter((a) =>
+            dayjs(a.createdAt).isSame(today, "week")
+          );
+        case "lastWeek":
+          return announcements.filter((a) =>
+            dayjs(a.createdAt).isSame(today.subtract(1, "week"), "week")
+          );
+        case "thisMonth":
+          return announcements.filter((a) =>
+            dayjs(a.createdAt).isSame(today, "month")
+          );
+        case "lastMonth":
+          return announcements.filter((a) =>
+            dayjs(a.createdAt).isSame(today.subtract(1, "month"), "month")
+          );
+        default:
+          return announcements;
+      }
+    };
+
+    // Apply both search and date filters
+    const filteredAnnouncements = filterAnnouncementsByDate().filter(
+      (announcement) =>
+        announcement.title.toLowerCase().includes(searchTerm) ||
+        announcement.createdAt.includes(searchTerm)
+    );
+
+    // Pagination Logic
+    const paginatedAnnouncements = filteredAnnouncements.slice(
+      (page - 1) * pageSize,
+      page * pageSize
+    );
+
+    const totalPages = Math.ceil(filteredAnnouncements.length / pageSize);
+
+    return {
+      announcements: paginatedAnnouncements,
+      total: filteredAnnouncements.length,
+      totalPages,
+    };
+  }, [announcements, searchTerm, searchParams, filter, page]);
+  // Filter announcements based on date
 
   return (
     <Container maxWidth="lg">
@@ -292,6 +302,10 @@ const MoreAnnouncements = () => {
         p={2}
         spacing={2}
       >
+        <IconButton onClick={refetch} size="large">
+          <RefreshRounded sx={{ width: 32, height: 32 }} />
+        </IconButton>
+
         {user?.role === "administrator" && selectedAnnouncements.length > 0 && (
           <IconButton onClick={handleDeleteAnnouncements} size="large">
             <DeleteIcon sx={{ width: 32, height: 32 }} />

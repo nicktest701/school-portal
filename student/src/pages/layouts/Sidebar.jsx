@@ -11,8 +11,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import PaymentsRounded from "@mui/icons-material/PaymentsRounded";
 import DataThresholdingRoundedIcon from "@mui/icons-material/DataThresholdingRounded";
 import {

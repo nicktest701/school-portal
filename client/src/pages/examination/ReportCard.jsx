@@ -55,6 +55,7 @@ function ReportCard({ student, style }) {
           ),
           url("${school_info?.badge}")`,
           mb: 1,
+          overflowX: "auto",
         }}
         // style={style}
       >
@@ -297,7 +298,12 @@ function ReportCard({ student, style }) {
               Add Remarks
             </Button>
           </Stack>
-          <Stack justifyContent="center" alignItems="center" zIndex={9999} pt={2}>
+          <Stack
+            justifyContent="center"
+            alignItems="center"
+            zIndex={9999}
+            pt={2}
+          >
             <Typography>Bill</Typography>
             <table
               width="60%"

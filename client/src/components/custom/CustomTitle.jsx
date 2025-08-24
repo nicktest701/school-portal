@@ -1,5 +1,13 @@
-import { Box, Stack, Typography, IconButton } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Typography,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import React from "react";
+import PropTypes from "prop-types";
 import { ArrowBackRounded } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +25,9 @@ function CustomTitle({
 }) {
   const navigate = useNavigate();
   const goBack = () => navigate(to || -1);
+
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.up("md"));
 
   return (
     <>
@@ -41,6 +52,19 @@ function CustomTitle({
           color={color}
           pl={1}
         >
+          {img && !matches ? (
+            <img
+              src={img}
+              style={{
+                width: "40px",
+                height: "40px",
+                alignSelf: "center",
+              }}
+            />
+          ) : (
+            icon
+          )}
+
           <Stack direction="row" alignItems="center" spacing={1}>
             {showBack && (
               <Box
@@ -60,7 +84,7 @@ function CustomTitle({
                 </IconButton>
               </Box>
             )}
-            {img ? (
+            {img && matches ? (
               <img
                 src={img}
                 style={{
@@ -92,5 +116,17 @@ function CustomTitle({
     </>
   );
 }
+CustomTitle.propTypes = {
+  title: PropTypes.node,
+  titleVariant: PropTypes.string,
+  subtitle: PropTypes.node,
+  img: PropTypes.string,
+  icon: PropTypes.node,
+  bgColor: PropTypes.string,
+  color: PropTypes.string,
+  showBack: PropTypes.bool,
+  to: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  right: PropTypes.node,
+};
 
 export default CustomTitle;

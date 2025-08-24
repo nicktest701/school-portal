@@ -1,9 +1,16 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import { Divider, Stack } from "@mui/material";
+import {
+  Divider,
+  IconButton,
+  Stack,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { tableIcons } from "@/config/tableIcons";
-import { Add, Delete, Refresh } from "@mui/icons-material";
+import { Add, AddCircleRounded, Delete, Refresh } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import CustomTableTitle from "../custom/CustomTableTitle";
 import EmptyDataContainer from "../EmptyDataContainer";
@@ -39,6 +46,9 @@ function CustomizedMaterialTable({
   otherButtons,
   ...rest
 }) {
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.up("sm"));
+
   const modifiedColumns = columns.map((column) => {
     return { ...column };
   });
@@ -175,14 +185,29 @@ function CustomizedMaterialTable({
                     <Stack direction={{ xs: "column", md: "row" }} gap={1}>
                       {otherButtons}
                       {showAddButton && (
-                        <Button
-                          variant="contained"
-                          startIcon={addButtonIcon || <Add />}
-                          disableElevation
-                          onClick={() => onAddButtonClicked()}
-                        >
-                          {addButtonText}
-                        </Button>
+                        <>
+                          {matches ? (
+                            <Button
+                              variant="contained"
+                              startIcon={addButtonIcon || <Add />}
+                              disableElevation
+                              onClick={() => onAddButtonClicked()}
+                            >
+                              {addButtonText}
+                            </Button>
+                          ) : (
+                            <Tooltip title={addButtonText || "Add new"}>
+                              <IconButton onClick={() => onAddButtonClicked()}>
+                                {addButtonIcon || (
+                                  <AddCircleRounded
+                                    color="primary"
+                                    sx={{ width: 32, height: 32 }}
+                                  />
+                                )}
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                        </>
                       )}
                     </Stack>
                   </Box>

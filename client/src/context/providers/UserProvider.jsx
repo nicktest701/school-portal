@@ -117,14 +117,13 @@ const UserProvider = ({ children }) => {
       setUser(user);
       saveUser({ _id: user?.id, id: user?.id });
     } catch (err) {
-      deleteUser();
       setAccessToken(null);
-      setSchoolInformation(null);
       setUser(null);
       setSession(null);
+      deleteUser();
       if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
       setLoading(false);
-      alert(err?.message);
+      // alert(err?.message);
 
       // Show a warning and redirect to login
       Swal.fire({
@@ -188,15 +187,13 @@ const UserProvider = ({ children }) => {
           {
             onSettled: () => {
               deleteUser();
-              navigate("/login");
               setAccessToken(null);
-              setSchoolInformation(null);
-              setSchoolInformation(null);
               setUser(null);
               setSession(null);
               if (refreshTimeoutRef.current) {
                 clearTimeout(refreshTimeoutRef.current);
               }
+              navigate("/login");
             },
           }
         );

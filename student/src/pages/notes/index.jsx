@@ -1,3 +1,4 @@
+import React from "react";
 import {
   useNotes,
   useCreateNote,
@@ -23,7 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useState } from "react";
 import CustomTitle from "@/components/custom/CustomTitle";
-import { Add } from "@mui/icons-material";
+import { Add, RefreshRounded } from "@mui/icons-material";
 import { useQueryClient } from "@tanstack/react-query";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import EmptyDataContainer from "@/components/EmptyDataContainer";
@@ -36,7 +37,7 @@ export default function NotesBoard() {
   );
 
   const queryClient = useQueryClient();
-  const { data: notes, isPending, error } = useNotes();
+  const { data: notes, isPending, error, refetch } = useNotes();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
@@ -66,7 +67,6 @@ export default function NotesBoard() {
 
   if (isPending) return <NotesSkeleton />;
   if (error) return <div>Error: {error.message}</div>;
-
   return (
     <Container>
       <CustomTitle
@@ -75,16 +75,22 @@ export default function NotesBoard() {
         img={level_ico}
         color="text.main"
         right={
-          <Button
-            startIcon={<Add />}
-            variant="contained"
-            onClick={() => setModalOpen(true)}
-            sx={{ m: 2 }}
-          >
-            New Note
-          </Button>
+          <>
+            <Button
+              startIcon={<Add />}
+              variant="contained"
+              onClick={() => setModalOpen(true)}
+              sx={{ m: 2 }}
+            >
+              New Note
+            </Button>
+            <IconButton onClick={refetch} size="large">
+              <RefreshRounded sx={{ width: 32, height: 32 }} />
+            </IconButton>
+          </>
         }
       />
+
       {notes?.length === 0 ? (
         <EmptyDataContainer />
       ) : (

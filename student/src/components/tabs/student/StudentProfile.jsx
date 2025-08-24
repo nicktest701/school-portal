@@ -8,7 +8,6 @@ import {
   PhoneRounded,
   Report,
 } from "@mui/icons-material";
-import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -19,7 +18,14 @@ import ChipItem from "@/components/list/ChipItem";
 import ViewPreviousReport from "@/pages/profile/ViewPreviousReport";
 import ViewParent from "@/pages/profile/ViewParent";
 import MedicalInformationEdit from "@/pages/profile/MedicalInformationEdit";
-import { Avatar, Divider } from "@mui/material";
+import {
+  Avatar,
+  Divider,
+  IconButton,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
 const StudentProfile = ({ levelName, student, parents, medical }) => {
   const { type } = useParams();
@@ -27,6 +33,9 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
   const [openViewParent, setOpenViewParent] = useState(false);
   const [openViewPreviousReport, setOpenViewPreviousReport] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.up("md"));
 
   const handleOpenMedicalHistory = () => {
     setSearchParams({
@@ -59,10 +68,8 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
         <Stack
           sx={{
             pb: 2,
-
           }}
-          alignItems={{xs:'center',md:'start'}}
-
+          alignItems={{ xs: "center", md: "start" }}
         >
           <Avatar
             src={student?.profile}
@@ -81,21 +88,43 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
           columnGap={2}
           pt={2}
         >
-          <Button startIcon={<EditRounded />} onClick={openStudentEdit}>
-            Edit
-          </Button>
-          <Button
-            startIcon={<Person />}
-            onClick={() => setOpenViewParent(true)}
-          >
-            Parent Info
-          </Button>
-          <Button
-            startIcon={<MedicalInformationRounded />}
-            onClick={handleOpenMedicalHistory}
-          >
-            Medical Info
-          </Button>
+          {matches ? (
+            <>
+              <Button startIcon={<EditRounded />} onClick={openStudentEdit}>
+                Edit
+              </Button>
+              <Button
+                startIcon={<Person />}
+                onClick={() => setOpenViewParent(true)}
+              >
+                Parent Info
+              </Button>
+              <Button
+                startIcon={<MedicalInformationRounded />}
+                onClick={handleOpenMedicalHistory}
+              >
+                Medical History
+              </Button>
+            </>
+          ) : (
+            <>
+              <Tooltip title="Edit Profile">
+                <IconButton onClick={openStudentEdit}>
+                  <EditRounded />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="View Parent Info">
+                <IconButton onClick={() => setOpenViewParent(true)}>
+                  <Person />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Medical History">
+                <IconButton onClick={handleOpenMedicalHistory}>
+                  <MedicalInformationRounded />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
         </Stack>
 
         <ChipItem divider={true} label="Basic Info" icon={<PersonRounded />} />

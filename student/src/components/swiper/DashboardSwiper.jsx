@@ -6,7 +6,7 @@ import {
   Autoplay,
   A11y,
   Scrollbar,
-  EffectCards,
+  EffectFade,
 } from "swiper/modules";
 import { getAllEvents } from "@/api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
@@ -34,8 +34,8 @@ function DashboardSwiper() {
   return (
     <Swiper
       className="swiper"
-      effect="cards"
-      modules={[Autoplay, Pagination, Navigation, A11y, Scrollbar, EffectCards]}
+      effect="fade"
+      modules={[Autoplay, Pagination, Navigation, A11y, Scrollbar, EffectFade]}
       speed={2000}
       spaceBetween={30}
       centeredSlides={true}

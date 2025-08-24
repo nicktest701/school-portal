@@ -126,14 +126,14 @@ router.post(
 
     // Generate JWT token
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "1h",
     });
 
     const refresh_token = jwt.sign(
       loggedInUser,
       process.env.JWT_REFRESH_SECRET,
       {
-        expiresIn: "7d",
+        expiresIn: "30d",
       }
     );
 
@@ -167,7 +167,7 @@ router.post(
       return res.status(401).json("Unauthorized Access.Please login again");
     }
     const token = jwt.sign(user, process.env.JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "1h",
     });
 
     // Update session with new user data
@@ -271,7 +271,7 @@ router.put(
     };
 
     const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "1h",
     });
 
     res.status(200).json({ token });
@@ -332,7 +332,7 @@ router.put(
       };
 
       const token = jwt.sign(loggedInUser, process.env.JWT_SECRET, {
-        expiresIn: "15m",
+        expiresIn: "1h",
       });
 
       return res.status(200).json({ token });

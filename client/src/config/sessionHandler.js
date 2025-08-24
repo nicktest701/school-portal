@@ -38,7 +38,6 @@ export const saveUser = (accessToken) => {
 
 export const deleteUser = () => {
   localStorage.removeItem("@user");
-  localStorage.removeItem("@school_info");
   localStorage.removeItem("@school_session");
 };
 

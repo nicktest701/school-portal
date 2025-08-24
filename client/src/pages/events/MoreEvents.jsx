@@ -66,11 +66,6 @@ const MoreEvents = () => {
           subtitle="Organize and oversee exams, schedule, and results to ensure a fair and efficient examination process."
           img={exams_icon}
           color="primary.main"
-          right={
-            <IconButton onClick={refetch}>
-              <RefreshRounded />
-            </IconButton>
-          }
         />
         <EventSkeleton />
       </Container>
@@ -180,7 +175,7 @@ const MoreEvents = () => {
         <Stack spacing={2} sx={{ height: "60svh", overflowY: "auto" }}>
           {paginatedEvents.length > 0 ? (
             paginatedEvents.map((event, index) => (
-              <Box key={event._id}>
+              <Box key={event?._id}>
                 <motion.div
                   initial={{ opacity: 0, x: -100 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -190,14 +185,14 @@ const MoreEvents = () => {
                   <Card
                     sx={{
                       borderRadius: "12px",
-                      backgroundColor: event.bgColor,
+                      backgroundColor: event?.bgColor,
                       cursor: "pointer",
                     }}
-                    onClick={() => handleViewEvent(event._id)}
+                    onClick={() => handleViewEvent(event?._id)}
                   >
                     <CardContent>
                       <Typography variant="h6" fontWeight="bold">
-                        {event.title}
+                        {event?.title}
                       </Typography>
 
                       <Typography variant="body2" className="truncate-lines">
@@ -210,7 +205,7 @@ const MoreEvents = () => {
                         width="100%"
                         mt={1}
                       >
-                        {event.createdBy?.fullname}
+                        {event?.createdBy?.fullname}
                       </Typography>
                       <Typography
                         variant="body2"

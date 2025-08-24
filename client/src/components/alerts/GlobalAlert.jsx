@@ -21,7 +21,7 @@ const GlobalAlert = () => {
     });
   };
   // const borderColor = alertData?.severity === 'error' ? '#B72136' : '#1890FF';
-  const color = alertData?.severity === "error" ? "#B72136" : "green";
+  const color = alertData?.severity === "error" ? "#B72136" : "white";
 
   return (
     <Snackbar
@@ -47,13 +47,14 @@ const GlobalAlert = () => {
         // onClose={handleClose}
         sx={{
           // width: "100%",
-          bgcolor: "#fff",
+          bgcolor: "primary.main",
           // borderRadius: 0,
           color:
             // alertData?.severity === "info" ? "success.darker" : "error.darker",
             color,
-          borderBottom: `2px solid ${color}`,
+          borderBottom: `2px solid green`,
           py: 1,
+          m: 4,
         }}
       >
         {alertData?.message}

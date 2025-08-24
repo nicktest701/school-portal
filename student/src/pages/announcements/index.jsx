@@ -18,6 +18,7 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   Container,
+  IconButton,
 } from "@mui/material";
 
 import dayjs from "dayjs";
@@ -30,6 +31,8 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { useAuth } from "@/context/AuthProvider";
 import EmptyDataContainer from "@/components/EmptyDataContainer";
 import announcement_ico from "../../assets/images/header/sms_ico.svg";
+import { RefreshRounded } from "@mui/icons-material";
+import EventSkeleton from "@/components/skeleton/EventSkeleton";
 
 const pageSize = 10;
 const Announcements = () => {
@@ -48,7 +51,11 @@ const Announcements = () => {
   const [page, setPage] = useState(1);
   const [selectedAnnouncements, setSelectedAnnouncements] = useState([]);
 
-  const { data: announcements } = useQuery({
+  const {
+    data: announcements,
+    refetch,
+    isPending,
+  } = useQuery({
     queryKey: ["announcements", user?._id],
     queryFn: getAllAnnouncements,
     initialData: () => [],
@@ -60,6 +67,20 @@ const Announcements = () => {
   const handleSearchChange = (event) =>
     setSearchTerm(event.target.value.toLowerCase());
   const handlePageChange = (_, value) => setPage(value);
+
+  if (isPending) {
+    return (
+      <Container maxWidth="lg">
+        <CustomTitle
+          title="Announcements"
+          subtitle="Organize and oversee exams, schedule, and results to ensure a fair and efficient examination process."
+          img={announcement_ico}
+          color="primary.main"
+        />
+        <EventSkeleton />
+      </Container>
+    );
+  }
 
   const sortedAnnouncement = useMemo(() => {
     const filterAnnouncementsByDate = () => {
@@ -131,6 +152,11 @@ const Announcements = () => {
         subtitle="Organize and oversee exams, schedule, and results to ensure a fair and efficient examination process."
         img={announcement_ico}
         color="primary.main"
+        right={
+          <IconButton onClick={refetch}>
+            <RefreshRounded />
+          </IconButton>
+        }
       />
 
       {/* MUI Select for Filtering */}
@@ -162,7 +188,7 @@ const Announcements = () => {
           }}
         >
           <InputLabel>Sort by</InputLabel>
-          <Select  value={filter} onChange={handleFilterChange}>
+          <Select value={filter} onChange={handleFilterChange}>
             <MenuItem value="">All</MenuItem>
             <MenuItem value="today">Today</MenuItem>
             <MenuItem value="yesterday">Yesterday</MenuItem>

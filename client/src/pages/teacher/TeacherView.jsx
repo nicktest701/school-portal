@@ -1,6 +1,7 @@
 import {
   DeleteRounded,
   Edit,
+  ListAlt,
   MessageRounded,
   Person,
 } from "@mui/icons-material";
@@ -11,8 +12,12 @@ import {
   ButtonGroup,
   Container,
   Divider,
+  IconButton,
   Stack,
+  Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import Swal from "sweetalert2";
 import React, { useContext } from "react";
@@ -32,6 +37,8 @@ const TeacherView = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.up("sm"));
 
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
@@ -162,22 +169,39 @@ const TeacherView = () => {
               </Button>
 
               <ButtonGroup variant="contained">
-                <Button
-                  color="secondary"
-                  endIcon={<Person />}
-                  // onClick={() => setOpenTeacherAssignLevel(true)}
-                  onClick={goToAssignLevel}
-                >
-                  Assign Level
-                </Button>
-                <Button
-                  color="primary"
-                  endIcon={<Person />}
-                  // onClick={openAssignCourse}
-                  onClick={goToAssignCourse}
-                >
-                  Assign Course
-                </Button>
+                {matches ? (
+                  <>
+                    <Button
+                      color="secondary"
+                      endIcon={<Person />}
+                      // onClick={() => setOpenTeacherAssignLevel(true)}
+                      onClick={goToAssignLevel}
+                    >
+                      Assign Level
+                    </Button>
+                    <Button
+                      color="primary"
+                      endIcon={<Person />}
+                      // onClick={openAssignCourse}
+                      onClick={goToAssignCourse}
+                    >
+                      Assign Course
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Tooltip title="Assign Level">
+                      <IconButton color="secondary" onClick={goToAssignLevel}>
+                        <ListAlt />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title=" Assign Course">
+                      <IconButton color="primary" onClick={goToAssignCourse}>
+                        <Person />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )}
               </ButtonGroup>
             </Stack>
             <Stack spacing={2}>
@@ -199,6 +223,5 @@ const TeacherView = () => {
     </>
   );
 };
-
 
 export default React.memo(TeacherView);

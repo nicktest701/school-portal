@@ -1,19 +1,18 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import React, { use } from "react";
+import React from "react";
 import {
   Navigation,
   Pagination,
   Autoplay,
   A11y,
   Scrollbar,
-  EffectCards,
+  EffectFade,
 } from "swiper/modules";
 import { getAllEvents } from "@/api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
 
 import DashboardSwiperContent from "./DashboardSwiperContent";
 import student4 from "../../assets/images/students/student4.jpg";
-import { UserContext } from "@/context/providers/UserProvider";
 
 // Styles must use direct files imports
 import "swiper/css/bundle";
@@ -21,9 +20,10 @@ import "swiper/css"; // core Swiper
 import "swiper/css/navigation";
 import "swiper/css/scrollbar";
 import "swiper/css/pagination";
+import { useAuth } from "@/hooks/useAuth";
 
 function DashboardSwiper() {
-  const { school_info } = use(UserContext);
+  const { school_info } = useAuth();
 
   const events = useQuery({
     queryKey: ["events"],
@@ -34,8 +34,8 @@ function DashboardSwiper() {
   return (
     <Swiper
       className="swiper"
-      effect="cards"
-      modules={[Autoplay, Pagination, Navigation, A11y, Scrollbar, EffectCards]}
+      effect="fade"
+      modules={[Autoplay, Pagination, Navigation, A11y, Scrollbar, EffectFade]}
       speed={2000}
       spaceBetween={30}
       centeredSlides={true}

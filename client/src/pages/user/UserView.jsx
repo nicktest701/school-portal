@@ -32,6 +32,7 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const UserView = () => {
   const queryClient = useQueryClient();
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState(null);
@@ -231,10 +232,10 @@ const UserView = () => {
           />
 
           <Stack
-            direction="row"
+            direction={{ xs: "column", sm: "row" }}
             spacing={2}
-            flexWrap="wrap"
-            justifyContent="flex-end"
+            // flexWrap="wrap"
+            justifyContent={{ xs: "flex-start", sm: "flex-end" }}
             py={2}
           >
             <Tooltip
@@ -263,7 +264,11 @@ const UserView = () => {
       {deleteIsLoading && <LoadingSpinner value="Removing user details" />}
       {isPending && (
         <LoadingSpinner
-          value={user?.data?.active ? "Disabling Account.Please Wait.." : "Enabling Account.Please Wait.."}
+          value={
+            user?.data?.active
+              ? "Disabling Account.Please Wait.."
+              : "Enabling Account.Please Wait.."
+          }
         />
       )}
     </>

@@ -1,11 +1,11 @@
 {
   "name": "FrebbyTech School Portal",
-  "short_name": "school-portal",
+  "short_name": "School Portal",
   "start_url": ".",
   "display_override": ["fullscreen", "minimal-ui"],
   "display": "standalone",
   "description": "The all-in-one solution for managing student information and improving school operations. With FrebbyTech School Manager, you can quickly access and update student records, track attendance, and manage schedules",
-  "background_color": "#fff",
+  "background_color": "#012e54",
   "theme_color": "#012e54",
   "orientation": "portrait",
   "scope": "/",

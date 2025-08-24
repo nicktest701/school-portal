@@ -111,44 +111,41 @@ const StudentProfile = ({ levelName, student, parents }) => {
           columnGap={2}
         >
           {matches ? (
-            <Button startIcon={<EditRounded />} onClick={openStudentEdit}>
-              Edit
-            </Button>
+            <>
+              <Button startIcon={<EditRounded />} onClick={openStudentEdit}>
+                Edit
+              </Button>
+              <Button
+                startIcon={<Person />}
+                onClick={() => setOpenViewParent(true)}
+              >
+                Parent Info
+              </Button>
+              <Button
+                startIcon={<MedicalInformationRounded />}
+                onClick={handleOpenMedicalHistory}
+              >
+                Medical History
+              </Button>
+            </>
           ) : (
-            <Tooltip title="Edit Profile">
-              <IconButton>
-                <EditRounded />
-              </IconButton>
-            </Tooltip>
-          )}
-
-          {matches ? (
-            <Button
-              startIcon={<Person />}
-              onClick={() => setOpenViewParent(true)}
-            >
-              Parent Info
-            </Button>
-          ) : (
-            <Tooltip title="View Parent Info">
-              <IconButton>
-                <Person />
-              </IconButton>
-            </Tooltip>
-          )}
-          {matches ? (
-            <Button
-              startIcon={<MedicalInformationRounded />}
-              onClick={handleOpenMedicalHistory}
-            >
-              Medical History
-            </Button>
-          ) : (
-            <Tooltip title="Medical History">
-              <IconButton>
-                <MedicalInformationRounded />
-              </IconButton>
-            </Tooltip>
+            <>
+              <Tooltip title="Edit Profile">
+                <IconButton onClick={openStudentEdit}>
+                  <EditRounded />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="View Parent Info">
+                <IconButton onClick={() => setOpenViewParent(true)}>
+                  <Person />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Medical History">
+                <IconButton onClick={handleOpenMedicalHistory}>
+                  <MedicalInformationRounded />
+                </IconButton>
+              </Tooltip>
+            </>
           )}
         </Stack>
 
