@@ -133,7 +133,7 @@ router.post(
       loggedInUser,
       process.env.JWT_REFRESH_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "7d",
       }
     );
 
