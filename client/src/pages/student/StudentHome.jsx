@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Box, Container, Divider, IconButton, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
@@ -7,16 +7,16 @@ import StudentDashboardBarChart from "@/components/cards/StudentDashboardBarChar
 import StudentDashboardPieChart from "@/components/cards/StudentDashboardPieChart";
 import { getAllStudentsDetails } from "@/api/studentAPI";
 import StudentDashboardLineChart from "@/components/cards/StudentDashboardLineChart";
-import { UserContext } from "@/context/providers/UserProvider";
 import student_icon from "@/assets/images/header/student_ico.svg";
 import { EMPTY_IMAGES } from "@/config/images";
 import ChartSkeleton from "@/components/skeleton/ChartSkeleton";
 import CustomTitle from "@/components/custom/CustomTitle";
 import DashboardCard from "@/components/cards/DashboardCard";
 import { Person, Refresh } from "@mui/icons-material";
+import { useAuth } from "@/hooks/useAuth";
 
 const StudentHome = () => {
-  const { session } = useContext(UserContext);
+  const { session } = useAuth();
 
   const studentDetails = useQuery({
     queryKey: ["student-details", session?.sessionId, session?.termId],
@@ -37,7 +37,7 @@ const StudentHome = () => {
   });
 
   return (
-    <Container maxWidth="xl">
+    <Container>
       <CustomTitle
         title="Student Portal"
         subtitle="Add, edit, and view student records to keep accurate and up-to-date information on all students."

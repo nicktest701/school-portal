@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Button,
   Box,
@@ -106,6 +107,7 @@ const NoteFormModal = ({ open, onClose, defaultValues, onSubmit }) => {
               fullWidth
               autoFocus
               control={control}
+              size="small"
             />
 
             <Input
@@ -115,6 +117,7 @@ const NoteFormModal = ({ open, onClose, defaultValues, onSubmit }) => {
               multiline
               rows={4}
               fullWidth
+              size="small"
             />
 
             <FormControl fullWidth>
@@ -135,18 +138,20 @@ const NoteFormModal = ({ open, onClose, defaultValues, onSubmit }) => {
                     value={color}
                     sx={{
                       backgroundColor: color,
-                      width: 60,
-                      height: 40,
+                      width: 40,
+                      height: 30,
                       border: "1px solid #ccc",
                       display: "flex",
                       flexDirection: "column",
                       fontSize: 10,
+                      borderColor:
+                        colorWatch === color ? "var(--primary)" : "none",
                     }}
                   >
                     <span style={{ fontSize: 15 }}>
                       {colorWatch === color && "✔"}
                     </span>
-                    {colorWatch === color && <span> {colorWatch}</span>}
+                    {/* {colorWatch === color && <span> {colorWatch}</span>} */}
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>

@@ -23,9 +23,8 @@ const Settings = () => {
 
       <TabContext value={st}>
         <TabList
-          allowScrollButtonsMobile
-          selectionFollowsFocus
-          scrollButtons
+          variant="scrollable"
+          scrollButtons="auto"
           // centered
           onChange={(e, value) => setSt(value)}
           sx={{ width: { xs: 300, sm: "100%" } }}

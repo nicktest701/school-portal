@@ -6,12 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import session_icon from "@/assets/images/header/session_ico.svg";
 import { SCHOOL_SESSION_COLUMN } from "@/mockup/columns/sessionColumns";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import {
-
-  deleteTerm,
-  disableSessionAccount,
-  getAllTerms,
-} from "@/api/termAPI";
+import { deleteTerm, disableSessionAccount, getAllTerms } from "@/api/termAPI";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { EMPTY_IMAGES } from "@/config/images";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
@@ -19,6 +14,7 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
 
 const Sessions = () => {
   const { user } = useAuth();
@@ -26,9 +22,8 @@ const Sessions = () => {
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
 
-
   const sessions = useQuery({
-    queryKey: ["terms"],
+    queryKey: ["terms", user?._id],
     queryFn: () => getAllTerms(),
     initialData: [],
     enabled: !!user?._id,
@@ -36,7 +31,7 @@ const Sessions = () => {
   });
 
   ///Delete session by id
-  const { mutateAsync: deleteMutate,isPending } = useMutation({
+  const { mutateAsync: deleteMutate, isPending } = useMutation({
     mutationFn: deleteTerm,
   });
 
@@ -77,7 +72,6 @@ const Sessions = () => {
       }
     });
   };
-
 
   // const { mutateAsync, isPending } = useMutation({
   //   mutationFn: deleteManyTerms,
@@ -152,6 +146,10 @@ const Sessions = () => {
     });
   };
 
+  if (sessions.isPending) {
+    return <TableSkeleton />;
+  }
+
   return (
     <>
       <Container>
@@ -162,34 +160,32 @@ const Sessions = () => {
           color="primary.main"
         />
 
-        <>
-          <CustomizedMaterialTable
-            title="Sessions"
-            icon={session_icon}
-            isPending={sessions.isPending}
-            columns={SCHOOL_SESSION_COLUMN(
-              handleActivateSession,
-              handleViewSession,
-              handlEditSession,
-              handleDeleteSession
-            )}
-            data={sessions.data ? sessions.data : []}
-            actions={[]}
-            showRowShadow={false}
-            handleEdit={handlEditSession}
-            handleDelete={handleDeleteSession}
-            addButtonImg={EMPTY_IMAGES.session}
-            addButtonMessage="😑 No School Session available!.Create a new one!"
-            showAddButton={true}
-            addButtonText="New Session"
-            onAddButtonClicked={handleOpenSession}
-            handleRefresh={sessions.refetch}
-            // onDeleteClicked={handleMultipleDeleteSession}
-            options={{
-              search: true,
-            }}
-          />
-        </>
+        <CustomizedMaterialTable
+          title="Sessions"
+          icon={session_icon}
+          isPending={sessions.isPending}
+          columns={SCHOOL_SESSION_COLUMN(
+            handleActivateSession,
+            handleViewSession,
+            handlEditSession,
+            handleDeleteSession
+          )}
+          data={sessions.data ? sessions.data : []}
+          actions={[]}
+          showRowShadow={false}
+          handleEdit={handlEditSession}
+          handleDelete={handleDeleteSession}
+          addButtonImg={EMPTY_IMAGES.session}
+          addButtonMessage="😑 No School Session available!.Create a new one!"
+          showAddButton={true}
+          addButtonText="New Session"
+          onAddButtonClicked={handleOpenSession}
+          handleRefresh={sessions.refetch}
+          // onDeleteClicked={handleMultipleDeleteSession}
+          options={{
+            search: true,
+          }}
+        />
       </Container>
 
       {isPending && <GlobalSpinner />}

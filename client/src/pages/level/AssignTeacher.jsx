@@ -10,9 +10,7 @@ import {
 } from "@mui/material";
 import { Formik } from "formik";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  AssignTeacherValidationSchema,
-} from "@/config/validationSchema";
+import { AssignTeacherValidationSchema } from "@/config/validationSchema";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { assignTeacherLevel } from "@/api/levelAPI";
@@ -69,6 +67,7 @@ const AssignTeacher = ({ levelName }) => {
           },
           onSuccess: () => {
             schoolSessionDispatch(alertSuccess("Assigment done!"));
+            handleClose();
           },
           onError: (error) => {
             schoolSessionDispatch(alertError(error));

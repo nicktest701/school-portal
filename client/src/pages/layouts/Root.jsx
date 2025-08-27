@@ -1,14 +1,12 @@
-import React, { lazy, Suspense, use, useEffect } from "react";
+import React, { lazy, Suspense, useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 import Loader from "../../config/Loader";
 import Shell from "../Shell";
 import Login from "../Login";
 import PageNotFound from "../PageNotFound";
-import Announcements from "../announcement";
 import MoreAnnouncements from "../announcement/MoreAnnouncements";
-import MoreEvents from "../events/MoreEvents";
-import { UserContext } from "@/context/providers/UserProvider";
 import DashboardSkeleton from "@/components/skeleton/DashboardSkeleton";
 import EventSkeleton from "@/components/skeleton/EventSkeleton";
 import ProtectedRoute from "./ProtectedRoute";
@@ -34,7 +32,10 @@ const Teacher = lazy(() => import("../teacher"));
 const TeacherView = lazy(() => import("../teacher/TeacherView"));
 const TeacherEdit = lazy(() => import("../teacher/TeacherEdit"));
 const Profile = lazy(() => import("../profile"));
-const Event = lazy(() => import("../events"));
+
+// Events 
+import Event from "../events";
+const MoreEvents = lazy(() => import("../events/MoreEvents"));
 const EventHome = lazy(() => import("../events/EventHome"));
 const NewEvent = lazy(() => import("../events/NewEvent"));
 const ViewEvent = lazy(() => import("../events/ViewEvent"));
@@ -101,13 +102,8 @@ const AssignedCoursesResults = lazy(() =>
 );
 
 const Root = () => {
-  const { user } = use(UserContext);
-  const { schoolSessionDispatch } = use(SchoolSessionContext);
-  // useEffect(() => {
-  //   if (screenfull.isEnabled) {
-  //     screenfull.request();
-  //   }
-  // }, []);
+  const { user } = useAuth();
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   useEffect(() => {
     const handleOnline = () => {
@@ -475,15 +471,6 @@ const Root = () => {
                   }
                   path="level"
                 />
-
-                {/* <Route
-                  element={
-                    <Suspense fallback={<Loader />}>
-                      <FeePrint />
-                    </Suspense>
-                  }
-                  path="print"
-                /> */}
                 <Route element={<Receipt />} path="receipt" />
               </Route>
 
@@ -691,30 +678,13 @@ const Root = () => {
             <>
               {/* Announcements */}
               <Route
+                path="/announcements"
                 element={
-                  <Suspense fallback={<Loader />}>
-                    <Announcements />
+                  <Suspense fallback={<EventSkeleton />}>
+                    <MoreAnnouncements />
                   </Suspense>
                 }
-                path="/announcements"
-              >
-                <Route
-                  index
-                  element={
-                    <Suspense fallback={<EventSkeleton />}>
-                      <MoreAnnouncements />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="new"
-                  element={
-                    <Suspense fallback={<Loader />}>
-                      <SMSNew />
-                    </Suspense>
-                  }
-                />
-              </Route>
+              />
 
               {/* profile */}
               <Route
@@ -727,15 +697,31 @@ const Root = () => {
               />
 
               {/* Events */}
-              <Route
-                element={
-                  <Suspense fallback={<Loader />}>
-                    <Event />
-                  </Suspense>
-                }
-                path="/events"
-              >
-                {user?.role === "administrator" ? (
+
+              {user?.role === "teacher" && (
+                <>
+                  <Route
+                    element={
+                      <Suspense fallback={<EventSkeleton />}>
+                        <MoreEvents />
+                      </Suspense>
+                    }
+                    path="/events"
+                  />
+
+                  <Route
+                    element={
+                      <Suspense fallback={<Loader />}>
+                        <ViewEvent />
+                      </Suspense>
+                    }
+                    path="/events/:id"
+                  />
+                </>
+              )}
+
+              {user?.role === "administrator" && (
+                <Route element={<Event />} path="/events">
                   <Route
                     element={
                       <Suspense fallback={<Loader />}>
@@ -744,44 +730,35 @@ const Root = () => {
                     }
                     index
                   />
-                ) : (
+
                   <Route
                     element={
-                      <Suspense fallback={<EventSkeleton />}>
-                        <MoreEvents />
+                      <Suspense fallback={<Loader />}>
+                        <NewEvent />
                       </Suspense>
                     }
-                    index
+                    path="new"
                   />
-                )}
 
-                <Route
-                  element={
-                    <Suspense fallback={<Loader />}>
-                      <NewEvent />
-                    </Suspense>
-                  }
-                  path="new"
-                />
+                  <Route
+                    element={
+                      <Suspense fallback={<Loader />}>
+                        <ViewEvent />
+                      </Suspense>
+                    }
+                    path=":id"
+                  />
 
-                <Route
-                  element={
-                    <Suspense fallback={<Loader />}>
-                      <ViewEvent />
-                    </Suspense>
-                  }
-                  path=":id"
-                />
-
-                <Route
-                  element={
-                    <Suspense fallback={<Loader />}>
-                      <EditEvent />
-                    </Suspense>
-                  }
-                  path=":id/edit"
-                />
-              </Route>
+                  <Route
+                    element={
+                      <Suspense fallback={<Loader />}>
+                        <EditEvent />
+                      </Suspense>
+                    }
+                    path=":id/edit"
+                  />
+                </Route>
+              )}
 
               {/* notes */}
               <Route
@@ -794,15 +771,6 @@ const Root = () => {
               />
             </>
           )}
-
-          {/* <Route
-            element={
-              <Suspense fallback={<Loader />}>
-                <Notifications />
-              </Suspense>
-            }
-            path="/notifications"
-          /> */}
 
           <Route
             element={
@@ -824,7 +792,6 @@ const Root = () => {
         />
 
         <Route element={<Login />} path="/login" />
-
         <Route element={<PageNotFound />} path="*" />
       </Routes>
     </>

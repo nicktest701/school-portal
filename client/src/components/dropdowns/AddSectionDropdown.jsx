@@ -9,6 +9,20 @@ import {
 import { Add, AddToPhotos } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
+const menuItems = [
+  { label: "Add Session", path: "/session/new" },
+  { label: "Add Level", path: "/level" },
+  { label: "Add Subject", path: "/subject?_t=1" },
+  { label: "Add Grade", path: "/subject?_t=2" },
+  { label: "Add Student", path: "/student/new" },
+  { label: "Add Teacher", path: "/teacher" },
+  { label: "Add Fee", path: "/fee/new" },
+  { label: "Add User", path: "/users/new" },
+  { label: "Add Message", path: "/messages/new" },
+  { label: "Add Event", path: "/events/new" },
+  { label: "Add Announcement", path: "/announcements" },
+];
+
 const AddSectionDropdown = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -20,23 +34,21 @@ const AddSectionDropdown = () => {
 
   const handleClose = (path) => {
     setAnchorEl(null);
-    if (path) {
-      navigate(path);
-    }
+    if (path) navigate(path);
   };
 
   return (
-    <div>
-      <IconButton onClick={handleClick}>
-        <Tooltip title="Add New">
+    <>
+      <Tooltip title="Add New">
+        <IconButton onClick={handleClick}>
           <AddToPhotos />
-        </Tooltip>
-      </IconButton>
+        </IconButton>
+      </Tooltip>
 
       <Menu
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={() => handleClose()}
         slotProps={{
           paper: {
             elevation: 0,
@@ -66,68 +78,22 @@ const AddSectionDropdown = () => {
           },
         }}
       >
-        <MenuItem onClick={() => handleClose("/session")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Session
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/level")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Level
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/subject?_t=1")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Subject
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/subject?_t=2")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Grade
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/student/new")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Student
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/teacher")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Teacher
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/users/new")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add User
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/messages/new")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Message
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/events/new")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Event
-        </MenuItem>
-        <MenuItem onClick={() => handleClose("/announcements")}>
-          <ListItemIcon>
-            <Add fontSize="small" />
-          </ListItemIcon>
-          Add Announcement
-        </MenuItem>
+        {menuItems.map(({ label, path }) => (
+          <MenuItem
+            key={path}
+            onClick={() => handleClose(path)}
+            sx={{
+              fontSize: 14,
+            }}
+          >
+            <ListItemIcon>
+              <Add fontSize="small" />
+            </ListItemIcon>
+            {label}
+          </MenuItem>
+        ))}
       </Menu>
-    </div>
+    </>
   );
 };
 

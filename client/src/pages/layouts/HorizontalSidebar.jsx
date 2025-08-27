@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Avatar, Drawer, IconButton, Stack } from "@mui/material";
 import {
   AnnouncementRounded,
@@ -10,17 +10,16 @@ import {
   Person,
   SchoolRounded,
 } from "@mui/icons-material";
-
 import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PropTypes from "prop-types";
 import MiniDrawerItem from "@/components/MiniDrawerItem";
-import { UserContext } from "@/context/providers/UserProvider";
 import HorizontalNavLinkItemCollapse from "@/components/dropdowns/HorizontalNavLinkItemCollapse";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const HorizontalSidebar = ({ open, setOpen }) => {
-  const { user, logOutUser, school_info } = useContext(UserContext);
+  const { user, logOutUser, school_info } = useAuth();
 
   const handleClose = () => setOpen(false);
 
@@ -112,12 +111,18 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               to="/uploads"
               handleClose={handleClose}
             />
+
             <MiniDrawerItem
               title="Messages"
               to="/messages"
               handleClose={handleClose}
             />
-            <MiniDrawerItem title="Events" icon={<Event />} to="/events" />
+            <MiniDrawerItem
+              title="Events"
+              icon={<Event />}
+              to="/events"
+              handleClose={handleClose}
+            />
             <MiniDrawerItem
               title="Announcements"
               icon={<AnnouncementRounded />}
@@ -136,12 +141,6 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               to="/users"
               handleClose={handleClose}
             />
-            {/* <MiniDrawerItem
-              title="Notifications & Activites"
-              icon={<NotificationsSharp />}
-              to="/notifications"
-              handleClose={handleClose}
-            /> */}
             <MiniDrawerItem
               title="Settings"
               to="/settings"
@@ -184,7 +183,6 @@ const HorizontalSidebar = ({ open, setOpen }) => {
                 handleClose={handleClose}
               />
             </HorizontalNavLinkItemCollapse>
-
             <MiniDrawerItem
               title={"Events"}
               icon={<Event />}
@@ -205,6 +203,7 @@ const HorizontalSidebar = ({ open, setOpen }) => {
             />
           </>
         )}
+
         <MiniDrawerItem
           title={"Notes Board"}
           icon={<DescriptionRounded />}
@@ -227,6 +226,8 @@ const HorizontalSidebar = ({ open, setOpen }) => {
 };
 
 HorizontalSidebar.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
   onLogOut: PropTypes.func,
 };
 

@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { deleteLevel, deleteManyLevels } from "@/api/levelAPI";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { EMPTY_IMAGES } from "@/config/images";
-import { UserContext } from "@/context/providers/UserProvider";
 import level_icon from "@/assets/images/header/level_ico.svg";
 import ActionItem from "@/components/items/ActionItem";
 import EditLevel from "./EditLevel";
@@ -20,13 +19,13 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import useLevel from "@/components/hooks/useLevel";
 import { CloudUploadRounded } from "@mui/icons-material";
 import ImportLevels from "./ImportLevels";
+import { useAuth } from "@/hooks/useAuth";
 
 const LevelTab = () => {
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const [openImportLevel, setOpenImportLevel] = useState(false);
   const [selectedLevels, setSelectedLevels] = useState([]);
-
-  const { session } = use(UserContext);
+  const { session } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [openAddCurrentLevel, setOpenAddCurrentLevel] = useState(false);
@@ -151,7 +150,7 @@ const LevelTab = () => {
 
   const newLevelColumns = [
     ...SCHOOL_LEVELS,
-    
+
     {
       field: null,
       title: "Class",
@@ -197,7 +196,6 @@ const LevelTab = () => {
         />
       ),
     },
-    
   ];
 
   return (

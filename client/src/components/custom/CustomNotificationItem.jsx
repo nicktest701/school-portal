@@ -6,6 +6,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import moment from "moment";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import { useDeleteNotification, useMarkAsRead } from "@/hooks/useNotifications";
 
@@ -63,7 +64,7 @@ function CustomNotificationItem({
     >
       <div onClick={handleItemClick}>
         <Stack direction="row" justifyContent="space-between" py={1}>
-          <Typography variant="body2" color='secondary' fontWeight="bold">
+          <Typography variant="body2" color="secondary" fontWeight="bold">
             {title}
           </Typography>
           {active && <Label htmlColor="green" />}
@@ -145,5 +146,18 @@ function CustomNotificationItem({
     </motion.div>
   );
 }
+CustomNotificationItem.propTypes = {
+  _id: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  album: PropTypes.string,
+  active: PropTypes.bool.isRequired,
+  description: PropTypes.string,
+  link: PropTypes.string,
+  createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
+    .isRequired,
+  closeDrawer: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
+};
 
 export default CustomNotificationItem;

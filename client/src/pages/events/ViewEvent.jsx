@@ -12,8 +12,8 @@ import { useParams, useSearchParams } from "react-router-dom";
 import React from "react";
 import { EMPTY_IMAGES } from "../../config/images";
 import { getEvent } from "../../api/eventAPI";
-import Back from "../../components/Back";
 import moment from "moment";
+import CustomTitle from "@/components/custom/CustomTitle";
 
 function ViewEvent() {
   const queryClient = useQueryClient();
@@ -33,10 +33,12 @@ function ViewEvent() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      {/* Back button */}
-      <Box mb={2}>
-        <Back to={searchParams.get("redirect_to") || "/"} />
-      </Box>
+      <CustomTitle
+        title={data?.title || "Event"}
+        subtitle={data?.caption || ""}
+        showBack={true}
+        to={searchParams.get("redirect_to") || "/"}
+      />
 
       {/* Hero Section */}
       <Box
@@ -46,7 +48,9 @@ function ViewEvent() {
           borderRadius: 3,
           overflow: "hidden",
           mb: 4,
-          background: `url(${data?.album || EMPTY_IMAGES?.level}) center/cover no-repeat`,
+          background: `url(${
+            data?.album || EMPTY_IMAGES?.level
+          }) center/cover no-repeat`,
         }}
       >
         {/* Overlay */}

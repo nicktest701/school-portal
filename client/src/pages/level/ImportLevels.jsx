@@ -181,7 +181,6 @@ const ImportLevels = ({ open, onClose }) => {
   // Handle Search Functionality
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
- 
 
     if (!query) {
       setFilteredData(uploadedFiles);
@@ -215,7 +214,12 @@ const ImportLevels = ({ open, onClose }) => {
             width: { xs: 320, md: 700 },
           }}
         >
-          <div>
+          <div
+            style={{
+              height: "full",
+              overflowY: "scroll",
+            }}
+          >
             <Typography variant="h5">Import New Levels </Typography>
             <Typography variant="body2" fontStyle="italic" pb={2}>
               Define grade levels, classes, and departments to match your
@@ -396,6 +400,13 @@ const ImportLevels = ({ open, onClose }) => {
       {isPending && <LoadingSpinner value="Please Wait.." />}
     </>
   );
+};
+
+import PropTypes from "prop-types";
+
+ImportLevels.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default ImportLevels;

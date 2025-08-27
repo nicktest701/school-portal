@@ -63,7 +63,7 @@ const Sidebar = () => {
     >
       <Box
         sx={{
-          width: toggleWidth ? 70 : { xs: 0, md: 250 },
+          width: toggleWidth ? 70 : { xs: 0, md: 230 },
           transition: "width 300ms ease-in-out",
         }}
       >

@@ -1,3 +1,4 @@
+import React from "react";
 import { CircleRounded } from "@mui/icons-material";
 import {
   Avatar,
@@ -43,7 +44,7 @@ export const STUDENTS_COLUMN = [
     title: "Profile",
     field: "profile",
     export: false,
-    width: 400,
+    // width: 400,
     searchable: true,
     render: (rowData) => (
       <Stack
@@ -153,17 +154,23 @@ export const STUDENTS_COLUMN = [
     export: true,
     hidden: true,
   },
-  {
-    field: "residence",
-    title: "Residence",
-  },
+  // {
+  //   field: "residence",
+  //   title: "Residence",
+  // },
   {
     field: "nationality",
     title: "Nationality",
+    hidden: true,
   },
   {
     field: "levelId",
     hidden: true,
+  },
+  {
+    title: "Level",
+    field: "levelName",
+    // hidden: true,
   },
 ];
 

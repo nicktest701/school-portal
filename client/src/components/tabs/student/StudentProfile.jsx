@@ -29,6 +29,7 @@ import ViewPreviousReport from "@/pages/student/tab/ViewPreviousReport";
 import ProfileItem from "@/components/typo/ProfileItem";
 import ChipItem from "@/components/list/ChipItem";
 import { IconButton, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import GlobalSpinner from "@/components/spinners/GlobalSpinner";
 const StudentProfile = ({ levelName, student, parents }) => {
   const { type } = useParams();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -58,7 +59,9 @@ const StudentProfile = ({ levelName, student, parents }) => {
     });
   };
 
-  const { mutateAsync } = useMutation({ mutationFn: disableStudentAccount });
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: disableStudentAccount,
+  });
   //DISABLE Student account
   const handleDisableAccount = () => {
     Swal.fire({
@@ -231,6 +234,8 @@ const StudentProfile = ({ levelName, student, parents }) => {
         open={openViewPreviousReport}
         setOpen={setOpenViewPreviousReport}
       />
+
+      {isPending && <GlobalSpinner />}
     </>
   );
 };

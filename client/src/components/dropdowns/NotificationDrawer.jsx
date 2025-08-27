@@ -17,6 +17,7 @@ import {
   useMarkAll,
   useNotifications,
 } from "@/hooks/useNotifications";
+import PropTypes from "prop-types";
 
 const NotificationDrawer = ({ open, setOpen }) => {
   const { user } = useContext(UserContext);
@@ -133,6 +134,10 @@ const NotificationDrawer = ({ open, setOpen }) => {
       </Stack>
     </Drawer>
   );
+};
+NotificationDrawer.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
 };
 
 export default NotificationDrawer;

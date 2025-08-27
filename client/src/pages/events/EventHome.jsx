@@ -1,31 +1,32 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Container } from "@mui/material";
 import _ from "lodash";
 import Swal from "sweetalert2";
-import CustomTitle from "../../components/custom/CustomTitle";
-import { deleteEvents, getAllEvents } from "../../api/eventAPI";
 import { EMPTY_IMAGES } from "../../config/images";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import CustomizedMaterialTable from "../../components/tables/CustomizedMaterialTable";
-import { EVENTS } from "../../mockup/columns/sessionColumns";
 
-import {
-  alertError,
-  alertSuccess,
-} from "../../context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { deleteEvents, getAllEvents } from "@/api/eventAPI";
+import CustomTitle from "@/components/custom/CustomTitle";
+import EventSkeleton from "@/components/skeleton/EventSkeleton";
+import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
+import { EVENTS } from "@/mockup/columns/sessionColumns";
+import { useAuth } from "@/hooks/useAuth";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
 function EventHome() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [selectedEvents, setSelectedEvents] = useState([]);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const queryClient = useQueryClient();
   const events = useQuery({
-    queryKey: ["events"],
-    queryFn: () => getAllEvents(),
+    queryKey: ["events", user?._id],
+    queryFn: getAllEvents,
     initialData: [],
+    enabled: !!user?._id,
   });
 
   const handleViewEvent = (id) => {
@@ -79,6 +80,10 @@ function EventHome() {
     });
   };
 
+  if (events.isPending) {
+    return <EventSkeleton />;
+  }
+
   return (
     <Container>
       <CustomTitle
@@ -89,8 +94,6 @@ function EventHome() {
       />
 
       <CustomizedMaterialTable
-        // title="Recent Events"
-        // icon={sms_icon}
         isPending={events.isPending || isPending}
         columns={EVENTS(handleViewEvent, handleEditEvent, handleDeleteEvent)}
         data={events.data}

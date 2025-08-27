@@ -324,11 +324,7 @@ const CurrentLevelTab = () => {
         actions={[]}
         icon={student_icon}
         onRowClick={({ _id }) => handleViewStudent(_id)}
-        style={
-          {
-            // maxWidth: "90%",
-          }
-        }
+      
       />
 
       <FileDialog />

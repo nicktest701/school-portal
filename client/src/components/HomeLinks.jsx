@@ -13,6 +13,7 @@ export default function HomeLinks() {
         justifyContent: "flex-end",
         alignItems: "center",
         px: 2,
+        pb: 2,
       }}
     >
       <Breadcrumbs
@@ -22,8 +23,8 @@ export default function HomeLinks() {
         }}
         separator="/"
       >
-        <Link component={RouterLink} to="/" >
-          Home
+        <Link component={RouterLink} to="/" style={{ fontWeight: "bold" }}>
+          Dashboard
         </Link>
         {pathnames.map((value, index) => {
           const to = `/${pathnames.slice(0, index + 1).join("/")}`;

@@ -12,7 +12,6 @@ import { useParams, useSearchParams } from "react-router-dom";
 import React from "react";
 import { EMPTY_IMAGES } from "../../config/images";
 import { getEvent } from "../../api/eventAPI";
-import Back from "../../components/Back";
 import moment from "moment";
 import CustomTitle from "@/components/custom/CustomTitle";
 

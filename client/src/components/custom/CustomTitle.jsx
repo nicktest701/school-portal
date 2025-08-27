@@ -52,17 +52,21 @@ function CustomTitle({
           color={color}
           pl={1}
         >
-          {img && !matches ? (
-            <img
-              src={img}
-              style={{
-                width: "40px",
-                height: "40px",
-                alignSelf: "center",
-              }}
-            />
-          ) : (
-            icon
+          {!matches && (
+            <>
+              {img ? (
+                <img
+                  src={img}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    alignSelf: "center",
+                  }}
+                />
+              ) : (
+                <>{icon && icon}</>
+              )}
+            </>
           )}
 
           <Stack direction="row" alignItems="center" spacing={1}>
@@ -84,16 +88,20 @@ function CustomTitle({
                 </IconButton>
               </Box>
             )}
-            {img && matches ? (
-              <img
-                src={img}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                }}
-              />
-            ) : (
-              icon
+            {matches && (
+              <>
+                {img ? (
+                  <img
+                    src={img}
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                    }}
+                  />
+                ) : (
+                  <>{icon && icon}</>
+                )}
+              </>
             )}
             <Typography
               flex={1}
