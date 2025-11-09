@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useContext, useState } from "react";
 import {
   AccountBoxRounded,
@@ -40,7 +41,7 @@ const StudentProfile = ({ levelName, student, parents }) => {
   const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.up("md"));
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [_, setSearchParams] = useSearchParams();
 
   const handleOpenMedicalHistory = () => {
     setSearchParams({
@@ -184,7 +185,15 @@ const StudentProfile = ({ levelName, student, parents }) => {
           icon={<EditRounded />}
         />
         <Stack py={2}>
+          <ProfileItem
+            label="Department"
+            text={student?.academic?.department?.name || "Not Available"}
+          />
           <ProfileItem label="Current Level" text={type || levelName} />
+          <ProfileItem
+            label="House/Section"
+            text={student?.academic?.house?.name || "Not Available"}
+          />
           <ProfileItem
             label="Previous School"
             text={`${

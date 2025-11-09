@@ -3,6 +3,9 @@ const asyncHandler = require("express-async-handler");
 const Level = require("../models/levelModel");
 const User = require("../models/userModel");
 const Examination = require("../models/examinationModel");
+const Notification = require("../models/notificationModel");
+const Department = require("../models/departmentModel");
+const House = require("../models/houseModel");
 const Student = require("../models/studentModel");
 const Subject = require("../models/subjectModel");
 const Attendance = require("../models/attendanceModel");
@@ -14,9 +17,10 @@ const {
   getAttendanceByGender,
   processGeneralWeeklyAttendance,
 } = require("../config/helper");
+const sendMail = require("../config/mail/mailer");
 
 const LEVEL_OPTIONS = [
-  "Day Care",
+ "Day Care",
   "Creche",
   "Nursery 1",
   "Nursery 2",
@@ -61,6 +65,9 @@ const LEVEL_OPTIONS = [
   "J.H.S 1",
   "J.H.S 2",
   "J.H.S 3",
+  "S.H.S 1",
+  "S.H.S 2",
+  "S.H.S 3",
 ];
 
 //@GET all current level by current school session
@@ -162,10 +169,21 @@ router.get(
       });
     });
 
+    const departments = await Department.find({
+      school: req.user.school,
+      active: true,
+    }).select("_id name");
+    const houses = await House.find({
+      school: req.user.school,
+      active: true,
+    }).select("_id name");
+
     res.status(200).json({
       students: modifiedStudents,
       subjects: currentSubjects,
       fees,
+      departments,
+      houses,
       levelsOption: selectedLevels,
       levelSummary: {
         noOfLevels,
@@ -723,6 +741,30 @@ router.put(
       return res.status(400).json("Error assigning Level.Try again later");
     }
 
+    const notification = {
+      user: teacher,
+      school: req.user.school,
+      session: isLevelAssigned?.session,
+      term: isLevelAssigned?.term,
+      type: "Information",
+      title: `Level Assignment - ${level?.levelName}`,
+      description: `You have been assigned to ${level?.levelName} as Form Master.`,
+      album: null,
+      link: "/course/level",
+      createdBy: req.user.id,
+    };
+
+    await Notification.create(notification);
+
+    const teacherUser = await User.findById(teacher);
+
+    const body = {
+      title: `Level Assignment - ${level?.levelName}`,
+      message: `Dear ${teacherUser?.firstname} ${teacherUser?.lastname}, You have been assigned to ${level?.levelName} as Form Master. Please login to your dashboard to view more details.`,
+    };
+
+    await sendMail(body, teacherUser?.email);
+
     res.status(201).json("Level has been assigned successfully!!!");
   })
 );
@@ -731,21 +773,39 @@ router.put(
   "/unassign-teacher",
   asyncHandler(async (req, res) => {
     const id = req.query.id;
-    const level = await Level.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          teacher: null,
-        },
+    const level = await Level.findByIdAndUpdate(id, {
+      $set: {
+        teacher: null,
       },
-      {
-        new: true,
-      }
-    );
+    });
 
     if (_.isEmpty(level)) {
       return res.status(404).json("Error updating info.Try again later");
     }
+
+    const notification = {
+      user: level?.teacher,
+      school: req.user.school,
+      session: level?.session,
+      term: level?.term,
+      type: "Information",
+      title: "Level Unassignment",
+      description: `You have been unassigned from ${level?.levelName} as Form Master. If this is a mistake, please contact the administrator.`,
+      album: null,
+      link: "/course/level",
+      createdBy: req.user.id,
+    };
+
+    await Notification.create(notification);
+
+    const teacherUser = await User.findById(level?.teacher);
+
+    const body = {
+      title: "Level Unassignment",
+      message: `Dear ${teacherUser?.firstname} ${teacherUser?.lastname}, You have been unassigned from ${level?.levelName} as Form Master. If this is a mistake, please contact the administrator.`,
+    };
+
+    await sendMail(body, teacherUser?.email);
 
     res.status(201).json("Changes Saved!!!");
   })

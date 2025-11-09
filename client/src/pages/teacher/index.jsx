@@ -1,7 +1,13 @@
-import { Outlet } from 'react-router-dom';
-
+import React from "react";
+import { Outlet } from "react-router-dom";
+import TeacherNav from "./layout/TeacherNav";
 const Teacher = () => {
-  return <Outlet />;
+  return (
+    <>
+      <TeacherNav />
+      <Outlet />
+    </>
+  );
 };
 
 export default Teacher;

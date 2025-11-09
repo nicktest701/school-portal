@@ -39,11 +39,13 @@ import { gradeColor } from "@/config/gradeColor";
 import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
 import { UserContext } from "@/context/providers/UserProvider";
 
+
 function ExamsScore() {
   const { session } = useContext(UserContext);
   const { state } = useLocation();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [searchParams] = useSearchParams();
+
 
   //tab
   const [tab, setTab] = useState("1");

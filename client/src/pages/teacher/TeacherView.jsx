@@ -22,7 +22,7 @@ import {
 import Swal from "sweetalert2";
 import React, { useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { deleteTeacher, getTeacher } from "@/api/teacherAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
@@ -37,6 +37,7 @@ const TeacherView = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const { breakpoints } = useTheme();
   const matches = useMediaQuery(breakpoints.up("sm"));
 
@@ -101,11 +102,11 @@ const TeacherView = () => {
 
   //Assign Level
   const goToAssignLevel = () => {
-    navigate("level");
+    navigate("levels");
   };
   //Assign Course
   const goToAssignCourse = () => {
-    navigate("course");
+    navigate(`courses`);
   };
 
   return (
@@ -168,7 +169,13 @@ const TeacherView = () => {
                 Send Message
               </Button>
 
-              <ButtonGroup variant="contained">
+              <ButtonGroup
+                variant="contained"
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                }}
+              >
                 {matches ? (
                   <>
                     <Button

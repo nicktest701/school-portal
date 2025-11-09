@@ -41,8 +41,6 @@ const UserEdit = () => {
       ?.find((user) => user?._id === id),
   });
 
-
-
   useEffect(() => {
     setDob(moment(user?.data?.dateofbirth));
   }, [user?.data]);
@@ -104,10 +102,10 @@ const UserEdit = () => {
       <Back color="#012e54" to={`/users/${id}`} />
       <CustomTitle
         title="Update User Information"
-        subtitle="Make Changes to user profile information"
+        subtitle="Make Changes to user profile information using the form below."
         color="primary.main"
       />
-     
+
       <Formik
         initialValues={user?.data}
         onSubmit={onSubmit}
@@ -144,6 +142,9 @@ const UserEdit = () => {
                     sx={{ fontWeight: "bold" }}
                   >
                     Personal information
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Update the user's personal details.
                   </Typography>
 
                   <CustomFormControl>
@@ -221,6 +222,17 @@ const UserEdit = () => {
                     <MenuItem value="coordinator">Exams Coordinator</MenuItem>
                     <MenuItem value="teacher">Teacher</MenuItem>
                   </TextField>
+                  <Typography
+                    variant="body2"
+                    color="primary.main"
+                    sx={{ fontWeight: "bold" }}
+                  >
+                    Contact Info
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Update the user's contact details.
+                  </Typography>
+
                   <CustomFormControl>
                     <TextField
                       label="Email"

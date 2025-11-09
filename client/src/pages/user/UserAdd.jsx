@@ -66,7 +66,7 @@ function UserAdd() {
       <Back color="#012e54" />
       <CustomTitle
         title="New User"
-        subtitle="Track,manage and control courses assigned to you"
+        subtitle="Add a new user to the system by filling out the form below."
         icon={<SchoolRounded color="primary" sx={{ width: 50, height: 50 }} />}
         color="primary.main"
       />
@@ -108,6 +108,10 @@ function UserAdd() {
                   sx={{ fontWeight: "bold" }}
                 >
                   Personal information
+                </Typography>
+
+                <Typography variant="caption" color="text.secondary">
+                  Enter the user's personal details.
                 </Typography>
                 <CustomFormControl>
                   <TextField
@@ -161,8 +165,8 @@ function UserAdd() {
                     error={Boolean(touched.gender && errors.gender)}
                     helperText={touched.gender && errors.gender}
                   >
-                    <MenuItem value="male">male</MenuItem>
-                    <MenuItem value="female">female</MenuItem>
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
                   </TextField>
                 </CustomFormControl>
                 <TextField
@@ -181,6 +185,17 @@ function UserAdd() {
                   <MenuItem value="coordinator">Exams Coordinator</MenuItem>
                   {/* <MenuItem value="teacher">Teacher</MenuItem> */}
                 </TextField>
+                <Typography
+                  variant="body2"
+                  color="primary.main"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  Contact information
+                </Typography>
+
+                <Typography variant="caption" color="text.secondary">
+                  Enter the user's contact details.
+                </Typography>
                 <CustomFormControl>
                   <TextField
                     label="Email"
@@ -226,7 +241,9 @@ function UserAdd() {
                     noOptionsText="No Town available"
                     getOptionLabel={(option) => option || ""}
                     value={values.residence}
-                    onChange={(e, value) => setFieldValue("residence", value)}
+                    onInputChange={(e, value) =>
+                      setFieldValue("residence", value)
+                    }
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -248,7 +265,9 @@ function UserAdd() {
                     noOptionsText="No Nationality available"
                     getOptionLabel={(option) => option || ""}
                     value={values.nationality}
-                    onChange={(e, value) => setFieldValue("nationality", value)}
+                    onInputChange={(e, value) =>
+                      setFieldValue("nationality", value)
+                    }
                     renderInput={(params) => (
                       <TextField
                         {...params}

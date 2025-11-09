@@ -15,7 +15,6 @@ import {
   TableRow,
   Tabs,
   Tab,
-  Divider,
   useMediaQuery,
   useTheme,
   Container,
@@ -28,7 +27,6 @@ import {
   Person as PersonIcon,
   BarChart as ChartIcon,
   Sort as SortIcon,
-  Search as SearchIcon,
 } from "@mui/icons-material";
 import { Line } from "react-chartjs-2";
 import {
@@ -303,9 +301,10 @@ const AcademicDashboard = () => {
                 Outstanding Academic Achievement
               </Typography>
               <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
-                You're performing in the top 5% of your class. Your consistent
-                improvement in {academicRecord?.data?.activeLevel?.level} shows
-                exceptional dedication to your studies.
+                You&apos;re performing in the top 5% of your class. Your
+                consistent improvement in{" "}
+                {academicRecord?.data?.activeLevel?.level} shows exceptional
+                dedication to your studies.
               </Typography>
 
               <Grid container spacing={2} sx={{ mt: 3 }}>
@@ -702,8 +701,8 @@ const AcademicDashboard = () => {
       >
         <ChartIcon sx={{ color: theme.palette.primary.main, mr: 1 }} />
         <Typography variant="body2">
-          You're currently ranked 1st in your class with a 94% average. Keep up
-          the excellent work!
+          You&apos;re currently ranked 1st in your class with a 94% average.
+          Keep up the excellent work!
         </Typography>
       </Box>
     </Container>

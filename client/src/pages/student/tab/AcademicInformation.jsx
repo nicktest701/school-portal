@@ -11,10 +11,13 @@ import { Avatar } from "@mui/material";
 import { TOWNS } from "@/mockup/data/towns";
 import { Controller } from "react-hook-form";
 import Input from "@/components/inputs/Input";
+import useLevel from "@/components/hooks/useLevel";
+import CustomAutoComplete from "@/components/inputs/CustomAutoComplete";
 
 const AcademicInformation = ({ watch, control, setValue, errors }) => {
   const report = watch("academic.previousSchool.report");
   const levels = JSON.parse(sessionStorage.getItem("levels")) || [];
+  const { departments, houses, levelLoading } = useLevel();
 
   const memoizedLevelsOption = useMemo(() => levels, [levels]);
 
@@ -23,7 +26,7 @@ const AcademicInformation = ({ watch, control, setValue, errors }) => {
     noKeyboard: true,
     maxFiles: 1,
     accept: {
-      "image/*": [".jpeg", ".png", ".webp"],
+      "image/*": [".jpeg", ".png", ".jpg", ".webp"],
       "application/pdf": [".pdf"],
     },
     multiple: false,
@@ -39,9 +42,29 @@ const AcademicInformation = ({ watch, control, setValue, errors }) => {
     },
   });
 
-  console.log(errors);
   return (
     <Stack py={2} spacing={2}>
+      <Typography
+        variant="body2"
+        color="primary.main"
+        sx={{ fontWeight: "bold" }}
+      >
+        Department/Level/House
+      </Typography>
+      <Typography variant="caption" color="text.secondary">
+        Assign the student to a department, level, and house.
+      </Typography>
+
+      <CustomAutoComplete
+        name="academic.department"
+        control={control}
+        label="Department"
+        data={{
+          data: departments,
+          isPending: levelLoading,
+        }}
+      />
+
       <Controller
         name="academic.level"
         control={control}
@@ -72,13 +95,27 @@ const AcademicInformation = ({ watch, control, setValue, errors }) => {
         )}
       />
 
+      <CustomAutoComplete
+        name="academic.house"
+        control={control}
+        label="House/Section"
+        data={{
+          data: houses,
+          isPending: levelLoading,
+        }}
+      />
+
       <Typography
         variant="body2"
         color="primary.main"
-        sx={{ fontWeight: "bold" }}
+        sx={{ fontWeight: "bold"}}
       >
         Previous School Records
       </Typography>
+      <Typography variant="caption" color="text.secondary">
+        Provide details about the student's previous school.
+      </Typography>
+
       <Input
         control={control}
         name="academic.previousSchool.name"

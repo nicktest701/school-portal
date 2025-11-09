@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 const Attendance = require("../models/attendanceModel");
 const Level = require("../models/levelModel");
 const User = require("../models/userModel");
+const Term = require("../models/termModel");
 const {
   Types: { ObjectId },
 } = require("mongoose");
@@ -23,6 +24,34 @@ router.get(
   })
 );
 
+//@GET School Attendance History
+router.get(
+  "/level/:id",
+  asyncHandler(async (req, res) => {
+    const user = req.user;
+    const { id } = req.params;
+    // const { date, session, term } = req.query;
+
+    const term = await Term.findOne({
+      school: user?.school,
+      active: true,
+    }).select(["session", "from", "to", "name", "term"]);
+
+    console.log(id);
+
+    const attendance = await Attendance.find({
+      date: {
+        $gte: new Date(term.from),
+        $lte: new Date(term.to),
+      },
+
+      active: true,
+    });
+    console.log(attendance);
+
+    res.status(200).json("Attendance");
+  })
+);
 //@GET School Attendance History
 router.get(
   "/history/:id",

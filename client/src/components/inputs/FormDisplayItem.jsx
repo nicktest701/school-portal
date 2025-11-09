@@ -15,7 +15,7 @@ const iconMap = {
 const FieldContainer = styled(Stack)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   borderRadius: 12,
-  padding: theme.spacing(2),
+  padding: theme.spacing(1),
   border: `1px solid ${theme.palette.divider}`,
   transition: "all 0.2s ease",
   "&:hover": {

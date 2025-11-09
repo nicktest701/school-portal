@@ -142,7 +142,7 @@ function ConfirmStudent({ watch, isPending, id, hideSaveBtn, reset }) {
               pt={2}
             >
               <Typography variant="h4">
-                {_.startCase(school_info?.name)}
+                {_.upperCase(school_info?.name)}
               </Typography>
               <Typography variant="caption">{school_info?.address}</Typography>
               <Typography variant="caption">{school_info?.location}</Typography>
@@ -374,12 +374,20 @@ function ConfirmStudent({ watch, isPending, id, hideSaveBtn, reset }) {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
+                  gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
                 }}
               >
                 <StudentViewItem
+                  secondary="Department"
+                  primary={academic?.department?.name}
+                />
+                <StudentViewItem
                   secondary="Current Level"
                   primary={academic?.level?.type}
+                />
+                <StudentViewItem
+                  secondary="House/Section"
+                  primary={academic?.house?.name}
                 />
 
                 <StudentViewItem

@@ -1,81 +1,35 @@
 import React from "react";
-import {
-  AppBar,
-  Badge,
-  Button,
-  Container,
-  Divider,
-  IconButton,
-  Stack,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import {
-  Menu,
-  NotificationsRounded,
-} from "@mui/icons-material";
-import { NavLink } from "react-router-dom";
-import Back from "../../../components/Back";
+import { AppBar, Container, Toolbar } from "@mui/material";
+import NavLinkItem from "@/components/list/NavLinkItem";
 
 const TeacherNav = () => {
-
   return (
     <>
-      <AppBar position="sticky">
-        <Back
-          content={
-            <Badge badgeContent={3} color="error">
-              <NotificationsRounded />
-            </Badge>
-          }
-        />
+      <AppBar position="sticky" sx={{ bgcolor: "white" }} elevation={0}>
         <Toolbar>
           <Container
+            // direction='row'
             sx={{
+              width: { xs: 300, sm: "100%" },
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              flexWrap:'wrap'
+              justifyContent: "center",
+              flexWrap: "wrap",
+              gap: 2,
+              paddingY: 1,
+              bgcolor: "white",
             }}
           >
-            <Typography variant="h5">Students</Typography>
-            <Stack
-              display={{ xs: "none", md: "flex" }}
-              direction="row"
-              width="100%"
-              justifyContent="center"
-            >
-              <NavLink to="">
-                <Button variant="text" color="secondary">
-                  Home
-                </Button>
-              </NavLink>
-              <NavLink to="new">
-                <Button variant="text" color="secondary">
-                  New
-                </Button>
-              </NavLink>
-              <NavLink to="view">
-                <Button variant="text" color="secondary">
-                  View
-                </Button>
-              </NavLink>
-              <NavLink to="settings">
-                <Button variant="text" color="secondary">
-                  Settings
-                </Button>
-              </NavLink>
-            </Stack>
-            <IconButton
-              color="inherit"
-              sx={{ display: { xs: "block", md: "none" } }}
-            >
-              <Menu />
-            </IconButton>
+            <NavLinkItem to="/teacher" color="#012e54" text="Teachers" />
+            <NavLinkItem
+              to="/teacher/levels"
+              color="#012e54"
+              text="Levels"
+            />
+            <NavLinkItem to="/teacher/courses" color="#012e54" text="Courses" />
           </Container>
         </Toolbar>
       </AppBar>
-      <Divider />
     </>
   );
 };

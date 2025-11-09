@@ -28,7 +28,18 @@ const generateReport = async ({ template, id }) => {
       timeout: 0,
       printBackground: true,
       footerTemplate:
-        '<small style="font-size:10px;font-style:italic;">Powered by Frebbytech consults(0543772591)</small>',
+        ` <div>
+                    Powered by
+                    <a
+                        href="https://nanaakwasi.dev"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Frebby Tech Consult
+                    </a>
+                    (+233543772591). &copy; <script>document.write(new Date().getFullYear());</script> | All rights
+                    reserved.
+                </div>`,
     });
 
     //close browser

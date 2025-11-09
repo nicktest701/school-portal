@@ -77,6 +77,11 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               handleClose={handleClose}
             />
             <MiniDrawerItem
+              title="Departments & Houses"
+              to="/departments-houses"
+              handleClose={handleClose}
+            />
+            <MiniDrawerItem
               title="Levels"
               to="/level"
               handleClose={handleClose}

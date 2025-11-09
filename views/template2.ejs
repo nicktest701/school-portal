@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Terminal Report</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,500;0,600;1,100;1,200&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        position: relative;
+        line-height: 1.6;
+        padding: 20px;
+        font-size: 12px;
+      }
+
+      .report-container {
+        position: relative;
+        max-width: 8.5in;
+        max-height: 297mm;
+        margin: 0 auto;
+        overflow: hidden;
+        z-index: 9999;
+      }
+
+      .header {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+      }
+
+      .logo-container {
+        flex: 0 0 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .logo {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        overflow: hidden;
+      }
+
+      .school-logo {
+        width: 80px;
+        height: 80px;
+      }
+
+      .school-info {
+        flex: 1;
+        text-align: center;
+        padding: 0 20px;
+      }
+
+      .school-name {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .school-details {
+        font-size: 12px;
+      }
+
+      .report-title {
+        font-size: 20px;
+        margin-top: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .student-photo-container {
+        flex: 0 0 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .student-photo {
+        width: 80px;
+        height: 80px;
+        background-color: #ecf0f1;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 10px;
+        text-align: center;
+        color: #2c3e50;
+        overflow: hidden;
+      }
+
+      .student-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .student-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        padding: 5px;
+        /* background-color: #ecf0f1; */
+        border-bottom: 1px solid #bdc3c7;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .info-label {
+        font-weight: bold;
+        color: #7f8c8d;
+        font-size: 12px;
+        margin-bottom: 3px;
+      }
+
+      .info-value {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .subject-table {
+        width: 100%;
+        border-collapse: collapse;
+        /* margin: 20px 0; */
+      }
+
+      .subject-table th {
+        background-color: #34495e;
+        color: white;
+        padding: 5px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 12px;
+      }
+
+      .subject-table td {
+        padding: 1px 8px;
+        border-bottom: 1px solid #ecf0f1;
+      }
+
+      /* .subject-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        } */
+
+      .subject-table tr:hover {
+        background-color: #e8f4fc;
+      }
+
+      .subject-category {
+        background-color: #2c3e50 !important;
+        color: white;
+        font-weight: bold;
+      }
+
+      .remarks-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        padding: 5px;
+        margin-top: 10px;
+      }
+
+      .remark-card {
+        padding: 5px;
+      }
+
+      .remark-title {
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 2px;
+        font-size: 12px;
+        border-bottom: 1px solid #ecf0f1;
+        padding-bottom: 3px;
+      }
+
+      .remark-content {
+        color: #555;
+        font-style: italic;
+      }
+
+      .grades-key {
+        padding: 5px;
+      }
+
+      .grades-key h3 {
+        width: 100%;
+        margin-bottom: 8px;
+        text-align: center !important;
+      }
+
+      .grades-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 5px;
+      }
+
+      .grade-item {
+        display: flex;
+        align-items: center;
+      }
+
+      .grade-box {
+        width: 30px;
+        height: 15px;
+        margin-right: 10px;
+        border-radius: 3px;
+        display: inline-block;
+      }
+
+      .grade-A1 .grade-box {
+        background-color: #4caf50;
+      }
+      .grade-B2 .grade-box {
+        background-color: #8bc34a;
+      }
+      .grade-B3 .grade-box {
+        background-color: #cddc39;
+      }
+      .grade-C4 .grade-box {
+        background-color: #ffeb3b;
+      }
+      .grade-C5 .grade-box {
+        background-color: #ffc107;
+      }
+      .grade-C6 .grade-box {
+        background-color: #ff9800;
+      }
+      .grade-D7 .grade-box {
+        background-color: #ff5722;
+      }
+      .grade-E8 .grade-box {
+        background-color: #f44336;
+      }
+      .grade-F9 .grade-box {
+        background-color: #b71c1c;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 5px;
+      }
+
+      .highlight {
+        background-color: #fff9c4;
+        padding: 2px 4px;
+      }
+
+      @media print {
+        body {
+          background-color: white;
+          padding: 0;
+        }
+        .report-container {
+          box-shadow: none;
+          border-radius: 0;
+        }
+        .subject-table th {
+          color: #ffffff;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .logo-container,
+        .student-photo-container {
+          margin: 10px 0;
+        }
+        .subject-table {
+          font-size: 12px;
+        }
+        .subject-table th,
+        .subject-table td {
+          padding: 5px 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Print Template -->
+
+    <div
+      style="
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: transparent;
+      "
+    >
+      <img
+        style="opacity: 0.03; width: 6in; height: 5.5in; object-fit: contain"
+        alt="report-logo"
+        src="<%= school?.badge %>"
+      />
+    </div>
+    <div class="report-container">
+      <div class="header">
+        <div class="logo">
+          <img
+            alt="school logo"
+            loading="lazy"
+            src="<%= school?.badge %>"
+            style="object-fit: contain"
+            class="school-logo"
+          />
+        </div>
+
+        <div class="school-info">
+          <div class="school-name"><%= school?.name %></div>
+          <div class="school-details">
+            <%= school?.address %> | <%= school?.location %> <br />
+            <%= school?.email %> | <%= school?.phonenumber %> <br />
+            <%= school?.motto %>
+          </div>
+          <div class="report-title">TERMINAL REPORT</div>
+        </div>
+
+        <div class="student-photo-container">
+          <div class="student-photo">
+            <div>
+              <img
+                width="60"
+                height="60"
+                alt="photo"
+                src="<%= report?.profile %>"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="student-info">
+        <div class="info-item">
+          <span class="info-label">NAME</span>
+          <span class="info-value">
+            <%= report.fullName %> - <%= report.indexnumber %></span
+          >
+        </div>
+        <div class="info-item">
+          <span class="info-label">CLASS</span>
+          <span class="info-value"> <%= report.level %></span>
+        </div>
+        <!-- <div class="info-item">
+          <span class="info-label">HOUSE</span>
+          <span class="info-value">Aggrey House</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">PROGRAMME</span>
+          <span class="info-value">SCIENCE</span>
+        </div> -->
+        <div class="info-item">
+          <span class="info-label">ACADEMIC YEAR</span>
+          <span class="info-value"> <%= report.academicYear %> </span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">TERM</span>
+          <span class="info-value"> <%= report.term %> </span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">VACATION DATE</span>
+          <span class="info-value"> <%= report.vacationDate %></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">NEXT TERM RE-OPENS</span>
+          <span class="info-value"> <%= report.reOpeningDate %></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">ROLL NUMBER</span>
+          <span class="info-value"> <%= report.rollNumber %></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">TOTAL MARKS</span>
+          <span class="info-value"> <%= report.overallScore %></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">POSITION</span>
+          <span class="info-value"> <%= report.position %> </span>
+        </div>
+      </div>
+
+      <table class="subject-table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Class Score(<%= school.termDetails.class %>%)</th>
+            <th>Exam Score (<%= school.termDetails.exams %>%)</th>
+            <th>Total Score 100%</th>
+            <th>Class Average</th>
+            <th>Position</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% report.scores.forEach(score=> { %>
+          <!-- subject  -->
+          <tr>
+            <td
+              width="25%"
+              style="text-align: left; padding-left: 2px; font-weight: bold"
+            >
+              <%= score.subject %>
+            </td>
+
+            <td width="18%"><%= score.classScore %></td>
+            <td width="18%"><%= score.examsScore %></td>
+            <td width="15%" style="color: #b72338; font-weight: bold">
+              <%= score.totalScore %>
+            </td>
+
+            <td width="10%"><%= score.grade %></td>
+            <td width="10%"><%= score.grade %></td>
+            <td width="14%" style="color: green"><%= score.remarks %></td>
+          </tr>
+
+          <% }) %>
+        </tbody>
+      </table>
+      <hr />
+
+      <div class="remarks-section">
+        <div class="remark-card">
+          <div class="remark-title">ATTENDANCE:</div>
+          <div class="remark-content"></div>
+        </div>
+        <div class="remark-card">
+          <div class="remark-title">CONDUCT & ATTITUDE</div>
+          <div class="remark-content"><%= report.comments?.conduct %></div>
+        </div>
+        <div class="remark-card">
+          <div class="remark-title">INTEREST</div>
+          <div class="remark-content"><%= report.comments?.interest %></div>
+        </div>
+        <div class="remark-card">
+          <div class="remark-title">FORM MASTER'S REMARKS</div>
+          <div class="remark-content">
+            <%= report.comments?.teachersComments %>
+          </div>
+        </div>
+        <!-- <div class="remark-card">
+                <div class="remark-title">HOUSEMASTER/HOUSEMISTRESS REPORT</div>
+                <div class="remark-content">Conducts Himself Well In The House. A responsible prefect.</div>
+            </div> -->
+        <div class="remark-card">
+          <div class="remark-title">HEADMASTER/HEADMISTRESS</div>
+          <div class="remark-content">
+            <%= report.comments?.headteachersComments %>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: end;
+          margin-bottom: 4px;
+        "
+      >
+        <!-- Only show if signature exists -->
+        <img
+          src="<%= school.termDetails.headmaster.signature %>"
+          alt="headmaster signature"
+          style="
+            max-width: 100%;
+            aspect-ratio: 16/9;
+            width: 100px;
+            height: 60px;
+            object-fit: contain;
+            transform: scale(2);
+          "
+        />
+        <span style="border-top: 1px #333 dashed; font-size: 13px">
+          <%= school.termDetails.headmaster.name %> (Headmaster)
+        </span>
+        <hr />
+      </div>
+      <hr />
+
+      <div className="grades-key">
+        <h3>KEY TO GRADES</h3>
+        <div class="grades-grid">
+          <% if (report?.gradingSystem && report.gradingSystem.length) { %> <%
+          report.gradingSystem.forEach(function(rating) { %>
+          <div class="grade-item grade-<%= rating.remarks %>">
+            <span>
+              <%= rating.grade %> <%= rating.lowestMark %> - <%=
+              rating.highestMark %> <%= rating.remarks %>
+            </span>
+          </div>
+          <% }) %> <% } %>
+        </div>
+      </div>
+
+      <div class="footer">
+        Powered by
+        <a
+          href="https://nanaakwasi.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="font-size: 10px; font-style: italic; text-align: right"
+        >
+          Frebby Tech Consult
+        </a>
+        (+233543772591). &copy;
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+        | All rights reserved.
+      </div>
+
+      <span class="student-id" style="font-size: 10px; font-style: italic">
+        <%= report._id %>
+      </span>
+    </div>
+  </body>
+</html>

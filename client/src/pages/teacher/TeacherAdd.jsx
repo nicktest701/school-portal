@@ -40,9 +40,6 @@ const TeacherAdd = ({ setTab }) => {
     mutationFn: postTeacher,
   });
   const onSubmit = (values, options) => {
-    
- 
-
     values.dateofbirth = moment(dob).format("L");
     mutateAsync(values, {
       onSuccess: (data) => {
@@ -87,7 +84,6 @@ const TeacherAdd = ({ setTab }) => {
             handleSubmit,
             handleReset,
           }) => {
-           
             const uploadProfile = (e) => {
               setFieldValue("profile", e.target.files[0]);
               setProfieImg(URL.createObjectURL(e.target.files[0]));
@@ -113,6 +109,9 @@ const TeacherAdd = ({ setTab }) => {
                   >
                     Personal information
                   </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Enter the teacher's personal details.
+                  </Typography>
                   <CustomFormControl>
                     <TextField
                       label="Firstname"
@@ -125,7 +124,8 @@ const TeacherAdd = ({ setTab }) => {
                       helperText={touched.firstname && errors.firstname}
                     />
                     <TextField
-                      label="Surname"
+                      label="Lastname"
+                      type="text"
                       fullWidth
                       size="small"
                       value={values.lastname}
@@ -180,6 +180,9 @@ const TeacherAdd = ({ setTab }) => {
                     paragraph
                   >
                     Contact Details
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    Enter the teacher's contact details.
                   </Typography>
                   <CustomFormControl>
                     <TextField

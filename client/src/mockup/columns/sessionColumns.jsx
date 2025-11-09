@@ -292,6 +292,9 @@ export const LEVEL_OPTIONS = [
   "J.H.S 1",
   "J.H.S 2",
   "J.H.S 3",
+  "S.H.S 1",
+  "S.H.S 2",
+  "S.H.S 3",
 ];
 export const LEVEL_TYPE_OPTIONS = [
   "A",
@@ -1007,6 +1010,8 @@ export const USERS_COLUMNS = [
   {
     field: "nationality",
     title: "Nationality",
+    export: true,
+    hidden: true,
   },
 ];
 

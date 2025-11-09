@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Formik } from "formik";
 import { assignLevelValidationSchema } from "@/config/validationSchema";
@@ -24,12 +24,11 @@ import { UserContext } from "@/context/providers/UserProvider";
 import { postCourse } from "@/api/courseAPI";
 import TeacherCourses from "./TeacherCourses";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { getTeacher } from "@/api/teacherAPI";
 
 const TeacherAssignCourse = () => {
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
-  const {
-    session
-  } = useContext(UserContext);
+  const { session } = useContext(UserContext);
 
   const queryClient = useQueryClient();
   const [subject, setSubject] = useState({
@@ -53,6 +52,15 @@ const TeacherAssignCourse = () => {
 
   const { id } = useParams();
 
+  const teacher = useQuery({
+    queryKey: ["teacher", id],
+    queryFn: () => getTeacher(id),
+    initialData: queryClient
+      .getQueryData(["teachers", id])
+      ?.find((teacher) => teacher?._id === id),
+    enabled: !!id,
+  });
+
   const { mutateAsync, isPending } = useMutation({
     mutationFn: postCourse,
   });
@@ -62,7 +70,7 @@ const TeacherAssignCourse = () => {
       title: "Assign Course",
       text: "Proceed with Course Assignment?",
       showCancelButton: true,
-      backdrop:false
+      backdrop: false,
     }).then((data) => {
       if (data.isConfirmed) {
         const info = {
@@ -70,7 +78,9 @@ const TeacherAssignCourse = () => {
           term: session?.termId,
           teacher: id,
           level: values?.currentLevel?._id,
+          levelName: values?.currentLevel?.type,
           subject: values?.subject?._id,
+          subjectName: values?.subject?.name,
         };
 
         mutateAsync(info, {
@@ -96,11 +106,15 @@ const TeacherAssignCourse = () => {
 
   return (
     <Container>
-      <Back to={`/teacher/${id}`} color="primary.main" />
+      <Back to={-1} color="primary.main" />
       <CustomTitle
-        title="Course Allocation Management"
-        subtitle=" Assign courses to teachers, ensuring that everyone is aware of their responsibilities and schedules."
+        title="Course Allocation Portal"
+        subtitle={`Assign courses to ${
+          teacher?.data?.fullname || "teacher"
+        }, ensuring that everyone is aware of their responsibilities and schedules.`}
         color="primary.main"
+        img={teacher?.data?.profile}
+        // icon={searchParams.get('profile')}
       />
 
       <Formik
@@ -118,7 +132,7 @@ const TeacherAssignCourse = () => {
                   py: 4,
                   px: 2,
                   // border: "1px solid lightgray",
-                  borderRadius: '12px',
+                  borderRadius: "12px",
                   bgcolor: "#fff",
                 }}
               >
@@ -188,9 +202,7 @@ const TeacherAssignCourse = () => {
                     variant="contained"
                     onClick={handleSubmit}
                     // disabled={!isValid || !dirty}
-                    disabled={
-                      currentLevel?._id === "" ||  subject?._id === "" 
-                    }
+                    disabled={currentLevel?._id === "" || subject?._id === ""}
                   >
                     Assign Course
                   </Button>

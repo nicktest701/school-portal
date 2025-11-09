@@ -11,7 +11,6 @@ import Input from "@/components/inputs/Input";
 import SelectInput from "@/components/inputs/SelectInput";
 
 const PersonalInformation = ({ setValue, errors, watch, control }) => {
-  
   return (
     <Stack py={2} spacing={2}>
       <Input
@@ -97,7 +96,7 @@ const PersonalInformation = ({ setValue, errors, watch, control }) => {
           options={TOWNS}
           getOptionLabel={(option) => option || ""}
           value={watch("personal.residence") || ""}
-          onChange={(_, value) => setValue("personal.residence", value)}
+          onInputChange={(_, value) => setValue("personal.residence", value)}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -116,7 +115,7 @@ const PersonalInformation = ({ setValue, errors, watch, control }) => {
           options={NATIONALITY}
           getOptionLabel={(option) => option || ""}
           value={watch("personal.nationality") || ""}
-          onChange={(_, value) => setValue("personal.nationality", value)}
+          onInputChange={(_, value) => setValue("personal.nationality", value)}
           renderInput={(params) => (
             <TextField
               {...params}

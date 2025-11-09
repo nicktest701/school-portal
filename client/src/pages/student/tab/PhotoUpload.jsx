@@ -7,7 +7,14 @@ import { Avatar, Link } from "@mui/material";
 import { AddAPhoto } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 
-const PhotoUpload = ({ setValue, handleNext, watch }) => {
+const PhotoUpload = ({
+  setValue,
+  handleNext,
+  watch,
+  errors,
+  clearErrors,
+  setError,
+}) => {
   const photo = watch("photo.display");
 
   const { getRootProps, getInputProps, open } = useDropzone({
@@ -16,11 +23,24 @@ const PhotoUpload = ({ setValue, handleNext, watch }) => {
     noKeyboard: true,
     maxFiles: 1,
     accept: {
-      "image/*": [".jpeg", ".png"],
+      "image/*": [".jpeg", ".png", ".jpg",".webp"],
     },
-    maxSize: 200000,
+    maxSize: 5000000,
     multiple: false,
+    onDropRejected: (files) => {
+      setError("photo.profile", {
+        message:
+          files[0]?.errors[0]?.message ||
+          "Error uploading photo.Make sure to select the correct file format and file size.",
+      });
+    },
+    onError: (err) => {
+      setError("photo.profile", {
+        message: err?.message,
+      });
+    },
     onDrop: (acceptedFiles) => {
+      clearErrors("photo.profile");
       if (!_.isEmpty(acceptedFiles)) {
         setValue("photo.profile", acceptedFiles);
 
@@ -58,6 +78,11 @@ const PhotoUpload = ({ setValue, handleNext, watch }) => {
         alignItems="center"
         paddingY={1}
       >
+        {errors?.photo?.profile && (
+          <Typography color="#f00" fontStyle="italic" variant="caption">
+            {errors?.photo?.profile?.message}
+          </Typography>
+        )}
         <Avatar
           variant="square"
           src={photo ? photo : null}
@@ -72,6 +97,9 @@ const PhotoUpload = ({ setValue, handleNext, watch }) => {
           <Button variant="outlined" onClick={open} startIcon={<AddAPhoto />}>
             Upload Image
           </Button>
+          <Typography textAlign="center" fontStyle="italic" variant="caption">
+            Maximum file size is 5Mb
+          </Typography>
         </Stack>
       </Stack>
     </Stack>

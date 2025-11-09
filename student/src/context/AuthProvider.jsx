@@ -1,7 +1,7 @@
 // src/context/AuthContext.js
+import React from "react";
 import api from "@/api/customAxios";
 import Swal from "sweetalert2";
-import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import {
   deleteUser,
   getUser,
@@ -12,7 +12,6 @@ import {
 import { createContext, useState, useContext, useRef, useEffect } from "react";
 import axios from "axios";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
-import { useQuery } from "@tanstack/react-query";
 
 const AuthContext = createContext();
 

@@ -7,7 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 import Button from "@mui/material/Button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Formik } from "formik";
 import { assignTeacherLevel } from "@/api/levelAPI";
@@ -21,6 +21,7 @@ import TeacherLevels from "./TeacherLevels";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import Swal from "sweetalert2";
 import { UserContext } from "@/context/providers/UserProvider";
+import { getTeacher } from "@/api/teacherAPI";
 
 const TeacherAssignLevel = () => {
   const { session } = useContext(UserContext);
@@ -31,6 +32,15 @@ const TeacherAssignLevel = () => {
     type: "",
   });
   const { id } = useParams();
+
+  const teacher = useQuery({
+    queryKey: ["teacher", id],
+    queryFn: () => getTeacher(id),
+    initialData: queryClient
+      .getQueryData(["teachers", id])
+      ?.find((teacher) => teacher?._id === id),
+    enabled: !!id,
+  });
 
   const { levelsOption, levelLoading } = useLevel();
 
@@ -72,11 +82,12 @@ const TeacherAssignLevel = () => {
 
   return (
     <Container>
-      <Back to={`/teacher/${id}`} color="primary.main" />
+      <Back to={-1} color="primary.main" />
       <CustomTitle
-        title="Assign New Level"
-        subtitle="Allocate classrooms to teachers to facilitate organized and efficient learning environments."
+        title="Level Allocation Portal"
+        subtitle={`Allocate classrooms to ${teacher?.data?.fullname} to facilitate organized and efficient learning environments.`}
         color="primary.main"
+        img={teacher?.data?.profile}
       />
 
       <Formik

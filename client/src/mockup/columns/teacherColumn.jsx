@@ -1,6 +1,15 @@
-import { CircleRounded } from "@mui/icons-material";
-import { Avatar, Button, ListItemText, Stack, Typography } from "@mui/material";
+import React from "react";
+import { CircleRounded, Edit } from "@mui/icons-material";
+import {
+  Avatar,
+  Button,
+  IconButton,
+  ListItemText,
+  Stack,
+  Typography,
+} from "@mui/material";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 export const TEACHERS_COLUMN = [
   {
     field: "_id",
@@ -25,11 +34,7 @@ export const TEACHERS_COLUMN = [
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar
-          src={
-            rowData.profile
-          }
-        />
+        <Avatar src={rowData.profile} />
         <ListItemText
           primary={
             <Typography
@@ -124,6 +129,8 @@ export const TEACHERS_COLUMN = [
   {
     field: "nationality",
     title: "Nationality",
+    hidden: true,
+    export: true,
   },
 ];
 
@@ -167,5 +174,158 @@ export const IMPORT_TEACHER_COLUMNS = [
   {
     field: "nationality",
     title: "NATIONALITY",
+  },
+];
+
+export const TEACHER_ASSIGNED_COURSES_COLUMNS = [
+  {
+    field: "_id",
+    title: "ID",
+    hidden: true,
+  },
+
+  {
+    title: "Profile",
+    field: "profile",
+    export: false,
+    width: 400,
+    render: (rowData) => (
+      <Stack
+        direction="row"
+        columnGap={1}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Avatar src={rowData?.teacher?.profile} />
+        <ListItemText
+          primary={
+            <Typography
+              variant="body2"
+              sx={{
+                whiteSpace: "nowrap",
+                fontWeight: "bold",
+              }}
+            >
+              {rowData?.teacher?.fullname}
+            </Typography>
+          }
+        />
+      </Stack>
+    ),
+  },
+  {
+    field: "teacher.fullname",
+    title: "Teacher",
+    hidden: true,
+    export: true,
+  },
+  {
+    field: "academicYear",
+    title: "Academic Year",
+    export: true,
+  },
+  {
+    field: "term",
+    title: "Term",
+    export: true,
+  },
+  {
+    field: "level",
+    title: "Level",
+    export: true,
+  },
+  {
+    field: "noOfStudents",
+    title: "No. of Students",
+    export: true,
+  },
+  {
+    field: "subject",
+    title: "Course/Subject",
+    export: true,
+  },
+  {
+    field: null,
+    title: "Action",
+    export: false,
+    render: (rowData) => (
+      <Link
+        to={`/teacher/${rowData?.teacher?._id}/courses`}
+        title="View Course"
+      >
+        <IconButton title="View Course">
+          <Edit titleAccess="View Course" />
+        </IconButton>
+      </Link>
+    ),
+  },
+];
+export const TEACHER_ASSIGNED_LEVELS_COLUMNS = [
+  {
+    field: "_id",
+    title: "ID",
+    hidden: true,
+  },
+  {
+    title: "Profile",
+    field: "profile",
+    export: false,
+    width: 400,
+    render: (rowData) => (
+      <Stack
+        direction="row"
+        columnGap={1}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Avatar src={rowData?.teacher?.profile} />
+        <ListItemText
+          primary={
+            <Typography
+              variant="body2"
+              sx={{
+                whiteSpace: "nowrap",
+                fontWeight: "bold",
+              }}
+            >
+              {rowData?.teacher?.fullName}
+            </Typography>
+          }
+        />
+      </Stack>
+    ),
+  },
+  {
+    field: "teacher.fullName",
+    title: "Teacher",
+    hidden: true,
+    export: true,
+  },
+  {
+    field: "level",
+    title: "Level",
+    export: true,
+  },
+  {
+    field: "noOfStudents",
+    title: "No. of Students",
+    export: true,
+  },
+  {
+    field: "noOfSubjects",
+    title: "No. of Subjects",
+    export: true,
+  },
+  {
+    field: null,
+    title: "Action",
+    export: false,
+    render: (rowData) => (
+      <Link to={`/teacher/${rowData?.teacher?._id}/levels`} title="View Course">
+        <IconButton title="View Course">
+          <Edit titleAccess="View Course" />
+        </IconButton>
+      </Link>
+    ),
   },
 ];

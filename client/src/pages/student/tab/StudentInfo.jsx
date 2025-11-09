@@ -47,6 +47,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import { UserContext } from "@/context/providers/UserProvider";
 import FormStep from "@/components/FormStep";
 import { readXLSX } from "@/config/readXLSX";
+import moment from "moment";
 
 const pages = [
   {
@@ -149,11 +150,31 @@ const StudentInfo = () => {
   const onSubmit = (values) => {
     const { photo, ...rest } = values;
 
+    // console.log({
+    //   photo: photo?.profile,
+    //   details: {
+    //     ...rest,
+    //     personal: {
+    //       ...rest?.personal,
+    //       dateofbirth: moment(rest?.personal?.dateofbirth).toDate(),
+    //     },
+    //     session: {
+    //       sessionId: session?.sessionId,
+    //       termId: session?.termId,
+    //     },
+    //   },
+    // });
+    // return;
+
     mutateAsync(
       {
         photo: photo?.profile,
         details: {
           ...rest,
+          personal: {
+            ...rest?.personal,
+            dateofbirth: moment(rest?.personal?.dateofbirth).toDate(),
+          },
           session: {
             sessionId: session?.sessionId,
             termId: session?.termId,
@@ -171,8 +192,6 @@ const StudentInfo = () => {
             setHideSaveBtn(true);
             queryClient.invalidateQueries(["student-profile", data]);
             localStorage.removeItem("@student-data");
-
-         
           }
         },
         onError: (error) => {
@@ -296,6 +315,8 @@ const StudentInfo = () => {
                 setValue={setValue}
                 errors={errors}
                 handleNext={handleNext}
+                setError={setError}
+                clearErrors={clearErrors}
               />
             </FormStep>
           </>
@@ -354,6 +375,9 @@ const StudentInfo = () => {
                       </IconButton>
                     )}
                   </Stack>
+                  <Typography variant="caption" color="text.secondary">
+                    Enter the parent's or guardian's personal details.
+                  </Typography>
                   <ParentInfo
                     key={index}
                     control={control}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from "react";
 import {
   Box,
@@ -19,16 +20,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import SelectInput from "@/components/inputs/SelectInput";
 
 const reportTemplates = [
-  { id: "template1", name: "Template 1", preview: "/images/template1.png" },
-  { id: "template2", name: "Template 2", preview: "/images/template2.png" },
-  { id: "template3", name: "Template 3", preview: "/images/template3.png" },
+  { id: "template1", name: "Template 1", preview: "/reports/template1.png" },
+  { id: "template2", name: "Template 2", preview: "/reports/template2.png" },
+  // { id: "template3", name: "Template 3", preview: "/reports/template3.png" },
 ];
 
 const Report = ({ control, setValue, watch, errors }) => {
   const selectedTemplate = watch("report.template");
   const [previewTemplate, setPreviewTemplate] = useState(null); // Template for modal preview
 
- 
   return (
     <div>
       {/* Title */}
@@ -58,7 +58,7 @@ const Report = ({ control, setValue, watch, errors }) => {
 
             <Grid container spacing={2}>
               {reportTemplates.map((template) => (
-                <Grid item xs={12} sm={4} key={template.id}>
+                <Grid item xs={12} sm={6} key={template.id}>
                   <Card
                     sx={{
                       border:
@@ -73,13 +73,14 @@ const Report = ({ control, setValue, watch, errors }) => {
                     >
                       <CardMedia
                         component="img"
-                        height="140"
+                        height="auto"
                         image={template.preview}
                         alt={template.name}
                       />
                       <CardContent>
                         <Typography variant="body1" align="center">
-                          {template.name}
+                          {template.name}{" "}
+                          {selectedTemplate === template.id ? "✅" : ""}
                         </Typography>
                       </CardContent>
                     </CardActionArea>
@@ -119,8 +120,6 @@ const Report = ({ control, setValue, watch, errors }) => {
                 <MenuItem value="A4">A4</MenuItem>
                 <MenuItem value="A3">A3</MenuItem>
               </SelectInput>
-
-             
             </FormControl>
           </Box>
 
@@ -154,26 +153,13 @@ const Report = ({ control, setValue, watch, errors }) => {
               </IconButton>
               {previewTemplate && (
                 <>
-                  <Typography variant="h6" mb={2}>
-                    {previewTemplate.name}
-                  </Typography>
-                  <CardMedia
-                    component="img"
-                    image={previewTemplate.preview}
-                    alt={previewTemplate.name}
-                    sx={{
-                      maxHeight: "80vh",
-                      maxWidth: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                  <Box mt={2}>
+                  <Box >
                     <Typography
                       variant="button"
                       color={
                         selectedTemplate === previewTemplate.id
                           ? "primary"
-                          : "textSecondary"
+                          : "secondary"
                       }
                       onClick={() => {
                         setPreviewTemplate(null);
@@ -191,10 +177,24 @@ const Report = ({ control, setValue, watch, errors }) => {
                       }}
                     >
                       {selectedTemplate === previewTemplate.id
-                        ? "Selected"
+                        ? "Selected ✅"
                         : "Select Template"}
                     </Typography>
                   </Box>
+
+                  <Typography variant="h6" mb={2}>
+                    {previewTemplate.name}
+                  </Typography>
+                  <CardMedia
+                    component="img"
+                    image={previewTemplate.preview}
+                    alt={previewTemplate.name}
+                    sx={{
+                      maxHeight: "80vh",
+                      maxWidth: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
                 </>
               )}
             </Box>

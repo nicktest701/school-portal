@@ -361,6 +361,15 @@ export const newStudentValidationSchema = [
   object().shape({
     academic: object()
       .shape({
+        department: object({
+          _id: string().required("Required*"),
+          name: string().required("Required*"),
+        }),
+        house: object({
+          _id: string().required("Required*"),
+          name: string().required("Required*"),
+        }),
+
         previousSchool: object({
           name: string().optional(),
           location: string().optional(),

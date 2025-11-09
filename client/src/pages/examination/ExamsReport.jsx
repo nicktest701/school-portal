@@ -13,6 +13,7 @@ import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import PublishResultOption from "@/components/modals/PublishResultOption";
 import PropTypes from "prop-types";
 
+
 const ExamsReport = ({ student }) => {
   const [openPublishOption, setOpenPublishOption] = useState(false);
   const [value, setValue] = useState("sms");
@@ -20,6 +21,7 @@ const ExamsReport = ({ student }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const { schoolSessionState, schoolSessionDispatch } =
     use(SchoolSessionContext);
+
 
   const open = schoolSessionState.viewReport.open;
 

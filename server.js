@@ -17,6 +17,8 @@ const schoolRoute = require("./routes/schoolRoute");
 const sessionRoute = require("./routes/sessionRoute");
 const termRoute = require("./routes/termRoute");
 const gradeRoute = require("./routes/gradeRoute");
+const departmentRoute = require("./routes/departmentRoute");
+const houseRoute = require("./routes/houseRoute");
 const levelRoute = require("./routes/levelRoute");
 const subjectRoute = require("./routes/subjectRoute");
 const courseRoute = require("./routes/courseRoute");
@@ -176,6 +178,8 @@ app.use("/api/frebbys/v1/student-auth", studentAuthRoute);
 
 // Protected routes (require JWT)
 app.use(verifyJWT);
+app.use("/api/frebbys/v1/departments", departmentRoute);
+app.use("/api/frebbys/v1/houses", houseRoute);
 app.use("/api/frebbys/v1/sessions", sessionRoute);
 app.use("/api/frebbys/v1/terms", termRoute);
 app.use("/api/frebbys/v1/students", studentRoute);

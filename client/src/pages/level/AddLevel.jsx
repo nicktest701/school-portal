@@ -110,7 +110,7 @@ const AddLevel = ({ open, setOpen }) => {
                     options={LEVEL_OPTIONS}
                     getOptionLabel={(option) => option || ""}
                     value={values.level}
-                    onInputChange={(e, value) => setFieldValue("level", value)}
+                    onInputChange={(_, value) => setFieldValue("level", value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -128,7 +128,7 @@ const AddLevel = ({ open, setOpen }) => {
                     value={values.type}
                     onInputChange={(e, value) => setFieldValue("type", value)}
                     renderInput={(params) => (
-                      <TextField {...params} label="Select Type" size="small" />
+                      <TextField {...params} label="Select Level Type" size="small" />
                     )}
                   />
                   <Autocomplete

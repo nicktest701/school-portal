@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const School = require("../models/schoolModel");
 const Examination = require("../models/examinationModel");
 const Level = require("../models/levelModel");
+const Grade = require("../models/gradeModel");
 const _ = require("lodash");
 const pLimit = require("p-limit");
 const moment = require("moment");
@@ -218,7 +219,7 @@ router.get(
       .populate("term")
       .populate({
         path: "level",
-        select: ["level", "students"],
+        select: ["level", "students", "grades"],
       })
       .populate({
         path: "student",
@@ -330,6 +331,8 @@ router.get(
       });
 
       const allReports = await Promise.all(generatedReports);
+
+      // return res.status(200).json("ok");
 
       if (publishType === "email") {
         if (allReports) {
@@ -564,7 +567,7 @@ router.get(
       .populate("term")
       .populate({
         path: "level",
-        select: ["level", "students", "subjects"],
+        select: ["level", "students", "subjects", "grades"],
         populate: {
           path: "level",
         },
@@ -581,6 +584,8 @@ router.get(
           "profile",
         ],
       });
+
+    // console.log(studentRecord);
 
     //GET student position
     const position = await getMyPosition(
@@ -662,6 +667,8 @@ router.get(
       id: generatedResult?.report_id,
       template,
     });
+
+    // return res.status(200).json("ok");
 
     if (publishType === "email") {
       if (generatedReports) {
@@ -960,6 +967,8 @@ const studentReportDetails = async (
 
   //GET Student Grade
   const grade = await generateTotalGrade(scores, level?._id);
+  const gradingSystem = await Grade.findById(level?.grades).select("ratings");
+  // console.log("gradingSystem", gradingSystem.ratings);
 
   const modifiedStudentRecord = {
     _id,
@@ -988,6 +997,7 @@ const studentReportDetails = async (
     // position: ordinal(position),
     grade,
     comments,
+    gradingSystem: gradingSystem?.ratings || [],
   };
 
   return modifiedStudentRecord;

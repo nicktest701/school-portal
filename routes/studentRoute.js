@@ -392,6 +392,7 @@ router.post(
       academic,
       school: req.user.school,
       createdBy: req.user.id,
+      level: academic?.level?._id,
     });
 
     if (_.isEmpty(student)) {
@@ -480,6 +481,7 @@ router.post(
           ...student,
           school: req.user.school,
           createdBy: req.user.id,
+          level: session.levelId,
         };
       });
       const newStudents = await Student.create(modifiedStudents);
@@ -497,6 +499,7 @@ router.post(
           phonenumber: student?.phonenumber,
           password: hashedPassword,
           school: req.user.school,
+          level: session.levelId,
         };
       });
 

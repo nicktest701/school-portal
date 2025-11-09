@@ -1,3 +1,4 @@
+import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -141,11 +142,13 @@ function CustomEvent() {
         )}
         // eventMouseEnter={handleEventMouseEnter}
         // eventMouseLeave={handleEventMouseLeave}
-        eventClick={({ event: { extendedProps,} }) => {
-          if (["1", "2", "3", "4"].includes(extendedProps?._id)) {
-            return;
+        eventClick={({ event: { extendedProps } }) => {
+          if (extendedProps?._id) {
+            if (["1", "2", "3", "4"].includes(extendedProps?._id)) {
+              return;
+            }
+            navigate(`/events/${extendedProps?._id}`);
           }
-          navigate(`/events/${extendedProps?._id}`);
         }}
         loading={events.isPending || holidays.isPending}
       />

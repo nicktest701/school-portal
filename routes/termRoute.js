@@ -177,30 +177,6 @@ router.post(
   asyncHandler(async (req, res) => {
     const { core, levels, students, exams, report } = req.body;
 
-    if (!_.isEmpty(students)) {
-      const existingIndexNumbers = _.flatMap(
-        students,
-        (student) => student?.data
-      );
-      const indexNumbers = _.compact(
-        _.map(existingIndexNumbers, "indexnumber")
-      );
-      const existingStudents = await Student.find({
-        school: req.user.school,
-        indexnumber: {
-          $in: indexNumbers,
-        },
-      }).select("indexnumber");
-
-      if (!_.isEmpty(existingStudents)) {
-        return res.status(400).json({
-          isDuplicateError: true,
-          message: `ID of some students already exist.Please check and try again.`,
-          data: _.map(existingStudents, "indexnumber"),
-        });
-      }
-    }
-
     const { name, from, to, term, isPromotionTerm, active } = core;
     const { grade, ...examsRest } = exams;
 
@@ -305,15 +281,49 @@ router.post(
     if (!_.isEmpty(levels)) {
       // create levels
       const modifiedLevels = levels.map(async (level) => {
+        // update student data in the session
+        const newLevel = await Level.create({
+          session: sessionId,
+          term: newTerm._id,
+          level,
+          students: [],
+          grades: grades,
+          createdBy: req.user.id,
+        });
+
         const student = students.find((student) =>
           _.isEqual(student?.class, level)
         );
+
+        if (!_.isEmpty(student?.data)) {
+          // const existingIndexNumbers = _.flatMap(
+          //   students,
+          //   (student) => student?.data
+          // );
+          const indexNumbers = _.compact(_.map(student?.data, "indexnumber"));
+
+          const existingStudents = await Student.find({
+            school: req.user.school,
+            indexnumber: {
+              $in: indexNumbers,
+            },
+          }).select("indexnumber");
+
+          if (!_.isEmpty(existingStudents)) { 
+            return res.status(400).json({
+              isDuplicateError: true,
+              message: `ID of some students already exist.Please check and try again.`,
+              data: _.map(existingStudents, "indexnumber"),
+            });
+          }
+        }
 
         const modifiedStudents = student?.data?.map((student) => {
           return {
             ...student,
             school: req.user.school,
             createdBy: req.user.id,
+            level: newLevel._id,
           };
         });
 
@@ -328,14 +338,13 @@ router.post(
         }
 
         // update student data in the session
-        const newLevel = await Level.create({
-          session: sessionId,
-          term: newTerm._id,
-          level,
-          students: studentIds,
-          grades: grades,
-          createdBy: req.user.id,
-        });
+        await Level.findByIdAndUpdate(
+          newLevel._id,
+          {
+            students: studentIds,
+          },
+          { new: true }
+        );
 
         //Create Exams and fees details for each inserted Student
         const examsDetails = studentIds.map((student) => {

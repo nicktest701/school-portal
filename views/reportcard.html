@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Report - PREMPEH COLLEGE</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #000;
+            line-height: 1.4;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .student-name {
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .school-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .school-address {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .contact-info {
+            font-size: 13px;
+            margin: 5px 0;
+        }
+        .report-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 15px 0 10px;
+            text-decoration: underline;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .info-item {
+            display: flex;
+        }
+        .info-item strong {
+            width: 140px;
+            display: inline-block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 6px 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        .subject-header {
+            text-align: left;
+            font-weight: bold;
+            background-color: #f8f9fa !important;
+        }
+        .section-title {
+            font-weight: bold;
+            background-color: #f1f3f5 !important;
+            text-align: left;
+            padding-left: 10px;
+        }
+        .remarks-section {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .remarks-item {
+            margin-bottom: 12px;
+        }
+        .remarks-item strong {
+            display: inline-block;
+            width: 220px;
+        }
+        .signature {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 16px;
+            font-style: italic;
+        }
+        .grade-key {
+            margin-top: 30px;
+            font-size: 13px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .grade-item {
+            text-align: center;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+        }
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+            background-color: #2c3e50;
+            border-radius: 8px;
+            position: relative;
+        }
+        .logo-placeholder::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 30px;
+            height: 50px;
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+        .logo-placeholder::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 50px;
+            background-color: #34495e;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="student-name">Owusu Ansah Kwasi</div>
+            <div class="logo-placeholder"></div>
+            <div class="school-name">PREMPEH COLLEGE, KUMASI</div>
+            <div class="school-address">P. O. BOX 1993 KUMASI</div>
+            <div class="contact-info">TEL No.: 03220-23287 / 8 &nbsp;&nbsp;&nbsp; FAX No.: 03220-24563</div>
+            <div class="contact-info">EMAIL:</div>
+            <div class="report-title">Terminal Report</div>
+        </div>
+
+        <!-- Student Info Grid -->
+        <div class="info-grid">
+            <div class="info-item"><strong>NAME</strong>: Owusu Ansah Kwasi - 1110182</div>
+            <div class="info-item"><strong>CLASS</strong>: 353</div>
+            <div class="info-item"><strong>HOUSE</strong>:</div>
+            <div class="info-item"><strong>PROGRAMME</strong>: SCIENCE</div>
+            <div class="info-item"><strong>ACADEMIC YEAR</strong>: 2012/2013</div>
+            <div class="info-item"><strong>TERM</strong>: 1st</div>
+            <div class="info-item"><strong>NEXT TERM BEGINS</strong>: 14/01/2013</div>
+            <div class="info-item"><strong>AVERAGE MARK</strong>: 68.51%</div>
+            <div class="info-item"><strong>POSITION</strong>: 10/57</div>
+        </div>
+
+        <!-- Scores Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th class="subject-header">Subject</th>
+                    <th>Class Score<br>30%</th>
+                    <th>Exam Score<br>70%</th>
+                    <th>Total Score<br>100%</th>
+                    <th>Class<br>Average</th>
+                    <th>Position<br>In Subj.</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Core Subjects -->
+                <tr>
+                    <td colspan="7" class="section-title">ELECTIVE</td>
+                </tr>
+                <tr>
+                    <td>C001 - Core English</td>
+                    <td>22.50</td>
+                    <td>40.60</td>
+                    <td>63.10</td>
+                    <td>56.16</td>
+                    <td>1/57</td>
+                    <td>C6 - CREDIT</td>
+                </tr>
+                <tr>
+                    <td>C002 - Core Maths</td>
+                    <td>25.50</td>
+                    <td>42.00</td>
+                    <td>67.50</td>
+                    <td>66.60</td>
+                    <td>29/57</td>
+                    <td>C4 - CREDIT</td>
+                </tr>
+                <tr>
+                    <td>C003 - C. Int Science</td>
+                    <td>29.10</td>
+                    <td>59.50</td>
+                    <td>88.60</td>
+                    <td>77.06</td>
+                    <td>8/57</td>
+                    <td>A1 - EXCELLENT</td>
+                </tr>
+                <tr>
+                    <td>C004 - C. Soc Studies</td>
+                    <td>18.00</td>
+                    <td>44.10</td>
+                    <td>62.10</td>
+                    <td>63.35</td>
+                    <td>25/57</td>
+                    <td>C6 - CREDIT</td>
+                </tr>
+
+                <!-- Elective Subjects -->
+                <tr>
+                    <td colspan="7" class="section-title">ELECTIVE</td>
+                </tr>
+                <tr>
+                    <td>E008 - Elective Maths</td>
+                    <td>19.20</td>
+                    <td>39.90</td>
+                    <td>59.10</td>
+                    <td>57.43</td>
+                    <td>29/57</td>
+                    <td>D7 - PASS</td>
+                </tr>
+                <tr>
+                    <td>E010 - Biology</td>
+                    <td>23.40</td>
+                    <td>60.20</td>
+                    <td>83.60</td>
+                    <td>65.25</td>
+                    <td>1/57</td>
+                    <td>B2 - VERY GOOD</td>
+                </tr>
+                <tr>
+                    <td>E011 - Chemistry</td>
+                    <td>22.50</td>
+                    <td>47.60</td>
+                    <td>70.10</td>
+                    <td>61.52</td>
+                    <td>5/57</td>
+                    <td>B3 - GOOD</td>
+                </tr>
+                <tr>
+                    <td>E012 - Physics</td>
+                    <td>20.40</td>
+                    <td>33.60</td>
+                    <td>54.00</td>
+                    <td>36.53</td>
+                    <td>3/57</td>
+                    <td>E8 - PASS</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Remarks Section -->
+        <div class="remarks-section">
+            <div class="remarks-item"><strong>ATTENDANCE:</strong></div>
+            <div class="remarks-item"><strong>CONDUCT:</strong></div>
+            <div class="remarks-item"><strong>ATTITUDE:</strong></div>
+            <div class="remarks-item"><strong>INTEREST:</strong></div>
+            <div class="remarks-item"><strong>FORM MASTER'S REMARKS</strong>: Good Performance</div>
+            <div class="remarks-item"><strong>HOUSEMASTER/HOUSEMISTRESS REPORT</strong>: Conducts Himself Well In The House</div>
+            <div class="remarks-item"><strong>HEADMASTER/HEADMISTRESS</strong>: Average Performance</div>
+        </div>
+
+        <!-- Signature -->
+        <div class="signature">
+            <div style="height: 1px; background-color: #000; width: 200px; margin: 0 auto 5px;"></div>
+            <div>Signature</div>
+        </div>
+
+        <!-- Grade Key -->
+        <div class="grade-key">
+            <div class="grade-item"><strong>A1</strong> 85 - 100 Excellent</div>
+            <div class="grade-item"><strong>B2</strong> 80 - 84 Very Good</div>
+            <div class="grade-item"><strong>B3</strong> 70 - 79 Good</div>
+            <div class="grade-item"><strong>C4</strong> 67 - 69 Credit</div>
+            <div class="grade-item"><strong>C5</strong> 64 - 66 Credit</div>
+            <div class="grade-item"><strong>C6</strong> 60 - 63 Credit</div>
+            <div class="grade-item"><strong>D7</strong> 55 - 59 Pass</div>
+            <div class="grade-item"><strong>E8</strong> 50 - 54 Pass</div>
+            <div class="grade-item"><strong>F9</strong> 0 - 49 Fail</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            'SOFTSTUD' by software engineering consultancy, accra, ghana
+        </div>
+    </div>
+</body>
+</html>

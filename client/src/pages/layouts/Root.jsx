@@ -33,8 +33,17 @@ const TeacherView = lazy(() => import("../teacher/TeacherView"));
 const TeacherEdit = lazy(() => import("../teacher/TeacherEdit"));
 const Profile = lazy(() => import("../profile"));
 
-// Events 
+// Events
 import Event from "../events";
+import Section from "../sections";
+
+const TutorAssignedCourses = lazy(() =>
+  import("../teacher/assigned/TutorAssignedCourses")
+);
+const TutorAssignedLevels = lazy(() =>
+  import("../teacher/assigned/TutorAssignedLevels")
+);
+
 const MoreEvents = lazy(() => import("../events/MoreEvents"));
 const EventHome = lazy(() => import("../events/EventHome"));
 const NewEvent = lazy(() => import("../events/NewEvent"));
@@ -148,7 +157,6 @@ const Root = () => {
           {user?.role === "administrator" && (
             <>
               {/* session */}
-
               <Route
                 element={
                   <Suspense fallback={<Loader />}>
@@ -191,6 +199,15 @@ const Root = () => {
                 />
               </Route>
 
+              {/* Department & house management routes go here */}
+              <Route
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <Section />
+                  </Suspense>
+                }
+                path="/departments-houses"
+              />
               {/* Class and Subjects */}
               <Route
                 element={
@@ -243,7 +260,6 @@ const Root = () => {
                   }
                 />
               </Route>
-
               {/* subjects  */}
               <Route
                 path="subject"
@@ -253,7 +269,6 @@ const Root = () => {
                   </Suspense>
                 }
               />
-
               {/* Student */}
               <Route
                 element={
@@ -313,7 +328,6 @@ const Root = () => {
                   path="view/:studentId/fees"
                 />
               </Route>
-
               {/* Teacher */}
               <Route
                 element={
@@ -354,7 +368,7 @@ const Root = () => {
                       <TeacherAssignLevel />
                     </Suspense>
                   }
-                  path=":id/level"
+                  path=":id/levels"
                 />
                 <Route
                   element={
@@ -362,7 +376,23 @@ const Root = () => {
                       <TeacherAssignCourse />
                     </Suspense>
                   }
-                  path=":id/course"
+                  path=":id/courses"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <TutorAssignedCourses />
+                    </Suspense>
+                  }
+                  path="courses"
+                />
+                <Route
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <TutorAssignedLevels />
+                    </Suspense>
+                  }
+                  path="levels"
                 />
               </Route>
               {/* Examination */}
@@ -413,7 +443,6 @@ const Root = () => {
                   }
                 />
               </Route>
-
               {/* Fees */}
               <Route
                 element={
@@ -473,7 +502,6 @@ const Root = () => {
                 />
                 <Route element={<Receipt />} path="receipt" />
               </Route>
-
               {/* messages */}
               <Route
                 element={
@@ -500,7 +528,6 @@ const Root = () => {
                   }
                 />
               </Route>
-
               {/* uploads */}
               <Route
                 element={
@@ -510,7 +537,6 @@ const Root = () => {
                 }
                 path="/uploads"
               />
-
               {/* settings */}
               <Route
                 element={
@@ -520,7 +546,6 @@ const Root = () => {
                 }
                 path="/settings"
               />
-
               {/* users */}
               <Route
                 element={

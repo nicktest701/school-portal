@@ -53,7 +53,6 @@ function Profile() {
   const [searchParams, setSearchParams] = useSearchParams();
   const theme = useTheme();
 
-
   const handleOpenEdit = () => {
     setSearchParams((params) => {
       params.set("e_p", true);
@@ -123,7 +122,12 @@ function Profile() {
             {user?.fullname}
           </Typography>
 
-          <Typography variant="body2" color="text.secondary" textAlign="center">
+          <Typography
+            variant="body2"
+            textTransform="capitalize"
+            color="text.secondary"
+            textAlign="center"
+          >
             {user?.role}
           </Typography>
 

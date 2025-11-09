@@ -38,6 +38,7 @@ import {
   ArrowUpward as ArrowUpIcon,
   ArrowDownward as ArrowDownIcon,
 } from "@mui/icons-material";
+
 import { Doughnut, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -52,6 +53,9 @@ import {
   Legend,
   Filler,
 } from "chart.js";
+import { useQuery } from "@tanstack/react-query";
+import { getAttendanceDashboardInfo } from "@/api/attendanceAPI";
+import { useAuth } from "@/context/AuthProvider";
 
 // Register Chart.js components
 ChartJS.register(
@@ -72,6 +76,17 @@ const AttendanceDashboard = () => {
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
   const [tabValue, setTabValue] = useState(0);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+
+  const { user } = useAuth();
+  const attendanceRecord = useQuery({
+    queryKey: ["attendanceRecord", user?._id],
+    queryFn: () => getAttendanceDashboardInfo(user?._id),
+    refetchOnWindowFocus: false,
+    // retry: 1,
+    enabled: !!user?._id,
+  });
+
+  console.log("Attendance Record:", attendanceRecord.data);
 
   // Attendance data
   const overallAttendance = 91;
@@ -379,7 +394,7 @@ const AttendanceDashboard = () => {
         p: 2,
         fontFamily: '"Roboto", "Inter", "Poppins", sans-serif',
         backgroundColor: "#f8fafc",
-        mt:2
+        mt: 2,
       }}
     >
       {/* Header */}

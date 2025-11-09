@@ -1,3 +1,4 @@
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUsers } from "@/api/userAPI";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";

@@ -1,18 +1,25 @@
-const router = require('express').Router();
-const _ = require('lodash');
-const asyncHandler = require('express-async-handler');
-const Course = require('../models/courseModel');
-const Level = require('../models/levelModel');
-const Attendance = require('../models/attendanceModel');
+const router = require("express").Router();
+const _ = require("lodash");
+const asyncHandler = require("express-async-handler");
+const Course = require("../models/courseModel");
+const Level = require("../models/levelModel");
+const Notification = require("../models/notificationModel");
+const User = require("../models/userModel");
+const Attendance = require("../models/attendanceModel");
 const {
   Types: { ObjectId },
-} = require('mongoose');
-const moment = require('moment/moment');
-const { processWeeklyAttendance, getTotalAttendance, getAttendanceByGender } = require('../config/helper');
+} = require("mongoose");
+const moment = require("moment/moment");
+const {
+  processWeeklyAttendance,
+  getTotalAttendance,
+  getAttendanceByGender,
+} = require("../config/helper");
+const sendMail = require("../config/mail/mailer");
 
 //@GET All school courses
 router.get(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const courses = await Course.find({
       school: req.user.school,
@@ -23,7 +30,7 @@ router.get(
 
 //@GET All school courses
 router.get(
-  '/dashboard',
+  "/dashboard",
   asyncHandler(async (req, res) => {
     const { session, term, teacher } = req.query;
 
@@ -39,11 +46,11 @@ router.get(
     const levels = await Level.find({
       session: new ObjectId(session),
       term: new ObjectId(term),
-      teacher: teacher
+      teacher: teacher,
     })
-      .select(['teacher', 'level'])
+      .select(["teacher", "level"])
       .populate({
-        path: 'students',
+        path: "students",
         match: { active: true },
       });
 
@@ -51,13 +58,13 @@ router.get(
     const studentInEachLevel = levels.map((level) => {
       return {
         level: level?.levelName,
-        students: level?.students?.length || 0
+        students: level?.students?.length || 0,
       };
     });
 
     // find males and females
     const totalStudents = levels.flatMap(({ students }) => students);
-    const groupedStudents = _.groupBy(totalStudents, 'gender');
+    const groupedStudents = _.groupBy(totalStudents, "gender");
 
     // const attendances=await Attendance.find({
     //   level: level?._id,
@@ -69,31 +76,30 @@ router.get(
         level: new ObjectId(level?._id),
       })
         .populate({
-          path: 'level', select: 'level'
+          path: "level",
+          select: "level",
         })
-        .select(['date', 'status']);
+        .select(["date", "status"]);
 
-      const data = attendance.map(at => {
+      const data = attendance.map((at) => {
         return {
           level: level?.levelName,
           date: at?.date,
-          status: at?.status
-        }
-      })
+          status: at?.status,
+        };
+      });
 
-      return data
+      return data;
     });
 
-    const allAttendances = await Promise.all(attendances)
+    const allAttendances = await Promise.all(attendances);
     // console.log(allAttendances)
 
-    const modifiedAttendance = _.flatMap(allAttendances)
-    const totalAttendance = getTotalAttendance(modifiedAttendance)
-    const genderAttendance = getAttendanceByGender(modifiedAttendance)
+    const modifiedAttendance = _.flatMap(allAttendances);
+    const totalAttendance = getTotalAttendance(modifiedAttendance);
+    const genderAttendance = getAttendanceByGender(modifiedAttendance);
 
-    const weeklyAttendances = processWeeklyAttendance(modifiedAttendance)
- 
-    
+    const weeklyAttendances = processWeeklyAttendance(modifiedAttendance);
 
     const dashboardInfo = {
       courses: courses ?? 0,
@@ -108,7 +114,7 @@ router.get(
       absent: totalAttendance?.Absent,
       unknown: totalAttendance?.Unknown,
       weeklyAttendances,
-      genderAttendance
+      genderAttendance,
     };
     res.status(200).json(dashboardInfo);
   })
@@ -116,7 +122,7 @@ router.get(
 
 //@GET School Course by teacher
 router.get(
-  '/teacher',
+  "/teacher",
   asyncHandler(async (req, res) => {
     const { session, term, teacher } = req.query;
 
@@ -125,7 +131,7 @@ router.get(
       term: new ObjectId(term),
       teacher: new ObjectId(teacher),
     })
-      .populate('level')
+      .populate("level")
       .populate("subject");
 
     if (_.isEmpty(courses)) {
@@ -148,7 +154,7 @@ router.get(
 
 //@GET School Course by id
 router.get(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const course = await Course.findById(req.params.id).populate("subject");
     res.status(200).json(course);
@@ -157,47 +163,74 @@ router.get(
 
 //Add new School Course
 router.post(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
-    const { subject, level, term, session } = req.body
+    const { subject, level, term, session, teacher, subjectName, levelName } =
+      req.body;
+
     const courses = await Course.find({
       session,
       term,
       level,
       subject,
-    })
+    });
 
     if (!_.isEmpty(courses)) {
-      return res.status(400).json('Course already assigned to teacher');
+      return res.status(400).json("Course already assigned to teacher");
     }
 
     //Create new Course
-    const course = await Course.create({ ...req.body, school: req.user.school, });
+    const course = await Course.create({
+      ...req.body,
+      school: req.user.school,
+    });
 
     if (!course) {
-      return res.status(404).json('Error creating new course.Try again later');
+      return res.status(404).json("Error creating new course.Try again later");
     }
+
+    const notification = {
+      user: teacher,
+      school: req.user.school,
+      session: session,
+      term: term,
+      type: "Information",
+      title: `Course Assignment - ${subjectName}`,
+      description: `You have been assigned to teach ${subjectName} for ${levelName}. Please login to your dashboard to view more details.`,
+      album: null,
+      link: "/course/assign",
+      createdBy: req.user.id,
+    };
+
+    await Notification.create(notification);
+
+    const teacherUser = await User.findById(teacher);
+
+    const body = {
+      title: `Course Assignment - ${subjectName}`,
+      message: `Dear ${teacherUser?.firstname} ${teacherUser?.lastname}, You have been assigned to teach ${subjectName} for ${levelName}. Please login to your dashboard to view more details.`,
+    };
+
+    await sendMail(body, teacherUser?.email);
+
     //console.log(course);
-    res.status(201).json('New Course assigned!');
+    res.status(201).json("New Course assigned!");
   })
 );
 
 //@PUT Update Existing School Course
 router.put(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
     const { id, ...rest } = req.body;
-    const modifiedCourse = await Course.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          ...rest
-        }
-      }
-    );
+    const modifiedCourse = await Course.findByIdAndUpdate(id, {
+      $set: {
+        ...rest,
+      },
+    });
 
     if (!modifiedCourse) {
-      return res.status(404).json('Error updating course info.Try again later');
+      return res.status(404).json("Error updating course info.Try again later");
     }
 
     res.json(modifiedCourse);
@@ -205,12 +238,12 @@ router.put(
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
     await Course.findByIdAndDelete(id);
 
-    res.status(204).json('Course Removed!');
+    res.status(204).json("Course Removed!");
   })
 );
 

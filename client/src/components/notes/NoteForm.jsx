@@ -35,6 +35,7 @@ const colors = [
   "#83C5BE",
 ];
 
+
 const NoteFormModal = ({ open, onClose, defaultValues, onSubmit }) => {
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     resolver: yupResolver(schema),

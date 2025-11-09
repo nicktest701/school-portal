@@ -12,6 +12,7 @@ import { TOWNS } from "@/mockup/data/towns";
 import { RELATIONSHIP } from "@/mockup/columns/sessionColumns";
 import { Controller } from "react-hook-form";
 import Input from "@/components/inputs/Input";
+import Typography from "@mui/material/Typography";
 import SelectInput from "@/components/inputs/SelectInput";
 
 const ParentInfo = ({ control, watch, index }) => {
@@ -65,7 +66,7 @@ const ParentInfo = ({ control, watch, index }) => {
           options={options}
           getOptionLabel={(option) => option || ""}
           value={value}
-          onChange={(_, value) => onChange(value)}
+          onInputChange={(_, value) => onChange(value)}
           onBlur={onBlur}
           renderInput={(params) => (
             <TextField
@@ -82,7 +83,9 @@ const ParentInfo = ({ control, watch, index }) => {
 
   return (
     <Stack py={2} spacing={1}>
+      
       <CustomFormControl>
+      
         {renderTextField(`parent.${index}.firstname`, "Firstname")}
         {renderTextField(`parent.${index}.surname`, "Surname")}
       </CustomFormControl>

@@ -130,6 +130,11 @@ const Sidebar = () => {
                 icon={<ArticleRoundedIcon />}
                 to="/session"
               />
+              <DrawerItem
+                title={toggleWidth ? "" : "Departments & Houses"}
+                icon={<BedroomBabyRoundedIcon />}
+                to="/departments-houses"
+              />
 
               <DrawerItem
                 title={toggleWidth ? "" : "Levels "}
@@ -141,6 +146,7 @@ const Sidebar = () => {
                 icon={<NumbersSharp />}
                 to="/subject"
               />
+              <Divider />
 
               {/* <NavLinkItemCollapse
                 icon={<LocalLibraryRounded htmlColor="" />}
@@ -169,21 +175,75 @@ const Sidebar = () => {
                 to="/student"
               />
 
-              <DrawerItem
+              {/* <DrawerItem
                 title={toggleWidth ? "" : "Teachers"}
                 icon={<Person2Rounded />}
                 to="/teacher"
-              />
-              <DrawerItem
+              /> */}
+
+              <NavLinkItemCollapse
+                icon={<Person2Rounded htmlColor="" />}
+                title={toggleWidth ? "" : "Teachers"}
+                to="/teacher"
+                toggleWidth={toggleWidth}
+              >
+                <DrawerItem
+                  title={toggleWidth ? "" : "View Teachers"}
+                  icon={<BedroomBabyRoundedIcon />}
+                  to="/teacher"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "Assigned Levels"}
+                  icon={<ListAltSharp />}
+                  to="/teacher/levels"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "Assigned Courses"}
+                  icon={<BookRounded />}
+                  to="/teacher/courses"
+                />
+              </NavLinkItemCollapse>
+
+              {/* <DrawerItem
                 title={toggleWidth ? "" : "School Fees"}
                 icon={<PaymentsRounded />}
                 to="/fee"
-              />
+              /> */}
+
+              <NavLinkItemCollapse
+                icon={<PaymentsRounded htmlColor="" />}
+                title={toggleWidth ? "" : "School Fees"}
+                to="/fee"
+                toggleWidth={toggleWidth}
+              >
+                <DrawerItem
+                  title={toggleWidth ? "" : "Dashboard"}
+                  icon={<BedroomBabyRoundedIcon />}
+                  to="/fee"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "New"}
+                  icon={<ListAltSharp />}
+                  to="/fee/new"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "Make Payments"}
+                  icon={<BookRounded />}
+                  to="/fee/payment"
+                />
+                <DrawerItem
+                  title={toggleWidth ? "" : "Fees History"}
+                  icon={<BookRounded />}
+                  to="/fee/history"
+                />
+              </NavLinkItemCollapse>
+
               <DrawerItem
                 title={toggleWidth ? "" : "Exams Portal"}
                 icon={<DataThresholdingRoundedIcon />}
                 to="/examination"
               />
+              <Divider />
 
               <DrawerItem
                 title={toggleWidth ? "" : "Data Uploads"}
@@ -207,7 +267,7 @@ const Sidebar = () => {
                 icon={<AnnouncementRounded />}
                 to="/announcements"
               />
-
+              <Divider />
               <DrawerItem
                 title={toggleWidth ? "" : "Users"}
                 icon={<PeopleAltRoundedIcon />}
@@ -280,7 +340,7 @@ const Sidebar = () => {
             icon={<DescriptionRounded />}
             to="/notes"
           />
-
+          <Divider />
           <DrawerItem
             title={toggleWidth ? "" : "About"}
             icon={<InfoRoundedIcon />}

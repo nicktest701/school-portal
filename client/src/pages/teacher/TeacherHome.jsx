@@ -27,7 +27,9 @@ const TeacherHome = () => {
 
   //VIEW Teacher Info
   const viewTeacherInfo = (data) => {
-    navigate(`/teacher/${data?._id}`);
+    navigate(
+      `/teacher/${data?._id}?profile=${data?.profile}&fullname=${data?.fullname}`
+    );
   };
 
   return (

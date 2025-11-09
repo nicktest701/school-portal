@@ -43,6 +43,10 @@ const MedicalInformation = ({ control }) => {
         >
           Emergency Contact
         </Typography>
+        <Typography variant="caption" color="text.secondary">
+          Provide details of an emergency contact person.
+        </Typography>
+        
         <Input
           size="small"
           label="Fullname"

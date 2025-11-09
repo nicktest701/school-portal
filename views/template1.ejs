@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Card</title>
+    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,500;0,600;1,100;1,200&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary: #012e54;
+        --secondary: #ffc09f;
+      }
+
+      html {
+        line-height: 1.15;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        font-size: 14px !important;
+        font-optical-sizing: auto;
+        font-style: normal;
+        font-variation-settings: "slnt" 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #fff;
+      }
+
+      p,
+      td {
+        font-size: 14px;
+        white-space: nowrap !important;
+      }
+
+      .report {
+        width: 210mm;
+        height: 297mm;
+        max-width: 210mm;
+        max-height: 297mm;
+        margin-inline: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      @media print {
+        .report {
+          margin: 0;
+          border: 0;
+        }
+      }
+
+      .watermark {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+      }
+
+      .watermark-image {
+        opacity: 0.03;
+        width: 6in;
+        height: 5.5in;
+      }
+
+      .report-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .school-logo {
+        width: 80px;
+        height: 80px;
+      }
+
+      .school-info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .school-info p {
+        text-align: center;
+      }
+
+      .caption {
+        display: block;
+        text-align: center;
+        padding-bottom: 2px;
+      }
+
+      .italic-text {
+        font-style: italic;
+      }
+
+      .card-title {
+        text-align: center;
+        border-top: solid 2px var(--secondary);
+        background-color: var(--primary);
+        color: #fff;
+        padding: 8px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .student-photo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .student-photo {
+        align-self: center;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+      }
+
+      .student-info-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .personal-info {
+        flex: 0.38;
+      }
+
+      .report-item-container {
+        display: flex;
+        padding-block: 2px;
+      }
+
+      .report-item-title {
+        white-space: nowrap !important;
+        font-weight: bold;
+        padding-right: 5px;
+        text-transform: capitalize;
+      }
+
+      .report-item-text {
+        text-transform: capitalize;
+        white-space: nowrap !important;
+      }
+
+      .report-item-text-underline {
+        border-bottom: 1px dashed gray;
+      }
+
+      .position-container {
+        text-align: center;
+        align-items: center;
+      }
+
+      .position-value {
+        color: #b72338;
+      }
+
+      .results-section {
+        padding-block: 8px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .results-table {
+        text-align: center;
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid;
+      }
+
+      .results-table th,
+      .results-table td {
+        border: 1px solid;
+        padding: 2px;
+      }
+
+      .subject-cell {
+        text-align: left;
+        padding-left: 2px;
+        font-weight: bold;
+        width: 25%;
+      }
+
+      .score-cell {
+        width: 18%;
+      }
+
+      .total-score-cell {
+        width: 15%;
+        color: #b72338;
+        font-weight: bold;
+      }
+
+      .grade-cell {
+        width: 10%;
+      }
+
+      .remarks-cell {
+        width: 14%;
+        color: green;
+      }
+
+      .table-footer {
+        text-align: center;
+        text-decoration: underline;
+        border-top: solid 2px var(--primary);
+      }
+
+      .overall-score-label {
+        text-align: left;
+        padding-left: 2px;
+        font-size: 12px;
+        font-weight: bolder;
+      }
+
+      .conduct-section {
+        flex-grow: 1;
+        position: relative;
+        z-index: 2;
+      }
+
+      .attendance-info {
+        display: flex;
+        justify-content: flex-end;
+        column-gap: 24px;
+        gap: 24px;
+        padding-top: 8px;
+        padding-right: 40px;
+      }
+
+      .remarks-section {
+        padding-block: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .signature-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: end;
+        margin-bottom: 4px;
+      }
+
+      .signature-image {
+        max-width: 100%;
+        aspect-ratio: 16/9;
+        width: 100px;
+        height: 60px;
+        object-fit: contain;
+        transform: scale(1.8);
+      }
+
+      .signature-name {
+        border-top: 1px #333 dashed;
+        font-size: 13px;
+      }
+
+      .grades-key {
+        padding: 8px;
+        padding-bottom: 12px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .grades-key h3 {
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      .grades-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 5px;
+      }
+
+      .grade-item {
+        display: flex;
+        align-items: left;
+      }
+
+      .grade-box {
+        width: 30px;
+        height: 15px;
+        border-radius: 3px;
+        display: inline-block;
+      }
+
+      .footer {
+        font-size: 12px;
+        font-style: italic;
+        text-align: right;
+        position: relative;
+        z-index: 2;
+      }
+
+      .student-id {
+        font-size: 10px;
+        font-style: italic;
+        position: relative;
+        z-index: 2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Report Card -->
+    <div class="report" id="report">
+      <div class="watermark">
+        <img
+          class="watermark-image"
+          alt="report-logo"
+          src="<%=school?.badge %>"
+        />
+      </div>
+
+      <!-- School details -->
+      <div class="report-header">
+        <img
+          alt="school logo"
+          loading="lazy"
+          class="school-logo"
+          src="<%=school?.badge %>"
+        />
+
+        <div class="school-info">
+          <h2 style="text-transform: uppercase"><%= school?.name %></h2>
+          <span class="caption"><%= school?.address %></span>
+          <span class="caption"><%= school?.location %></span>
+          <span class="caption italic-text"><%= school?.motto %></span>
+          <span class="caption italic-text">
+            <%= school?.phonenumber %> | <%= school?.email %></span
+          >
+        </div>
+      </div>
+
+      <h3 class="card-title">Report Card</h3>
+
+      <!-- Student photo -->
+      <div class="student-photo-container">
+        <img class="student-photo" alt="photo" src="<%=report?.profile %>" />
+      </div>
+
+      <!-- Student info section -->
+      <div class="student-info-section">
+        <!-- Personal info -->
+        <div class="personal-info">
+          <div>
+            <!-- Index Number -->
+            <div class="report-item-container">
+              <span class="report-item-title">ID :</span>
+              <span class="report-item-text"><%= report.indexnumber %></span>
+            </div>
+            <!-- Full Name -->
+            <div class="report-item-container">
+              <span class="report-item-title">Full Name :</span>
+              <span class="report-item-text"><%= report.fullName %></span>
+            </div>
+            <!-- Class -->
+            <div class="report-item-container">
+              <span class="report-item-title">Class :</span>
+              <span class="report-item-text"><%= report.level %></span>
+            </div>
+            <!-- No of roll -->
+            <div class="report-item-container">
+              <span class="report-item-title">No. of Roll :</span>
+              <span class="report-item-text"><%= report.rollNumber %></span>
+            </div>
+            <!-- Grade -->
+            <div class="report-item-container">
+              <span class="report-item-title">Grade :</span>
+              <span class="report-item-text"><%= report.grade %></span>
+            </div>
+            <!-- Promoted -->
+            <div class="report-item-container">
+              <span class="report-item-title">Promoted :</span>
+              <span class="report-item-text"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Position -->
+        <div class="position-container">
+          <p style="text-align: right">Position</p>
+          <h2 class="position-value"><%= report.position %></h2>
+        </div>
+
+        <!-- Academic info -->
+        <div class="academic-info">
+          <div>
+            <!-- Academic Year -->
+            <div class="report-item-container">
+              <span class="report-item-title">Academic Year :</span>
+              <span class="report-item-text"><%= report.academicYear %></span>
+            </div>
+            <!-- Term -->
+            <div class="report-item-container">
+              <span class="report-item-title">Term/Semester :</span>
+              <span class="report-item-text"><%= report.term %></span>
+            </div>
+            <!-- Vacation date -->
+            <div class="report-item-container">
+              <span class="report-item-title">Vacation Date :</span>
+              <span class="report-item-text"><%= report.vacationDate %></span>
+            </div>
+            <!-- Reopening Date -->
+            <div class="report-item-container">
+              <span class="report-item-title">Reopening Date :</span>
+              <span class="report-item-text"><%= report.reOpeningDate %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results section -->
+      <div class="results-section">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Class Score<br />(<%= school.termDetails.class %>%)</th>
+              <th>Exams Score<br />(<%= school.termDetails.exams %>%)</th>
+              <th>Total Score (100%)</th>
+              <th>Grade</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% report.scores.forEach(score=> { %>
+            <tr>
+              <td class="subject-cell"><%= score.subject %></td>
+              <td class="score-cell"><%= score.classScore %></td>
+              <td class="score-cell"><%= score.examsScore %></td>
+              <td class="total-score-cell"><%= score.totalScore %></td>
+              <td class="grade-cell"><%= score.grade %></td>
+              <td class="remarks-cell"><%= score.remarks %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+          <tfoot class="table-footer">
+            <tr>
+              <th class="overall-score-label">OVERALL SCORE</th>
+              <th></th>
+              <th></th>
+              <th><%= report.overallScore %></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Conduct section -->
+      <div class="conduct-section">
+        <div class="attendance-info">
+          <!-- Attendance -->
+          <div class="report-item-container">
+            <span class="report-item-title">Attendance :</span>
+            <span class="report-item-text"></span>
+          </div>
+
+          <!-- Out of -->
+          <div class="report-item-container">
+            <span class="report-item-title">Out Of :</span>
+            <span class="report-item-text"></span>
+          </div>
+        </div>
+
+        <!-- Remarks -->
+        <div class="remarks-section">
+          <!-- Conduct & Attitude -->
+          <div class="report-item-container">
+            <span class="report-item-title">Conduct & Attitude :</span>
+            <span class="report-item-text-underline"
+              ><%= report.comments?.conduct %></span
+            >
+          </div>
+          <!-- Interest -->
+          <div class="report-item-container">
+            <span class="report-item-title">Interest :</span>
+            <span class="report-item-text-underline"
+              ><%= report.comments?.interest %></span
+            >
+          </div>
+          <!-- Class Teacher's Remarks -->
+          <div class="report-item-container">
+            <span class="report-item-title">Class Teacher's Remarks :</span>
+            <span class="report-item-text-underline"
+              ><%= report.comments?.teachersComments %></span
+            >
+          </div>
+          <!-- Headmaster's Remarks -->
+          <div class="report-item-container">
+            <span class="report-item-title">Headmaster's Remarks :</span>
+            <span class="report-item-text-underline"
+              ><%= report.comments?.headteachersComments %></span
+            >
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- Signature -->
+        <div class="signature-container">
+          <img
+            class="signature-image"
+            src="<%= school.termDetails.headmaster.signature %>"
+            alt="headmaster signature"
+          />
+          <span class="signature-name"
+            ><%= school.termDetails.headmaster.name %> (Headmaster)</span
+          >
+        </div>
+      </div>
+
+      <!-- Grades key -->
+      <div class="grades-key">
+        <h3>KEY TO GRADES</h3>
+        <div class="grades-grid">
+          <% if (report?.gradingSystem && report.gradingSystem.length) { %> <%
+          report.gradingSystem.forEach(function(rating) { %>
+          <div class="grade-item grade-<%= rating.remarks %>">
+            <span
+              ><%= rating.grade %> <%= rating.lowestMark %> - <%=
+              rating.highestMark %> <%= rating.remarks %></span
+            >
+          </div>
+          <% }) %> <% } %>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <p class="footer">
+        Powered by
+        <a
+          href="https://nanaakwasi.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Frebby Tech Consult
+        </a>
+        (+233543772591). &copy;
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+        | All rights reserved.
+      </p>
+
+      <span class="student-id"><%= report._id %></span>
+    </div>
+  </body>
+</html>
