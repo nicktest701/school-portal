@@ -37,6 +37,11 @@ export const sessionValidationSchema = object().shape({
 
 export const levelValidationSchema = object().shape({
   level: string().required("Required*"),
+  initials: string().nullable(true),
+  // department: object({
+  //   _id: string().required("Required*"),
+  //   name: string().required("Required*"),
+  // }).nullable(true),
 });
 
 export const AssignTeacherValidationSchema = object().shape({

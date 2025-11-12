@@ -75,7 +75,7 @@ const FindSchool = () => {
       <Box
         className="custom-shape-divider-top-1737365089"
         sx={{
-          minHeight: "100svh",
+          heigh: "100svh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -150,6 +150,7 @@ const FindSchool = () => {
                   placeholder="School Code"
                   fullWidth
                   margin="normal"
+                  // size='small'
                 />
 
                 <Button
@@ -175,6 +176,8 @@ const FindSchool = () => {
           (+233543772591)
         </Typography>
       </Box>
+
+      
       <Modal open={isModalOpen}>
         <Box
           sx={{
@@ -193,13 +196,12 @@ const FindSchool = () => {
 
           <Stack
             direction={{ xs: "column", md: "row" }}
-            justifyContent="center"
+            border="1px solid #ccc"
+            // justifyContent="center"
             alignItems="center"
             p={1}
             spacing={2}
             my={4}
-            border="1px solid lightgray"
-            borderRadius="12px"
           >
             <Avatar
               alt="school badge"
@@ -212,16 +214,13 @@ const FindSchool = () => {
             >
               {schoolDetails?.name[0]}
             </Avatar>
-            <Stack
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              py={2}
-            >
-              <Typography variant="h5">{schoolDetails?.name}</Typography>
+            <Stack py={2}>
+              <Typography variant="h5" textTransform="uppercase">
+                {schoolDetails?.name}
+              </Typography>
               <Typography variant="body2">{schoolDetails?.address}</Typography>
-              <Typography fontStyle="italic" variant="caption">
-                {schoolDetails?.motto}
+              <Typography fontStyle="italic" variant="h5" fontWeight={600}>
+                {schoolDetails?.code} - {schoolDetails?.region}
               </Typography>
             </Stack>
           </Stack>

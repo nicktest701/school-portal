@@ -24,6 +24,8 @@ const Profile = () => {
     },
   });
 
+  console.log(student)
+
   if (isPending || isLoading) {
     return <ProfileSkeleton />;
   }

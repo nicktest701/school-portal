@@ -3,6 +3,10 @@ const db = require('../db/DBConnection');
 
 const holidaySchema = new mongoose.Schema({
 
+    school: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'School',
+    },
     session: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'Session',

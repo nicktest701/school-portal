@@ -11,6 +11,7 @@ export default function CustomAutoComplete({ name, label, control, data }) {
         <Autocomplete
           options={data?.data || []}
           loading={data.isPending}
+          noOptionsText="No data available"
           getOptionLabel={(option) =>
             option?.fullName || option?.fullname || option?.name || ""
           }

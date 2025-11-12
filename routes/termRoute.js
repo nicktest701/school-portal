@@ -15,14 +15,17 @@ const { verifyJWT } = require("../middlewares/verifyJWT");
 const moment = require("moment/moment");
 // const knex = require("../db/knex");
 
-async function setActive(itemId, active = true) {
+async function setActive(itemId, schoolId, active = true) {
   // 1️⃣ Set all items to inactive
-  await Term.updateMany({}, { $set: { active: false } });
-  await Level.updateMany({}, { $set: { active: false } });
+  await Term.updateMany({ school: schoolId }, { $set: { active: false } });
+  await Level.updateMany({ school: schoolId }, { $set: { active: false } });
 
   // 2️⃣ Set the specific item to active
-  await Term.updateOne({ _id: itemId }, { $set: { active } });
-  await Level.updateMany({ term: itemId }, { $set: { active } });
+  await Term.updateOne({ _id: itemId, school: schoolId }, { $set: { active } });
+  await Level.updateMany(
+    { term: itemId, school: schoolId },
+    { $set: { active } }
+  );
 }
 
 //@GET All school Terms
@@ -256,7 +259,7 @@ router.post(
 
     if (newTerm?.active) {
       // Set the new term as active
-      await setActive(newTerm._id);
+      await setActive(newTerm._id, req.user.school, true);
     }
 
     let grades = null;
@@ -283,6 +286,7 @@ router.post(
       const modifiedLevels = levels.map(async (level) => {
         // update student data in the session
         const newLevel = await Level.create({
+          school: req.user.school,
           session: sessionId,
           term: newTerm._id,
           level,
@@ -309,7 +313,7 @@ router.post(
             },
           }).select("indexnumber");
 
-          if (!_.isEmpty(existingStudents)) { 
+          if (!_.isEmpty(existingStudents)) {
             return res.status(400).json({
               isDuplicateError: true,
               message: `ID of some students already exist.Please check and try again.`,
@@ -422,7 +426,7 @@ router.put(
       }
     );
 
-    await setActive(id, active);
+    await setActive(id, req.user.school, active);
 
     if (_.isEmpty(updatedTerm)) {
       return res.status(404).json("Error updating Session info");

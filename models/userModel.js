@@ -108,7 +108,13 @@ UserSchema.statics.findByUsername = function (username) {
   return this.findOne({ username });
 };
 
+// 🔹 Optimized Query Method
+UserSchema.statics.findByUsernameAndSchool = function ({ username, school }) {
+  return this.findOne({ school, username });
+};
+
 // 🔹 Compound Indexes for Faster Queries
+UserSchema.index({ school: 1, username: 1 });
 UserSchema.index({ email: 1, username: 1 });
 UserSchema.index({ school: 1, role: 1 });
 

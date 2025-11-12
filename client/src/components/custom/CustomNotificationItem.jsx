@@ -59,12 +59,12 @@ function CustomNotificationItem({
         padding: "0 16px 0 16px",
         borderRadius: "12px",
         cursor: "pointer",
-        backgroundColor: active ? "rgba(255, 192, 159, 0.1)" : "#fff",
+        backgroundColor: active ? "rgba(15, 199, 168, 0.1)" : "#fff",
       }}
     >
       <div onClick={handleItemClick}>
         <Stack direction="row" justifyContent="space-between" py={1}>
-          <Typography variant="body2" color="secondary" fontWeight="bold">
+          <Typography variant="body2" color="primary" fontWeight="bold">
             {title}
           </Typography>
           {active && <Label htmlColor="green" />}
@@ -77,19 +77,7 @@ function CustomNotificationItem({
           />
         )}
 
-        <Typography
-          variant="body2"
-          sx={
-            {
-              // fontSize: 12,
-              // textOverflow: `ellipsis`,
-              // whiteSpace: "nowrap",
-              // overflow: "hidden",
-            }
-          }
-        >
-          {description}
-        </Typography>
+        <Typography variant="body2">{description}</Typography>
         {["Event", "Announcement"].includes(type) && (
           <Link
             to={link}

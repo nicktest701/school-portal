@@ -108,6 +108,8 @@ export const levelInitialValues = {
   level: "",
   type: "",
   subjects: [],
+  initials: "",
+  department: "",
   teacher: { _id: "", fullName: "" },
 };
 

@@ -29,6 +29,8 @@ import {
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
+import PropTypes from "prop-types";
+import { getLevelInitials } from "@/config/helper";
 import { getAllSessions } from "@/api/termAPI";
 import { getPreviousLevels } from "@/api/levelAPI";
 import { downloadTemplate } from "@/api/userAPI";
@@ -91,11 +93,13 @@ const ImportLevels = ({ open, onClose }) => {
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
-      const newLevels = _.map(uploadedFiles, ({ name, type }) => ({
+      const newLevels = _.map(uploadedFiles, ({ name, type, initials }) => ({
         name,
         type,
+        initials,
       }));
 
+     
       // return;
       if (isConfirmed) {
         mutateAsync(
@@ -155,6 +159,9 @@ const ImportLevels = ({ open, onClose }) => {
           _.map(sheetData, (level) => ({
             name: level?.name,
             type: level?.type || "",
+            initials:
+              level?.initials ||
+              getLevelInitials(`${level?.name}-${level?.type || ""}`),
           })),
           (obj) => `${obj?.name}-${obj?.type || ""}`
         );
@@ -167,9 +174,12 @@ const ImportLevels = ({ open, onClose }) => {
   };
 
   // Delete a file from the list
-  const handleDeleteFile = (index) => {
-    const remainingLevels = uploadedFiles.filter((_, i) => i !== index);
+  const handleDeleteFile = (initials) => {
+    const remainingLevels = uploadedFiles.filter(
+      (item) => item?.initials !== initials
+    );
     setUploadedFiles(remainingLevels);
+    setFilteredData(remainingLevels);
   };
 
   // Clear all uploaded data
@@ -370,6 +380,7 @@ const ImportLevels = ({ open, onClose }) => {
                         <TableCell>Level</TableCell>
                         <TableCell>Type</TableCell>
                         <TableCell> Level Name</TableCell>
+                        <TableCell> Level Initials</TableCell>
                         <TableCell>Actions</TableCell>
                       </TableRow>
                     </TableHead>
@@ -382,8 +393,11 @@ const ImportLevels = ({ open, onClose }) => {
                             {item?.name}
                             {item?.type}
                           </TableCell>
+                          <TableCell>{item?.initials}</TableCell>
                           <TableCell>
-                            <IconButton onClick={() => handleDeleteFile(index)}>
+                            <IconButton
+                              onClick={() => handleDeleteFile(item?.initials)}
+                            >
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>
@@ -401,8 +415,6 @@ const ImportLevels = ({ open, onClose }) => {
     </>
   );
 };
-
-import PropTypes from "prop-types";
 
 ImportLevels.propTypes = {
   open: PropTypes.bool.isRequired,

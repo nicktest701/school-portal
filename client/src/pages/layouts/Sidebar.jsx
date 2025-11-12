@@ -13,7 +13,6 @@ import {
 import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
-import Person2Rounded from "@mui/icons-material/Person2Rounded";
 import LocalLibraryRounded from "@mui/icons-material/LocalLibraryRounded";
 import PaymentsRounded from "@mui/icons-material/PaymentsRounded";
 import SmsRounded from "@mui/icons-material/SmsRounded";
@@ -33,9 +32,13 @@ import {
   ArrowForwardIos,
   AnnouncementRounded,
   DescriptionRounded,
-  Person,
   ListAltSharp,
   Person3Rounded,
+  BarChartRounded,
+  AddCircleRounded,
+  HistoryRounded,
+  Groups3,
+  HouseRounded,
 } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import NavLinkItemCollapse from "@/components/dropdowns/NavLinkItemCollapse";
@@ -63,7 +66,7 @@ const Sidebar = () => {
     >
       <Box
         sx={{
-          width: toggleWidth ? 70 : { xs: 0, md: 230 },
+          width: toggleWidth ? 70 : { xs: 0, md: 250 },
           transition: "width 300ms ease-in-out",
         }}
       >
@@ -86,7 +89,7 @@ const Sidebar = () => {
                 sx={{
                   width: 48,
                   height: 48,
-                  bgcolor: "var(--secondary)",
+                  bgcolor: "#fff",
                 }}
               >
                 {school_info?.name[0]}
@@ -132,7 +135,7 @@ const Sidebar = () => {
               />
               <DrawerItem
                 title={toggleWidth ? "" : "Departments & Houses"}
-                icon={<BedroomBabyRoundedIcon />}
+                icon={<HouseRounded />}
                 to="/departments-houses"
               />
 
@@ -148,47 +151,38 @@ const Sidebar = () => {
               />
               <Divider />
 
-              {/* <NavLinkItemCollapse
+              <NavLinkItemCollapse
                 icon={<LocalLibraryRounded htmlColor="" />}
                 title={toggleWidth ? "" : "Students"}
+                to="/student"
                 toggleWidth={toggleWidth}
               >
                 <DrawerItem
-                  title={toggleWidth ? "" : "Home"}
-                  icon={<BedroomBabyRoundedIcon />}
-                  to="/"
+                  title={toggleWidth ? "" : "Dashboard"}
+                  icon={<BarChartRounded />}
+                  to="/student"
                 />
                 <DrawerItem
-                  title={toggleWidth ? "" : "View Students"}
+                  title={toggleWidth ? "" : "All Students"}
                   icon={<ListAltSharp />}
                   to="/student/view"
                 />
                 <DrawerItem
                   title={toggleWidth ? "" : "New Student"}
-                  icon={<BookRounded />}
+                  icon={<AddCircleRounded />}
                   to="/student/new"
                 />
-              </NavLinkItemCollapse> */}
-              <DrawerItem
-                title={toggleWidth ? "" : "Students"}
-                icon={<LocalLibraryRounded />}
-                to="/student"
-              />
+              </NavLinkItemCollapse>
 
-              {/* <DrawerItem
-                title={toggleWidth ? "" : "Teachers"}
-                icon={<Person2Rounded />}
-                to="/teacher"
-              /> */}
-
+          
               <NavLinkItemCollapse
-                icon={<Person2Rounded htmlColor="" />}
+                icon={<Groups3 htmlColor="" />}
                 title={toggleWidth ? "" : "Teachers"}
                 to="/teacher"
                 toggleWidth={toggleWidth}
               >
                 <DrawerItem
-                  title={toggleWidth ? "" : "View Teachers"}
+                  title={toggleWidth ? "" : "All Teachers"}
                   icon={<BedroomBabyRoundedIcon />}
                   to="/teacher"
                 />
@@ -204,12 +198,7 @@ const Sidebar = () => {
                 />
               </NavLinkItemCollapse>
 
-              {/* <DrawerItem
-                title={toggleWidth ? "" : "School Fees"}
-                icon={<PaymentsRounded />}
-                to="/fee"
-              /> */}
-
+            
               <NavLinkItemCollapse
                 icon={<PaymentsRounded htmlColor="" />}
                 title={toggleWidth ? "" : "School Fees"}
@@ -218,12 +207,12 @@ const Sidebar = () => {
               >
                 <DrawerItem
                   title={toggleWidth ? "" : "Dashboard"}
-                  icon={<BedroomBabyRoundedIcon />}
+                  icon={<BarChartRounded />}
                   to="/fee"
                 />
                 <DrawerItem
-                  title={toggleWidth ? "" : "New"}
-                  icon={<ListAltSharp />}
+                  title={toggleWidth ? "" : "New Fees"}
+                  icon={<AddCircleRounded />}
                   to="/fee/new"
                 />
                 <DrawerItem
@@ -233,7 +222,7 @@ const Sidebar = () => {
                 />
                 <DrawerItem
                   title={toggleWidth ? "" : "Fees History"}
-                  icon={<BookRounded />}
+                  icon={<HistoryRounded />}
                   to="/fee/history"
                 />
               </NavLinkItemCollapse>
@@ -295,14 +284,14 @@ const Sidebar = () => {
               />
 
               <NavLinkItemCollapse
-                icon={<Person htmlColor="" />}
+                icon={<LocalLibraryRounded htmlColor="" />}
                 title={toggleWidth ? "" : "Manage Students"}
                 to="/course"
                 toggleWidth={toggleWidth}
               >
                 <DrawerItem
-                  title={toggleWidth ? "" : "Home"}
-                  icon={<BedroomBabyRoundedIcon />}
+                  title={toggleWidth ? "" : "Overview"}
+                  icon={<BarChartRounded />}
                   to="/course"
                 />
                 <DrawerItem

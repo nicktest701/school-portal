@@ -20,13 +20,17 @@ const TeacherNav = () => {
               bgcolor: "white",
             }}
           >
-            <NavLinkItem to="/teacher" color="#012e54" text="Teachers" />
+            <NavLinkItem to="/teacher" color="#012e54" text="All Teachers" />
             <NavLinkItem
               to="/teacher/levels"
               color="#012e54"
-              text="Levels"
+              text="Assigned Levels"
             />
-            <NavLinkItem to="/teacher/courses" color="#012e54" text="Courses" />
+            <NavLinkItem
+              to="/teacher/courses"
+              color="#012e54"
+              text="Assigned Courses"
+            />
           </Container>
         </Toolbar>
       </AppBar>

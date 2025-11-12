@@ -40,6 +40,7 @@ const GradeTable = ({ data, removeGrade }) => {
                     mr: 4,
                     bgcolor: gradeColor(row.highestMark).bg,
                     color: gradeColor(row.highestMark).color,
+                    textTransform:'uppercase'
                   }}
                 >
                   {row.remarks}

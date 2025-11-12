@@ -201,6 +201,23 @@ const UserProvider = ({ children }) => {
     });
   };
 
+  const switchAccount = () => {
+    Swal.fire({
+      title: "Switch Account",
+      text: "Do you want to switch account?",
+      showCancelButton: true,
+      backdrop: false,
+    }).then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        setSchoolInformation(null);
+        deleteUser();
+        setAccessToken(null);
+        setUser(null);
+        setSession(null);
+      }
+    });
+  };
+
   // const authLoading = loading || userInfo.isPending;
   return (
     <>
@@ -215,6 +232,7 @@ const UserProvider = ({ children }) => {
           logOutUser,
           updateSchoolInformation,
           schoolInformation,
+          switchAccount,
           userDispatch,
           students: [],
           accessToken,

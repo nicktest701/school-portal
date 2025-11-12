@@ -24,7 +24,7 @@ const StudentNav = () => {
             <NavLinkItem
               to="/student/view"
               color="#012e54"
-              text="View Students"
+              text="All Students"
             />
             <NavLinkItem to="/student/new" color="#012e54" text="New Student" />
           </Container>

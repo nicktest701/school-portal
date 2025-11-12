@@ -17,6 +17,20 @@ export const isWeekend = (date) => {
   return day === 0 || day === 6; // 0 is Sunday, 6 is Saturday
 };
 
+export function getLevelInitials(name) {
+  if (!name) return "";
+
+  // Split by spaces, filter out empty parts, and map to uppercase initials
+  const initials = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase())
+    .join(".");
+
+  return initials;
+}
+
 // Convert Base64 to Blob and create Object URL
 // const base64ToBlobUrl = (base64) => {
 //   // Split the Base64 string into parts
@@ -78,4 +92,3 @@ export function generateRGBAColorsBetween(
 
   return colors;
 }
-

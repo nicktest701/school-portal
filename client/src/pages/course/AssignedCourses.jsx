@@ -3,19 +3,16 @@ import CustomTitle from "@/components/custom/CustomTitle";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { Button } from "@mui/material";
 import { EMPTY_IMAGES } from "@/config/images";
-import { SchoolRounded } from "@mui/icons-material";
 import { ASSIGNED_COURSE_COLUMNS } from "@/mockup/columns/sessionColumns";
 import { UserContext } from "@/context/providers/UserProvider";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCourseByTeacher } from "@/api/courseAPI";
+import session_icon from "@/assets/images/header/session_ico.svg";
 
 function AssignCourses() {
   const navigate = useNavigate();
-  const {
-    user,
-    session
-  } = useContext(UserContext);
+  const { user, session } = useContext(UserContext);
 
   const courses = useQuery({
     queryKey: ["courses", user?.id],
@@ -58,13 +55,14 @@ function AssignCourses() {
     <>
       <CustomTitle
         title="Assigned Courses"
-        subtitle="Track,manage and control courses assigned to you"
-        icon={<SchoolRounded color="primary" />}
+        subtitle="Track, manage and control courses assigned to you."
+        img={session_icon}
         color="primary.main"
       />
 
       <CustomizedMaterialTable
         title="Courses"
+        subtitle="A list of all courses assigned to you."
         isPending={courses.isPending}
         columns={columns}
         data={courses.data}

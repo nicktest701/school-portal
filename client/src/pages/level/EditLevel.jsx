@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from "react";
 import {
   Stack,
   Dialog,
@@ -6,28 +6,29 @@ import {
   DialogActions,
   TextField,
   Autocomplete,
-  Button
-} from '@mui/material';
-import _ from 'lodash';
-import { Formik } from 'formik';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+  Button,
+  Typography,
+} from "@mui/material";
+import _ from "lodash";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import {
   LEVEL_OPTIONS,
   LEVEL_TYPE_OPTIONS,
-} from '../../mockup/columns/sessionColumns';
-import { levelValidationSchema } from '../../config/validationSchema';
-import { SchoolSessionContext } from '../../context/providers/SchoolSessionProvider';
-import {
-  alertError,
-  alertSuccess,
-} from '../../context/actions/globalAlertActions';
-import useLevel from '../../components/hooks/useLevel';
-import { putLevel } from '../../api/levelAPI';
-
-import CustomDialogTitle from '../../components/dialog/CustomDialogTitle';
-import { getAllTeachers } from '../../api/teacherAPI';
-import LoadingSpinner from '@/components/spinners/LoadingSpinner';
+} from "@/mockup/columns/sessionColumns";
+import { levelValidationSchema } from "@/config/validationSchema";
+import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
+import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import useLevel from "@/components/hooks/useLevel";
+import { putLevel } from "@/api/levelAPI";
+import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
+import { getAllTeachers } from "@/api/teacherAPI";
+import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import CustomAutoComplete from "@/components/inputs/CustomAutoComplete";
+import CustomFormControl from "@/components/inputs/CustomFormControl";
+import { getLevelInitials } from "@/config/helper";
 
 const EditLevel = () => {
   const queryClient = useQueryClient();
@@ -39,56 +40,86 @@ const EditLevel = () => {
   } = useContext(SchoolSessionContext);
   const { levelsOption } = useLevel();
 
+
+  // Fetch all teachers
   const teachers = useQuery({
-    queryKey: ['teachers'],
-    queryFn: () => getAllTeachers(),
-    select: (teachers) => {
-      const modifiedTeachers = teachers?.map((teacher) => {
-        return {
-          _id: teacher?._id,
-          fullName: teacher?.fullName,
-        };
-      });
-      return modifiedTeachers;
+    queryKey: ["teachers"],
+    queryFn: getAllTeachers,
+    select: (data) =>
+      data?.map((t) => ({
+        _id: t?._id,
+        fullName: t?.fullName,
+      })) ?? [],
+  });
+
+  // Update mutation
+  const { mutateAsync, isPending } = useMutation({ mutationFn: putLevel });
+
+  // Setup React Hook Form
+  const {
+    control,
+    watch,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: data || {
+      _id: "",
+      level: "",
+      type: "",
+      teacher: null,
     },
+    resolver: yupResolver(levelValidationSchema),
   });
 
-  //ADD New Level
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: putLevel,
-  });
+  console.log(errors)
 
-  const onSubmit = (values, options) => {
-    const newType = `${values.level}${values.type}`;
+  const levelWatch = watch("level");
+  const typeWatch = watch("type");
+  const initialsWatch = watch("initials");
+
+  // Reinitialize form when `data` changes
+  useEffect(() => {
+    if (data) {
+      reset(data);
+    }
+  }, [data, reset]);
+
+  const handleClose = () => {
+    schoolSessionDispatch({
+      type: "editLevel",
+      payload: { open: false, data: {} },
+    });
+  };
+
+  const onSubmit = async (values) => {
+    const newType = `${values.level} ${values.type}`;
     const isMatch = levelsOption.find(
       ({ type }) => type === newType.toUpperCase()
     );
 
     if (!_.isEmpty(isMatch)) {
-      schoolSessionDispatch(alertError('Level already exists!!!'));
-      options.setSubmitting(false);
+      schoolSessionDispatch(alertError("Level already exists!!!"));
       return;
     }
 
-    const newLevel = {
-      _id: values?._id,
+    const updatedLevel = {
+      _id: values._id,
       level: {
         name: values.level,
         type: values.type,
       },
-      teacher: values.teacher,
+      initials:
+        values.initials || getLevelInitials(`${levelWatch} ${typeWatch}`),
+      ...(values?.teacher?._id && { teacher: values.teacher._id }),
     };
 
-    console.log(newLevel);
+  
 
-    mutateAsync(newLevel, {
-      onSettled: () => {
-        options.setSubmitting(false);
-        queryClient.invalidateQueries(['levels']);
-      },
+    mutateAsync(updatedLevel, {
       onSuccess: (data) => {
         schoolSessionDispatch(alertSuccess(data));
-
+        queryClient.invalidateQueries(["levels"]);
         handleClose();
       },
       onError: (error) => {
@@ -97,84 +128,160 @@ const EditLevel = () => {
     });
   };
 
-  const handleClose = () => {
-    schoolSessionDispatch({
-      type: 'editLevel',
-      payload: { open: false, data: {} },
-    });
-  };
-
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xs'>
-      <CustomDialogTitle title='Edit Level' onClose={handleClose} />
-      <Formik
-        initialValues={data}
-        onSubmit={onSubmit}
-        validationSchema={levelValidationSchema}
-        enableReinitialize={true}
-      >
-        {({ values, errors, touched, handleSubmit, setFieldValue }) => {
-          return (
-            <>
-              <DialogContent>
-                <Stack spacing={2} paddingY={2}>
-                  <Autocomplete
-                    freeSolo
-                    options={LEVEL_OPTIONS}
-                    getOptionLabel={(option) => option || ''}
-                    value={values?.level || ''}
-                    onInputChange={(e, value) => setFieldValue('level', value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label='Level'
-                        size='small'
-                        error={Boolean(touched.level && errors.level)}
-                        helperText={touched.level && errors.level}
-                      />
-                    )}
-                  />
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
+      <CustomDialogTitle title='Edit Level Details' subtitle='Update the academic level information.' onClose={handleClose} />
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent>
+          <Stack spacing={2} py={2}>
+            {/* Level */}
+            <Controller
+              name="level"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  freeSolo
+                  options={LEVEL_OPTIONS}
+                  value={field.value || ""}
+                  onInputChange={(_, value) => field.onChange(value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Level"
+                      size="small"
+                      error={!!errors.level}
+                      helperText={errors.level?.message}
+                    />
+                  )}
+                />
+              )}
+            />
+            {/* <CustomAutoComplete
+              name="department"
+              control={control}
+              label="Department"
+              data={{
+                data: departments,
+                isPending: false,
+              }}
+            /> */}
+            <CustomFormControl>
+              {/* Level Type */}
+              <Controller
+                name="type"
+                control={control}
+                render={({ field }) => (
                   <Autocomplete
                     freeSolo
                     options={LEVEL_TYPE_OPTIONS}
-                    getOptionLabel={(option) => option || ''}
-                    value={values?.type || ''}
-                    onInputChange={(e, value) => setFieldValue('type', value)}
-                    renderInput={(params) => (
-                      <TextField {...params} label='type' size='small' />
-                    )}
-                  />
-
-                  <Autocomplete
-                    options={teachers.data}
-                    loading={teachers.isPending}
-                    getOptionLabel={(option) => option?.fullName || ''}
-                    defaultValue={values?.teacher}
-                    value={values?.teacher}
-                    onChange={(e, value) => setFieldValue('teacher', value)}
+                    value={field.value || ""}
+                    onInputChange={(_, value) => field.onChange(value)}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label='Assign Teacher'
-                        size='small'
+                        label="Type"
+                        size="small"
+                        error={!!errors.type}
+                        helperText={errors.type?.message}
                       />
                     )}
                   />
-                </Stack>
-              </DialogContent>
-              <DialogActions sx={{ padding: 2 }}>
-                <Button
-                  loading={isPending}
-                  variant='contained'
-                  onClick={handleSubmit}
+                )}
+              />
+
+              {/* Initials */}
+              <Controller
+                name="initials"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Level Initials"
+                    fullWidth
+                    size="small"
+                    placeholder="e.g. J.H.S 1"
+                    error={!!errors.initials}
+                    helperText={errors.initials?.message}
+                    slotProps={{
+                      htmlInput: {
+                        style: {
+                          textTransform: "uppercase",
+                        },
+                      },
+                    }}
+                  />
+                )}
+              />
+            </CustomFormControl>
+
+            {/* Teacher */}
+            <Controller
+              name="teacher"
+              control={control}
+              render={({ field }) => (
+                <Autocomplete
+                  options={teachers.data}
+                  loading={teachers.isPending}
+                  getOptionLabel={(option) => option?.fullName || ""}
+                  value={field.value || null}
+                  onChange={(_, value) => field.onChange(value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Assign Teacher"
+                      size="small"
+                      error={!!errors.teacher}
+                      helperText={errors.teacher?.message}
+                    />
+                  )}
+                />
+              )}
+            />
+            <Typography
+              variant="body2"
+              color="primary.main"
+              sx={{ fontWeight: "bold", textDecoration: "underline" }}
+            >
+              Level Preview
+            </Typography>
+            {levelWatch && (
+              <Typography
+                variant="body2"
+                fontStyle="italic"
+                sx={{
+                  ml: 2,
+                  p: 2,
+                  // bgcolor: "",
+                  border: "1px solid whitesmoke",
+                }}
+              >
+                {levelWatch} {typeWatch} -{" "}
+                <Typography
+                  variant="caption"
+                  color="green"
+                  fontWeight="bold"
+                  textTransform="uppercase"
                 >
-                  Save Changes
-                </Button>
-              </DialogActions>
-            </>
-          );
-        }}
-      </Formik>
+                  {initialsWatch ||
+                    getLevelInitials(`${levelWatch} ${typeWatch}`)}
+                </Typography>
+              </Typography>
+            )}
+          </Stack>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isPending}
+            fullWidth
+          >
+            {isPending ? "Saving..." : "Save Changes"}
+          </Button>
+        </DialogActions>
+      </form>
 
       {isPending && <LoadingSpinner value="Saving Changes..." />}
     </Dialog>

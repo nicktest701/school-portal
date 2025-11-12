@@ -20,7 +20,7 @@ const {
 const sendMail = require("../config/mail/mailer");
 
 const LEVEL_OPTIONS = [
- "Day Care",
+  "Day Care",
   "Creche",
   "Nursery 1",
   "Nursery 2",
@@ -446,8 +446,8 @@ router.post(
 
     //FInd if current level exists
     const currentLevels = await Level.find({
-      session: new ObjectId(sessionId),
-      term: new ObjectId(termId),
+      session: sessionId,
+      term: termId,
     });
 
     if (!_.isEmpty(currentLevels)) {
@@ -457,7 +457,7 @@ router.post(
     //find prevoius levels
     //FInd if levels exists
     const levels = await Level.find({
-      session: new ObjectId(sessionId),
+      session: sessionId,
     });
 
     if (_.isEmpty(levels)) {
@@ -466,7 +466,7 @@ router.post(
 
     //GET all existing students
     const previousLevels = await Level.find({
-      session: new ObjectId(sessionId),
+      session: sessionId,
     });
 
     const selectedLevels = previousLevels.map(({ level }) => {
@@ -484,8 +484,8 @@ router.post(
     const students = mergedLevels.map(
       ({ level, teacher, subjects, students, grades }) => {
         return {
-          session: new ObjectId(sessionId),
-          term: new ObjectId(termId),
+          session: sessionId,
+          term: termId,
           teacher,
           level,
           subjects,
@@ -527,9 +527,10 @@ router.post(
   asyncHandler(async (req, res) => {
     const newLevel = req.body;
 
-    // console.log(newLevel)
+    console.log(newLevel)
 
     const level = await Level.create({
+      school: req.user.school,
       ...newLevel,
       createdBy: req.user?.id,
     });
@@ -548,12 +549,14 @@ router.post(
     const { session, term, levels } = req.body;
 
     const existingLevels = await Level.find({
+      school: req.user.school,
       session,
       term,
       level: {
         $in: levels,
       },
-    }).select("level");
+    }).select(["level",'school','session','term']);
+    
 
     if (!_.isEmpty(existingLevels)) {
       return res.status(400).json({
@@ -565,7 +568,9 @@ router.post(
 
     const modifiedLevels = levels.map((level) => {
       return {
+        school: req.user.school,
         level,
+        initials: level.initials,
         session,
         term,
         createdBy: req.user?.id,

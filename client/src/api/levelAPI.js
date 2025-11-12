@@ -131,7 +131,7 @@ export const deleteManyLevels = async (levels) => {
   try {
     const res = await api({
       method: 'POST',
-      url: `/levels/many`,
+      url: `/levels/delete/many`,
       data: levels
     });
 

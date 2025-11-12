@@ -44,7 +44,6 @@ router.get(
   "/courses",
   AsyncHandler(async (req, res) => {
     const id = req.params.id;
-    const { session, term, teacher } = req.query;
 
     //Get course assigned to teacher
     const courses = await Course.find({
@@ -70,7 +69,7 @@ router.get(
         path: "teacher",
         select: ["firstname", "lastname", "profile"],
       });
-    // console.log(courses);
+
 
     const modifiedCourses = courses.map((course) => ({
       _id: course._id,
@@ -85,6 +84,8 @@ router.get(
       noOfStudents: course.level?.noOfStudents,
       subject: course.subject?.name,
     }));
+
+ 
 
     res.status(200).json(modifiedCourses);
   })

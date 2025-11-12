@@ -16,7 +16,7 @@ import { getCourseDashboardInfo } from "@/api/courseAPI";
 import CourseAttendanceCard from "./CourseAttendanceCard";
 import CustomTitle from "@/components/custom/CustomTitle";
 import ChartContainer from "@/components/charts/ChartContainer";
-import { Refresh, SchoolRounded } from "@mui/icons-material";
+import { BarChartRounded, Refresh, } from "@mui/icons-material";
 import TeacherLevelWeeklyAttendance from "@/components/charts/TeacherLevelWeeklyAttendance";
 import GenderAttendance from "@/components/charts/GenderAttendance";
 
@@ -56,7 +56,9 @@ function CourseHome() {
       <CustomTitle
         title="Levels Summary"
         subtitle=" Get a comprehensive summary of student enrollment, performance, and engagement in the academic year."
-        icon={<SchoolRounded color="primary" />}
+        icon={
+          <BarChartRounded color="primary" sx={{ width: 36, height: 36 }} />
+        }
         color="primary.main"
         right={
           <Tooltip title="Refresh">

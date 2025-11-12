@@ -8,7 +8,7 @@ router.get(
   "/",
   asyncHandler(async (req, res) => {
     const departments = await Department.find({
-      // school: req.user.school,
+      school: req.user.school,
     })
       .populate("hod", "firstname lastname")
       .sort({ createdAt: -1 });

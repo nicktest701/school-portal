@@ -1,19 +1,21 @@
-const router = require('express').Router();
-const asyncHandler = require('express-async-handler');
-const _ = require('lodash');
-const Student = require('../models/studentModel');
-const Teacher = require('../models/teacherModel');
-const Parent = require('../models/parentModel');
-const Message = require('../models/messageModel');
-const sendMail = require('../config/mail/mailer');
-const {sendSMS} = require('../config/sms/messenger');
+const router = require("express").Router();
+const asyncHandler = require("express-async-handler");
+const _ = require("lodash");
+const Student = require("../models/studentModel");
+const Teacher = require("../models/teacherModel");
+const Parent = require("../models/parentModel");
+const Message = require("../models/messageModel");
+const sendMail = require("../config/mail/mailer");
+const { sendSMS } = require("../config/sms/messenger");
 
 //POST message
 
 router.get(
-  '/',
+  "/",
   asyncHandler(async (req, res) => {
-    const messages = await Message.find({}).sort({ createdAt: -1 });
+    const messages = await Message.find({
+      school: req.user.school,
+    }).sort({ createdAt: -1 });
 
     // //console.log(messages);
 
@@ -23,14 +25,15 @@ router.get(
 //POST message
 
 router.post(
-  '/quick',
+  "/quick",
   asyncHandler(async (req, res) => {
     const newMessage = req.body;
     //console.log(newMessage);
     const message = await Message.create({
+      school: req.user.school,
       type: newMessage?.type,
       recipient: {
-        type: 'Individual',
+        type: "Individual",
         phonenumber:
           newMessage?.phonenumber === undefined
             ? []
@@ -46,21 +49,21 @@ router.post(
     if (_.isEmpty(message)) {
       return res
         .status(404)
-        .json('Couldnt send message.Please try again later...');
+        .json("Couldnt send message.Please try again later...");
     }
 
     try {
       // ONLY SMS
       // if (process.env.NODE_ENV === 'production') {
-      if (message.type === 'sms') {
+      if (message.type === "sms") {
         await sendSMS(message?.body, message?.recipient?.phonenumber);
       }
       //ONLY EMAIL
-      if (message.type === 'email') {
+      if (message.type === "email") {
         await sendMail(message?.body, message?.recipient?.email);
       }
       //BOTH EMAIL AND SMS
-      if (message.type === 'both') {
+      if (message.type === "both") {
         await sendMail(message?.body, message?.recipient?.email);
         await sendSMS(message?.body, message?.recipient?.phonenumber);
       }
@@ -71,30 +74,28 @@ router.post(
           active: true,
         },
       });
-      return res.status(200).json('Message delivered successfully!!!');
+      return res.status(200).json("Message delivered successfully!!!");
     } catch (error) {
-      return res.status(404).json('Couldnt send message.Try again later!!!');
+      return res.status(404).json("Couldnt send message.Try again later!!!");
     }
   })
 );
 
 router.post(
-  '/resend',
+  "/resend",
   asyncHandler(async (req, res) => {
     const { id, type, body } = req.body;
-   
 
     const recipient = req?.body?.recipient;
 
     try {
-      if (type === 'sms') {
+      if (type === "sms") {
         await sendSMS(body, recipient?.phonenumber);
       }
-      if (type === 'email') {
-    
+      if (type === "email") {
         await sendMail(body, recipient?.email);
       }
-      if (type === 'both') {
+      if (type === "both") {
         await sendSMS(body, recipient?.phonenumber);
         await sendMail(body, recipient?.email);
       }
@@ -105,10 +106,9 @@ router.post(
         },
       });
 
-      return res.status(200).json('Message delivered successfully!!!');
+      return res.status(200).json("Message delivered successfully!!!");
     } catch (error) {
- 
-      return res.status(404).json('Couldnt send message.Try again later!!!');
+      return res.status(404).json("Couldnt send message.Try again later!!!");
     }
   })
 );
@@ -116,7 +116,7 @@ router.post(
 //POST message
 
 router.post(
-  '/bulk',
+  "/bulk",
   asyncHandler(async (req, res) => {
     const newMessage = req.body;
     let emailAddresses = [];
@@ -124,30 +124,30 @@ router.post(
     let groups = [];
 
     switch (newMessage.group) {
-      case 'students':
-        groups = await Student.find({}).select('email phonenumber');
+      case "students":
+        groups = await Student.find({}).select("email phonenumber");
         break;
 
-      case 'teachers':
-        groups = await Teacher.find({}).select('email phonenumber');
+      case "teachers":
+        groups = await Teacher.find({}).select("email phonenumber");
         break;
 
-      case 'parents':
-        groups = await Parent.find({}).select('email phonenumber');
+      case "parents":
+        groups = await Parent.find({}).select("email phonenumber");
         break;
 
       default:
-        groups = await Student.find({}).select('email phonenumber');
+        groups = await Student.find({}).select("email phonenumber");
     }
 
     ///Check message type
-    if (newMessage.type === 'sms') {
+    if (newMessage.type === "sms") {
       phoneNumbers = groups.map(({ phonenumber }) => phonenumber);
     }
-    if (newMessage.type === 'email') {
+    if (newMessage.type === "email") {
       emailAddresses = groups.map(({ email }) => email);
     }
-    if (newMessage.type === 'both') {
+    if (newMessage.type === "both") {
       groups.map(({ phonenumber, email }) => {
         phoneNumbers.push(phonenumber);
         emailAddresses.push(email);
@@ -162,6 +162,7 @@ router.post(
     // numbers
 
     const message = await Message.create({
+      school: req.user.school,
       type: newMessage?.type,
       recipient: {
         type: newMessage.group,
@@ -183,15 +184,15 @@ router.post(
     try {
       // ONLY SMS
       // if (process.env.NODE_ENV === 'production') {
-      if (message.type === 'sms') {
+      if (message.type === "sms") {
         await sendSMS(message?.body, numbers);
       }
       //ONLY EMAIL
-      if (message.type === 'email') {
+      if (message.type === "email") {
         await sendMail(message?.body, emails);
       }
       //BOTH EMAIL AND SMS
-      if (message.type === 'both') {
+      if (message.type === "both") {
         await sendSMS(message?.body, numbers);
         await sendMail(message?.body, emails);
       }
@@ -202,16 +203,16 @@ router.post(
           active: true,
         },
       });
-      res.status(200).json('Message delivered successfully!!!');
+      res.status(200).json("Message delivered successfully!!!");
     } catch (error) {
-      return res.status(404).json('Couldnt send message.Try again later!!!');
+      return res.status(404).json("Couldnt send message.Try again later!!!");
     }
   })
 );
 //DELETE message
 
 router.delete(
-  '/:id',
+  "/:id",
   asyncHandler(async (req, res) => {
     const id = req.params.id;
 
@@ -220,10 +221,10 @@ router.delete(
     });
 
     if (_.isEmpty(message)) {
-      return res.status(404).json('Error removing message.Try again later...');
+      return res.status(404).json("Error removing message.Try again later...");
     }
 
-    res.status(200).json('Message deleted successfully!!!');
+    res.status(200).json("Message deleted successfully!!!");
   })
 );
 

@@ -52,6 +52,8 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
     setOpenViewPreviousReport(true);
   };
 
+  // console.log(student)
+
   return (
     <>
       <Box>
@@ -159,7 +161,15 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
           icon={<EditRounded />}
         />
         <Stack py={2}>
+          <ProfileItem
+            label="Department"
+            text={student?.academic?.department || "Not Available"}
+          />
           <ProfileItem label="Current Level" text={type || levelName} />
+          <ProfileItem
+            label="Department"
+            text={student?.academic?.houseno || "Not Available"}
+          />
           <ProfileItem
             label="Previous School"
             text={`${

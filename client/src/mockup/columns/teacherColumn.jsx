@@ -234,11 +234,11 @@ export const TEACHER_ASSIGNED_COURSES_COLUMNS = [
     title: "Level",
     export: true,
   },
-  {
-    field: "noOfStudents",
-    title: "No. of Students",
-    export: true,
-  },
+  // {
+  //   field: "noOfStudents",
+  //   title: "No. of Students",
+  //   export: true,
+  // },
   {
     field: "subject",
     title: "Course/Subject",

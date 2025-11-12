@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const asyncHandler = require("express-async-handler");
+const rateLimit = require("express-rate-limit");
 const _ = require("lodash");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -23,6 +24,23 @@ const Storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: Storage });
+
+// Rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message:
+    "Too many requests from this user, please try again after some time!",
+  handler: (req, res) => {
+    return res
+      .status(429)
+      .json(
+        "Too many requests from this user, please try again after some time!"
+      );
+  },
+});
 
 //@GET all users
 router.get(
@@ -83,14 +101,15 @@ router.get(
 //@GET user by username
 router.post(
   "/login",
+  apiLimiter,
   asyncHandler(async (req, res) => {
-    const username = req.body.username;
-    const user = await User.findByUsername(username);
+    const { username, code, password } = req.body;
+    const user = await User.findByUsernameAndSchool({ username, school: code });
 
     if (_.isEmpty(user)) {
       return res.status(404).json(" Username or Password is incorrect !");
     }
-    const isTrue = bcrypt.compareSync(req.body.password, user.password);
+    const isTrue = bcrypt.compareSync(password, user.password);
     if (!isTrue) {
       return res.status(404).json(" Username or Password is incorrect !");
     }

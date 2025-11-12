@@ -1,20 +1,34 @@
 import React from "react";
-import { Avatar, Drawer, IconButton, Stack } from "@mui/material";
+import { Avatar, Divider, Drawer, IconButton, Stack } from "@mui/material";
 import {
+  AddCircleRounded,
   AnnouncementRounded,
+  ArticleRounded,
+  BarChartRounded,
   BookRounded,
   Close,
+  DataThresholdingRounded,
   DescriptionRounded,
   Event,
+  Groups3,
+  HistoryRounded,
+  HouseRounded,
+  ImportExportRounded,
+  InfoRounded,
+  List,
   ListAltSharp,
-  Person,
+  LocalLibraryRounded,
+  NumbersSharp,
+  PaymentsRounded,
+
   SchoolRounded,
+  SettingsRounded,
+  SmsRounded,
 } from "@mui/icons-material";
 import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import PropTypes from "prop-types";
 import MiniDrawerItem from "@/components/MiniDrawerItem";
-import HorizontalNavLinkItemCollapse from "@/components/dropdowns/HorizontalNavLinkItemCollapse";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -50,7 +64,7 @@ const HorizontalSidebar = ({ open, setOpen }) => {
                 sx={{
                   width: 32,
                   height: 32,
-                  bgcolor: "var(--secondary)",
+                  bgcolor: "#fff",
                 }}
               >
                 {school_info?.name[0]}
@@ -70,56 +84,126 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               title="Dashboard"
               to="/"
               handleClose={handleClose}
+              icon={<GridViewRoundedIcon />}
             />
+            <Divider />
             <MiniDrawerItem
               title="Sessions"
               to="/session"
+              icon={<ArticleRounded />}
               handleClose={handleClose}
             />
             <MiniDrawerItem
               title="Departments & Houses"
               to="/departments-houses"
+              icon={<HouseRounded />}
               handleClose={handleClose}
             />
             <MiniDrawerItem
               title="Levels"
               to="/level"
+              icon={<ListAltSharp />}
               handleClose={handleClose}
             />
             <MiniDrawerItem
               title="Subjects & Grades"
               to="/subject"
+              icon={<NumbersSharp />}
               handleClose={handleClose}
             />
+            <Divider />
             <MiniDrawerItem
               title="Students"
               to="/student"
+              icon={<LocalLibraryRounded />}
               handleClose={handleClose}
+              data={[
+                {
+                  title: "Dashboard",
+                  to: "/student",
+                  icon: <BarChartRounded />,
+                },
+                {
+                  title: "All Students",
+                  to: "/student/view",
+                  icon: <ListAltSharp />,
+                },
+                {
+                  title: "New Student",
+                  to: "/student/new",
+                  icon: <AddCircleRounded />,
+                },
+              ]}
             />
             <MiniDrawerItem
               title="Teachers"
               to="/teacher"
+              icon={<Groups3 />}
               handleClose={handleClose}
+              data={[
+                {
+                  title: "All Teachers",
+                  to: "/teacher",
+                  icon: <List />,
+                },
+                {
+                  title: "Assigned Levels",
+                  to: "/teacher/levels",
+                  icon: <ListAltSharp />,
+                },
+                {
+                  title: "Assigned Courses",
+                  to: "/teacher/courses",
+                  icon: <BookRounded />,
+                },
+              ]}
             />
             <MiniDrawerItem
               title="School Fees"
               to="/fee"
+              icon={<PaymentsRounded />}
               handleClose={handleClose}
+              data={[
+                {
+                  title: "Dashboard",
+                  to: "/fee",
+                  icon: <BarChartRounded />,
+                },
+                {
+                  title: "New Fees",
+                  to: "/fee/new",
+                  icon: <AddCircleRounded />,
+                },
+                {
+                  title: "Make Payments",
+                  to: "/fee/payment",
+                  icon: <BookRounded />,
+                },
+                {
+                  title: "Fees History",
+                  to: "/fee/history",
+                  icon: <HistoryRounded />,
+                },
+              ]}
             />
             <MiniDrawerItem
               title="Exams Portal"
               to="/examination"
+              icon={<DataThresholdingRounded />}
               handleClose={handleClose}
             />
+            <Divider />
             <MiniDrawerItem
               title="Data Uploads"
               to="/uploads"
+              icon={<ImportExportRounded />}
               handleClose={handleClose}
             />
 
             <MiniDrawerItem
               title="Messages"
               to="/messages"
+              icon={<SmsRounded />}
               handleClose={handleClose}
             />
             <MiniDrawerItem
@@ -134,6 +218,7 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               to="/announcements"
               handleClose={handleClose}
             />
+            <Divider />
 
             <MiniDrawerItem
               title="Profile"
@@ -144,11 +229,13 @@ const HorizontalSidebar = ({ open, setOpen }) => {
             <MiniDrawerItem
               title="Users"
               to="/users"
+              icon={<PeopleAltRoundedIcon />}
               handleClose={handleClose}
             />
             <MiniDrawerItem
               title="Settings"
               to="/settings"
+              icon={<SettingsRounded />}
               handleClose={handleClose}
             />
           </>
@@ -163,31 +250,30 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               handleClose={handleClose}
             />
 
-            <HorizontalNavLinkItemCollapse
-              icon={<Person htmlColor="" />}
+            <MiniDrawerItem
               title={"Manage Students"}
               to="/course"
-              mini={true}
-            >
-              <MiniDrawerItem
-                title={"Home"}
-                icon={<BookRounded />}
-                to="/course"
-                handleClose={handleClose}
-              />
-              <MiniDrawerItem
-                title={"Levels"}
-                icon={<ListAltSharp />}
-                to="/course/level"
-                handleClose={handleClose}
-              />
-              <MiniDrawerItem
-                title={"Courses"}
-                icon={<BookRounded />}
-                to="/course/assign"
-                handleClose={handleClose}
-              />
-            </HorizontalNavLinkItemCollapse>
+              icon={<LocalLibraryRounded />}
+              handleClose={handleClose}
+              data={[
+                {
+                  title: "Overview",
+                  to: "/course",
+                  icon: <BarChartRounded />,
+                },
+                {
+                  title: "Levels",
+                  to: "/course/level",
+                  icon: <ListAltSharp />,
+                },
+                {
+                  title: "Courses",
+                  to: "/course/assign",
+                  icon: <BookRounded />,
+                },
+              ]}
+            />
+
             <MiniDrawerItem
               title={"Events"}
               icon={<Event />}
@@ -215,8 +301,13 @@ const HorizontalSidebar = ({ open, setOpen }) => {
           to="/notes"
           handleClose={handleClose}
         />
-
-        <MiniDrawerItem title="About" to="/about" handleClose={handleClose} />
+        <Divider />
+        <MiniDrawerItem
+          title="About"
+          to="/about"
+          icon={<InfoRounded />}
+          handleClose={handleClose}
+        />
         <p
           className="mini-drawer-link"
           style={{ cursor: "pointer" }}

@@ -24,7 +24,13 @@ import _ from "lodash";
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { school_info, user, schoolInformation, authenticateUser } = useAuth();
+  const {
+    school_info,
+    user,
+    schoolInformation,
+    authenticateUser,
+    switchAccount,
+  } = useAuth();
   const initialValues = {
     username: "",
     password: "",
@@ -42,20 +48,27 @@ const Login = () => {
   });
   const onSubmit = (values) => {
     setMsg("");
-    mutateAsync(values, {
-      onSuccess: (data) => {
-        authenticateUser(data?.token, data?.school);
-        navigate("/school-session", { replace: true });
+    mutateAsync(
+      {
+        ...values,
+        code: schoolInformation?._id,
       },
-      onError: (error) => {
-        setMsg(error);
-      },
-    });
+      {
+        onSuccess: (data) => {
+          authenticateUser(data?.token, data?.school);
+          navigate("/school-session", { replace: true });
+        },
+        onError: (error) => {
+          setMsg(error);
+        },
+      }
+    );
   };
 
   if (user?.id) {
     return <Navigate to="/" />;
   }
+
   if (_.isEmpty(schoolInformation)) {
     return <FindSchool />;
   }
@@ -199,6 +212,7 @@ const Login = () => {
                       helperText={touched.password && errors.password}
                       margin="dense"
                     />
+
                     <Button
                       loading={isPending}
                       fullWidth
@@ -216,6 +230,17 @@ const Login = () => {
             </Formik>
           </Container>
         </Box>
+        <Button
+          variant="text"
+          onClick={() => switchAccount()}
+          color="#fff"
+          sx={{
+            textDecoration: "underline",
+            color: "#fff",
+          }}
+        >
+          Switch School Account
+        </Button>
         <Typography variant="body2" color="#fff" textAlign="center" pb={4}>
           Copyright &copy; {new Date().getFullYear()} | FrebbyTech Consults
           (+233543772591)
