@@ -218,6 +218,10 @@ const UserProvider = ({ children }) => {
     });
   };
 
+  const updateAccessToken = (token) => {
+    setAccessToken(token);
+  };
+
   // const authLoading = loading || userInfo.isPending;
   return (
     <>
@@ -229,6 +233,7 @@ const UserProvider = ({ children }) => {
           user: user,
           updateSession,
           authenticateUser,
+          updateAccessToken,
           logOutUser,
           updateSchoolInformation,
           schoolInformation,

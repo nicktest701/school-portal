@@ -12,10 +12,14 @@ import {
   Avatar,
   Box,
   Button,
+  Card,
+  CardContent,
   Chip,
   IconButton,
   ListItemText,
+  Paper,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import _ from "lodash";
@@ -867,15 +871,28 @@ export const MESSAGE_COLUMNS = [
               textOverflow: `ellipsis`,
               whiteSpace: "nowrap",
               overflow: "hidden",
-              maxWidth: 150,
+              minWidth: 150,
             }}
           />
-          <div
-            style={{ height: 120, overflow: "hidden" }}
+          <Box
+            sx={{
+              // height: 100,
+              width: "20%",
+              overflow: "hidden",
+              display: "-webkit-box",
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: "vertical",
+              textOverflow: "ellipsis",
+              whiteSpace: "wrap",
+              lineHeight: 1.5,
+              fontSize: "14px",
+              color: "text.secondary",
+              py: 1,
+            }}
             dangerouslySetInnerHTML={{
               __html: body.message,
             }}
-          ></div>
+          />
         </>
       );
     },
@@ -1145,35 +1162,192 @@ export const EVENTS = (handleViewEvent, handleEditEvent, handleDeleteEvent) => [
     title: "Events",
     render: (data) => {
       return (
-        <div>
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
-            py={3}
-            pr={4}
-            onClick={() => handleViewEvent(data?._id)}
-          >
-            <Avatar src={data?.album} sx={{ width: 80, height: 80 }} />
-            <Stack flex={1}>
-              <Typography variant="h6" color="secondary.main">
-                {data?.title}
-              </Typography>
-              <Typography variant="body2" className="truncate-lines">
-                {data?.caption?.substring(0, 50) + "..."}
-              </Typography>
-            </Stack>
-            {/* <ArrowForwardIosRounded /> */}
-          </Stack>
-          <Stack justifyContent="flex-end" alignItems="center" direction="row">
-            <IconButton onClick={() => handleEditEvent(data?._id)}>
-              <Edit />
-            </IconButton>
-            <IconButton onClick={() => handleDeleteEvent(data?._id)}>
-              <Delete />
-            </IconButton>
-          </Stack>
-        </div>
+        <Card
+          sx={{
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              transform: "translateY(-4px)",
+              boxShadow: 3,
+              backgroundColor: "rgba(0,0,0,0.02)",
+            },
+            position: "relative",
+            overflow: "visible",
+            mb: 2,
+          }}
+          onClick={() => handleViewEvent(data?._id)}
+        >
+          <Box sx={{ position: "relative" }}>
+            {/* Event Image with Gradient Overlay */}
+            <Box sx={{ position: "relative", height: 120, overflow: "hidden" }}>
+              <Box
+                component="img"
+                src={data?.album}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  transition: "transform 0.3s ease",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                  },
+                }}
+              />
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background:
+                    "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%)",
+                }}
+              />
+            </Box>
+
+            {/* Action Buttons - Appear on Hover */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 12,
+                right: 12,
+                opacity: 0,
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  opacity: 1,
+                },
+                ".MuiCard-root:hover &": {
+                  opacity: 1,
+                },
+              }}
+            >
+              <Paper
+                sx={{
+                  p: 0.5,
+                  borderRadius: 2,
+                  backdropFilter: "blur(10px)",
+                  bgcolor: "rgba(255,255,255,0.9)",
+                }}
+              >
+                <Tooltip title="Edit Event">
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditEvent(data?._id);
+                    }}
+                    sx={{
+                      color: "primary.main",
+                      "&:hover": {
+                        backgroundColor: "primary.light",
+                        color: "white",
+                      },
+                    }}
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete Event">
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteEvent(data?._id);
+                    }}
+                    sx={{
+                      color: "error.main",
+                      "&:hover": {
+                        backgroundColor: "error.light",
+                        color: "white",
+                      },
+                    }}
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Paper>
+            </Box>
+
+            {/* Content */}
+            <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
+              <Stack spacing={1.5}>
+                {/* Title with gradient text */}
+                <Typography
+                  variant="h6"
+                  sx={{
+                    background:
+                      "linear-gradient(45deg, primary.main, secondary.main)",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    color: "transparent",
+                    fontWeight: 700,
+                    fontSize: "1.1rem",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {data?.title}
+                </Typography>
+
+                {/* Caption with smooth truncation */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    lineHeight: 1.5,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    minHeight: "3em",
+                  }}
+                >
+                  {data?.caption}
+                </Typography>
+
+                {/* Interactive Footer */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    pt: 1,
+                  }}
+                >
+                  <Chip
+                    label="View Details"
+                    size="small"
+                    variant="outlined"
+                    sx={{
+                      fontSize: "0.75rem",
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        backgroundColor: "primary.main",
+                        color: "white",
+                      },
+                    }}
+                  />
+
+                  {/* Status indicator */}
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Box
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        backgroundColor: "success.main",
+                        animation: "pulse 2s infinite",
+                      }}
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      Active
+                    </Typography>
+                  </Box>
+                </Box>
+              </Stack>
+            </CardContent>
+          </Box>
+        </Card>
       );
     },
   },
@@ -1246,5 +1420,184 @@ export const NOTIFICATIONS = (
     field: "title",
     title: "Title",
     hidden: true,
+  },
+];
+
+export const USER_ROLES = [
+  {
+    title: "School Sessions",
+    subtitle: "Manage academic timelines and active learning periods.",
+    roles: [
+      { title: "Create new academic sessions" },
+      { title: "Edit session details and timelines" },
+      { title: "Delete outdated sessions" },
+      { title: "Export session data and reports" },
+      { title: "Activate or deactivate academic sessions" },
+    ],
+  },
+  {
+    title: "Departments",
+    subtitle: "Organize and maintain the school’s structural units.",
+    roles: [
+      { title: "Create new departments" },
+      { title: "Edit department details" },
+      { title: "Delete inactive departments " },
+      { title: "Export department records" },
+    ],
+  },
+  {
+    title: "Houses",
+    subtitle: "Organize and maintain the school’sresidential units.",
+    roles: [
+      { title: "Create new  houses or sections" },
+      { title: "Edit  house or section details" },
+      { title: "Delete inactive houses or sections" },
+      { title: "Export houses or section records" },
+    ],
+  },
+  {
+    title: "Levels",
+    subtitle: "Define and manage educational levels or classes.",
+    roles: [
+      { title: "Create new levels or classes" },
+      { title: "Edit level or class information" },
+      { title: "Delete existing levels" },
+      { title: "Export level or class lists" },
+    ],
+  },
+  {
+    title: "Subjects",
+    subtitle: "Manage all subjects offered across various levels.",
+    roles: [
+      { title: "Create new subjects" },
+      { title: "Edit subject information" },
+      { title: "Delete subjects" },
+      { title: "Export subject lists" },
+    ],
+  },
+  {
+    title: "Grades",
+    subtitle: "Define grading systems and associate grades with levels.",
+    roles: [
+      { title: "Create grading scales" },
+      { title: "Edit grade information" },
+      { title: "Delete grade entries" },
+      { title: "Export grading data" },
+      { title: "Assign grades to specific levels" },
+    ],
+  },
+  {
+    title: "Students",
+    subtitle: "Manage student enrollment, updates, and records.",
+    roles: [
+      { title: "Add new students" },
+      { title: "Edit student information" },
+      { title: "Remove student records" },
+      { title: "Export student data for reporting" },
+    ],
+  },
+  {
+    title: "Teachers",
+    subtitle: "Handle staff profiles and teaching assignments.",
+    roles: [
+      { title: "Add new teachers" },
+      { title: "Edit teacher information" },
+      { title: "Delete teacher records" },
+      { title: "Export teacher data" },
+      { title: "Assign levels to teachers" },
+      { title: "Assign subjects or courses to teachers" },
+    ],
+  },
+  {
+    title: "School Fees",
+    subtitle: "Oversee all aspects of school fees and payment tracking.",
+    roles: [
+      { title: "Create new school fee structures" },
+      { title: "Edit fee details and categories" },
+      { title: "Delete outdated fee records" },
+      { title: "Export fee and payment data" },
+      { title: "Authorize or confirm payments" },
+      { title: "Query fee history and transactions" },
+    ],
+  },
+  {
+    title: "Examination Portal",
+    subtitle: "Manage student assessments, grades, and reports.",
+    roles: [
+      { title: "Import or enter examination results" },
+      { title: "Print examination reports and summaries" },
+      { title: "Publish examination results for students" },
+      { title: "Export examination data" },
+    ],
+  },
+  {
+    title: "Data Imports",
+    subtitle: "Allow bulk upload of school data for quick setup.",
+    roles: [{ title: "Enable data import operations" }],
+  },
+  {
+    title: "Messages",
+    subtitle: "Communicate important updates to staff, students, and parents.",
+    roles: [
+      { title: "Create new messages or announcements" },
+      { title: "Edit message content" },
+      { title: "Delete sent messages" },
+      { title: "Export message history" },
+      { title: "Resend or schedule messages" },
+    ],
+  },
+  {
+    title: "Events",
+    subtitle: "Plan, manage, and share school events and programs.",
+    roles: [
+      { title: "Create school events or programs" },
+      { title: "Edit event details" },
+      { title: "Delete past or cancelled events" },
+      { title: "Export event data" },
+      { title: "Resend event notifications" },
+    ],
+  },
+  {
+    title: "Announcements",
+    subtitle: "Keep the school community informed with timely updates.",
+    roles: [
+      { title: "Create new announcements" },
+      { title: "Edit announcement details" },
+      { title: "Delete old announcements" },
+      { title: "Export announcements" },
+      { title: "Resend announcements or notifications" },
+    ],
+  },
+  {
+    title: "Users",
+    subtitle:
+      "Manage staff and admin accounts, access levels, and permissions.",
+    roles: [
+      { title: "Create new user accounts" },
+      { title: "Edit user information" },
+      { title: "Delete user accounts" },
+      { title: "Export user data" },
+      { title: "Assign and manage user permissions" },
+    ],
+  },
+  {
+    title: "Settings",
+    subtitle: "Customize your school’s system setup and key details.",
+    roles: [
+      { title: "Update school basic information" },
+      { title: "Upload or change school logo" },
+      { title: "Edit headmaster or administrator details" },
+      { title: "Add, edit, or remove holidays" },
+    ],
+  },
+  {
+    title: "Notes Board",
+    subtitle: "Create and share academic or administrative notes.",
+    roles: [
+      { title: "Create new notes" },
+      { title: "Edit existing notes" },
+      { title: "Delete notes" },
+      { title: "Export notes data" },
+    ],
   },
 ];

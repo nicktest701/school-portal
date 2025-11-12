@@ -129,6 +129,7 @@ export const updateUserPassword = async (passwordInfo) => {
     return error.response.data;
   }
 };
+
 export const putUser = async (updatedUser) => {
   try {
     const res = await api({

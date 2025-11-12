@@ -91,8 +91,11 @@ router.get(
       residence: user.residence,
       nationality: user.nationality,
       role: user.role,
+      permissions: user?.permissions,
       active: user.active,
     };
+
+   
 
     res.status(200).json(loggedInUser);
   })
@@ -137,6 +140,7 @@ router.post(
       email: user.email,
       phonenumber: user.phonenumber,
       role: user.role,
+      permissions: user?.permissions,
       active: user.active,
       school: user?.school,
     };
@@ -285,6 +289,7 @@ router.put(
       email: updatedUser.email,
       phonenumber: updatedUser.phonenumber,
       role: updatedUser.role,
+      permissions: updatedUser?.permissions,
       active: updatedUser.active,
       school: updatedUser?.school,
     };
@@ -346,6 +351,7 @@ router.put(
         email: updatedUser.email,
         phonenumber: updatedUser.phonenumber,
         role: updatedUser.role,
+        permissions: updatedUser?.permissions,
         active: updatedUser.active,
         school: updatedUser?.school,
       };

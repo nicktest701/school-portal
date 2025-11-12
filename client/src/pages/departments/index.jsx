@@ -8,7 +8,6 @@ import {
 
 import {
   Box,
-  Paper,
   Typography,
   IconButton,
   Grid2 as Grid,
@@ -27,6 +26,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import EmptyDataContainer from "@/components/EmptyDataContainer";
 import DepartmentFormModal from "@/components/pages/departments/DepartmentForm";
 import NoteSkeleton from "@/components/skeleton/NoteSkeleton";
+
+
 
 export default function Departments() {
   const queryClient = useQueryClient();
@@ -68,7 +69,7 @@ export default function Departments() {
       <CustomTitle
         title="Departments Board"
         subtitle="Manage user accounts, roles, and permissions to ensure secure and appropriate access to the system."
-        // img={users_icon}
+        //  img={departments_icon}
         color="text.main"
         right={
           <>

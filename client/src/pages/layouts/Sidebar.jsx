@@ -44,6 +44,7 @@ import PropTypes from "prop-types";
 import NavLinkItemCollapse from "@/components/dropdowns/NavLinkItemCollapse";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { getLevelInitials } from "@/config/helper";
 
 const Sidebar = () => {
   const [toggleWidth, setToggleWidth] = useState(false);
@@ -90,9 +91,10 @@ const Sidebar = () => {
                   width: 48,
                   height: 48,
                   bgcolor: "#fff",
+                  color: "var(--primary-color)",
                 }}
               >
-                {school_info?.name[0]}
+                {getLevelInitials(school_info?.name)}
               </Avatar>
             ) : (
               <SchoolRounded sx={{ width: 64, height: 64 }} />
@@ -174,7 +176,6 @@ const Sidebar = () => {
                 />
               </NavLinkItemCollapse>
 
-          
               <NavLinkItemCollapse
                 icon={<Groups3 htmlColor="" />}
                 title={toggleWidth ? "" : "Teachers"}
@@ -198,7 +199,6 @@ const Sidebar = () => {
                 />
               </NavLinkItemCollapse>
 
-            
               <NavLinkItemCollapse
                 icon={<PaymentsRounded htmlColor="" />}
                 title={toggleWidth ? "" : "School Fees"}

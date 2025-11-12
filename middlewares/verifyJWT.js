@@ -71,6 +71,7 @@ const verifyRefreshJWT = (req, res, next) => {
         gender: authUser.gender,
         phonenumber: authUser?.phonenumber,
         role: authUser?.role,
+        permissions: authUser?.permissions,
         active: authUser?.active,
         school: authUser?.school,
       };

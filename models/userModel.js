@@ -63,6 +63,10 @@ const UserSchema = new mongoose.Schema(
       enum: ["administrator", "teacher", "student", "parent"], // Predefined roles
       index: true,
     },
+    permissions: {
+      type: Array,
+      default: [],
+    },
     phonenumber: {
       type: String,
       trim: true,

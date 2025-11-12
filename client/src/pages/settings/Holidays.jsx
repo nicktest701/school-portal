@@ -4,12 +4,14 @@ import {
   Button,
   Checkbox,
   Container,
+  Divider,
   FormControlLabel,
   IconButton,
   Modal,
   Stack,
   TextField,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -62,7 +64,6 @@ const Holidays = () => {
     initialData: [],
     // staleTime: 1000 * 60 * 5, // 5 minutes cache
   });
- 
 
   const createHoliday = useMutation({
     mutationFn: postHoliday,
@@ -157,7 +158,15 @@ const Holidays = () => {
         p: 2,
       }}
     >
-      {/* <h1>School Holiday Calendar</h1> */}
+      <Box sx={{ placeSelf: "start", mb: 4 }}>
+        <Typography variant="h6" color="primary">
+          Holidays
+        </Typography>
+        <Typography variant="caption" color="text.secondary" fontStyle="italic">
+          Manage school holidays and recurring events.
+        </Typography>
+        <Divider />
+      </Box>
 
       {/* Add/Edit Holiday Modal */}
       <Modal open={isModalOpen} onClose={handleClose}>

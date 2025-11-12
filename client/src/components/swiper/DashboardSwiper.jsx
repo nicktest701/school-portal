@@ -12,7 +12,7 @@ import { getAllEvents } from "@/api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
 
 import DashboardSwiperContent from "./DashboardSwiperContent";
-import student4 from "../../assets/images/students/student4.jpg";
+import student4 from "../../assets/images/students/student3.jpg";
 
 // Styles must use direct files imports
 import "swiper/css/bundle";
@@ -52,7 +52,7 @@ function DashboardSwiper() {
       <SwiperSlide className="swiper-slide">
         <DashboardSwiperContent
           img={student4}
-          title={school_info?.name}
+          title={school_info?.name?.toUpperCase()}
           content={school_info?.motto}
         />
       </SwiperSlide>

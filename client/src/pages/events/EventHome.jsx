@@ -106,6 +106,15 @@ function EventHome() {
         onAddButtonClicked={() => navigate("new")}
         options={{
           search: true,
+          rowStyle: {
+            boxShadow: "0 1px 2px rgba(0,0,0,0.12)",
+            background: "transparent",
+            backgroundColor: "whitesmoke",
+          },
+        }}
+        style={{
+          backgroundColor: "whitesmoke",
+          boxShadow: "none",
         }}
         onSelectionChange={handleSelectionChange}
         onDeleteClicked={handleDeleteEvents}

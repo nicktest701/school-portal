@@ -1,4 +1,4 @@
-import { Avatar, Box, Container, Typography } from "@mui/material";
+import { Avatar, Box, Container, Divider, Typography } from "@mui/material";
 import React, { use, useState } from "react";
 import CustomImageChooser from "@/components/inputs/CustomImageChooser";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
@@ -8,7 +8,7 @@ import { updateSchoolLogo } from "@/api/schoolAPI";
 import { UserContext } from "@/context/providers/UserProvider";
 
 function Logo() {
- const { school_info } = use(UserContext);
+  const { school_info } = use(UserContext);
 
   const [badge, setBadge] = useState(school_info?.badge);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
@@ -23,14 +23,14 @@ function Logo() {
         id: school_info?.code,
         badge,
       });
-      schoolSessionDispatch(alertSuccess("School Image Uploaded"));
+      schoolSessionDispatch(alertSuccess("School Badge Uploaded"));
       console.log(updatedBadge);
       queryClient.invalidateQueries(["school"]);
       setBadge(updatedBadge);
       school_info.badge = updatedBadge;
       localStorage.setItem("@school_info", JSON.stringify(school_info));
     } catch (error) {
-      schoolSessionDispatch(alertError("Error updating school logo"));
+      schoolSessionDispatch(alertError("Error updating School Badge"));
     }
   };
 
@@ -50,7 +50,10 @@ function Logo() {
         <Typography variant="h6" color="primary">
           School Logo
         </Typography>
-        <Typography variant="body2">Update School Logo</Typography>
+        <Typography variant="caption" color="text.secondary" fontStyle="italic">
+          Upload or change your school's official logo or badge.
+        </Typography>
+        <Divider />
       </Box>
       <Box
         sx={{
@@ -65,8 +68,8 @@ function Logo() {
           <Avatar
             src={badge}
             sx={{
-              width: { xs: 150, sm: 200, md: 300 },
-              height: { xs: 150, sm: 200, md: 300 },
+              width: { xs: 150, sm: 200, md: 280 },
+              height: { xs: 150, sm: 200, md: 280 },
               justifySelf: "center",
               alignSelf: "center",
             }}

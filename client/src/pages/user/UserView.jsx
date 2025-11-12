@@ -27,7 +27,7 @@ import moment from "moment";
 import UserUpdatePassword from "./UserUpdatePassword";
 import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 
 const UserView = () => {
@@ -233,16 +233,19 @@ const UserView = () => {
 
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            spacing={2}
             // flexWrap="wrap"
             justifyContent={{ xs: "flex-start", sm: "flex-end" }}
             py={2}
           >
+            <Tooltip title="Manage User Roles & Permissions">
+              <Button>
+                <Link to={`/users/${id}/permissions`}>Manage Permissions</Link>
+              </Button>
+            </Tooltip>
             <Tooltip
               title={user?.data?.active ? "Disable Account" : "Enable Account"}
             >
               <Button
-                variant="contained"
                 color={user?.data?.active ? "primary" : "warning"}
                 onClick={disableUserAccount}
               >
@@ -250,7 +253,7 @@ const UserView = () => {
               </Button>
             </Tooltip>
             <Tooltip title="Remove User Account">
-              <Button variant="contained" color="error" onClick={handleDelete}>
+              <Button color="error" onClick={handleDelete}>
                 Delete Account
               </Button>
             </Tooltip>

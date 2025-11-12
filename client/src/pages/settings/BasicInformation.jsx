@@ -1,6 +1,7 @@
 import {
   Box,
   Container,
+  Divider,
   Stack,
   TextField,
   Typography,
@@ -53,7 +54,10 @@ function BasicInformation() {
         <Typography variant="h6" color="primary">
           Basic Information
         </Typography>
-        <Typography variant="body2">Update School Logo</Typography>
+        <Typography variant="caption" color="text.secondary" fontStyle="italic">
+          Update your school&apos;s fundamental details.
+        </Typography>
+        <Divider />
       </Box>
       <Formik
         initialValues={{

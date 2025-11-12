@@ -6,6 +6,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import Departments from "../departments";
 import Houses from "../houses";
+import section_icon from "@/assets/images/header/department.png";
 
 const Section = () => {
   const [st, setSt] = useLocalStorage("section_tab", "1");
@@ -15,7 +16,7 @@ const Section = () => {
       <CustomTitle
         title="Departments & Houses/Sections"
         subtitle="Manage departments and houses/sections within the school."
-        // img={section_icon}
+        img={section_icon}
         backColor="#012e54"
       />
 

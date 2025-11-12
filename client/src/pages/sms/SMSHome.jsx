@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { useNavigate } from "react-router-dom";
 import { MESSAGE_COLUMNS } from "@/mockup/columns/sessionColumns";

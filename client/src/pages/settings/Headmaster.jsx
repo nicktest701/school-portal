@@ -4,8 +4,8 @@ import {
   Box,
   Typography,
   Container,
-  Paper,
   Avatar,
+  Divider,
 } from "@mui/material";
 
 import Input from "@/components/inputs/Input";
@@ -36,9 +36,7 @@ const Headmaster = () => {
   const { updateSession, session } = use(UserContext);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
-  const [signaturePreview, ] = useState(
-    session?.headmaster?.signature
-  );
+  const [signaturePreview] = useState(session?.headmaster?.signature);
 
   const { handleSubmit, reset, control } = useForm({
     resolver: yupResolver(schema),
@@ -89,7 +87,6 @@ const Headmaster = () => {
     });
   };
 
-
   return (
     <Container
       sx={{
@@ -98,10 +95,16 @@ const Headmaster = () => {
         p: 2,
       }}
     >
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Update Headmaster Profile
+      <Box sx={{ placeSelf: "start" }}>
+        <Typography variant="h6" color="primary">
+          Headmaster Profile
         </Typography>
+        <Typography variant="caption" color="text.secondary" fontStyle="italic">
+          Update the headmaster&apos;s details and signature.
+        </Typography>
+        <Divider />
+      </Box>
+      <Box sx={{ mt: 4 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Name Fsession?.heald */}
 
@@ -183,7 +186,7 @@ const Headmaster = () => {
             </Button>
           </Box> */}
         </form>
-      </Paper>
+      </Box>
     </Container>
   );
 };
