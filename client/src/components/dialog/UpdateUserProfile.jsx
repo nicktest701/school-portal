@@ -27,7 +27,7 @@ import CustomDatePicker from "../inputs/CustomDatePicker";
 import moment from "moment";
 
 const UpdateUserProfile = () => {
-  const { user, authenticateUser } = useContext(UserContext);
+  const { user, updateAccessToken } = useContext(UserContext);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queryClient = useQueryClient();
@@ -62,7 +62,7 @@ const UpdateUserProfile = () => {
         options.setSubmitting(false);
       },
       onSuccess: (data) => {
-        authenticateUser(data?.token);
+        updateAccessToken(data?.token);
         schoolSessionDispatch(alertSuccess("Changes Saved!!!"));
         handleClose();
       },
@@ -89,7 +89,7 @@ const UpdateUserProfile = () => {
 
     changeProfile.mutateAsync(info, {
       onSuccess: (data) => {
-        authenticateUser(data?.token);
+        updateAccessToken(data?.token);
         schoolSessionDispatch(alertSuccess("Profile Updated!"));
         setProfileImage(URL.createObjectURL(profile));
       },
@@ -110,7 +110,6 @@ const UpdateUserProfile = () => {
   const handleToggle = () => {
     setShowPassword((prev) => !prev);
   };
-
 
   return (
     <Dialog open={searchParams.get("e_p")} maxWidth="md" fullWidth>

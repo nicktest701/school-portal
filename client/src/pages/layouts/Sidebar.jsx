@@ -108,7 +108,9 @@ const Sidebar = () => {
             color="white"
             textTransform="uppercase"
           >
-            {!toggleWidth && school_info?.name}
+            {toggleWidth
+              ? getLevelInitials(school_info?.name)
+              : school_info?.name}
           </Typography>
         </Stack>
         <Divider />
@@ -228,7 +230,7 @@ const Sidebar = () => {
               </NavLinkItemCollapse>
 
               <DrawerItem
-                title={toggleWidth ? "" : "Exams Portal"}
+                title={toggleWidth ? "" : "Examination Portal"}
                 icon={<DataThresholdingRoundedIcon />}
                 to="/examination"
               />

@@ -187,7 +187,7 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               ]}
             />
             <MiniDrawerItem
-              title="Exams Portal"
+              title="Examination Portal"
               to="/examination"
               icon={<DataThresholdingRounded />}
               handleClose={handleClose}

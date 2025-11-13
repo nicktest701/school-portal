@@ -130,9 +130,13 @@ import Event from "../events";
 import Section from "../sections";
 
 // Reusable Suspense wrapper component
-const LazyComponent = ({ component: Component, fallback = <Loader /> }) => (
+const LazyComponent = ({
+  component: Component,
+  fallback = <Loader />,
+  ...rest
+}) => (
   <Suspense fallback={fallback}>
-    <Component />
+    <Component {...rest} />
   </Suspense>
 );
 
@@ -218,13 +222,19 @@ const Root = () => {
           <Route
             path=":id/attendance"
             element={
-              <LazyComponent component={OtherComponents.NewAttendance} />
+              <LazyComponent
+                component={OtherComponents.NewAttendance}
+                to="/level/current"
+              />
             }
           />
           <Route
             path=":id/history"
             element={
-              <LazyComponent component={OtherComponents.AttendanceHistory} />
+              <LazyComponent
+                component={OtherComponents.AttendanceHistory}
+                section="level"
+              />
             }
           />
         </Route>
@@ -342,7 +352,10 @@ const Root = () => {
           <Route
             path=":levelId"
             element={
-              <LazyComponent component={ExaminationComponents.ExamsLevel} />
+              <LazyComponent
+                component={ExaminationComponents.ExamsLevel}
+                type="examination"
+              />
             }
           />
           <Route
@@ -527,7 +540,10 @@ const Root = () => {
           <Route
             path="level/:levelId"
             element={
-              <LazyComponent component={ExaminationComponents.ExamsLevel} />
+              <LazyComponent
+                component={ExaminationComponents.ExamsLevel}
+                type="course/level"
+              />
             }
           />
           <Route
@@ -555,13 +571,19 @@ const Root = () => {
           <Route
             path="level/:id/attendance"
             element={
-              <LazyComponent component={OtherComponents.NewAttendance} />
+              <LazyComponent
+                component={OtherComponents.NewAttendance}
+                to="course/level"
+              />
             }
           />
           <Route
             path="level/:id/history"
             element={
-              <LazyComponent component={OtherComponents.AttendanceHistory} />
+              <LazyComponent
+                component={OtherComponents.AttendanceHistory}
+                section="course/level"
+              />
             }
           />
         </Route>
@@ -601,7 +623,12 @@ const Root = () => {
         />
         <Route
           path="/profile"
-          element={<LazyComponent component={OtherComponents.Profile} />}
+          element={
+            <LazyComponent
+              component={OtherComponents.Profile}
+              path="/profile"
+            />
+          }
         />
         <Route
           path="/notes"
