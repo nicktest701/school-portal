@@ -72,6 +72,8 @@ const whitelist = process.env.CORS_WHITELIST
       "https://frebbys-school-portal.vercel.app/",
       "https://frebbys-student-portal.vercel.app/",
       "https://school-portal-aivn.onrender.com",
+      "https://school-portal-git-main-nicktest701s-projects.vercel.app/",
+      "https://school-portal-mqk4r390o-nicktest701s-projects.vercel.app/",
     ];
 
 const corsOptions = {
@@ -105,6 +107,7 @@ const apiLimiter = rateLimit({
 
 // Middlewares
 app.use(cors(corsOptions));
+app.options("*", cors());
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.json({ limit: "50mb" }));
 app.use(
