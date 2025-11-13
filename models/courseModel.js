@@ -7,7 +7,6 @@ const CourseSchema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "School",
       required: true,
-      index: true, // Adding index for faster filtering
     },
     session: {
       type: mongoose.SchemaTypes.ObjectId,

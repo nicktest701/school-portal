@@ -7,19 +7,16 @@ const LevelSchema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "School",
       required: true,
-      index: true, // Optimized for queries by session
     },
     session: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Session",
       required: true,
-      index: true, // Optimized for queries by session
     },
     term: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Term",
       required: true,
-      index: true, // Optimized for term-related queries
     },
     department: {
       type: mongoose.SchemaTypes.ObjectId,
