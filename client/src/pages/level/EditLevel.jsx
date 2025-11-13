@@ -72,7 +72,7 @@ const EditLevel = () => {
     resolver: yupResolver(levelValidationSchema),
   });
 
-  console.log(errors)
+
 
   const levelWatch = watch("level");
   const typeWatch = watch("type");
