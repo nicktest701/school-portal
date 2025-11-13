@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Avatar, Divider, Drawer, IconButton, Stack } from "@mui/material";
 import {
   AddCircleRounded,
@@ -20,7 +20,6 @@ import {
   LocalLibraryRounded,
   NumbersSharp,
   PaymentsRounded,
-
   SchoolRounded,
   SettingsRounded,
   SmsRounded,
@@ -31,11 +30,16 @@ import PropTypes from "prop-types";
 import MiniDrawerItem from "@/components/MiniDrawerItem";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { SCHOOL_PERMISSION, USER_ROLE } from "@/mockup/columns/sessionColumns";
+import { getLevelInitials } from "@/config/helper";
 
-const HorizontalSidebar = ({ open, setOpen }) => {
+const MiniSidebar = ({ open, setOpen }) => {
   const { user, logOutUser, school_info } = useAuth();
 
   const handleClose = () => setOpen(false);
+
+  const schoolName = school_info?.name || "School";
+  const initials = useMemo(() => getLevelInitials(schoolName), [schoolName]);
 
   return (
     <Drawer open={open} onClose={handleClose} sx={{ zIndex: 9999 }}>
@@ -67,7 +71,7 @@ const HorizontalSidebar = ({ open, setOpen }) => {
                   bgcolor: "#fff",
                 }}
               >
-                {school_info?.name[0]}
+                {initials}
               </Avatar>
             ) : (
               <SchoolRounded sx={{ width: 64, height: 64 }} />
@@ -93,12 +97,16 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               icon={<ArticleRounded />}
               handleClose={handleClose}
             />
-            <MiniDrawerItem
-              title="Departments & Houses"
-              to="/departments-houses"
-              icon={<HouseRounded />}
-              handleClose={handleClose}
-            />
+            {school_info.permissions?.includes(
+              SCHOOL_PERMISSION.DEPARTMENTS_HOUSES
+            ) && (
+              <MiniDrawerItem
+                title="Departments & Houses"
+                to="/departments-houses"
+                icon={<HouseRounded />}
+                handleClose={handleClose}
+              />
+            )}
             <MiniDrawerItem
               title="Levels"
               to="/level"
@@ -158,34 +166,38 @@ const HorizontalSidebar = ({ open, setOpen }) => {
                 },
               ]}
             />
-            <MiniDrawerItem
-              title="School Fees"
-              to="/fee"
-              icon={<PaymentsRounded />}
-              handleClose={handleClose}
-              data={[
-                {
-                  title: "Dashboard",
-                  to: "/fee",
-                  icon: <BarChartRounded />,
-                },
-                {
-                  title: "New Fees",
-                  to: "/fee/new",
-                  icon: <AddCircleRounded />,
-                },
-                {
-                  title: "Make Payments",
-                  to: "/fee/payment",
-                  icon: <BookRounded />,
-                },
-                {
-                  title: "Fees History",
-                  to: "/fee/history",
-                  icon: <HistoryRounded />,
-                },
-              ]}
-            />
+            {school_info.permissions?.includes(
+              SCHOOL_PERMISSION.SCHOOL_FEES
+            ) && (
+              <MiniDrawerItem
+                title="School Fees"
+                to="/fee"
+                icon={<PaymentsRounded />}
+                handleClose={handleClose}
+                data={[
+                  {
+                    title: "Dashboard",
+                    to: "/fee",
+                    icon: <BarChartRounded />,
+                  },
+                  {
+                    title: "New Fees",
+                    to: "/fee/new",
+                    icon: <AddCircleRounded />,
+                  },
+                  {
+                    title: "Make Payments",
+                    to: "/fee/payment",
+                    icon: <BookRounded />,
+                  },
+                  {
+                    title: "Fees History",
+                    to: "/fee/history",
+                    icon: <HistoryRounded />,
+                  },
+                ]}
+              />
+            )}
             <MiniDrawerItem
               title="Examination Portal"
               to="/examination"
@@ -193,31 +205,44 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               handleClose={handleClose}
             />
             <Divider />
-            <MiniDrawerItem
-              title="Data Uploads"
-              to="/uploads"
-              icon={<ImportExportRounded />}
-              handleClose={handleClose}
-            />
 
-            <MiniDrawerItem
-              title="Messages"
-              to="/messages"
-              icon={<SmsRounded />}
-              handleClose={handleClose}
-            />
-            <MiniDrawerItem
-              title="Events"
-              icon={<Event />}
-              to="/events"
-              handleClose={handleClose}
-            />
-            <MiniDrawerItem
-              title="Announcements"
-              icon={<AnnouncementRounded />}
-              to="/announcements"
-              handleClose={handleClose}
-            />
+            {school_info.permissions?.includes(
+              SCHOOL_PERMISSION.DATA_UPLOADS
+            ) && (
+              <MiniDrawerItem
+                title="Data Uploads"
+                to="/uploads"
+                icon={<ImportExportRounded />}
+                handleClose={handleClose}
+              />
+            )}
+
+            {school_info.permissions?.includes(SCHOOL_PERMISSION.MESSAGES) && (
+              <MiniDrawerItem
+                title="Messages"
+                to="/messages"
+                icon={<SmsRounded />}
+                handleClose={handleClose}
+              />
+            )}
+            {school_info.permissions?.includes(SCHOOL_PERMISSION.EVENTS) && (
+              <MiniDrawerItem
+                title="Events"
+                icon={<Event />}
+                to="/events"
+                handleClose={handleClose}
+              />
+            )}
+            {school_info.permissions?.includes(
+              SCHOOL_PERMISSION.ANNOUNCEMENTS
+            ) && (
+              <MiniDrawerItem
+                title="Announcements"
+                icon={<AnnouncementRounded />}
+                to="/announcements"
+                handleClose={handleClose}
+              />
+            )}
             <Divider />
 
             <MiniDrawerItem
@@ -226,12 +251,14 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               to="/profile"
               handleClose={handleClose}
             />
-            <MiniDrawerItem
-              title="Users"
-              to="/users"
-              icon={<PeopleAltRoundedIcon />}
-              handleClose={handleClose}
-            />
+            {school_info.permissions?.includes(SCHOOL_PERMISSION.USERS) && (
+              <MiniDrawerItem
+                title="Users"
+                to="/users"
+                icon={<PeopleAltRoundedIcon />}
+                handleClose={handleClose}
+              />
+            )}
             <MiniDrawerItem
               title="Settings"
               to="/settings"
@@ -241,7 +268,7 @@ const HorizontalSidebar = ({ open, setOpen }) => {
           </>
         )}
 
-        {user?.role === "teacher" && (
+        {user?.role === USER_ROLE.TEACHER && (
           <>
             <MiniDrawerItem
               title={"Dashboard"}
@@ -274,18 +301,25 @@ const HorizontalSidebar = ({ open, setOpen }) => {
               ]}
             />
 
-            <MiniDrawerItem
-              title={"Events"}
-              icon={<Event />}
-              to="/events"
-              handleClose={handleClose}
-            />
-            <MiniDrawerItem
-              title={"Announcements"}
-              icon={<AnnouncementRounded />}
-              to="/announcements"
-              handleClose={handleClose}
-            />
+            {school_info.permissions?.includes(SCHOOL_PERMISSION.EVENTS) && (
+              <MiniDrawerItem
+                title={"Events"}
+                icon={<Event />}
+                to="/events"
+                handleClose={handleClose}
+              />
+            )}
+
+            {school_info.permissions?.includes(
+              SCHOOL_PERMISSION.ANNOUNCEMENTS
+            ) && (
+              <MiniDrawerItem
+                title={"Announcements"}
+                icon={<AnnouncementRounded />}
+                to="/announcements"
+                handleClose={handleClose}
+              />
+            )}
             <MiniDrawerItem
               title={"Profile"}
               icon={<PeopleAltRoundedIcon />}
@@ -295,12 +329,14 @@ const HorizontalSidebar = ({ open, setOpen }) => {
           </>
         )}
 
-        <MiniDrawerItem
-          title={"Notes Board"}
-          icon={<DescriptionRounded />}
-          to="/notes"
-          handleClose={handleClose}
-        />
+        {school_info.permissions?.includes(SCHOOL_PERMISSION.NOTES_BOARD) && (
+          <MiniDrawerItem
+            title={"Notes Board"}
+            icon={<DescriptionRounded />}
+            to="/notes"
+            handleClose={handleClose}
+          />
+        )}
         <Divider />
         <MiniDrawerItem
           title="About"
@@ -321,10 +357,10 @@ const HorizontalSidebar = ({ open, setOpen }) => {
   );
 };
 
-HorizontalSidebar.propTypes = {
+MiniSidebar.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
   onLogOut: PropTypes.func,
 };
 
-export default HorizontalSidebar;
+export default MiniSidebar;

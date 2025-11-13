@@ -25,7 +25,7 @@ function NavLinkItemCollapse({ to, title, children, icon, toggleWidth }) {
   const myLinkStyles = ({ isActive }) => {
     return {
       textDecoration: "none",
-      color: pathname === to ? `${palette.secondary.main}` : "#fff",
+      color: pathname.match(to) ? `${palette.secondary.main}` : "#fff",
       backgroundColor: pathname.match(to) ? "rgba(255,255,255,0.3)" : null,
       fontWeight: pathname.match(to) ? "bold" : "400",
       whiteSpace: "nowrap",
@@ -47,6 +47,10 @@ function NavLinkItemCollapse({ to, title, children, icon, toggleWidth }) {
               px: { xs: 1, sm: "16px" },
               cursor: "pointer",
               // width: { xs: "inherit", md: 150 },
+              backgroundColor: pathname.match(to)
+                ? "rgba(255,255,255,0.3)"
+                : null,
+              borderRadius: 4,
 
               "&:hover": {
                 backgroundColor: "rgba(255,255,255,0.1)",
@@ -74,7 +78,8 @@ function NavLinkItemCollapse({ to, title, children, icon, toggleWidth }) {
               sx={{
                 display: { xs: "none", sm: "none", md: "block" },
                 whiteSpace: "noWrap",
-                // color: "white",
+                color: pathname.match(to) ? "var(--secondary)" : "white",
+
                 transition: "all 300ms ease-in-out",
                 width: "100%",
               }}
@@ -90,7 +95,7 @@ function NavLinkItemCollapse({ to, title, children, icon, toggleWidth }) {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List
           disablePadding
-          sx={{ paddingLeft: toggleWidth || matches ? 0 : 3, }}
+          sx={{ paddingLeft: toggleWidth || matches ? 0 : 3 }}
         >
           {children}
         </List>

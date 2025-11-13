@@ -3,7 +3,6 @@ import { Avatar, Drawer, IconButton, Stack } from "@mui/material";
 import {
   AnnouncementRounded,
   Close,
-  Event,
   SchoolRounded,
 } from "@mui/icons-material";
 
@@ -12,7 +11,7 @@ import MiniDrawerItem from "@/components/MiniDrawerItem";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthProvider";
 
-const HorizontalSidebar = ({ open, setOpen }) => {
+const MiniSidebar = ({ open, setOpen }) => {
   const { logout, school_info } = useAuth();
 
   const handleClose = () => setOpen(false);
@@ -129,8 +128,8 @@ const HorizontalSidebar = ({ open, setOpen }) => {
   );
 };
 
-HorizontalSidebar.propTypes = {
+MiniSidebar.propTypes = {
   onLogOut: PropTypes.func,
 };
 
-export default HorizontalSidebar;
+export default MiniSidebar;

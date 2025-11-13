@@ -11,10 +11,18 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
 export const useHouses = () => {
-  return useQuery({
+  const houses = useQuery({
     queryKey: ["houses"],
     queryFn: getAllHouses,
   });
+
+  return {
+    ...houses,
+    data:
+      houses.data === "Unauthorized Access.Please contact administrator"
+        ? []
+        : houses?.data,
+  };
 };
 
 export const useHouse = (id) => {

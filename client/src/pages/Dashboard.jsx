@@ -14,6 +14,7 @@ import Announcement from "@/components/calendar/Announcement";
 import Event from "@/components/calendar/Event";
 import { useAuth } from "@/hooks/useAuth";
 
+
 const Dashboard = () => {
   const { user, session } = useAuth();
 
@@ -21,6 +22,7 @@ const Dashboard = () => {
 
   return (
     <>
+     
       <Box
         sx={{
           width: "100%",

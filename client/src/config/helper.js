@@ -49,7 +49,7 @@ export function getLevelInitials(name) {
 // };
 
 export const getLastPathname = (path) => {
-  const segments = path.split("/").filter(Boolean); // Remove empty segments
+  const segments = path?.split("/").filter(Boolean); // Remove empty segments
   return segments.length ? segments[segments.length - 1] : "/";
 };
 

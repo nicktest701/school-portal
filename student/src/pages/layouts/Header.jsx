@@ -13,7 +13,7 @@ import {
   NotificationsSharp,
   SearchRounded,
 } from "@mui/icons-material";
-import HorizontalSidebar from "./HorizontalSidebar";
+import MiniSidebar from "./MiniSidebar";
 import NotificationDrawer from "@/components/dropdowns/NotificationDrawer";
 import AccountDropdown from "@/components/dropdowns/AccountDropdown";
 import { bgBlur } from "@/theme/css";
@@ -42,7 +42,7 @@ function Header() {
 
   return (
     <>
-      <HorizontalSidebar open={openMiniBar} setOpen={setOpenMiniBar} />
+      <MiniSidebar open={openMiniBar} setOpen={setOpenMiniBar} />
       <NotificationDrawer
         open={openNotificationDrawer}
         setOpen={setOpenNotificationDrawer}

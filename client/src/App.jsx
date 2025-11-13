@@ -39,6 +39,7 @@ function App() {
             <SchoolSessionProvider>
               <StudentProvider>
                 <Scrollbars>
+                  {/* <PageTitle /> */}
                   <Root />
                 </Scrollbars>
               </StudentProvider>

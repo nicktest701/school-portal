@@ -14,12 +14,20 @@ import { useAuth } from "./useAuth";
 export const useDepartments = () => {
   const { user } = useAuth();
 
-  return useQuery({
+  const departments = useQuery({
     queryKey: ["departments"],
-    queryFn: () => getAllDepartments(),
+    queryFn: getAllDepartments,
     initialData: [],
     enabled: !!user?._id,
   });
+
+  return {
+    ...departments,
+    data:
+      departments.data === "Unauthorized Access.Please contact administrator"
+        ? []
+        : departments?.data,
+  };
 };
 
 export const useDepartment = (id) => {

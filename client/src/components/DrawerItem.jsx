@@ -17,7 +17,7 @@ const DrawerItem = ({ title, icon, to }) => {
       backgroundColor: isActive ? "rgba(255,255,255,0.3)" : null,
       fontWeight: isActive ? "bold" : "400",
       whiteSpace: "nowrap",
-      borderRadius: 4,
+      borderRadius: '20px',
     };
   };
 
@@ -36,7 +36,7 @@ const DrawerItem = ({ title, icon, to }) => {
 
             "&:hover": {
               backgroundColor: "rgba(255,255,255,0.1)",
-              borderRadius: "4px",
+              borderRadius: 4,
               width: "100%",
             },
           }}

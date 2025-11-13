@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {
   lazy,
   Suspense,
@@ -128,6 +129,8 @@ const OtherComponents = {
 // Events (non-lazy imports)
 import Event from "../events";
 import Section from "../sections";
+import { SCHOOL_PERMISSION } from "@/mockup/columns/sessionColumns";
+import PageTitle from "@/components/items/PageTitle";
 
 // Reusable Suspense wrapper component
 const LazyComponent = ({
@@ -136,12 +139,13 @@ const LazyComponent = ({
   ...rest
 }) => (
   <Suspense fallback={fallback}>
+    <PageTitle />
     <Component {...rest} />
   </Suspense>
 );
 
 const Root = () => {
-  const { user } = useAuth();
+  const { user, school_info } = useAuth();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   // Memoized event handlers to prevent recreating on every render
@@ -196,7 +200,9 @@ const Root = () => {
         </Route>
 
         {/* Department & House Management */}
-        <Route path="/departments-houses" element={<Section />} />
+        {school_info?.permissions?.includes(
+          SCHOOL_PERMISSION.DEPARTMENTS_HOUSES
+        ) && <Route path="/departments-houses" element={<Section />} />}
 
         {/* Level Routes */}
         <Route
@@ -383,116 +389,128 @@ const Root = () => {
         </Route>
 
         {/* Fee Routes */}
-        <Route
-          element={<LazyComponent component={OtherComponents.Fees} />}
-          path="/fee"
-        >
+
+        {school_info.permissions?.includes(SCHOOL_PERMISSION.SCHOOL_FEES) && (
           <Route
-            index
-            element={<LazyComponent component={FeeComponents.FeeHome} />}
-          />
-          <Route
-            path="new"
-            element={<LazyComponent component={FeeComponents.FeeNew} />}
-          />
-          <Route
-            path="payment"
-            element={<LazyComponent component={FeeComponents.FeeMakePayment} />}
-          />
-          <Route
-            path="history"
-            element={
-              <LazyComponent component={FeeComponents.FeePaymentHistory} />
-            }
-          />
-          <Route
-            path="payment/:student"
-            element={
-              <LazyComponent component={FeeComponents.StudentFeesHistory} />
-            }
-          />
-          <Route
-            path="level"
-            element={
-              <LazyComponent component={FeeComponents.LevelFeeInformation} />
-            }
-          />
-          <Route path="receipt" element={<Receipt />} />
-        </Route>
+            element={<LazyComponent component={OtherComponents.Fees} />}
+            path="/fee"
+          >
+            <Route
+              index
+              element={<LazyComponent component={FeeComponents.FeeHome} />}
+            />
+            <Route
+              path="new"
+              element={<LazyComponent component={FeeComponents.FeeNew} />}
+            />
+            <Route
+              path="payment"
+              element={
+                <LazyComponent component={FeeComponents.FeeMakePayment} />
+              }
+            />
+            <Route
+              path="history"
+              element={
+                <LazyComponent component={FeeComponents.FeePaymentHistory} />
+              }
+            />
+            <Route
+              path="payment/:student"
+              element={
+                <LazyComponent component={FeeComponents.StudentFeesHistory} />
+              }
+            />
+            <Route
+              path="level"
+              element={
+                <LazyComponent component={FeeComponents.LevelFeeInformation} />
+              }
+            />
+            <Route path="receipt" element={<Receipt />} />
+          </Route>
+        )}
 
         {/* Message Routes */}
-        <Route
-          element={<LazyComponent component={OtherComponents.SMS} />}
-          path="/messages"
-        >
+        {school_info.permissions?.includes(SCHOOL_PERMISSION.MESSAGES) && (
           <Route
-            index
-            element={<LazyComponent component={OtherComponents.SMSHome} />}
-          />
-          <Route
-            path="new"
-            element={<LazyComponent component={OtherComponents.SMSNew} />}
-          />
-        </Route>
+            element={<LazyComponent component={OtherComponents.SMS} />}
+            path="/messages"
+          >
+            <Route
+              index
+              element={<LazyComponent component={OtherComponents.SMSHome} />}
+            />
+            <Route
+              path="new"
+              element={<LazyComponent component={OtherComponents.SMSNew} />}
+            />
+          </Route>
+        )}
 
         {/* Other Routes */}
-        <Route
-          path="/uploads"
-          element={<LazyComponent component={OtherComponents.Uploads} />}
-        />
+        {school_info.permissions?.includes(SCHOOL_PERMISSION.DATA_UPLOADS) && (
+          <Route
+            path="/uploads"
+            element={<LazyComponent component={OtherComponents.Uploads} />}
+          />
+        )}
         <Route
           path="/settings"
           element={<LazyComponent component={OtherComponents.Settings} />}
         />
 
         {/* User Routes */}
-        <Route
-          element={<LazyComponent component={UserComponents.User} />}
-          path="/users"
-        >
+        {school_info.permissions?.includes(SCHOOL_PERMISSION.USERS) && (
           <Route
-            index
-            element={<LazyComponent component={UserComponents.UserHome} />}
-          />
-          <Route
-            path="new"
-            element={<LazyComponent component={UserComponents.UserAdd} />}
-          />
-          <Route
-            path=":id"
-            element={<LazyComponent component={UserComponents.UserView} />}
-          />
-          <Route
-            path=":id/edit"
-            element={<LazyComponent component={UserComponents.UserEdit} />}
-          />
-          <Route
-            path=":id/permissions"
-            element={
-              <LazyComponent component={UserComponents.UserPermissions} />
-            }
-          />
-        </Route>
-
+            element={<LazyComponent component={UserComponents.User} />}
+            path="/users"
+          >
+            <Route
+              index
+              element={<LazyComponent component={UserComponents.UserHome} />}
+            />
+            <Route
+              path="new"
+              element={<LazyComponent component={UserComponents.UserAdd} />}
+            />
+            <Route
+              path=":id"
+              element={<LazyComponent component={UserComponents.UserView} />}
+            />
+            <Route
+              path=":id/edit"
+              element={<LazyComponent component={UserComponents.UserEdit} />}
+            />
+            <Route
+              path=":id/permissions"
+              element={
+                <LazyComponent component={UserComponents.UserPermissions} />
+              }
+            />
+          </Route>
+        )}
         {/* Event Routes */}
-        <Route element={<Event />} path="/events">
-          <Route
-            index
-            element={<LazyComponent component={EventComponents.EventHome} />}
-          />
-          <Route
-            path="new"
-            element={<LazyComponent component={EventComponents.NewEvent} />}
-          />
-          <Route
-            path=":id"
-            element={<LazyComponent component={EventComponents.ViewEvent} />}
-          />
-          <Route
-            path=":id/edit"
-            element={<LazyComponent component={EventComponents.EditEvent} />}
-          />
-        </Route>
+        {school_info.permissions?.includes(SCHOOL_PERMISSION.EVENTS) && (
+          <Route element={<Event />} path="/events">
+            <Route
+              index
+              element={<LazyComponent component={EventComponents.EventHome} />}
+            />
+            <Route
+              path="new"
+              element={<LazyComponent component={EventComponents.NewEvent} />}
+            />
+            <Route
+              path=":id"
+              element={<LazyComponent component={EventComponents.ViewEvent} />}
+            />
+            <Route
+              path=":id/edit"
+              element={<LazyComponent component={EventComponents.EditEvent} />}
+            />
+          </Route>
+        )}
       </>
     );
   }, [user?.role]);
@@ -612,15 +630,18 @@ const Root = () => {
 
     return (
       <>
-        <Route
-          path="/announcements"
-          element={
-            <LazyComponent
-              component={MoreAnnouncements}
-              fallback={<EventSkeleton />}
-            />
-          }
-        />
+        {school_info.permissions?.includes(SCHOOL_PERMISSION.ANNOUNCEMENTS) && (
+          <Route
+            path="/announcements"
+            element={
+              <LazyComponent
+                component={MoreAnnouncements}
+                fallback={<EventSkeleton />}
+              />
+            }
+          />
+        )}
+
         <Route
           path="/profile"
           element={
@@ -630,10 +651,13 @@ const Root = () => {
             />
           }
         />
-        <Route
-          path="/notes"
-          element={<LazyComponent component={OtherComponents.NotesBoard} />}
-        />
+
+        {school_info.permissions?.includes(SCHOOL_PERMISSION.NOTES_BOARD) && (
+          <Route
+            path="/notes"
+            element={<LazyComponent component={OtherComponents.NotesBoard} />}
+          />
+        )}
       </>
     );
   }, [user?.role]);

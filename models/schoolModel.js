@@ -1,13 +1,11 @@
-const mongoose = require('mongoose');
-const db = require('../db/DBConnection');
+const mongoose = require("mongoose");
+const db = require("../db/DBConnection");
 
 const SchoolSchema = new mongoose.Schema(
   {
-   
     code: {
       type: String,
-      unique: true
-
+      unique: true,
     },
     unique: String,
     badge: String,
@@ -18,10 +16,44 @@ const SchoolSchema = new mongoose.Schema(
     district: String,
     region: String,
     email: {
-      type: String, lowercase: true
+      type: String,
+      lowercase: true,
     },
     website: String,
     phonenumber: String,
+    permissions: {
+      type: [String],
+      default: [
+        "School Sessions",
+        "Levels",
+        "Subjects",
+        "Grades",
+        "Students",
+        "Teachers",
+        "Examination Portal",
+      ],
+
+      enum: [
+        "School Sessions",
+        "Departments & Houses",
+        "Departments",
+        "Houses",
+        "Levels",
+        "Subjects",
+        "Grades",
+        "Students",
+        "Teachers",
+        "School Fees",
+        "Examination Portal",
+        "Data Imports",
+        "Messages",
+        "Events",
+        "Announcements",
+        "Users",
+        "Settings",
+        "Notes Board",
+      ],
+    },
   },
 
   {
@@ -29,4 +61,4 @@ const SchoolSchema = new mongoose.Schema(
   }
 );
 SchoolSchema.index({ code: 1 });
-module.exports = db.model('School', SchoolSchema);
+module.exports = db.model("School", SchoolSchema);

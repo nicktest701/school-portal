@@ -1,4 +1,4 @@
-import { use } from "react";
+import { useContext } from "react";
 import {
   deleteNotification,
   markAllNotificationAsRead,
@@ -14,16 +14,25 @@ import { useAuth } from "./useAuth";
 export const useNotifications = () => {
   const { user } = useAuth();
 
-  return useQuery({
+  const notifications = useQuery({
     queryKey: ["notifications", user?._id],
     queryFn: getAllNotifications,
     initialData: [],
     enabled: !!user?._id,
+    refetchOnMount: true,
   });
+
+  return {
+    ...notifications,
+    data:
+      notifications.data === "Unauthorized Access.Please contact administrator"
+        ? []
+        : notifications?.data,
+  };
 };
 
 export const useMarkAsRead = () => {
-  const { schoolSessionDispatch } = use(SchoolSessionContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -38,7 +47,7 @@ export const useMarkAsRead = () => {
   });
 };
 export const useMarkAll = () => {
-  const { schoolSessionDispatch } = use(SchoolSessionContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -55,7 +64,7 @@ export const useMarkAll = () => {
 
 export const useDeleteNotification = () => {
   const queryClient = useQueryClient();
-  const { schoolSessionDispatch } = use(SchoolSessionContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   return useMutation({
     mutationFn: (id) => deleteNotification(id),
@@ -71,7 +80,7 @@ export const useDeleteNotification = () => {
 
 export const useDeleteAllNotifications = () => {
   const queryClient = useQueryClient();
-  const { schoolSessionDispatch } = use(SchoolSessionContext);
+  const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   return useMutation({
     mutationFn: (id) => deleteNotifications(id),

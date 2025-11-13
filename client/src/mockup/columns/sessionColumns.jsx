@@ -1601,3 +1601,166 @@ export const USER_ROLES = [
     ],
   },
 ];
+
+export const SCHOOL_ROLES = [
+  "School Sessions",
+  "Departments",
+  "Houses",
+  "Levels",
+  "Subjects",
+  "Grades",
+  "Students",
+  "Teachers",
+  "School Fees",
+  "Examination Portal",
+  "Data Imports",
+  "Messages",
+  "Events",
+  "Announcements",
+  "Settings",
+  "Notes Board",
+];
+
+export const USER_ROLE = Object.freeze({
+  ADMIN: "administrator",
+  TEACHER: "teacher",
+  ACCOUNTANT: "accountant",
+});
+
+export const SCHOOL_PERMISSION = Object.freeze({
+  SCHOOL_SESSIONS: "School Sessions",
+  DEPARTMENTS: "Departments",
+  HOUSES: "Houses",
+  DEPARTMENTS_HOUSES: "Departments & Houses",
+  LEVELS: "Levels",
+  SUBJECTS: "Subjects",
+  GRADES: "Grades",
+  STUDENTS: "Students",
+  TEACHERS: "Teachers",
+  SCHOOL_FEES: "School Fees",
+  EXAMINATION_PORTAL: "Examination Portal",
+  DATA_UPLOADS: "Data Imports",
+  MESSAGES: "Messages",
+  EVENTS: "Events",
+  ANNOUNCEMENTS: "Announcements",
+  SETTINGS: "Settings",
+  NOTES_BOARD: "Notes Board",
+  USERS: "Users",
+});
+
+export const USER_PERMISSION = Object.freeze({
+  // School Sessions
+  CREATE_NEW_ACADEMIC_SESSIONS: "Create new academic sessions",
+  EDIT_SESSION_DETAILS_AND_TIMELINES: "Edit session details and timelines",
+  DELETE_OUTDATED_SESSIONS: "Delete outdated sessions",
+  EXPORT_SESSION_DATA_AND_REPORTS: "Export session data and reports",
+  ACTIVATE_OR_DEACTIVATE_ACADEMIC_SESSIONS:
+    "Activate or deactivate academic sessions",
+
+  // Departments
+  CREATE_NEW_DEPARTMENTS: "Create new departments",
+  EDIT_DEPARTMENT_DETAILS: "Edit department details",
+  DELETE_INACTIVE_DEPARTMENTS: "Delete inactive departments",
+  EXPORT_DEPARTMENT_RECORDS: "Export department records",
+
+  // Houses
+  CREATE_NEW_HOUSES_OR_SECTIONS: "Create new  houses or sections",
+  EDIT_HOUSE_OR_SECTION_DETAILS: "Edit  house or section details",
+  DELETE_INACTIVE_HOUSES_OR_SECTIONS: "Delete inactive houses or sections",
+  EXPORT_HOUSES_OR_SECTION_RECORDS: "Export houses or section records",
+
+  // Levels
+  CREATE_NEW_LEVELS_OR_CLASSES: "Create new levels or classes",
+  EDIT_LEVEL_OR_CLASS_INFORMATION: "Edit level or class information",
+  DELETE_EXISTING_LEVELS: "Delete existing levels",
+  EXPORT_LEVEL_OR_CLASS_LISTS: "Export level or class lists",
+
+  // Subjects
+  CREATE_NEW_SUBJECTS: "Create new subjects",
+  EDIT_SUBJECT_INFORMATION: "Edit subject information",
+  DELETE_SUBJECTS: "Delete subjects",
+  EXPORT_SUBJECT_LISTS: "Export subject lists",
+
+  // Grades
+  CREATE_GRADING_SCALES: "Create grading scales",
+  EDIT_GRADE_INFORMATION: "Edit grade information",
+  DELETE_GRADE_ENTRIES: "Delete grade entries",
+  EXPORT_GRADING_DATA: "Export grading data",
+  ASSIGN_GRADES_TO_SPECIFIC_LEVELS: "Assign grades to specific levels",
+
+  // Students
+  ADD_NEW_STUDENTS: "Add new students",
+  EDIT_STUDENT_INFORMATION: "Edit student information",
+  REMOVE_STUDENT_RECORDS: "Remove student records",
+  EXPORT_STUDENT_DATA_FOR_REPORTING: "Export student data for reporting",
+
+  // Teachers
+  ADD_NEW_TEACHERS: "Add new teachers",
+  EDIT_TEACHER_INFORMATION: "Edit teacher information",
+  DELETE_TEACHER_RECORDS: "Delete teacher records",
+  EXPORT_TEACHER_DATA: "Export teacher data",
+  ASSIGN_LEVELS_TO_TEACHERS: "Assign levels to teachers",
+  ASSIGN_SUBJECTS_OR_COURSES_TO_TEACHERS:
+    "Assign subjects or courses to teachers",
+
+  // School Fees
+  CREATE_NEW_SCHOOL_FEE_STRUCTURES: "Create new school fee structures",
+  EDIT_FEE_DETAILS_AND_CATEGORIES: "Edit fee details and categories",
+  DELETE_OUTDATED_FEE_RECORDS: "Delete outdated fee records",
+  EXPORT_FEE_AND_PAYMENT_DATA: "Export fee and payment data",
+  AUTHORIZE_OR_CONFIRM_PAYMENTS: "Authorize or confirm payments",
+  QUERY_FEE_HISTORY_AND_TRANSACTIONS: "Query fee history and transactions",
+
+  // Examination Portal
+  IMPORT_OR_ENTER_EXAMINATION_RESULTS: "Import or enter examination results",
+  PRINT_EXAMINATION_REPORTS_AND_SUMMARIES:
+    "Print examination reports and summaries",
+  PUBLISH_EXAMINATION_RESULTS_FOR_STUDENTS:
+    "Publish examination results for students",
+  EXPORT_EXAMINATION_DATA: "Export examination data",
+
+  // Data Imports
+  ENABLE_DATA_IMPORT_OPERATIONS: "Enable data import operations",
+
+  // Messages
+  CREATE_NEW_MESSAGES_OR_ANNOUNCEMENTS: "Create new messages or announcements",
+  EDIT_MESSAGE_CONTENT: "Edit message content",
+  DELETE_SENT_MESSAGES: "Delete sent messages",
+  EXPORT_MESSAGE_HISTORY: "Export message history",
+  RESEND_OR_SCHEDULE_MESSAGES: "Resend or schedule messages",
+
+  // Events
+  CREATE_SCHOOL_EVENTS_OR_PROGRAMS: "Create school events or programs",
+  EDIT_EVENT_DETAILS: "Edit event details",
+  DELETE_PAST_OR_CANCELLED_EVENTS: "Delete past or cancelled events",
+  EXPORT_EVENT_DATA: "Export event data",
+  RESEND_EVENT_NOTIFICATIONS: "Resend event notifications",
+
+  // Announcements
+  CREATE_NEW_ANNOUNCEMENTS: "Create new announcements",
+  EDIT_ANNOUNCEMENT_DETAILS: "Edit announcement details",
+  DELETE_OLD_ANNOUNCEMENTS: "Delete old announcements",
+  EXPORT_ANNOUNCEMENTS: "Export announcements",
+  RESEND_ANNOUNCEMENTS_OR_NOTIFICATIONS:
+    "Resend announcements or notifications",
+
+  // Users
+  CREATE_NEW_USER_ACCOUNTS: "Create new user accounts",
+  EDIT_USER_INFORMATION: "Edit user information",
+  DELETE_USER_ACCOUNTS: "Delete user accounts",
+  EXPORT_USER_DATA: "Export user data",
+  ASSIGN_AND_MANAGE_USER_PERMISSIONS: "Assign and manage user permissions",
+
+  // Settings
+  UPDATE_SCHOOL_BASIC_INFORMATION: "Update school basic information",
+  UPLOAD_OR_CHANGE_SCHOOL_LOGO: "Upload or change school logo",
+  EDIT_HEADMASTER_OR_ADMINISTRATOR_DETAILS:
+    "Edit headmaster or administrator details",
+  ADD_EDIT_OR_REMOVE_HOLIDAYS: "Add, edit, or remove holidays",
+
+  // Notes Board
+  CREATE_NEW_NOTES: "Create new notes",
+  EDIT_EXISTING_NOTES: "Edit existing notes",
+  DELETE_NOTES: "Delete notes",
+  EXPORT_NOTES_DATA: "Export notes data",
+});

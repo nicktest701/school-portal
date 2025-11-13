@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import _ from "lodash";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Avatar,
   Box,
@@ -45,13 +44,20 @@ import NavLinkItemCollapse from "@/components/dropdowns/NavLinkItemCollapse";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { getLevelInitials } from "@/config/helper";
+import { SCHOOL_PERMISSION, USER_ROLE } from "@/mockup/columns/sessionColumns";
 
 const Sidebar = () => {
   const [toggleWidth, setToggleWidth] = useState(false);
   const { user, logOutUser, school_info } = useAuth();
-  const handleClose = () => {
-    setToggleWidth(!toggleWidth);
-  };
+
+  const handleClose = useCallback(() => {
+    setToggleWidth((toggleWidth) => !toggleWidth);
+  }, []);
+
+  const schoolName = school_info?.name || "School";
+  const hasBadge = Boolean(school_info?.badge);
+
+  const initials = useMemo(() => getLevelInitials(schoolName), [schoolName]);
 
   return (
     <Box
@@ -82,7 +88,7 @@ const Sidebar = () => {
             {toggleWidth ? <ArrowForwardIos /> : <ArrowBackIos />}
           </IconButton>
           <Link to="/">
-            {!_.isEmpty(school_info?.badge) ? (
+            {hasBadge ? (
               <Avatar
                 alt="school logo"
                 loading="lazy"
@@ -94,7 +100,7 @@ const Sidebar = () => {
                   color: "var(--primary-color)",
                 }}
               >
-                {getLevelInitials(school_info?.name)}
+                {initials}
               </Avatar>
             ) : (
               <SchoolRounded sx={{ width: 64, height: 64 }} />
@@ -108,9 +114,7 @@ const Sidebar = () => {
             color="white"
             textTransform="uppercase"
           >
-            {toggleWidth
-              ? getLevelInitials(school_info?.name)
-              : school_info?.name}
+            {toggleWidth ? initials : schoolName}
           </Typography>
         </Stack>
         <Divider />
@@ -124,7 +128,7 @@ const Sidebar = () => {
             pb: 36,
           }}
         >
-          {user?.role === "administrator" && (
+          {user?.role === USER_ROLE.ADMIN && (
             <>
               <DrawerItem
                 title={toggleWidth ? "" : "Dashboard"}
@@ -137,11 +141,16 @@ const Sidebar = () => {
                 icon={<ArticleRoundedIcon />}
                 to="/session"
               />
-              <DrawerItem
-                title={toggleWidth ? "" : "Departments & Houses"}
-                icon={<HouseRounded />}
-                to="/departments-houses"
-              />
+
+              {school_info.permissions?.includes(
+                SCHOOL_PERMISSION.DEPARTMENTS_HOUSES
+              ) && (
+                <DrawerItem
+                  title={toggleWidth ? "" : "Departments & Houses"}
+                  icon={<HouseRounded />}
+                  to="/departments-houses"
+                />
+              )}
 
               <DrawerItem
                 title={toggleWidth ? "" : "Levels "}
@@ -201,34 +210,37 @@ const Sidebar = () => {
                 />
               </NavLinkItemCollapse>
 
-              <NavLinkItemCollapse
-                icon={<PaymentsRounded htmlColor="" />}
-                title={toggleWidth ? "" : "School Fees"}
-                to="/fee"
-                toggleWidth={toggleWidth}
-              >
-                <DrawerItem
-                  title={toggleWidth ? "" : "Dashboard"}
-                  icon={<BarChartRounded />}
+              {school_info.permissions?.includes(
+                SCHOOL_PERMISSION.SCHOOL_FEES
+              ) && (
+                <NavLinkItemCollapse
+                  icon={<PaymentsRounded htmlColor="" />}
+                  title={toggleWidth ? "" : "School Fees"}
                   to="/fee"
-                />
-                <DrawerItem
-                  title={toggleWidth ? "" : "New Fees"}
-                  icon={<AddCircleRounded />}
-                  to="/fee/new"
-                />
-                <DrawerItem
-                  title={toggleWidth ? "" : "Make Payments"}
-                  icon={<BookRounded />}
-                  to="/fee/payment"
-                />
-                <DrawerItem
-                  title={toggleWidth ? "" : "Fees History"}
-                  icon={<HistoryRounded />}
-                  to="/fee/history"
-                />
-              </NavLinkItemCollapse>
-
+                  toggleWidth={toggleWidth}
+                >
+                  <DrawerItem
+                    title={toggleWidth ? "" : "Dashboard"}
+                    icon={<BarChartRounded />}
+                    to="/fee"
+                  />
+                  <DrawerItem
+                    title={toggleWidth ? "" : "New Fees"}
+                    icon={<AddCircleRounded />}
+                    to="/fee/new"
+                  />
+                  <DrawerItem
+                    title={toggleWidth ? "" : "Make Payments"}
+                    icon={<BookRounded />}
+                    to="/fee/payment"
+                  />
+                  <DrawerItem
+                    title={toggleWidth ? "" : "Fees History"}
+                    icon={<HistoryRounded />}
+                    to="/fee/history"
+                  />
+                </NavLinkItemCollapse>
+              )}
               <DrawerItem
                 title={toggleWidth ? "" : "Examination Portal"}
                 icon={<DataThresholdingRoundedIcon />}
@@ -236,34 +248,52 @@ const Sidebar = () => {
               />
               <Divider />
 
-              <DrawerItem
-                title={toggleWidth ? "" : "Data Uploads"}
-                icon={<ImportExportRounded />}
-                to="/uploads"
-              />
+              {school_info.permissions?.includes(
+                SCHOOL_PERMISSION.DATA_UPLOADS
+              ) && (
+                <DrawerItem
+                  title={toggleWidth ? "" : "Data Uploads"}
+                  icon={<ImportExportRounded />}
+                  to="/uploads"
+                />
+              )}
 
-              <DrawerItem
-                title={toggleWidth ? "" : "Messages"}
-                icon={<SmsRounded />}
-                to="/messages"
-              />
+              {school_info.permissions?.includes(
+                SCHOOL_PERMISSION.MESSAGES
+              ) && (
+                <DrawerItem
+                  title={toggleWidth ? "" : "Messages"}
+                  icon={<SmsRounded />}
+                  to="/messages"
+                />
+              )}
 
-              <DrawerItem
-                title={toggleWidth ? "" : "Events"}
-                icon={<Event />}
-                to="/events"
-              />
-              <DrawerItem
-                title={toggleWidth ? "" : "Announcements"}
-                icon={<AnnouncementRounded />}
-                to="/announcements"
-              />
+              {school_info.permissions?.includes(SCHOOL_PERMISSION.EVENTS) && (
+                <DrawerItem
+                  title={toggleWidth ? "" : "Events"}
+                  icon={<Event />}
+                  to="/events"
+                />
+              )}
+
+              {school_info.permissions?.includes(
+                SCHOOL_PERMISSION.ANNOUNCEMENTS
+              ) && (
+                <DrawerItem
+                  title={toggleWidth ? "" : "Announcements"}
+                  icon={<AnnouncementRounded />}
+                  to="/announcements"
+                />
+              )}
               <Divider />
-              <DrawerItem
-                title={toggleWidth ? "" : "Users"}
-                icon={<PeopleAltRoundedIcon />}
-                to="/users"
-              />
+
+              {school_info.permissions?.includes(SCHOOL_PERMISSION.USERS) && (
+                <DrawerItem
+                  title={toggleWidth ? "" : "Users"}
+                  icon={<PeopleAltRoundedIcon />}
+                  to="/users"
+                />
+              )}
               <DrawerItem
                 title={toggleWidth ? "" : "Profile"}
                 icon={<Person3Rounded />}
@@ -277,7 +307,7 @@ const Sidebar = () => {
             </>
           )}
 
-          {user?.role === "teacher" && (
+          {user?.role === USER_ROLE.TEACHER && (
             <>
               <DrawerItem
                 title={toggleWidth ? "" : "Dashboard"}
@@ -307,17 +337,22 @@ const Sidebar = () => {
                   to="/course/assign"
                 />
               </NavLinkItemCollapse>
-
-              <DrawerItem
-                title={toggleWidth ? "" : "Events"}
-                icon={<Event />}
-                to="/events"
-              />
-              <DrawerItem
-                title={toggleWidth ? "" : "Announcements"}
-                icon={<AnnouncementRounded />}
-                to="/announcements"
-              />
+              {school_info.permissions?.includes(SCHOOL_PERMISSION.EVENTS) && (
+                <DrawerItem
+                  title={toggleWidth ? "" : "Events"}
+                  icon={<Event />}
+                  to="/events"
+                />
+              )}
+              {school_info.permissions?.includes(
+                SCHOOL_PERMISSION.ANNOUNCEMENTS
+              ) && (
+                <DrawerItem
+                  title={toggleWidth ? "" : "Announcements"}
+                  icon={<AnnouncementRounded />}
+                  to="/announcements"
+                />
+              )}
               <DrawerItem
                 title={toggleWidth ? "" : "Profile"}
                 icon={<PeopleAltRoundedIcon />}
@@ -326,11 +361,13 @@ const Sidebar = () => {
             </>
           )}
 
-          <DrawerItem
-            title={toggleWidth ? "" : "Notes Board"}
-            icon={<DescriptionRounded />}
-            to="/notes"
-          />
+          {school_info.permissions?.includes(SCHOOL_PERMISSION.NOTES_BOARD) && (
+            <DrawerItem
+              title={toggleWidth ? "" : "Notes Board"}
+              icon={<DescriptionRounded />}
+              to="/notes"
+            />
+          )}
           <Divider />
           <DrawerItem
             title={toggleWidth ? "" : "About"}

@@ -17,7 +17,7 @@ import {
 import GlobalAlert from "@/components/alerts/GlobalAlert";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import QuickMessage from "@/components/modals/QuickMessage";
-import HorizontalSidebar from "./HorizontalSidebar";
+import MiniSidebar from "./MiniSidebar";
 import NotificationDrawer from "@/components/dropdowns/NotificationDrawer";
 import AccountDropdown from "@/components/dropdowns/AccountDropdown";
 import AddSectionDropdown from "@/components/dropdowns/AddSectionDropdown";
@@ -89,7 +89,7 @@ function Header() {
       )}
       <QuickMessage />
 
-      <HorizontalSidebar open={openMiniBar} setOpen={setOpenMiniBar} />
+      <MiniSidebar open={openMiniBar} setOpen={setOpenMiniBar} />
 
       <NotificationDrawer
         open={openNotificationDrawer}

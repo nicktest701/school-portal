@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   Box,
   Checkbox,
@@ -22,7 +22,6 @@ import { getUser, putUser } from "@/api/userAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { USER_ROLES } from "@/mockup/columns/sessionColumns";
-import { useAuth } from "@/hooks/useAuth";
 
 // ✅ Validation Schema
 const schema = yup.object({
@@ -37,7 +36,7 @@ function UserPermissions() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { updateAccessToken } = useAuth();
+
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
 
   const user = useQuery({
@@ -47,18 +46,24 @@ function UserPermissions() {
       .getQueryData(["users"])
       ?.find((user) => user?._id === id),
   });
-  console.log(user.data?.permissions);
 
   const {
     control,
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: { permissions: user.data?.permissions || [] },
     resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    reset({
+      permissions: user.data?.permissions || [],
+    });
+  }, [reset, user.data]);
 
   const selectedPermissions = watch("permissions");
 
@@ -118,7 +123,7 @@ function UserPermissions() {
           { _id: id, permissions: values.permissions },
           {
             onSettled: () => queryClient.invalidateQueries(["user", id]),
-            onSuccess: (data) => {
+            onSuccess: () => {
               // if (data?.token) {
               //   updateAccessToken(data?.token);
               // }

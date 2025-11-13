@@ -7,7 +7,6 @@ import {
   Typography,
   Tooltip,
 } from "@mui/material";
-import _ from "lodash";
 import { AnimatePresence } from "framer-motion";
 import { Close, NotificationsRounded, Refresh } from "@mui/icons-material";
 import CustomNotificationItem from "../custom/CustomNotificationItem";
@@ -22,7 +21,7 @@ import PropTypes from "prop-types";
 const NotificationDrawer = ({ open, setOpen }) => {
   const { user } = useContext(UserContext);
   // console.log(user);
-  const { data, refetch } = useNotifications();
+  const { data, refetch, isPending } = useNotifications();
   const markAllAsRead = useMarkAll();
   const deleteNotification = useDeleteAllNotifications();
   const handleClose = () => setOpen(false);
@@ -34,8 +33,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
     deleteNotification.mutate(user?.id);
   };
 
-  const notifications = _.isArray(data) ? data : [];
-
+  if (isPending) return <p>Please Wait..</p>;
   return (
     <Drawer
       open={open}
@@ -101,7 +99,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
           </Tooltip>
         </Stack>
 
-        {notifications?.length === 0 ? (
+        {data?.length === 0 ? (
           <Stack
             spacing={2}
             height="80svh"
@@ -114,7 +112,7 @@ const NotificationDrawer = ({ open, setOpen }) => {
         ) : (
           <AnimatePresence>
             <Stack spacing={1} height="90svh" overflow="auto" px={1.5}>
-              {notifications?.map((notification, index) => {
+              {data?.map((notification, index) => {
                 return (
                   <CustomNotificationItem
                     key={notification?._id}
