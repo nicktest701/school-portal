@@ -527,7 +527,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const newLevel = req.body;
 
-    console.log(newLevel)
+  
 
     const level = await Level.create({
       school: req.user.school,

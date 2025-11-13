@@ -37,8 +37,6 @@ router.get(
       active: true,
     }).select(["session", "from", "to", "name", "term"]);
 
-    console.log(id);
-
     const attendance = await Attendance.find({
       date: {
         $gte: new Date(term.from),
@@ -47,9 +45,8 @@ router.get(
 
       active: true,
     });
-    console.log(attendance);
 
-    res.status(200).json("Attendance");
+    res.status(200).json(attendance);
   })
 );
 //@GET School Attendance History
@@ -192,8 +189,6 @@ router.post(
   "/student",
   asyncHandler(async (req, res) => {
     const { date, level, status, session, term } = req.body;
-
-    console.log(req.body);
 
     const exists = await Attendance.findOne({
       level,

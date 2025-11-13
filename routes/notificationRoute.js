@@ -52,7 +52,7 @@ router.put(
 
 // Mark a single notification as read
 router.put("/:id/read", asyncHandler(async (req, res) => {
-  console.log(req.params.id)
+  // console.log(req.params.id)
   await Notification.findByIdAndUpdate(req.params.id, { active: false });
   res.status(200).json("Marked as read");
 }));

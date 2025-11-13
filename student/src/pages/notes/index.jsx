@@ -49,7 +49,7 @@ export default function NotesBoard() {
     if (editingNote) {
       updateNote.mutate({ id: editingNote._id, ...data });
     } else {
-      console.log(data);
+     
       createNote.mutateAsync({ ...data });
     }
   };

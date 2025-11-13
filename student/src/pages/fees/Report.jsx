@@ -35,7 +35,7 @@ const Report = () => {
   if (studentFee.isPending) {
     return <DataSkeleton />;
   }
-console.log("Student Fee Data: ", studentFee?.data);
+
   return (
     <Container>
       <Back to={state?.prevPath} color="primary.main" />

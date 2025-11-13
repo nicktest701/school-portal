@@ -24,7 +24,7 @@ function Logo() {
         badge,
       });
       schoolSessionDispatch(alertSuccess("School Badge Uploaded"));
-      console.log(updatedBadge);
+
       queryClient.invalidateQueries(["school"]);
       setBadge(updatedBadge);
       school_info.badge = updatedBadge;

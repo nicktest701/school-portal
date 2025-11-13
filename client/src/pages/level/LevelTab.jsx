@@ -112,7 +112,7 @@ const LevelTab = () => {
   };
 
   const handleEdit = (data) => {
-    console.log(data);
+  
     const level = {
       _id: data?._id,
       level: data?.level?.name,

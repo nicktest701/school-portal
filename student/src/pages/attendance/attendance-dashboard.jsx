@@ -86,7 +86,7 @@ const AttendanceDashboard = () => {
     enabled: !!user?._id,
   });
 
-  console.log("Attendance Record:", attendanceRecord.data);
+;
 
   // Attendance data
   const overallAttendance = 91;

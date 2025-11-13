@@ -380,7 +380,7 @@ router.put(
   "/",
   asyncHandler(async (req, res) => {
     const { termId, ...rest } = req.body;
-    console.log(req.body);
+   
     const modifiedTerm = await Term.findByIdAndUpdate(termId, {
       $set: {
         ...rest?.core,
@@ -442,7 +442,7 @@ router.put(
   "/remove",
   asyncHandler(async (req, res) => {
     const sessions = req.body;
-    console.log(sessions);
+    
     const deletedTerms = await Term.deleteMany(
       {
         _id: { $in: sessions },

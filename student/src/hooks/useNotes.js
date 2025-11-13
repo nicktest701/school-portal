@@ -22,7 +22,7 @@ export const useCreateNote = () => {
       openAlert("success", "Note Created");
     },
     onError: (error) => {
-      console.log(error);
+  
       openAlert("error", "An unknown error has occurred!");
     },
   });

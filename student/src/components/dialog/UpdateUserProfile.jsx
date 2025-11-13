@@ -66,8 +66,8 @@ const UpdateUserProfile = () => {
         schoolSessionDispatch(alertSuccess("Changes Saved!!!"));
         handleClose();
       },
-      onError: (error) => {
-        console.log(error);
+      onError: () => {
+        // console.log(error);
         schoolSessionDispatch(alertError("An unknown error has occurred!"));
       },
     });
@@ -93,8 +93,8 @@ const UpdateUserProfile = () => {
         schoolSessionDispatch(alertSuccess("Profile Updated!"));
         setProfileImage(URL.createObjectURL(profile));
       },
-      onError: (error) => {
-        console.log(error);
+      onError: () => {
+        // console.log(error);
         schoolSessionDispatch(alertError("An unknown error has occurred!"));
       },
     });

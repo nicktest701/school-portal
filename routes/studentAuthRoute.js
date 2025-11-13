@@ -191,7 +191,7 @@ router.post("/reset-password-request", async (req, res) => {
 // ✅ Confirm code
 router.post("/confirm-reset-code", async (req, res) => {
   const { studentId, code } = req.body;
-  console.log("Confirming reset code for:", studentId, "Code:", code);
+
 
   const student = await StudentAuth.findOne({
     indexnumber: studentId,

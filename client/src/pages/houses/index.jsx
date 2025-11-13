@@ -36,7 +36,6 @@ export default function Houses() {
   const updateHouse = useUpdateHouse();
   const deleteHouse = useDeleteHouse();
 
-  console.log(houses);
 
   const handleSubmit = (data) => {
     if (editingHouse) {

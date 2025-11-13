@@ -265,7 +265,7 @@ router.get(
 
     //Personal Info
     const student = await Student.findById(id);
-    console.log(student)
+
 
     if (_.isEmpty(student)) {
       return res.status(400).json("No Such Student exists");

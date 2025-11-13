@@ -50,7 +50,7 @@ router.post(
     }
 
     let users = await User.find({}, "_id"); // Get all user IDs
-    console.log(newAnnouncement.group);
+
 
     if (["all", "students"].includes(newAnnouncement.group)) {
       const student = await StudentAuth.find({}, "_id");
