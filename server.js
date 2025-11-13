@@ -85,6 +85,8 @@ const corsOptions = {
     "Accept",
     "Authorization",
     "Referer",
+    "X-Custom-Header",
+    
   ],
   credentials: true,
   origin: (origin, callback) => {
@@ -107,7 +109,7 @@ const apiLimiter = rateLimit({
 
 // Middlewares
 app.use(cors(corsOptions));
-app.options("*", cors());
+
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.json({ limit: "50mb" }));
 app.use(

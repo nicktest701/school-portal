@@ -130,7 +130,7 @@ const OtherComponents = {
 import Event from "../events";
 import Section from "../sections";
 import { SCHOOL_PERMISSION } from "@/mockup/columns/sessionColumns";
-import PageTitle from "@/components/items/PageTitle";
+// import PageTitle from "@/components/items/PageTitle";
 
 // Reusable Suspense wrapper component
 const LazyComponent = ({
@@ -139,7 +139,7 @@ const LazyComponent = ({
   ...rest
 }) => (
   <Suspense fallback={fallback}>
-    <PageTitle />
+    {/* <PageTitle /> */}
     <Component {...rest} />
   </Suspense>
 );
