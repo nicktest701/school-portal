@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-
 const SubjectItem = ({
   name,
   code,
@@ -20,7 +19,7 @@ const SubjectItem = ({
   appendCode,
   handleIsCore,
 }) => {
-  const [value, setValue] = useState(code );
+  const [value, setValue] = useState(code);
 
   return (
     <>
@@ -31,9 +30,7 @@ const SubjectItem = ({
           sx={{ width: 100, mr: 2 }}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onBlur={() =>
-            appendCode({ name, isCore, code: value  })
-          }
+          onBlur={() => appendCode({ name, isCore, code: value })}
         />
         <ListItemText
           secondary={name}
@@ -49,8 +46,14 @@ const SubjectItem = ({
         >
           <FormControlLabel
             label="Core"
+            slotProps={{
+              typography: {
+                fontSize: 14,
+              },
+            }}
             control={
               <Checkbox
+                size="small"
                 title="Core"
                 checked={isCore}
                 value={isCore}

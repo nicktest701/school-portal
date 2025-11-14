@@ -18,57 +18,7 @@ const {
   processGeneralWeeklyAttendance,
 } = require("../config/helper");
 const sendMail = require("../config/mail/mailer");
-
-const LEVEL_OPTIONS = [
-  "Day Care",
-  "Creche",
-  "Nursery 1",
-  "Nursery 2",
-  "Kindergarten 1",
-  "Kindergarten 2",
-  "Basic 1",
-  "Basic 2",
-  "Basic 3",
-  "Basic 4",
-  "Basic 5",
-  "Basic 6",
-  "Basic 7",
-  "Basic 8",
-  "Basic 9",
-  "Basic 10",
-  "Basic 11",
-  "Basic 12",
-  "Class 1",
-  "Class 2",
-  "Class 3",
-  "Class 4",
-  "Class 5",
-  "Class 6",
-  "Class 7",
-  "Class 8",
-  "Class 9",
-  "Class 10",
-  "Class 11",
-  "Class 12",
-  "Stage 1",
-  "Stage 2",
-  "Stage 3",
-  "Stage 4",
-  "Stage 5",
-  "Stage 6",
-  "Stage 7",
-  "Stage 8",
-  "Stage 9",
-  "Stage 10",
-  "Stage 11",
-  "Stage 12",
-  "J.H.S 1",
-  "J.H.S 2",
-  "J.H.S 3",
-  "S.H.S 1",
-  "S.H.S 2",
-  "S.H.S 3",
-];
+const { LEVEL_OPTIONS } = require("../config/helper");
 
 //@GET all current level by current school session
 router.get(
@@ -361,6 +311,7 @@ router.get(
     } else {
       modifiedLevel = levels?.map((level) => {
         return {
+          _id: level?._id,
           levelName: level?.levelName,
           ...level?.level,
         };
@@ -527,8 +478,6 @@ router.post(
   asyncHandler(async (req, res) => {
     const newLevel = req.body;
 
-  
-
     const level = await Level.create({
       school: req.user.school,
       ...newLevel,
@@ -553,10 +502,13 @@ router.post(
       session,
       term,
       level: {
-        $in: levels,
+        $in: _.map(levels, (level) => ({
+          name: level.name,
+          type: level.type,
+          initials: level.initials,
+        })),
       },
-    }).select(["level",'school','session','term']);
-    
+    }).select(["level", "school", "session", "term"]);
 
     if (!_.isEmpty(existingLevels)) {
       return res.status(400).json({
@@ -566,20 +518,58 @@ router.post(
       });
     }
 
-    const modifiedLevels = levels.map((level) => {
-      return {
-        school: req.user.school,
-        level,
-        initials: level.initials,
-        session,
-        term,
-        createdBy: req.user?.id,
-      };
+    const modifiedLevels = levels.map(async (level) => {
+      if (!_.isEmpty(level?.previousLevelId) && level?.importStudents) {
+        const previousLevel = await Level.findById(
+          level?.previousLevelId
+        ).select(["students"]);
+        const newLevel = await Level.create({
+          school: req.user.school,
+          session,
+          term,
+          level: {
+            name: level.name,
+            type: level.type,
+            initials: level.initials,
+          },
+          initials: level.initials,
+          students: previousLevel?.students || [],
+          createdBy: req.user?.id,
+        });
+        await Student.updateMany(
+          {
+            _id: {
+              $in: previousLevel?.students,
+            },
+          },
+          {
+            $set: {
+              level: newLevel?._id,
+            },
+          }
+        );
+        return newLevel;
+      } else {
+        const newLevel = await Level.create({
+          school: req.user.school,
+          level: {
+            name: level.name,
+            type: level.type,
+            initials: level.initials,
+          },
+          initials: level.initials,
+          session,
+          term,
+          createdBy: req.user?.id,
+        });
+
+        return newLevel;
+      }
     });
 
-    const level = await Level.insertMany(modifiedLevels);
+    const newLevels = await Promise.all(modifiedLevels);
 
-    if (_.isEmpty(level)) {
+    if (_.isEmpty(newLevels)) {
       return res.status(404).json("Error creating new levels.Try again later");
     }
 

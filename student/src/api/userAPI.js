@@ -76,7 +76,7 @@ export const postUser = async (user) => {
   formData.append('username', user.username);
   formData.append('dateofbirth', user.dateofbirth);
   formData.append('gender', user.gender);
-  formData.append('role', user.role);
+  formData.append('role', );
   formData.append('email', user.email);
   formData.append('phonenumber', user.phonenumber);
   formData.append('address', user.address);

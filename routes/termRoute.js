@@ -380,7 +380,7 @@ router.put(
   "/",
   asyncHandler(async (req, res) => {
     const { termId, ...rest } = req.body;
-   
+
     const modifiedTerm = await Term.findByIdAndUpdate(termId, {
       $set: {
         ...rest?.core,
@@ -401,6 +401,30 @@ router.put(
     //   .update({
     //     ...rest,
     //   });
+
+    if (_.isEmpty(modifiedTerm)) {
+      return res
+        .status(404)
+        .send("Error updating session info.Try again later");
+    }
+
+    res.status(201).json("Changes Saved!");
+  })
+);
+//@PUT Update Existing School Session
+router.put(
+  "/headmaster",
+  asyncHandler(async (req, res) => {
+    const { termId, ...rest } = req.body;
+ 
+
+    const modifiedTerm = await Term.findByIdAndUpdate(termId, {
+      $set: {
+        headmaster: {
+          ...rest?.headmaster,
+        },
+      },
+    });
 
     if (_.isEmpty(modifiedTerm)) {
       return res
@@ -442,7 +466,7 @@ router.put(
   "/remove",
   asyncHandler(async (req, res) => {
     const sessions = req.body;
-    
+
     const deletedTerms = await Term.deleteMany(
       {
         _id: { $in: sessions },

@@ -17,57 +17,7 @@ const CurrentFee = require("../models/currentFeeModel");
 const Fee = require("../models/feeModel");
 const { uploadFile, uploadMultipleImages } = require("../config/uploadFile");
 const StudentAuth = require("../models/studentAuthModel");
-
-const LEVEL_OPTIONS = [
-  "Day Care",
-  "Creche",
-  "Nursery 1",
-  "Nursery 2",
-  "Kindergarten 1",
-  "Kindergarten 2",
-  "Basic 1",
-  "Basic 2",
-  "Basic 3",
-  "Basic 4",
-  "Basic 5",
-  "Basic 6",
-  "Basic 7",
-  "Basic 8",
-  "Basic 9",
-  "Basic 10",
-  "Basic 11",
-  "Basic 12",
-  "Class 1",
-  "Class 2",
-  "Class 3",
-  "Class 4",
-  "Class 5",
-  "Class 6",
-  "Class 7",
-  "Class 8",
-  "Class 9",
-  "Class 10",
-  "Class 11",
-  "Class 12",
-  "Stage 1",
-  "Stage 2",
-  "Stage 3",
-  "Stage 4",
-  "Stage 5",
-  "Stage 6",
-  "Stage 7",
-  "Stage 8",
-  "Stage 9",
-  "Stage 10",
-  "Stage 11",
-  "Stage 12",
-  "J.H.S 1",
-  "J.H.S 2",
-  "J.H.S 3",
-  "S.H.S 1",
-  "S.H.S 2",
-  "S.H.S 3",
-];
+const { LEVEL_OPTIONS } = require("../config/helper");
 
 const Storage = multer.diskStorage({
   destination: function (req, file, cb) {

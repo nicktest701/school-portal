@@ -504,8 +504,10 @@ export const GRADES = [
   "A",
   "B+",
   "B",
+  "B-",
   "C+",
   "C",
+  "C-",
   "D+",
   "E",
   "F",
@@ -532,7 +534,7 @@ export const IMPORT_GRADE_COLUMNS = [
 
 export const REMARKS = [
   "Excellent",
-  "Distinct",
+  "Distinction",
   "Outstanding",
   "Highest",
   "Very Good",
@@ -543,7 +545,9 @@ export const REMARKS = [
   "Average",
   "Below Average",
   "Low Average",
+  "Upper Credit",
   "Credit",
+  "Lower Credit",
   "Low",
   "Pass",
   "Lower",
@@ -933,9 +937,13 @@ export const EXAMS_COLUMNS = [
 
   {
     field: "noOfStudents",
-    title: "More",
+    title: "Action",
     render: () => {
-      return <Button endIcon={<ArrowForwardRounded />}>View Details</Button>;
+      return (
+        <Button variant="text" endIcon={<ArrowForwardRounded />}>
+          View Details
+        </Button>
+      );
     },
   },
 ];

@@ -18,7 +18,6 @@ import { IMPORT_STUDENT_COLUMNS } from "@/mockup/columns/studentColumns";
 import CustomizedMaterialTable from "../tables/CustomizedMaterialTable";
 import { EMPTY_IMAGES } from "@/config/images";
 import CustomDialogTitle from "../dialog/CustomDialogTitle";
-import CustomTitle from "../custom/CustomTitle";
 import { ImportExport } from "@mui/icons-material";
 import LoadingSpinner from "../spinners/LoadingSpinner";
 function AddStudentFileDialog() {
@@ -111,16 +110,15 @@ function AddStudentFileDialog() {
 
   return (
     <Dialog open={fileData.open} fullScreen fullWidth>
-      <CustomDialogTitle onClose={handleCloseDialog} />
+      <CustomDialogTitle
+        title="Import Students"
+        subtitle="Enroll new students by adding their personal and academic details to the system for accurate record-keeping and future reference by importing Student data from excel or csv files."
+        color="primary.main"
+        onClose={handleCloseDialog}
+      />
 
       <DialogContent sx={{ px: 4 }}>
-        <CustomTitle
-          title="Import Students"
-          subtitle="Enroll new students by adding their personal and academic details to the system for accurate record-keeping and future reference by importing Student data from excel or csv files."
-          color="primary.main"
-        />
-
-        <Stack spacing={2} py={4} px={2} my={4} border="1px solid lightgray">
+        <Stack spacing={2} p={2} my={4} border="1px solid lightgray">
           <Typography>
             Select an <b>EXCEL</b> OR <b>CSV</b> file containing students
             information. Make sure the columns matches the accepted fields.
@@ -132,6 +130,7 @@ function AddStudentFileDialog() {
         ) : (
           <CustomizedMaterialTable
             title={fieldValue?.type || "Students"}
+            subtitle="List of imported students"
             icon={EMPTY_IMAGES.student}
             columns={IMPORT_STUDENT_COLUMNS}
             data={fileData?.data}
@@ -172,6 +171,18 @@ function AddStudentFileDialog() {
             addButtonText="Import Students"
             addButtonIcon={<ImportExport />}
             onAddButtonClicked={handlePostStudents}
+            options={{
+              search: true,
+              rowStyle: {
+                boxShadow: "none",
+                background: "transparent",
+                backgroundColor: "transparent",
+              },
+            }}
+            style={{
+              backgroundColor: "transparent",
+              boxShadow: "none",
+            }}
           />
         )}
       </DialogContent>

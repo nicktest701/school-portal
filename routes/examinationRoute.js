@@ -890,7 +890,12 @@ router.post(
     );
 
     const latestScores = _.values(newScores);
-    const overallScore = _.sumBy(latestScores, (score) =>
+
+    //Remove all deleted Scores
+    const filteredScores = _.intersectionBy(latestScores, scores, "_id");
+
+    
+    const overallScore = _.sumBy(filteredScores, (score) =>
       Number(score?.totalScore)
     );
     const comments = generateRemarks(overallScore);
@@ -899,7 +904,7 @@ router.post(
       examsInfo._id,
       {
         $set: {
-          scores: latestScores,
+          scores: filteredScores,
           overallScore,
           comments,
         },

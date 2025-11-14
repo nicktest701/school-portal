@@ -12,12 +12,12 @@ import {
   Alert,
   Typography,
   Divider,
-  ListItem,
   Checkbox,
-  ListItemText,
   FormLabel,
   Input,
   Link,
+  FormHelperText,
+  FormControlLabel,
 } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash";
@@ -28,15 +28,17 @@ import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import { postSubjects } from "@/api/subjectAPI";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import {  NoteRounded } from "@mui/icons-material";
+import { NoteRounded } from "@mui/icons-material";
 import { downloadTemplate } from "@/api/userAPI";
 import { UserContext } from "@/context/providers/UserProvider";
+import { validateExcelHeaders } from "@/config/helper";
 
 const AddSubject = ({ open, setOpen }) => {
   const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
   const [subjects, setSubjects] = useState([]);
+  const [error, setError] = useState("");
   const [msg, setMsg] = useState({
     severity: "",
     text: "",
@@ -116,8 +118,22 @@ const AddSubject = ({ open, setOpen }) => {
     );
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files?.[0];
+  const handleFileUpload = async (event) => {
+    setError("");
+    const headers = ["code", "name", "isCore"];
+
+    const file = event.target.files[0];
+    const result = await validateExcelHeaders(file, headers);
+
+    if (!result.valid) {
+      setError(
+        `Invalid file headers.Expected headers: [${headers.join(
+          ", "
+        )}].Missing headers: [${result.missing.join(", ")}].`
+      );
+      return;
+    }
+
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -142,7 +158,7 @@ const AddSubject = ({ open, setOpen }) => {
               code: _.uniqueId("10"),
             };
             headers.forEach((header, index) => {
-              rowData[header] = row[index]
+              rowData[header] = row[index];
             });
             return rowData;
           });
@@ -162,7 +178,7 @@ const AddSubject = ({ open, setOpen }) => {
     <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
       <CustomDialogTitle
         title="New Subjects"
-        subtitle="Add new subjects"
+        subtitle="Add new subjects to your school's curriculum."
         onClose={() => setOpen(false)}
       />
       <DialogContent>
@@ -180,15 +196,21 @@ const AddSubject = ({ open, setOpen }) => {
               disableCloseOnSelect
               getOptionLabel={(option) => option?.name || ""}
               renderOption={(props, option, state) => {
+                const isSelected = [...subjects, ...subjectList].some(
+                  (item) => item.name === option.name
+                );
                 return (
-                  <ListItem
+                  <FormControlLabel
                     {...props}
                     key={option?.name}
-                    sx={{ display: "flex", alignItems: "center" }}
-                  >
-                    <Checkbox checked={state?.selected} />
-                    <ListItemText primary={option?.name} />
-                  </ListItem>
+                    label={option?.name}
+                    slotProps={{
+                      typography: {
+                        fontSize: 12,
+                      },
+                    }}
+                    control={<Checkbox checked={isSelected} size="small" />}
+                  />
                 );
               }}
               value={subjects}
@@ -244,6 +266,15 @@ const AddSubject = ({ open, setOpen }) => {
               />
             </FormLabel>
           </Button>
+          {error && (
+            <FormHelperText
+              sx={{ color: "error.main" }}
+              variant="body2"
+              color="error"
+            >
+              {error}
+            </FormHelperText>
+          )}
           <Link
             sx={{
               alignSelf: "flex-end",

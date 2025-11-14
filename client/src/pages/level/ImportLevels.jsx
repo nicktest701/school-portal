@@ -22,15 +22,18 @@ import {
   FormControlLabel,
   Radio,
   Autocomplete,
+  Checkbox,
+  FormHelperText,
 } from "@mui/material";
 import {
+  Close,
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import PropTypes from "prop-types";
-import { getLevelInitials } from "@/config/helper";
+import { getLevelInitials, validateExcelHeaders } from "@/config/helper";
 import { getAllSessions } from "@/api/termAPI";
 import { getPreviousLevels } from "@/api/levelAPI";
 import { downloadTemplate } from "@/api/userAPI";
@@ -40,6 +43,7 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { postLevels } from "@/api/levelAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { LEVEL_OPTIONS } from "@/mockup/columns/sessionColumns";
 
 const ImportLevels = ({ open, onClose }) => {
   const { session } = use(UserContext);
@@ -49,6 +53,8 @@ const ImportLevels = ({ open, onClose }) => {
   const [inputMethod, setInputMethod] = useState("file");
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [importStudents, setImportStudents] = useState(false);
+
   const [newSession, setNewSession] = useState({
     _id: "",
     sessionId: "",
@@ -82,24 +88,46 @@ const ImportLevels = ({ open, onClose }) => {
       return;
     }
 
-    setFilteredData(previousLevels.data);
-    setUploadedFiles(previousLevels.data);
+    const levels = _.uniqBy(
+      _.map(previousLevels.data, (level) => ({
+        previousLevelId: level?._id,
+        name: level?.name,
+        type: level?.type || "",
+        initials:
+          level?.initials ||
+          getLevelInitials(`${level?.name}-${level?.type || ""}`),
+      })),
+      (obj) => `${obj?.name}-${obj?.type || ""}`
+    );
+
+    const sortedLevels = levels.sort(
+      (a, b) => LEVEL_OPTIONS.indexOf(a?.name) - LEVEL_OPTIONS.indexOf(b?.name)
+    );
+
+    setFilteredData(sortedLevels);
+    setUploadedFiles(sortedLevels);
   };
 
   const handleUpload = () => {
+
+    
     Swal.fire({
       title: "Uploading Levels",
       text: "Proceed with levels import?",
       showCancelButton: true,
       backdrop: false,
     }).then(({ isConfirmed }) => {
-      const newLevels = _.map(uploadedFiles, ({ name, type, initials }) => ({
-        name,
-        type,
-        initials,
-      }));
+      const newLevels = _.map(
+        uploadedFiles,
+        ({ name, type, initials, previousLevelId }) => ({
+          name,
+          type,
+          initials,
+          previousLevelId: previousLevelId || null,
+          importStudents,
+        })
+      );
 
-     
       // return;
       if (isConfirmed) {
         mutateAsync(
@@ -138,8 +166,21 @@ const ImportLevels = ({ open, onClose }) => {
   };
 
   // Handle file selection
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
+    setError("");
+    const headers = ["name", "type", "initials"];
     const uploadedFile = e.target.files[0];
+    const result = await validateExcelHeaders(uploadedFile, headers);
+
+    if (!result.valid) {
+      setError(
+        `Invalid file headers.Expected headers: [${headers.join(
+          ", "
+        )}].Missing headers: [${result.missing.join(", ")}].`
+      );
+      return;
+    }
+
     if (uploadedFile) {
       parseFile(uploadedFile);
     }
@@ -166,8 +207,13 @@ const ImportLevels = ({ open, onClose }) => {
           (obj) => `${obj?.name}-${obj?.type || ""}`
         );
 
-        setFilteredData(levels);
-        setUploadedFiles(levels);
+        const sortedLevels = levels.sort(
+          (a, b) =>
+            LEVEL_OPTIONS.indexOf(a?.name) - LEVEL_OPTIONS.indexOf(b?.name)
+        );
+
+        setFilteredData(sortedLevels);
+        setUploadedFiles(sortedLevels);
       }
     };
     reader.readAsArrayBuffer(file);
@@ -230,7 +276,12 @@ const ImportLevels = ({ open, onClose }) => {
               overflowY: "scroll",
             }}
           >
-            <Typography variant="h5">Import New Levels </Typography>
+            <Stack flexDirection="row" justifyContent="space-between">
+              <Typography variant="h5">Import New Levels </Typography>
+              <IconButton onClick={onClose}>
+                <Close />
+              </IconButton>
+            </Stack>
             <Typography variant="body2" fontStyle="italic" pb={2}>
               Define grade levels, classes, and departments to match your
               institution’s structure, ensuring smooth student progression and
@@ -249,27 +300,26 @@ const ImportLevels = ({ open, onClose }) => {
                   value="file"
                   control={<Radio />}
                   label="From File"
+                  slotProps={{
+                    typography: {
+                      fontSize: 14,
+                    },
+                  }}
                 />
                 <FormControlLabel
                   value="autocomplete"
                   control={<Radio />}
                   label="From Previous Session"
+                  slotProps={{
+                    typography: {
+                      fontSize: 14,
+                    },
+                  }}
                 />
               </RadioGroup>
             </FormControl>
 
             <Stack spacing={2} py={2} justifyContent="center">
-              {uploadedFiles?.length > 0 && (
-                <Button
-                  onClick={handleUpload}
-                  variant="contained"
-                  color="primary"
-                  sx={{ marginTop: 10, alignSelf: "end" }}
-                  loading={isPending}
-                >
-                  Save Levels
-                </Button>
-              )}
               {inputMethod === "file" && (
                 <Stack spacing={2} py={2} justifyContent="center">
                   <TextField
@@ -290,6 +340,11 @@ const ImportLevels = ({ open, onClose }) => {
                     fullWidth
                     onChange={handleFileChange}
                   />
+                  {error && (
+                    <FormHelperText sx={{ color: "red" }}>
+                      {error}
+                    </FormHelperText>
+                  )}
 
                   <Stack direction="row" justifyContent="space-between">
                     <Link
@@ -330,35 +385,62 @@ const ImportLevels = ({ open, onClose }) => {
                     )}
                   />
                   {newSession?._id && (
-                    <Button
-                      onClick={handleAddToList}
-                      variant="contained"
-                      color="primary"
-                      sx={{ alignSelf: "flex-start" }}
-                    >
-                      Load Levels
-                    </Button>
+                    <>
+                      <FormControlLabel
+                        label="*Import student (This will import all students assigned to the selected levels in the previous session)"
+                        slotProps={{
+                          typography: {
+                            fontSize: 14,
+                          },
+                        }}
+                        control={
+                          <Checkbox
+                            checked={importStudents}
+                            onChange={() => setImportStudents(!importStudents)}
+                            size="small"
+                          />
+                        }
+                      />
+
+                      <Button
+                        onClick={handleAddToList}
+                        variant="contained"
+                        color="primary"
+                        sx={{ alignSelf: "flex-start" }}
+                      >
+                        Load Levels
+                      </Button>
+                    </>
                   )}
                 </Stack>
               )}
             </Stack>
 
+            <h3>Imported Levels</h3>
             <Stack
               direction="row"
-              justifyContent="space-between"
+              justifyContent="flex-end"
               alignItems="center"
-              py={2}
+              gap={1}
             >
-              <h3>Imported Levels</h3>
               <Button
                 onClick={handleClearAll}
                 variant="contained"
                 color="secondary"
-                style={{ marginTop: 10 }}
                 disabled={filteredData?.length === 0}
               >
                 Clear All
               </Button>
+              {uploadedFiles?.length > 0 && (
+                <Button
+                  onClick={handleUpload}
+                  variant="contained"
+                  color="primary"
+                  loading={isPending}
+                >
+                  Save Levels
+                </Button>
+              )}
             </Stack>
             <TextField
               fullWidth

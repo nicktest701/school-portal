@@ -16,6 +16,7 @@ import {
   Link,
   IconButton,
   Avatar,
+  FormHelperText,
 } from "@mui/material";
 import PublishIcon from "@mui/icons-material/Publish";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
@@ -48,6 +49,7 @@ import { UserContext } from "@/context/providers/UserProvider";
 import FormStep from "@/components/FormStep";
 import { readXLSX } from "@/config/readXLSX";
 import moment from "moment";
+import { validateExcelHeaders } from "@/config/helper";
 
 const pages = [
   {
@@ -82,6 +84,7 @@ const pages = [
 ];
 
 const StudentInfo = () => {
+  const [errorState, setErrorState] = useState("");
   const studentData =
     JSON.parse(localStorage.getItem("@student-data")) ||
     newStudentDefaultValues;
@@ -260,7 +263,36 @@ const StudentInfo = () => {
   //LOAD Students from file excel,csv
   async function handleLoadFile(e) {
     setLoadingFile(true);
-    const file = e.target.files?.[0];
+    setError("students", {
+      message: "",
+      type: "custom",
+    });
+    const headers = [
+      "indexnumber",
+      "firstname",
+      "surname",
+      "othername",
+      "dateofbirth",
+      "gender",
+      "address",
+      "phonenumber",
+      "email",
+      "residence",
+      "nationality",
+    ];
+    const file = e.target.files[0];
+    const result = await validateExcelHeaders(file, headers);
+
+    if (!result.valid) {
+      setErrorState(
+        `Invalid file headers.Expected headers: [${headers.join(
+          ", "
+        )}].Missing headers: [${result.missing.join(", ")}].`
+      );
+
+      setLoadingFile(false);
+      return;
+    }
 
     if (file) {
       try {
@@ -520,6 +552,11 @@ const StudentInfo = () => {
           >
             Download Student template here
           </Link>
+          {errorState && (
+            <FormHelperText sx={{ color: "error.main" }}>
+              {errorState}
+            </FormHelperText>
+          )}
         </Container>
 
         {/* Stepper  */}

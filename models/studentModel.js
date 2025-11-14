@@ -90,6 +90,12 @@ const StudentSchema = new mongoose.Schema(
     academic: {
       type: mongoose.SchemaTypes.Mixed, // Flexible for academic records
     },
+    level: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Level",
+      required: true,
+      index: true, 
+    },
     active: {
       type: Boolean,
       default: true,

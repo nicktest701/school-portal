@@ -77,7 +77,7 @@ const LevelExamScoreInput = () => {
       try {
         //Get existing students ids
         const studentsIndexs = _.map(students, "indexnumber");
-        // console.log(results);
+     
         const results = await readXLSX(file, "camel-case");
         
         const filteredResults = results.filter(

@@ -8,11 +8,11 @@ export default function Button(theme) {
       defaultProps: {
         disableElevation: true,
         sx: {
-          borderRadius: 1,
-          py: "10px",
-          px: 4,
+          borderRadius: 0.5,
+          py: { xs: 0.8, sm: 1.2 },
+          px: { xs: 1.5, sm: 4 },
           boxShadow: "none",
-          fontSize: 14,
+          fontSize: { xs: 12, sm: 14 },
         },
       },
       styleOverrides: {

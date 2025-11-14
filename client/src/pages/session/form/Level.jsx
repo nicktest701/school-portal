@@ -21,6 +21,7 @@ import {
   FormControlLabel,
   Radio,
   Autocomplete,
+  FormHelperText,
 } from "@mui/material";
 import {
   Delete as DeleteIcon,
@@ -32,8 +33,11 @@ import { getPreviousLevels } from "@/api/levelAPI";
 import { useQuery } from "@tanstack/react-query";
 import { readXLSX } from "@/config/readXLSX";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { getLevelInitials, validateExcelHeaders } from "@/config/helper";
+import { LEVEL_OPTIONS } from "@/mockup/columns/sessionColumns";
 
 const Level = ({ watch, setValue, errors, handleNext }) => {
+  const [error, setError] = useState("");
   const levelWatch = watch("levels");
   const [isLoading, setIsLoading] = useState(false);
   const [inputMethod, setInputMethod] = useState("file");
@@ -68,22 +72,47 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
 
   // Handle file selection
   const handleFileChange = async (e) => {
+    setError("");
+    const headers = ["name", "type", "initials"];
     const uploadedFile = e.target.files[0];
+    const result = await validateExcelHeaders(uploadedFile, headers);
+
+    if (!result.valid) {
+      setError(
+        `Invalid file headers.Expected headers: [${headers.join(
+          ", "
+        )}].Missing headers: [${result.missing.join(", ")}].`
+      );
+      return;
+    }
+
     if (uploadedFile) {
       setIsLoading(true);
-      parseFile(uploadedFile);
+      // parseFile(uploadedFile);
       try {
         // Parse Excel/CSV file
         const results = await readXLSX(uploadedFile);
         if (results.length > 0) {
           const levels = _.uniqBy(
-            results,
+            _.map(results, (level) => ({
+              name: level?.name,
+              type: level?.type || "",
+              levelName: `${level?.name} ${level?.type || ""}`,
+              initials:
+                level?.initials ||
+                getLevelInitials(`${level?.name}-${level?.type || ""}`),
+            })),
             (obj) => `${obj?.name}-${obj?.type}`
           );
+          const sortedLevels = levels.sort(
+            (a, b) =>
+              LEVEL_OPTIONS.indexOf(a?.name) - LEVEL_OPTIONS.indexOf(b?.name)
+          );
 
-          setFilteredData(levels);
-          setUploadedFiles(levels);
-          setValue("levels", levels);
+          setFilteredData(sortedLevels);
+          setUploadedFiles(sortedLevels);
+          setValue("levels", sortedLevels);
+          console.log(sortedLevels);
         }
       } catch (error) {
         console.log(error);
@@ -93,32 +122,33 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
     }
   };
 
-  // Parse Excel/CSV file
-  const parseFile = (file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+  // // Parse Excel/CSV file
+  // const parseFile = (file) => {
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     const data = new Uint8Array(e.target.result);
+  //     const workbook = XLSX.read(data, { type: "array" });
+  //     const sheetName = workbook.SheetNames[0];
+  //     const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-      if (sheetData.length > 0) {
-        const levels = _.uniqBy(
-          sheetData,
-          (obj) => `${obj?.name}-${obj?.type}`
-        );
+  //     if (sheetData.length > 0) {
+  //       const levels = _.uniqBy(
+  //         sheetData,
+  //         (obj) => `${obj?.name}-${obj?.type}`
+  //       );
 
-        setFilteredData(levels);
-        setUploadedFiles(levels);
-        setValue("levels", levels);
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  };
+  //       setFilteredData(levels);
+  //       setUploadedFiles(levels);
+  //       setValue("levels", levels);
+  //     }
+  //   };
+  //   reader.readAsArrayBuffer(file);
+  // };
 
   // Delete a file from the list
   const handleDeleteFile = (index) => {
     const remainingLevels = uploadedFiles.filter((_, i) => i !== index);
+    setFilteredData(remainingLevels);
     setUploadedFiles(remainingLevels);
     setValue("levels", remainingLevels);
   };
@@ -170,11 +200,21 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
             value="file"
             control={<Radio />}
             label="From File"
+            slotProps={{
+              typography: {
+                fontSize: 14,
+              },
+            }}
           />
           <FormControlLabel
             value="autocomplete"
             control={<Radio />}
             label="From Previous Session"
+            slotProps={{
+              typography: {
+                fontSize: 14,
+              },
+            }}
           />
         </RadioGroup>
       </FormControl>
@@ -207,7 +247,9 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
               below
             </small>
           )}
-
+          {error && (
+            <FormHelperText sx={{ color: "red" }}>{error}</FormHelperText>
+          )}
           <Stack direction="row" justifyContent="space-between">
             <Link
               sx={{ cursor: "pointer", alignSelf: "start" }}
@@ -297,7 +339,8 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
                 <TableRow>
                   <TableCell>Level</TableCell>
                   <TableCell>Type</TableCell>
-                  <TableCell>Preferred Level Name</TableCell>
+                  <TableCell> Level Name</TableCell>
+                  <TableCell> Level Initials</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -309,6 +352,7 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
                     <TableCell>
                       {item?.name} {item?.type}
                     </TableCell>
+                    <TableCell>{item?.initials}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleDeleteFile(index)}>
                         <DeleteIcon />

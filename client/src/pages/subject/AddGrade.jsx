@@ -6,11 +6,10 @@ import {
   DialogActions,
   DialogContent,
   Divider,
-  FormLabel,
-  Input,
+  FormHelperText,
+  Link,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import * as XLSX from "xlsx";
 import { v4 as uuid } from "uuid";
@@ -24,15 +23,17 @@ import { postGrades } from "@/api/gradeAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import _ from "lodash";
-import { Download, NoteRounded } from "@mui/icons-material";
 import { downloadTemplate } from "@/api/userAPI";
 import GradeTable from "@/components/tables/GradeTable";
 import { UserContext } from "@/context/providers/UserProvider";
+import { validateExcelHeaders } from "@/config/helper";
 
 function AddGrade({ open, setOpen }) {
   const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const queryClient = useQueryClient();
+
+  const [error, setError] = useState("");
   const [grades, setGrades] = useState([]);
   const [name, setName] = useState(uuid()?.split("-")[0]);
   const initialValues = {
@@ -81,8 +82,22 @@ function AddGrade({ open, setOpen }) {
     });
   };
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files?.[0];
+  const handleFileUpload = async (e) => {
+    setError("");
+    const headers = ["highestMark", "lowestMark", "grade", "remarks"];
+
+    const file = e.target.files[0];
+    const result = await validateExcelHeaders(file, headers);
+
+    if (!result.valid) {
+      setError(
+        `Invalid file headers.Expected headers: [${headers.join(
+          ", "
+        )}].Missing headers: [${result.missing.join(", ")}].`
+      );
+      return;
+    }
+
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -164,12 +179,17 @@ function AddGrade({ open, setOpen }) {
               handleSubmit,
             }) => {
               return (
-                <Stack direction={{ xs: "column", md: "row" }} spacing={1}>
+                <Stack
+                  direction={{ xs: "column", md: "row" }}
+                  alignItems="center"
+                  spacing={1}
+                >
                   <TextField
                     label="Lowest Mark"
                     type="number"
                     inputMode="numeric"
                     size="small"
+                    fullWidth
                     value={values.lowestMark}
                     onChange={handleChange("lowestMark")}
                     error={Boolean(touched.lowestMark && errors.lowestMark)}
@@ -180,6 +200,7 @@ function AddGrade({ open, setOpen }) {
                     type="number"
                     inputMode="numeric"
                     size="small"
+                    fullWidth
                     value={values.highestMark}
                     onChange={handleChange("highestMark")}
                     error={Boolean(touched.highestMark && errors.highestMark)}
@@ -188,6 +209,7 @@ function AddGrade({ open, setOpen }) {
 
                   <Autocomplete
                     freeSolo
+                    fullWidth
                     options={GRADES}
                     getOptionLabel={(option) => option || ""}
                     defaultValue={values.grade}
@@ -214,77 +236,60 @@ function AddGrade({ open, setOpen }) {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="remarks"
+                        label="Remarks"
                         size="small"
                         error={Boolean(touched.remarks && errors.remarks)}
                         helperText={touched.remarks && errors.remarks}
                       />
                     )}
                   />
-                  <Button
-                    size="small"
-                    variant="contained"
-                    onClick={handleSubmit}
-                  >
+                  <Button  variant="outlined" onClick={handleSubmit}>
                     Add
                   </Button>
                 </Stack>
               );
             }}
           </Formik>
-          <Button sx={{ alignSelf: "flex-end", bgcolor: "success.main" }}>
-            <FormLabel
-              htmlFor="studentFile"
-              title="Import Grade from File"
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-
-                gap: 1,
-                color: "primary.main",
-                fontSize: 11,
-                cursor: "pointer",
+          <Stack spacing={2} py={2} justifyContent="center">
+            <TextField
+              size="small"
+              type="file"
+              accept=".csv,.xlsx,.xls"
+              label="Import File"
+              slotProps={{
+                inputLabel: {
+                  shrink: true,
+                },
               }}
-            >
-              <NoteRounded htmlColor="#fff" />
-              <Typography
-                variant="caption"
-                color="#fff"
-                textTransform="lowercase"
+              inputProps={{
+                accept: ".xlsx,.xls,.csv",
+              }}
+              fullWidth
+              onChange={handleFileUpload}
+              onClick={(e) => {
+                e.target.value = null;
+                e.currentTarget.value = null;
+              }}
+            />
+            {error && (
+              <FormHelperText
+                sx={{ color: "error.main" }}
+                variant="body2"
+                color="error"
               >
-                Import Grade (.xlsx,.xls,.csv)
-              </Typography>
+                {error}
+              </FormHelperText>
+            )}
 
-              <Input
-                type="file"
-                id="studentFile"
-                name="studentFile"
-                hidden
-                inputProps={{
-                  accept: ".xlsx,.xls,.csv",
-                }}
-                onChange={handleFileUpload}
-                onClick={(e) => {
-                  e.target.value = null;
-                  e.currentTarget.value = null;
-                }}
-              />
-            </FormLabel>
-          </Button>
-          {/* <input
-            type="file"
-            accept=".xlsx, .xls, .csv"
-            onChange={handleFileUpload}
-          /> */}
-          <Button
-            sx={{ alignSelf: "flex-end", textDecoration: "underline" }}
-            variant="text"
-            onClick={handleDownloadTemplate}
-            endIcon={<Download />}
-          >
-            Download Template here
-          </Button>
+            <Link
+              sx={{ cursor: "pointer", alignSelf: "start" }}
+              onClick={handleDownloadTemplate}
+              variant="caption"
+            >
+              Download Grade template here
+            </Link>
+          </Stack>
+
           <Divider>
             <Chip label="Grades" />
           </Divider>

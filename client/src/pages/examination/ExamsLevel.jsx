@@ -18,6 +18,7 @@ import {
   LinearProgress,
   Grid2,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -175,10 +176,10 @@ const ExamsLevel = ({ type }) => {
       <Container
         sx={{
           display: "flex",
-          flexDirection: { size: "column-reverse", sm: "row" },
+          flexDirection: { xs: "column-reverse", sm: "row" },
           justifyContent: "space-between",
           alignItems: "center",
-          gap: 2,
+          // gap: 2,
           bgcolor: "#fff",
           my: 2,
           borderRadius: "12px",
@@ -191,13 +192,13 @@ const ExamsLevel = ({ type }) => {
           // showBack={true}
           backColor="#012e54"
         />
-        <Typography
+        {/* <Typography
           sx={{ display: { size: "none", md: "inline-flex" } }}
           variant="h5"
           whiteSpace="nowrap"
         >
           {levelName}
-        </Typography>
+        </Typography> */}
       </Container>
 
       <Typography variant="h5" py={2}>
@@ -325,7 +326,7 @@ const ExamsLevel = ({ type }) => {
                 </Box>
                 <Typography>Performance </Typography>
               </Box>
-              <Box>
+              <Box textAlign={{ xs: "center", md: "left" }}>
                 <Typography variant="h6" fontWeight="bold">
                   {level ?? "Students"}
                   <Badge
@@ -355,7 +356,8 @@ const ExamsLevel = ({ type }) => {
           {/* Progress Section */}
           <Box mt={2}>
             <Typography variant="body2" color="text.secondary">
-              Gain insights into students&apos; academic progress and achievements.
+              Gain insights into students&apos; academic progress and
+              achievements.
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Monitor grades, assessments, and overall performance to support
@@ -463,17 +465,23 @@ const ExamsLevel = ({ type }) => {
             }}
           >
             <ButtonGroup>
-              <Button startIcon={<NoteOutlined />} onClick={downloadSheet}>
-                {matches ? " Download Assessment Sheet" : ""}
-              </Button>
+              <Tooltip title="Download Assessment Sheet">
+                <Button startIcon={<NoteOutlined />} onClick={downloadSheet}>
+                  {matches ? " Download Assessment Sheet" : ""}
+                </Button>
+              </Tooltip>
 
-              <Button startIcon={<BookSharp />} onClick={handleImportResults}>
-                {matches ? "Import Results" : ""}
-              </Button>
+              <Tooltip title="Import Results">
+                <Button startIcon={<BookSharp />} onClick={handleImportResults}>
+                  {matches ? "Import Results" : ""}
+                </Button>
+              </Tooltip>
 
-              <Button startIcon={<List />} onClick={handleGenerateReports}>
-                {matches ? " View Students Report" : ""}
-              </Button>
+              <Tooltip title="View Students Report">
+                <Button startIcon={<List />} onClick={handleGenerateReports}>
+                  {matches ? "View Students Report" : ""}
+                </Button>
+              </Tooltip>
             </ButtonGroup>
           </Box>
         }

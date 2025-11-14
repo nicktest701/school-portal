@@ -57,16 +57,6 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
   return (
     <>
       <Box>
-        {/* <Typography
-          variant="h5"
-          color="primary.main"
-          bgcolor="lightgray"
-          p={1}
-          sx={{ fontWeight: "bold", width: "100%" }}
-        >
-          Profile Information
-        </Typography> */}
-
         <Stack
           sx={{
             pb: 2,
@@ -163,12 +153,12 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
         <Stack py={2}>
           <ProfileItem
             label="Department"
-            text={student?.academic?.department || "Not Available"}
+            // text={student?.academic?.department || "Not Available"}
           />
           <ProfileItem label="Current Level" text={type || levelName} />
           <ProfileItem
             label="Department"
-            text={student?.academic?.houseno || "Not Available"}
+            // text={student?.academic?.house || "Not Available"}
           />
           <ProfileItem
             label="Previous School"

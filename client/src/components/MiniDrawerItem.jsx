@@ -9,11 +9,11 @@ function MiniDrawerItem({ title, to, handleClose, data, icon }) {
 
   const hasChildren = data && data.length > 0;
 
-  const myLinkStyles = () => {
+  const myLinkStyles = ({ isActive: active }) => {
     const isActive =
-      pathname === to ||
-      (hasChildren && data.some((child) => pathname === child.to));
+      active || (hasChildren && data.some((child) => pathname === child.to));
     return {
+      width: "100%",
       textDecoration: "none",
       color: isActive ? `var(--secondary)` : "var(--primary)",
       backgroundColor: isActive ? "rgba(255,255,255,0.3)" : "#fff",
@@ -47,19 +47,20 @@ function MiniDrawerItem({ title, to, handleClose, data, icon }) {
   };
 
   return (
-    <div className="mini-drawer-item">
-      <div
-        className="mini-drawer-link"
-        style={myLinkStyles()}
+    <>
+      <NavLink
+        to={to}
+        style={myLinkStyles}
         onClick={handleItemClick}
+        className="mini-drawer-link"
       >
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {icon && <span className="mini-drawer-icon">{icon}</span>}
           {hasChildren ? (
             title
           ) : (
-            <NavLink
-              to={to}
+            <p
+              // to={to}
               style={{
                 textDecoration: "none",
                 color: "inherit",
@@ -70,11 +71,10 @@ function MiniDrawerItem({ title, to, handleClose, data, icon }) {
                 gap: "8px",
                 fontSize: "14px",
               }}
-              onClick={handleClose}
             >
               {/* {icon && <span className="mini-drawer-icon">{icon}</span>} */}
               {title}
-            </NavLink>
+            </p>
           )}
         </div>
         {hasChildren && (
@@ -88,7 +88,7 @@ function MiniDrawerItem({ title, to, handleClose, data, icon }) {
             <ExpandMore />
           </span>
         )}
-      </div>
+      </NavLink>
 
       {hasChildren && isDropdownOpen && (
         <div className="dropdown-children">
@@ -129,7 +129,7 @@ function MiniDrawerItem({ title, to, handleClose, data, icon }) {
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 }
 MiniDrawerItem.propTypes = {

@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import React, { use, useState } from "react";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -11,6 +11,7 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { UserContext } from "@/context/providers/UserProvider";
 import { useNavigate } from "react-router-dom";
+import { USER_ROLE } from "@/mockup/columns/sessionColumns";
 
 export default function AccountDropdown() {
   const { user, logOutUser } = use(UserContext);
@@ -26,8 +27,6 @@ export default function AccountDropdown() {
       navigate(path);
     }
   };
-
-
 
   return (
     <>
@@ -104,7 +103,7 @@ export default function AccountDropdown() {
           <span>Profile</span>
         </MenuItem>
         <Divider />
-        {user.role === "administrator" && (
+        {user.role === USER_ROLE.ADMIN && (
           <MenuItem onClick={() => handleClose("/settings")}>
             <ListItemIcon>
               <Settings fontSize="small" />

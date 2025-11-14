@@ -13,7 +13,6 @@ import {
 import { DeleteRounded } from "@mui/icons-material";
 
 const ExamsScoreTable = ({ data, setData }) => {
-
   const title = {
     subject: "Subject",
     classScore: "Class Score",
@@ -38,9 +37,11 @@ const ExamsScoreTable = ({ data, setData }) => {
           <TableHead>
             <TableRow>
               {Object.values(title).map((header, index) => (
-                <TableCell key={index}>{header}</TableCell>
+                <TableCell key={index} sx={{ fontSize: 12 }}>
+                  {header}
+                </TableCell>
               ))}
-              <TableCell>Action</TableCell>
+              <TableCell sx={{ fontSize: 12 }}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -53,7 +54,7 @@ const ExamsScoreTable = ({ data, setData }) => {
                 ))}
                 <TableCell>
                   <IconButton onClick={() => handleRemoveSubject(row._id)}>
-                    <DeleteRounded color="error" />
+                    <DeleteRounded color="error" fontSize="small" />
                   </IconButton>
                 </TableCell>
               </TableRow>

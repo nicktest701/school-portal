@@ -1,4 +1,5 @@
 import moment from "moment";
+import * as XLSX from "xlsx";
 
 export const getItem = (key) => {
   return JSON.parse(localStorage.getItem(key));
@@ -92,3 +93,28 @@ export function generateRGBAColorsBetween(
 
   return colors;
 }
+
+export const validateExcelHeaders = async (file, expectedHeaders) => {
+  const data = await file.arrayBuffer();
+  const workbook = XLSX.read(data);
+  const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+  // Convert the sheet to JSON but include headers
+  const sheetJson = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+  // First row = headers
+  const headers = sheetJson[0].map((h) => h?.toString().trim());
+  const normalize = (str) => str.toLowerCase().trim();
+
+  // Compare
+  const missing = expectedHeaders.filter((h) => !headers.includes(h));
+  expectedHeaders
+    .map(normalize)
+    .filter((h) => !headers.map(normalize).includes(h));
+
+  const extra = headers
+    .map(normalize)
+    .filter((h) => !expectedHeaders.map(normalize).includes(h));
+
+  return { valid: missing.length === 0 && extra.length === 0, missing, extra };
+};

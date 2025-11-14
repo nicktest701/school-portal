@@ -8,6 +8,7 @@ import { SchoolRounded } from "@mui/icons-material";
 const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
   const { school_info, session } = use(UserContext);
 
+  
   return (
     <div>
       <style>

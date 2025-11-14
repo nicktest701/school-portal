@@ -35,11 +35,12 @@ import { getPreviousLevels } from "@/api/levelAPI";
 import { getAllSessions } from "@/api/termAPI";
 import { readXLSX } from "@/config/readXLSX";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
+import { validateExcelHeaders } from "@/config/helper";
 
 const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   const students = watch("students");
   const levels = watch("levels");
-
+  // const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [inputMethod, setInputMethod] = useState("file");
   const [uploadedFiles, setUploadedFiles] = useState(_.compact(students));
@@ -50,7 +51,6 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   const [previewFileIndex, setPreviewFileIndex] = useState(null);
   const [level, setLevel] = useState({ name: "", type: "" });
   const [visibleRows, setVisibleRows] = useState(20);
-
 
   const previewTableRef = useRef(null);
 
@@ -82,10 +82,38 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
     initialData: [],
   });
 
-
+ 
   // Handle file selection
   const handleFileChange = async (e) => {
+    setError("students", {
+      message: "",
+      type: "custom",
+    });
+    const headers = [
+      "indexnumber",
+      "firstname",
+      "surname",
+      "othername",
+      "dateofbirth",
+      "gender",
+      "address",
+      "phonenumber",
+      "email",
+      "residence",
+      "nationality",
+    ];
     const uploadedFile = e.target.files[0];
+    const result = await validateExcelHeaders(uploadedFile, headers);
+
+    if (!result.valid) {
+      setError("students", {
+        message: `Invalid file headers.Expected headers: [${headers.join(
+          ", "
+        )}].Missing headers: [${result.missing.join(", ")}].`,
+        type: "custom",
+      });
+      return;
+    }
 
     if (uploadedFile) {
       setIsLoading(true);
@@ -100,7 +128,7 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
           setVisibleRows(20); // Reset rows on new file
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       } finally {
         setIsLoading(false);
       }
@@ -177,7 +205,6 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   const handleClearAll = () => {
     setUploadedFiles([]);
     setValue("students", []);
-  
   };
 
   // Load more rows when scrolling
@@ -193,7 +220,6 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   // Handle Search Functionality
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
-
 
     if (!query) {
       setFilteredData(previewData);
@@ -376,6 +402,13 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
         )}
       </Stack>
       {/* </form> */}
+      {errors?.students && (
+        <FormHelperText sx={{ color: "error.main" }}>
+          {errors?.students
+            ? errors?.students?.message
+            : " Some Index numbers in the selected students list already exist.Please remove all duplicates before submitting the data."}
+        </FormHelperText>
+      )}
       {students.length > 0 && (
         <>
           <Stack
@@ -395,13 +428,7 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
               Clear All
             </Button>
           </Stack>
-          {(errors?.students) && (
-            <FormHelperText sx={{ color: "error.main" }}>
-              {errors?.students
-                ? errors?.students?.message
-                : " Some Index numbers in the selected students list already exist.Please remove all duplicates before submitting the data."}
-            </FormHelperText>
-          )}
+
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
@@ -414,7 +441,10 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
               </TableHead>
               <TableBody>
                 {students.map((item, index) => (
-                  <TableRow key={index}>
+                  <TableRow
+                    key={index}
+                    
+                  >
                     <TableCell>
                       {item?.class?.name}
                       {item?.class?.type}

@@ -438,7 +438,8 @@ export const newSessionSchemas = [
       .of(
         object().shape({
           name: string().required("Class is required").optional(),
-          type: string().required("Class is required").optional(),
+          type: string().optional(),
+          initials: string().required("Class is required").optional(),
           levelName: string().required("Class is required").optional(),
         })
       )

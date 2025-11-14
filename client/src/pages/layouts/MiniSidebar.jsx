@@ -236,14 +236,16 @@ const MiniSidebar = ({ open, setOpen }) => {
             {school_info.permissions?.includes(
               SCHOOL_PERMISSION.ANNOUNCEMENTS
             ) && (
-              <MiniDrawerItem
-                title="Announcements"
-                icon={<AnnouncementRounded />}
-                to="/announcements"
-                handleClose={handleClose}
-              />
+              <>
+                <MiniDrawerItem
+                  title="Announcements"
+                  icon={<AnnouncementRounded />}
+                  to="/announcements"
+                  handleClose={handleClose}
+                />
+                <Divider />
+              </>
             )}
-            <Divider />
 
             <MiniDrawerItem
               title="Profile"

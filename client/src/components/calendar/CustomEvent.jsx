@@ -4,7 +4,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-// import CalendarEvent from "./CalendarEvent";
 import { Box, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getAllEvents } from "../../api/eventAPI";
@@ -74,11 +73,44 @@ function CustomEvent() {
     },
     {
       _id: "2",
+      title: `MidTerm Examination Week`,
+      start: moment(new Date(session?.exams?.midTermExams?.from)).format(
+        "YYYY-MM-DD"
+      ),
+      end: moment(new Date(session?.exams?.midTermExams?.to)).format(
+        "YYYY-MM-DD"
+      ),
+      color: "var(--secondary)",
+    },
+    {
+      _id: "3",
+      title: `Revision Week`,
+      start: moment(new Date(session?.exams?.revisionWeek?.from)).format(
+        "YYYY-MM-DD"
+      ),
+      end: moment(new Date(session?.exams?.revisionWeek?.to)).format(
+        "YYYY-MM-DD"
+      ),
+      color: "lightblue",
+    },
+    {
+      _id: "4",
+      title: `Examination Week`,
+      start: moment(new Date(session?.exams?.finalExams?.from)).format(
+        "YYYY-MM-DD"
+      ),
+      end: moment(new Date(session?.exams?.finalExams?.to)).format(
+        "YYYY-MM-DD"
+      ),
+      color: "teal",
+    },
+    {
+      _id: "5",
       title: `End of ${session?.term} (${session?.academicYear})`,
       date: moment(new Date(session?.to)).format("YYYY-MM-DD"),
     },
     {
-      _id: "3",
+      _id: "6",
       title: `Vacation Date for ${session?.term}`,
       date: moment(new Date(session?.vacationDate)).format("YYYY-MM-DD"),
     },
@@ -144,7 +176,7 @@ function CustomEvent() {
         // eventMouseLeave={handleEventMouseLeave}
         eventClick={({ event: { extendedProps } }) => {
           if (extendedProps?._id) {
-            if (["1", "2", "3", "4"].includes(extendedProps?._id)) {
+            if (["1", "2", "3", "4", "5", "6"].includes(extendedProps?._id)) {
               return;
             }
             navigate(`/events/${extendedProps?._id}`);

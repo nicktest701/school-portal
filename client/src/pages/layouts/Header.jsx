@@ -28,10 +28,11 @@ import { useCreateNote } from "@/hooks/useNotes";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useAuth } from "@/hooks/useAuth";
 import _ from "lodash";
+import { SCHOOL_PERMISSION, USER_ROLE } from "@/mockup/columns/sessionColumns";
 
 function Header() {
   const { palette } = useTheme();
-  const { user } = useAuth();
+  const { user, school_info } = useAuth();
   const { data, isError, isPending } = useNotifications();
   const [modalOpen, setModalOpen] = useState(false);
   const [openMiniBar, setOpenMiniBar] = useState(false);
@@ -156,12 +157,15 @@ function Header() {
               <SearchRounded />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Add Note">
-            <IconButton onClick={() => setModalOpen(true)}>
-              <DescriptionRounded />
-            </IconButton>
-          </Tooltip>
-          {user.role === "administrator" && <AddSectionDropdown />}
+
+          {school_info.permissions?.includes(SCHOOL_PERMISSION.NOTES_BOARD) && (
+            <Tooltip title="Add Note">
+              <IconButton onClick={() => setModalOpen(true)}>
+                <DescriptionRounded />
+              </IconButton>
+            </Tooltip>
+          )}
+          {user.role === USER_ROLE.ADMIN && <AddSectionDropdown />}
 
           <div style={{ position: "relative" }}>
             <Tooltip title="Notifications">

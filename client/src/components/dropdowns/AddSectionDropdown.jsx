@@ -8,23 +8,12 @@ import {
 } from "@mui/material";
 import { Add, AddToPhotos } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-
-const menuItems = [
-  { label: "Add Session", path: "/session/new" },
-  { label: "Add Level", path: "/level" },
-  { label: "Add Subject", path: "/subject?_t=1" },
-  { label: "Add Grade", path: "/subject?_t=2" },
-  { label: "Add Student", path: "/student/new" },
-  { label: "Add Teacher", path: "/teacher" },
-  { label: "Add Fee", path: "/fee/new" },
-  { label: "Add User", path: "/users/new" },
-  { label: "Add Message", path: "/messages/new" },
-  { label: "Add Event", path: "/events/new" },
-  { label: "Add Announcement", path: "/announcements" },
-];
+import { SCHOOL_PERMISSION } from "@/mockup/columns/sessionColumns";
+import { useAuth } from "@/hooks/useAuth";
 
 const AddSectionDropdown = () => {
   const navigate = useNavigate();
+  const { school_info } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -36,6 +25,35 @@ const AddSectionDropdown = () => {
     setAnchorEl(null);
     if (path) navigate(path);
   };
+
+  const menuItems = [
+    { label: "Add Session", path: "/session/new" },
+    { label: "Add Level", path: "/level" },
+    { label: "Add Subject", path: "/subject?_t=1" },
+    { label: "Add Grade", path: "/subject?_t=2" },
+    { label: "Add Student", path: "/student/new" },
+    { label: "Add Teacher", path: "/teacher" },
+    school_info.permissions?.includes(SCHOOL_PERMISSION.SCHOOL_FEES) && {
+      label: "Add Fee",
+      path: "/fee/new",
+    },
+    school_info.permissions?.includes(SCHOOL_PERMISSION.USERS) && {
+      label: "Add User",
+      path: "/users/new",
+    },
+    school_info.permissions?.includes(SCHOOL_PERMISSION.MESSAGES) && {
+      label: "Add Message",
+      path: "/messages/new",
+    },
+    school_info.permissions?.includes(SCHOOL_PERMISSION.EVENTS) && {
+      label: "Add Event",
+      path: "/events/new",
+    },
+    school_info.permissions?.includes(SCHOOL_PERMISSION.ANNOUNCEMENTS) && {
+      label: "Add Announcement",
+      path: "/announcements",
+    },
+  ];
 
   return (
     <>

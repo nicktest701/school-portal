@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useEffect, use } from "react";
 import * as Yup from "yup";
 import {
   Box,
@@ -6,44 +6,45 @@ import {
   Container,
   Avatar,
   Divider,
+  Button,
 } from "@mui/material";
 
 import Input from "@/components/inputs/Input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import { putTerm } from "@/api/termAPI";
+import { putHeadMaster } from "@/api/termAPI";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { UserContext } from "@/context/providers/UserProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
+import { CloudUpload } from "@mui/icons-material";
 
 const schema = Yup.object({
   name: Yup.string().required("Name is required"),
   phone: Yup.string()
     .required("Phone number is required")
     .matches(/^(\+\d{1,3})?\(?\d{3}\)?\d{3}\d{4}$/, "Invalid Phone number"),
-  signature: Yup.mixed()
-    .required("Signature is required")
-    .test("fileType", "Only image files are allowed", (value) => {
-      if (value) {
-        return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-      }
-      return false;
-    }),
+  signature: Yup.string().optional(),
 });
 
 const Headmaster = () => {
   const { updateSession, session } = use(UserContext);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
   const queryClient = useQueryClient();
-  const [signaturePreview] = useState(session?.headmaster?.signature);
 
-  const { handleSubmit, reset, control } = useForm({
+  const {
+    handleSubmit,
+    watch,
+    reset,
+    control,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
       phone: "",
-      signature: "",
+      signature: session?.headmaster?.signature || "",
     },
   });
 
@@ -55,21 +56,17 @@ const Headmaster = () => {
     });
   }, [session, reset]);
 
-  const { mutateAsync } = useMutation({
-    mutationFn: putTerm,
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: putHeadMaster,
   });
 
   const onSubmit = (values) => {
+    console.log(values);
     const details = {
-      sessionId: session?.sessionId,
       termId: session?.termId,
-      headmaster: {
-        ...values,
-        signature: signaturePreview,
-      },
+      headmaster: values,
     };
-    // console.log(details);
-    // return;
+
     mutateAsync(details, {
       onSettled: () => {
         queryClient.invalidateQueries(["terms"]);
@@ -86,6 +83,23 @@ const Headmaster = () => {
       },
     });
   };
+
+  // Handle file input change
+  const handleFileChange = (event) => {
+    const file = event.currentTarget.files[0];
+    if (!file) return;
+
+    // setSignaturePreview(reader.result);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // setSignaturePreview(reader.result);
+      setValue("signature", reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const signaturePreview = watch("signature");
 
   return (
     <Container
@@ -127,15 +141,10 @@ const Headmaster = () => {
             label="Phone"
             control={control}
             margin="normal"
-            // InputProps={{
-            //   startAdornment: (
-            //     <InputAdornment position="start">+1</InputAdornment>
-            //   ),
-            // }}
           />
 
           {/* Signature Upload Field */}
-          {/* <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 3 }}>
             <input
               accept="image/*"
               id="signature"
@@ -152,11 +161,19 @@ const Headmaster = () => {
                 Upload Signature
               </Button>
             </label>
-          </Box> */}
+          </Box>
 
           {/* Signature Preview */}
           {signaturePreview && (
-            <Box sx={{ mb: 3, textAlign: "center" }}>
+            <Box
+              sx={{
+                mb: 3,
+                textAlign: "center",
+                border: "1px solid #ccc",
+                p: 2,
+                borderRadius: "8px",
+              }}
+            >
               <Typography variant="h6" gutterBottom>
                 Signature Preview
               </Typography>
@@ -174,7 +191,7 @@ const Headmaster = () => {
           )}
 
           {/* Submit Button */}
-          {/* <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               type="submit"
               loading={isPending}
@@ -184,7 +201,7 @@ const Headmaster = () => {
             >
               {isPending ? "Please Wait.." : "Update Changes"}
             </Button>
-          </Box> */}
+          </Box>
         </form>
       </Box>
     </Container>

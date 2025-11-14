@@ -1,12 +1,10 @@
-
-import api from './customAxios';
-
+import api from "./customAxios";
 
 //Get all Students
 export const getAllTerms = async (session) => {
   try {
     const res = await api({
-      method: 'GET',
+      method: "GET",
       url: `/terms`,
       params: {
         session,
@@ -15,7 +13,6 @@ export const getAllTerms = async (session) => {
 
     return res.data;
   } catch (error) {
-
     throw error.response.data;
   }
 };
@@ -24,7 +21,7 @@ export const getAllTerms = async (session) => {
 export const getAllSessions = async (session) => {
   try {
     const res = await api({
-      method: 'GET',
+      method: "GET",
       url: `/terms/sessions`,
       params: {
         session,
@@ -33,23 +30,19 @@ export const getAllSessions = async (session) => {
 
     return res.data;
   } catch (error) {
-
     throw error.response.data;
   }
 };
 
-
 export const getTerm = async (id) => {
   try {
     const res = await api({
-      method: 'GET',
+      method: "GET",
       url: `/terms/${id}`,
-
     });
 
     return res.data;
   } catch (error) {
-
     throw error.response.data;
   }
 };
@@ -57,55 +50,61 @@ export const getTerm = async (id) => {
 export const getValidTerm = async ({ academicYear, term }) => {
   try {
     const res = await api({
-      method: 'GET',
+      method: "GET",
       url: `/terms/valid?academicYear=${academicYear}&term=${term}`,
-
     });
 
     return res.data;
   } catch (error) {
-
     throw error.response.data;
   }
 };
 
-
 export const postTerm = async (newTerm) => {
   try {
     const res = await api({
-      method: 'POST',
+      method: "POST",
       url: `/terms`,
       data: newTerm,
     });
 
     return res.data;
   } catch (error) {
-
     throw error.response.data;
   }
 };
 
-
 export const putTerm = async (updatedSession) => {
   try {
     const res = await api({
-      method: 'PUT',
+      method: "PUT",
       url: `/terms`,
       data: updatedSession,
     });
 
     return res.data;
   } catch (error) {
+    throw error.response.data;
+  }
+};
+export const putHeadMaster = async (updatedSession) => {
+  try {
+    const res = await api({
+      method: "PUT",
+      url: `/terms/headmaster`,
+      data: updatedSession,
+    });
 
+    return res.data;
+  } catch (error) {
     throw error.response.data;
   }
 };
 
-
 export const disableSessionAccount = async ({ _id, active }) => {
   try {
     const res = await api({
-      method: 'PUT',
+      method: "PUT",
       url: `/terms/account`,
       data: {
         id: _id,
@@ -115,21 +114,19 @@ export const disableSessionAccount = async ({ _id, active }) => {
 
     return res.data;
   } catch (error) {
-
     throw error.response.data;
   }
 };
 export const deleteManyTerms = async (terms) => {
   try {
     const res = await api({
-      method: 'PUT',
+      method: "PUT",
       url: `/terms/remove`,
-      data: terms
+      data: terms,
     });
 
     return res.data;
   } catch (error) {
-
     throw error.response.data;
   }
 };
@@ -137,13 +134,12 @@ export const deleteManyTerms = async (terms) => {
 export const deleteTerm = async (id) => {
   try {
     const res = await api({
-      method: 'DELETE',
+      method: "DELETE",
       url: `/terms/${id}`,
     });
 
     return res.data;
   } catch (error) {
-
     throw error.response.data;
   }
 };

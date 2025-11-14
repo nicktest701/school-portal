@@ -39,13 +39,11 @@ import { gradeColor } from "@/config/gradeColor";
 import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
 import { UserContext } from "@/context/providers/UserProvider";
 
-
 function ExamsScore() {
   const { session } = useContext(UserContext);
   const { state } = useLocation();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const [searchParams] = useSearchParams();
-
 
   //tab
   const [tab, setTab] = useState("1");
@@ -90,7 +88,16 @@ function ExamsScore() {
                   justifyContent="space-between"
                   width="100%"
                 >
-                  <Box display="flex" alignItems="center" gap={2} flex={1}>
+                  <Box
+                    display="flex"
+                    flexDirection={{
+                      xs: "column",
+                      md: "row",
+                    }}
+                    alignItems="center"
+                    gap={2}
+                    flex={1}
+                  >
                     {/* Circular Progress with Text */}
                     <Box>
                       <Box
@@ -145,7 +152,12 @@ function ExamsScore() {
                       </Box>
                       <Typography>Performance </Typography>
                     </Box>
-                    <Box>
+                    <Box
+                      textAlign={{
+                        xs: "center",
+                        md: "left",
+                      }}
+                    >
                       <Typography variant="h4">
                         {exams?.data?.fullName}
                         <Badge
@@ -300,7 +312,10 @@ function ExamsScore() {
                   <ExamsScoreList details={exams.data} />
                 </TabPanel>
                 <TabPanel value="2" sx={{ px: 0 }}>
-                  <ExamsScoreInput setTab={setTab} />
+                  <ExamsScoreInput
+                    setTab={setTab}
+                    scores={exams.data?.scores}
+                  />
                 </TabPanel>
               </TabContext>
             </Box>

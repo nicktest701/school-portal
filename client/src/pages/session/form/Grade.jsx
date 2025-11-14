@@ -16,6 +16,7 @@ import {
   Typography,
   Stack,
   Link,
+  FormHelperText,
 } from "@mui/material";
 import {
   Delete as DeleteIcon,
@@ -24,14 +25,29 @@ import {
 import * as XLSX from "xlsx";
 import { gradeColor } from "@/config/gradeColor";
 import { downloadTemplate } from "@/api/userAPI";
+import { validateExcelHeaders } from "@/config/helper";
 
 const Grade = ({ setValue, data }) => {
   const [uploadedFiles, setUploadedFiles] = useState(data?.ratings);
   const [filteredData, setFilteredData] = useState(data?.ratings);
-
+  const [error, setError] = useState("");
   // Handle file selection
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
+    setError("");
+    const headers = ["highestMark", "lowestMark", "grade", "remarks"];
+
     const uploadedFile = e.target.files[0];
+    const result = await validateExcelHeaders(uploadedFile, headers);
+
+    if (!result.valid) {
+      setError(
+        `Invalid file headers.Expected headers: [${headers.join(
+          ", "
+        )}].Missing headers: [${result.missing.join(", ")}].`
+      );
+      return;
+    }
+
     if (uploadedFile) {
       parseFile(uploadedFile);
     }
@@ -142,6 +158,15 @@ const Grade = ({ setValue, data }) => {
           fullWidth
           onChange={handleFileChange}
         />
+        {error && (
+          <FormHelperText
+            sx={{ color: "error.main" }}
+            variant="body2"
+            color="error"
+          >
+            {error}
+          </FormHelperText>
+        )}
         <Link
           sx={{ cursor: "pointer", alignSelf: "start" }}
           onClick={handleDownloadTemplate}
