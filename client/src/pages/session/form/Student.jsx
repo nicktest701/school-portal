@@ -32,10 +32,11 @@ import {
 import { downloadTemplate } from "@/api/userAPI";
 import { useQuery } from "@tanstack/react-query";
 import { getPreviousLevels } from "@/api/levelAPI";
-import { getAllSessions } from "@/api/termAPI";
+import { getAllTerms } from "@/api/termAPI";
 import { readXLSX } from "@/config/readXLSX";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { validateExcelHeaders } from "@/config/helper";
+import { DATA_HEADERS } from "@/mockup/columns/sessionColumns";
 
 const Student = ({ watch, setValue, errors, setError, handleNext }) => {
   const students = watch("students");
@@ -71,7 +72,7 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
 
   const previousSessions = useQuery({
     queryKey: ["previous-sessions"],
-    queryFn: () => getAllSessions(),
+    queryFn: () => getAllTerms("dropdown"),
     initialData: [],
   });
 
@@ -82,26 +83,13 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
     initialData: [],
   });
 
- 
   // Handle file selection
   const handleFileChange = async (e) => {
     setError("students", {
       message: "",
       type: "custom",
     });
-    const headers = [
-      "indexnumber",
-      "firstname",
-      "surname",
-      "othername",
-      "dateofbirth",
-      "gender",
-      "address",
-      "phonenumber",
-      "email",
-      "residence",
-      "nationality",
-    ];
+    const headers = DATA_HEADERS.STUDENTS;
     const uploadedFile = e.target.files[0];
     const result = await validateExcelHeaders(uploadedFile, headers);
 
@@ -441,10 +429,7 @@ const Student = ({ watch, setValue, errors, setError, handleNext }) => {
               </TableHead>
               <TableBody>
                 {students.map((item, index) => (
-                  <TableRow
-                    key={index}
-                    
-                  >
+                  <TableRow key={index}>
                     <TableCell>
                       {item?.class?.name}
                       {item?.class?.type}

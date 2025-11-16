@@ -26,6 +26,7 @@ import * as XLSX from "xlsx";
 import { gradeColor } from "@/config/gradeColor";
 import { downloadTemplate } from "@/api/userAPI";
 import { validateExcelHeaders } from "@/config/helper";
+import { DATA_HEADERS } from "@/mockup/columns/sessionColumns";
 
 const Grade = ({ setValue, data }) => {
   const [uploadedFiles, setUploadedFiles] = useState(data?.ratings);
@@ -34,7 +35,7 @@ const Grade = ({ setValue, data }) => {
   // Handle file selection
   const handleFileChange = async (e) => {
     setError("");
-    const headers = ["highestMark", "lowestMark", "grade", "remarks"];
+    const headers = DATA_HEADERS.GRADES;
 
     const uploadedFile = e.target.files[0];
     const result = await validateExcelHeaders(uploadedFile, headers);

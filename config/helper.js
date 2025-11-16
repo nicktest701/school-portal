@@ -2,7 +2,6 @@ const cheerio = require("cheerio");
 const moment = require("moment");
 const axios = require("axios");
 
-
 const LEVEL_OPTIONS = [
   "Day Care",
   "Creche",
@@ -54,29 +53,32 @@ const LEVEL_OPTIONS = [
   "Senior High School 3",
 ];
 
-
-
 const SUBJECT_OPTIONS = [
   "ENGLISH LANGUAGE",
+  "READING",
+  "WRITING",
+  "MUSIC AND DANCE",
+  "ORALS AND RHYMES",
   "MATHEMATICS",
+  "NUMERACY",
   "INTEGRATED SCIENCE",
   "NATURAL SCIENCE",
-  "HISTORY",
   "SOCIAL STUDIES",
-  "OUR WORLD,OUR PEOPLE",
-  "RELIGIOUS & MORAL EDUCATION",
+  "HISTORY",
+  "OUR WORLD OUR PEOPLE",
+  "RELIGIOUS AND MORAL EDUCATION",
+  "R.M.E",
+  "INFORMATION AND COMMUNICATION TECHNOLOGY",
+  "I.C.T",
   "COMPUTING",
-  "CREATIVE ARTS & DESIGN",
+  "CREATIVE ARTS AND DESIGN",
   "CAREER TECHNOLOGY",
   "GHANAIAN LANGUAGE",
   "FRENCH",
   "ARABIC",
-  "PHYSICAL & HEALTH EDUCATION",
   "PHYSICAL EDUCATION",
-  "READING",
-  "WRITING",
-  "MUSIC & DANCE",
-  "ORALS & RHYMES",
+  "PHYSICAL AND HEALTH EDUCATION",
+  "P.H.E",
 ];
 
 function stripHtmlTags(html) {

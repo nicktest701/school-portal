@@ -407,8 +407,8 @@
             <th>Class Score(<%= school.termDetails.class %>%)</th>
             <th>Exam Score (<%= school.termDetails.exams %>%)</th>
             <th>Total Score 100%</th>
-            <th>Class Average</th>
             <th>Position</th>
+            <th>Grade</th>
             <th>Remarks</th>
           </tr>
         </thead>
@@ -429,7 +429,7 @@
               <%= score.totalScore %>
             </td>
 
-            <td width="10%"><%= score.grade %></td>
+            <td width="10%"><%= score.position%></td>
             <td width="10%"><%= score.grade %></td>
             <td width="14%" style="color: green"><%= score.remarks %></td>
           </tr>

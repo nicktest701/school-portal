@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
 import React, { useContext, useState } from "react";
 import { getPreviousLevels } from "@/api/levelAPI";
-import { getAllSessions } from "@/api/termAPI";
+import { getAllTerms } from "@/api/termAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 
 function PreviousSession({ open, setOpen }) {
@@ -32,9 +32,8 @@ function PreviousSession({ open, setOpen }) {
 
   const termOptions = useQuery({
     queryKey: ["previous-sessions"],
-    queryFn: () => getAllSessions(),
+    queryFn: () => getAllTerms("dropdown"),
     initialData: [],
-
   });
 
   const levelOptions = useQuery({
@@ -57,7 +56,7 @@ function PreviousSession({ open, setOpen }) {
   const handleLoadStudents = () => {
     if (selectedLevel?.data?.length === 0) {
       Swal.fire({
-        icon:'info',
+        icon: "info",
         title: "Empty Data Set",
         text: "No student found!",
         backdrop: false,

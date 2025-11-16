@@ -1,36 +1,27 @@
+import React from "react";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
-import {
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-} from "@mui/material";
+import { Divider, IconButton, ListItem, ListItemText } from "@mui/material";
 
 const LevelSubjectItem = ({ subject, removeSubject }) => {
   return (
     <>
-      <ListItem sx={{ mt: 3 }}>
-        <ListItemText
-          secondary={subject?.name}
-          secondaryTypographyProps={{
-            fontSize: 12,
-            fontStyle: "italic",
-            fontWeight: "bold",
-          }}
-        />
-        <ListItemSecondaryAction
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
+      <ListItem
+        sx={{ mt: 3 }}
+        secondaryAction={
           <IconButton onClick={() => removeSubject(subject?._id)}>
             <DeleteOutline />
           </IconButton>
-        </ListItemSecondaryAction>
+        }
+      >
+        <ListItemText
+          secondary={subject?.name}
+          slotProps={{
+            secondary: {
+              fontSize: 12,
+              fontWeight: "bold",
+            },
+          }}
+        />
       </ListItem>
       <Divider />
     </>

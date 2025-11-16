@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLevel } from "@/api/levelAPI";
+import { SUBJECTS } from "@/mockup/columns/sessionColumns";
 
 function useLevelById(id) {
   const queryClient = useQueryClient();
@@ -19,7 +20,12 @@ function useLevelById(id) {
       return {
         students: levels?.data?.students,
         gradeSystem: levels?.data?.grades,
-        subjects: levels?.data?.subjects,
+        // subjects: levels?.data?.subjects,
+        subjects: levels?.data?.subjects?.sort(
+          (a, b) =>
+            SUBJECTS.indexOf(a?.level?.name) - SUBJECTS.indexOf(b?.level?.name)
+        ),
+
         rollNumber: levels?.data?.students?.length,
         levelName: `${levels?.data?.level?.name}${
           levels?.data?.level?.type || ""

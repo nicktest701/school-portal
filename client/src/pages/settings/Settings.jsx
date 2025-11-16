@@ -8,6 +8,7 @@ import Holidays from "./Holidays";
 import Headmaster from "./Headmaster";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import BasicInformation from "./BasicInformation";
+import ReportTemplates from "./ReportTemplates";
 
 const Settings = () => {
   const [st, setSt] = useLocalStorage("settings_tab", "1");
@@ -33,7 +34,7 @@ const Settings = () => {
           <Tab value="2" label="Logo" />
           <Tab value="3" label="Holidays" />
           <Tab value="4" label="Headmaster" />
-          {/* <Tab value="5" label="Report Customization" /> */}
+          <Tab value="5" label="Report Customization" />
         </TabList>
         <TabPanel value="1" sx={{ px: 0 }}>
           <BasicInformation />
@@ -47,9 +48,9 @@ const Settings = () => {
         <TabPanel value="4" sx={{ px: 0 }}>
           <Headmaster />
         </TabPanel>
-        {/* <TabPanel value="5" sx={{ px: 0 }}>
+        <TabPanel value="5" sx={{ px: 0 }}>
           <ReportTemplates />
-        </TabPanel> */}
+        </TabPanel>
       </TabContext>
     </Container>
   );

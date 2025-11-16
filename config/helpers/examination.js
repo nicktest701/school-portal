@@ -1,6 +1,7 @@
 // This module provides functions to retrieve the best scores from student records.
 
 const ordinal = require("ordinal-suffix");
+const { ObjectId } = require("mongodb");
 const _ = require("lodash");
 const Examination = require("../../models/examinationModel");
 
@@ -403,6 +404,61 @@ async function getMyPosition(termId, levelId, examsId) {
   return ordinal(position);
 }
 
+async function getSubjectPosition(termId, levelId, examsId, subject) {
+  const exams = await Examination.find({
+    term: termId,
+    level: levelId,
+  }).select(["scores"]);
+
+  const subjectScores = exams.map((exam) => {
+    const selectedSubject = exam.scores.find((subj) => {
+      return subj._id.toString() === subject._id.toString();
+    });
+    return selectedSubject
+      ? {
+          examId: exam._id,
+          _id: selectedSubject._id,
+          subject: selectedSubject?.subject,
+          totalScore: selectedSubject?.totalScore,
+        }
+      : {
+          examId: exam._id,
+          _id: subject._id,
+          subject: subject?.subject,
+          totalScore: 0,
+        };
+  });
+
+  const examPositions = getExamPosition(subjectScores, examsId);
+  // console.log("Exam Positions:", examPositions);
+
+  return examPositions;
+}
+
+function getExamPosition(exams, targetExamId) {
+  const normalizedId = new ObjectId(targetExamId).toString();
+
+  // Step 1: Filter exams with that examId
+  const list = exams.filter((e) => e.examId.toString() === normalizedId);
+
+  const sorted = _.map(_.orderBy(exams, "totalScore", "desc"), "totalScore");
+
+  const positions = exams.slice().map((exam) => {
+    return {
+      _id: exam.examId,
+      totalScore: exam.totalScore,
+      position: sorted.indexOf(exam.totalScore) + 1,
+    };
+  });
+
+  const position =
+    positions.find((exams) => {
+      return exams._id.toString() === targetExamId.toString();
+    }).position || "";
+
+  return ordinal(position);
+}
+
 module.exports = {
   getBestOverallScore,
   getBestSubjectScore,
@@ -414,6 +470,7 @@ module.exports = {
   getTopSubjects,
   getTopOverallScores,
   getMyPosition,
+  getSubjectPosition,
   // getBestPosition, // Uncomment if you want to use this function
   // Add more functions as needed
 };

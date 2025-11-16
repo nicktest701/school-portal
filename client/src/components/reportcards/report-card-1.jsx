@@ -146,16 +146,14 @@ const TerminalReport1 = ({ student, classScore, examsScore, ratings }) => {
             <tr style={{ fontSize: "14px" }}>
               <th>Subject</th>
               <th>
-                {" "}
                 Class Score <br /> ({classScore}%)
               </th>
               <th>
-                {" "}
                 Exams Score
                 <br /> ({examsScore}%)
               </th>
               <th>Total Score (100%)</th>
-              {/* <th>Position</th> */}
+              <th>Position</th>
               <th>Grade</th>
               <th>Remarks</th>
             </tr>

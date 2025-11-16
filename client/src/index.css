@@ -305,6 +305,8 @@ a.button:active {
   font-family: inherit;
   background: rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(2px) !important;
+  position: "fixed" !important;
+  inset: 0 !important;
 }
 
 .swal2-title {
@@ -313,6 +315,8 @@ a.button:active {
 
 .swal2-html-container {
   font-size: 1rem !important;
+  position: "fixed" !important;
+  inset: 0 !important;
 }
 
 .swal2-confirm,

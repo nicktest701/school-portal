@@ -20,6 +20,7 @@ import { Box, ListSubheader } from "@mui/material";
 import CustomTitle from "../custom/CustomTitle";
 import { useParams } from "react-router-dom";
 import { UserContext } from "@/context/providers/UserProvider";
+import { SUBJECTS } from "@/mockup/columns/sessionColumns";
 
 const AddCurrentSubjects = () => {
   const { session } = useContext(UserContext);
@@ -40,6 +41,11 @@ const AddCurrentSubjects = () => {
         term: session?.termId,
       }),
     initialData: [],
+    select: (subjects) => {
+      return subjects?.sort((a, b) => {
+        SUBJECTS.indexOf(a?.name) - SUBJECTS.indexOf(b?.name);
+      });
+    },
   });
 
   useEffect(() => {
@@ -48,11 +54,12 @@ const AddCurrentSubjects = () => {
 
   //Add Subjects to subject list
   const handleAddSubject = () => {
-    // const newSubjects = _.uniq([...subjectList, ...subject]);
+   
 
     const newSubjects = _.values(
       _.merge(_.keyBy([...subjectList, ...subject], "_id"))
     );
+    
 
     setSubjectList(newSubjects);
     setSubject([]);
@@ -102,7 +109,6 @@ const AddCurrentSubjects = () => {
         subtitle="Add new subjects to the current level"
         color="primary.main"
         showBack={true}
-      
       />
 
       <Box>
@@ -120,7 +126,9 @@ const AddCurrentSubjects = () => {
             multiple={true}
             freeSolo
             fullWidth
-            options={subjectOptions.data ?? []}
+            options={subjectOptions.data}
+            loading={subjectOptions.isPending}
+            loadingText="Please Wait.."
             disableCloseOnSelect
             getOptionLabel={(option) => option?.name || ""}
             value={subject}

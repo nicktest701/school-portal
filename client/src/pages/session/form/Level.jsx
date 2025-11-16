@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import _ from "lodash";
-import * as XLSX from "xlsx";
 import {
   Button,
   TextField,
@@ -28,13 +27,13 @@ import {
   Search as SearchIcon,
 } from "@mui/icons-material";
 import { downloadTemplate } from "@/api/userAPI";
-import { getAllSessions } from "@/api/termAPI";
+import { getAllTerms } from "@/api/termAPI";
 import { getPreviousLevels } from "@/api/levelAPI";
 import { useQuery } from "@tanstack/react-query";
 import { readXLSX } from "@/config/readXLSX";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import { getLevelInitials, validateExcelHeaders } from "@/config/helper";
-import { LEVEL_OPTIONS } from "@/mockup/columns/sessionColumns";
+import { DATA_HEADERS, LEVEL_OPTIONS } from "@/mockup/columns/sessionColumns";
 
 const Level = ({ watch, setValue, errors, handleNext }) => {
   const [error, setError] = useState("");
@@ -53,7 +52,7 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
 
   const previousSessions = useQuery({
     queryKey: ["previous-sessions"],
-    queryFn: () => getAllSessions(),
+    queryFn: () => getAllTerms('dropdown'),
     initialData: [],
   });
 
@@ -73,7 +72,7 @@ const Level = ({ watch, setValue, errors, handleNext }) => {
   // Handle file selection
   const handleFileChange = async (e) => {
     setError("");
-    const headers = ["name", "type", "initials"];
+    const headers = DATA_HEADERS.LEVELS;
     const uploadedFile = e.target.files[0];
     const result = await validateExcelHeaders(uploadedFile, headers);
 

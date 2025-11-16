@@ -25,6 +25,7 @@ const {
   getTopSubjects,
   getTopOverallScores,
   getMyPosition,
+  getSubjectPosition,
 } = require("../config/helpers/examination");
 
 //@GET
@@ -894,7 +895,6 @@ router.post(
     //Remove all deleted Scores
     const filteredScores = _.intersectionBy(latestScores, scores, "_id");
 
-    
     const overallScore = _.sumBy(filteredScores, (score) =>
       Number(score?.totalScore)
     );
@@ -964,6 +964,25 @@ const studentReportDetails = async (
 
   const newGenerateScore = await scoresWithTotal;
 
+  const modifiedScores = newGenerateScore.map(async (score) => {
+    const position = await getSubjectPosition(term?._id, level?._id, _id, {
+      _id: score._id,
+      subject: score.subject,
+    });
+
+    return {
+      ...score,
+      position: position,
+    };
+  });
+
+  const finalScores = await Promise.all(modifiedScores);
+  //SORT SCORES ACCORDING TO SUBJECT_OPTIONS
+  const sortedScores = finalScores.sort(
+    (a, b) =>
+      SUBJECT_OPTIONS.indexOf(a.subject) - SUBJECT_OPTIONS.indexOf(b.subject)
+  );
+
   //CONVERT IMAGE TO BASE64
   let STUDENT_PHOTO = "";
   if (student?.profile && reportType === "print") {
@@ -992,11 +1011,7 @@ const studentReportDetails = async (
     levelId: level?._id,
     profile:
       reportType === "preview" ? student?.profile || null : STUDENT_PHOTO,
-    scores: newGenerateScore.sort(
-      (a, b) =>
-        SUBJECT_OPTIONS.indexOf(a.subject) - SUBJECT_OPTIONS.indexOf(b.subject)
-    ),
-
+    scores: sortedScores,
     overallScore,
     position: position,
     // position: ordinal(position),

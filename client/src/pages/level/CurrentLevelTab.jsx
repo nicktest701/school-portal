@@ -12,10 +12,13 @@ import FileDialog from "@/components/modals/FileDialog";
 import useLevelById from "@/components/hooks/useLevelById";
 import student_icon from "@/assets/images/header/student_ico.svg";
 import {
+  AssignmentTurnedInSharp,
   FemaleRounded,
   MaleRounded,
   Note,
   NoteAltRounded,
+  Person2,
+  SubjectRounded,
 } from "@mui/icons-material";
 import GroupIcon from "@mui/icons-material/Group";
 
@@ -35,6 +38,8 @@ import {
   Avatar,
   useMediaQuery,
   useTheme,
+  ButtonGroup,
+  Tooltip,
 } from "@mui/material";
 
 import SubjectPopover from "./SubjectPopOver";
@@ -285,31 +290,34 @@ const CurrentLevelTab = () => {
             </Grid2>
           </Grid2>
           <Divider sx={{ my: 2 }} />
-          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-            <Button
-              variant="contained"
-              startIcon={<NoteAltRounded />}
-              onClick={handleOpenAttendance}
-            >
-              {matches && "Mark Attendance"}
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<NoteAltRounded />}
-              onClick={handleOpenAddSubject}
-            >
-              {matches && "Add Subjects"}
-            </Button>
-            {!teacher?._id && (
+          <ButtonGroup sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Tooltip title="Mark Attendance">
               <Button
-                variant="contained"
-                startIcon={<NoteAltRounded />}
-                onClick={handleOpenAssignTeacher}
+                startIcon={<AssignmentTurnedInSharp />}
+                onClick={handleOpenAttendance}
               >
-                {matches && "Assign Teacher"}
+                {matches && "Mark Attendance"}
               </Button>
+            </Tooltip>
+            <Tooltip title="Add Subjects">
+              <Button
+                startIcon={<SubjectRounded />}
+                onClick={handleOpenAddSubject}
+              >
+                {matches && "Add Subjects"}
+              </Button>
+            </Tooltip>
+            {!teacher?._id && (
+              <Tooltip title="Assign Teacher">
+                <Button
+                  startIcon={<Person2 />}
+                  onClick={handleOpenAssignTeacher}
+                >
+                  {matches && "Assign Teacher"}
+                </Button>
+              </Tooltip>
             )}
-          </Box>
+          </ButtonGroup>
         </CardContent>
       </Card>
 
@@ -324,7 +332,6 @@ const CurrentLevelTab = () => {
         actions={[]}
         icon={student_icon}
         onRowClick={({ _id }) => handleViewStudent(_id)}
-      
       />
 
       <FileDialog />

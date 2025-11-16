@@ -13,7 +13,7 @@ import Input from "@/components/inputs/Input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import { putHeadMaster } from "@/api/termAPI";
+import { updateTermDetails } from "@/api/termAPI";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { UserContext } from "@/context/providers/UserProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
@@ -57,13 +57,13 @@ const Headmaster = () => {
   }, [session, reset]);
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: putHeadMaster,
+    mutationFn: updateTermDetails,
   });
 
   const onSubmit = (values) => {
-    console.log(values);
     const details = {
       termId: session?.termId,
+      type: "headmaster",
       headmaster: values,
     };
 

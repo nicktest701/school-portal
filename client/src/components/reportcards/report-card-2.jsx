@@ -8,7 +8,6 @@ import { SchoolRounded } from "@mui/icons-material";
 const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
   const { school_info, session } = use(UserContext);
 
-  
   return (
     <div>
       <style>
@@ -389,11 +388,17 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
           <thead>
             <tr>
               <th>Subject</th>
-              <th>Class Score({classScore}%)</th>
-              <th>Exam Score ({examsScore}%)</th>
-              <th>Total Score 100%</th>
-              <th>Class Average</th>
+              <th>
+                Class Score <br />({classScore}%)
+              </th>
+              <th>
+                Exam Score <br />({examsScore}%)
+              </th>
+              <th>
+                Total Score <br /> 100%
+              </th>
               <th>Position</th>
+              <th>Grade</th>
               <th>Remarks</th>
             </tr>
           </thead>
@@ -410,7 +415,12 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    {score.subject}
+                    {score.subject ===
+                    "INFORMATION AND COMMUNICATION TECHNOLOGY"
+                      ? "I.C.T"
+                      : score.subject === "RELIGIOUS AND MORAL EDUCATION"
+                      ? "R.M.E"
+                      : score?.subject}
                   </td>
                   <td width="18%">{score.classScore}</td>
                   <td width="18%">{score.examsScore}</td>
@@ -420,7 +430,7 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
                   >
                     {score.totalScore}
                   </td>
-                  <td width="10%">{score.grade}</td>
+                  <td width="10%">{score.position}</td>
                   <td width="10%">{score.grade}</td>
                   <td width="14%" style={{ color: "green" }}>
                     {score.remarks}

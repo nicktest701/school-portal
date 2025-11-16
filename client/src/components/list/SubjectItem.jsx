@@ -27,7 +27,7 @@ const SubjectItem = ({
         <TextField
           placeholder="code "
           size="small"
-          sx={{ width: 100, mr: 2 }}
+          sx={{ width: 80, mr: 2 }}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onBlur={() => appendCode({ name, isCore, code: value })}

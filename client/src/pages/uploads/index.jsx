@@ -32,6 +32,8 @@ import { downloadTemplate } from "@/api/userAPI";
 import { switchColumns } from "@/config/columns";
 import { putBulkData } from "@/api/sessionAPI";
 import useLevel from "@/components/hooks/useLevel";
+import { DATA_HEADERS } from "@/mockup/columns/sessionColumns";
+import { validateExcelHeaders } from "@/config/helper";
 
 const Uploads = () => {
   const CSV_FILE_TYPE = "text/csv";
@@ -98,8 +100,36 @@ const Uploads = () => {
   };
 
   //LOAD Results from file excel,csv
-  function handleLoadFile(files) {
+  async function handleLoadFile(files) {
+    setMainError("");
     setIsLoading(true);
+    let headers = [];
+    switch (dataCategory) {
+      case "students":
+        headers = DATA_HEADERS.STUDENTS;
+        break;
+      case "teachers":
+        headers = DATA_HEADERS.TEACHERS;
+        break;
+      case "subjects":
+        headers = DATA_HEADERS.SUBJECTS;
+        break;
+      case "grades":
+        headers = DATA_HEADERS.GRADES;
+        break;
+      default:
+        headers = [];
+    }
+
+    const result = await validateExcelHeaders(files, headers);
+
+    if (!result.valid) {
+      setMainError(
+        `Invalid file headers.Expected headers: [${headers.join(", ")}].`
+      );
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const reader = new FileReader();
@@ -139,7 +169,7 @@ const Uploads = () => {
                 ...result,
               };
             });
-            console.log(modifiedResults);
+
             setBulkData(modifiedResults);
             return;
           }

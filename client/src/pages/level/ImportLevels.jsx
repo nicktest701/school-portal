@@ -34,7 +34,7 @@ import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 import PropTypes from "prop-types";
 import { getLevelInitials, validateExcelHeaders } from "@/config/helper";
-import { getAllSessions } from "@/api/termAPI";
+import { getAllTerms } from "@/api/termAPI";
 import { getPreviousLevels } from "@/api/levelAPI";
 import { downloadTemplate } from "@/api/userAPI";
 import { UserContext } from "@/context/providers/UserProvider";
@@ -43,7 +43,7 @@ import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { postLevels } from "@/api/levelAPI";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
-import { LEVEL_OPTIONS } from "@/mockup/columns/sessionColumns";
+import { DATA_HEADERS, LEVEL_OPTIONS } from "@/mockup/columns/sessionColumns";
 
 const ImportLevels = ({ open, onClose }) => {
   const { session } = use(UserContext);
@@ -66,7 +66,7 @@ const ImportLevels = ({ open, onClose }) => {
 
   const previousSessions = useQuery({
     queryKey: ["previous-sessions", inputMethod],
-    queryFn: () => getAllSessions(),
+    queryFn: () => getAllTerms('dropdown'),
     initialData: [],
     enabled: inputMethod === "autocomplete",
     select: (terms) => {
@@ -109,8 +109,6 @@ const ImportLevels = ({ open, onClose }) => {
   };
 
   const handleUpload = () => {
-
-    
     Swal.fire({
       title: "Uploading Levels",
       text: "Proceed with levels import?",
@@ -168,7 +166,7 @@ const ImportLevels = ({ open, onClose }) => {
   // Handle file selection
   const handleFileChange = async (e) => {
     setError("");
-    const headers = ["name", "type", "initials"];
+    const headers = DATA_HEADERS.LEVELS;
     const uploadedFile = e.target.files[0];
     const result = await validateExcelHeaders(uploadedFile, headers);
 

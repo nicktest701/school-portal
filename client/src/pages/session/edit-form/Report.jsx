@@ -108,7 +108,7 @@ const Report = ({ control, setValue, watch, errors }) => {
             </Typography>
             <FormControl fullWidth>
               <SelectInput
-                label="Term/Semester"
+                label="Dimension"
                 size="small"
                 name="report.dimension"
                 control={control}
@@ -153,7 +153,7 @@ const Report = ({ control, setValue, watch, errors }) => {
               </IconButton>
               {previewTemplate && (
                 <>
-                  <Box >
+                  <Box mt={2}>
                     <Typography
                       variant="button"
                       color={

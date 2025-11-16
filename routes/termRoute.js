@@ -13,19 +13,15 @@ const {
 } = require("mongoose");
 const { verifyJWT } = require("../middlewares/verifyJWT");
 const moment = require("moment/moment");
+const { query } = require("express-validator");
 // const knex = require("../db/knex");
 
-async function setActive(itemId, schoolId, active = true) {
+async function setActive(termId, schoolId, active = true) {
   // 1️⃣ Set all items to inactive
-  await Term.updateMany({ school: schoolId }, { $set: { active: false } });
-  await Level.updateMany({ school: schoolId }, { $set: { active: false } });
+  await Term.updateMany({ school: schoolId }, { $set: { active } });
 
   // 2️⃣ Set the specific item to active
-  await Term.updateOne({ _id: itemId, school: schoolId }, { $set: { active } });
-  await Level.updateMany(
-    { term: itemId, school: schoolId },
-    { $set: { active } }
-  );
+  await Term.updateOne({ _id: termId, school: schoolId }, { $set: { active } });
 }
 
 //@GET All school Terms
@@ -33,24 +29,41 @@ router.get(
   "/",
   verifyJWT,
   asyncHandler(async (req, res) => {
-    const session = req.query?.session;
+    const { session, type } = req.query;
+    const { role, school } = req.user;
 
-    let terms = [];
+    let query = {
+      school,
+    };
+
     if (session) {
-      terms = await Term.find({
-        school: req.user.school,
-        session: new ObjectId(session),
-      }).populate("session");
-    } else {
-      terms = await Term.find({
-        school: req.user.school,
-      }).populate("session");
+      query.session = session;
     }
+
+    if (role === "teacher") {
+      query.status = "current";
+      query.active = true;
+    }
+
+    const terms = await Term.find(query).populate("session");
 
     if (_.isEmpty(terms)) {
       return res.status(200).json([]);
     }
+
     const modifiedTerms = terms.map((term) => {
+      if (type === "dropdown") {
+        return {
+          _id: term?._id,
+          sessionId: term?.session?._id,
+          term: term?.term,
+          name: `${term?.academicYear} ${term?.term}`,
+          academicYear: term?.academicYear,
+          status: term?.status,
+          active: term?.active,
+          createdAt: term?.createdAt,
+        };
+      }
       const newTerm = {
         core: {
           name: term?.name,
@@ -67,6 +80,7 @@ router.get(
         exams: term?.exams,
         termId: term._id,
         sessionId: term?.session?._id,
+        status: term?.status,
         active: term?.active,
       };
 
@@ -85,18 +99,22 @@ router.get(
   verifyJWT,
   asyncHandler(async (req, res) => {
     const session = req.query?.session;
+    const { role, school } = req.user;
 
-    let terms = [];
+    let query = {
+      school,
+    };
+
     if (session) {
-      terms = await Term.find({
-        school: req.user.school,
-        session: new ObjectId(session),
-      }).populate("session");
-    } else {
-      terms = await Term.find({
-        school: req.user.school,
-      });
+      query.session = session;
     }
+
+    if (role === "teacher") {
+      query.status = "curent";
+      query.active = true;
+    }
+
+    const terms = await Term.find(query).populate("session");
 
     if (_.isEmpty(terms)) {
       return res.status(200).json([]);
@@ -108,6 +126,7 @@ router.get(
         term: term?.term,
         name: `${term?.academicYear} ${term?.term}`,
         academicYear: term?.academicYear,
+        status: term?.status,
         active: term?.active,
         createdAt: term?.createdAt,
       };
@@ -167,6 +186,7 @@ router.get(
       exams: term?.exams,
       termId: term._id,
       sessionId: term?.session?._id,
+      status: term?.status,
       active: term?.active,
     };
     res.status(200).json(modifiedTerm);
@@ -243,6 +263,7 @@ router.post(
       vacationDate: to,
       reOpeningDate: to,
       isPromotionTerm,
+      status: active === "Yes" ? "upcoming" : "archived",
       active: active === "Yes" ? true : false,
       exams: {
         scorePreference: "50/50",
@@ -257,10 +278,10 @@ router.post(
         .json("Error creating new session.Try again later!!!");
     }
 
-    if (newTerm?.active) {
-      // Set the new term as active
-      await setActive(newTerm._id, req.user.school, true);
-    }
+    // if (newTerm?.active) {
+    //   // Set the new term as active
+    //   await setActive(newTerm._id, req.user.school, true);
+    // }
 
     let grades = null;
     if (!_.isEmpty(grade)) {
@@ -411,19 +432,30 @@ router.put(
     res.status(201).json("Changes Saved!");
   })
 );
-//@PUT Update Existing School Session
-router.put(
-  "/headmaster",
-  asyncHandler(async (req, res) => {
-    const { termId, ...rest } = req.body;
- 
 
-    const modifiedTerm = await Term.findByIdAndUpdate(termId, {
-      $set: {
+//@PUT Update Existing School Session
+router.patch(
+  "/",
+  asyncHandler(async (req, res) => {
+    const { termId, type, ...rest } = req.body;
+
+    let query = {};
+    if (type === "headmaster") {
+      query = {
         headmaster: {
           ...rest?.headmaster,
         },
-      },
+      };
+    }
+    if (type === "report") {
+      query = {
+        report: {
+          ...rest?.report,
+        },
+      };
+    }
+    const modifiedTerm = await Term.findByIdAndUpdate(termId, {
+      $set: query,
     });
 
     if (_.isEmpty(modifiedTerm)) {
@@ -450,7 +482,7 @@ router.put(
       }
     );
 
-    await setActive(id, req.user.school, active);
+    // await setActive(id, req.user.school, active);
 
     if (_.isEmpty(updatedTerm)) {
       return res.status(404).json("Error updating Session info");
@@ -459,6 +491,37 @@ router.put(
     res.json(
       updatedTerm.active === true ? "Session  enabled" : "Session  disabled"
     );
+  })
+);
+//Enable or Disable a particular Term
+router.patch(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.query;
+    const schoolId = req.user?.school;
+
+    if (status === "current") {
+      await Term.updateMany(
+        { school: schoolId, status: "current" },
+        { $set: { status: "archived" } }
+      );
+    }
+
+    // 2️⃣ Set the specific item to active
+    const updatedTerm = await Term.updateOne(
+      { _id: id, school: schoolId },
+      { $set: { status } },
+      {
+        new: true,
+      }
+    );
+
+    if (_.isEmpty(updatedTerm)) {
+      return res.status(404).json("Error updating Session info");
+    }
+
+    res.json(`Changes Saved`);
   })
 );
 

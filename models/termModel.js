@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const db = require("../db/DBConnection");
 
-
 const TermSchema = new mongoose.Schema(
   {
     school: {
@@ -29,7 +28,7 @@ const TermSchema = new mongoose.Schema(
     report: {
       template: {
         type: String,
-        default: "first",
+        default: "template1",
       },
       dimension: {
         type: String,
@@ -39,6 +38,13 @@ const TermSchema = new mongoose.Schema(
     active: {
       type: Boolean,
       default: false,
+    },
+    status: {
+      type: String,
+      lowercase: true,
+      enum: ["upcoming", "current", "archived"],
+      default: "upcoming",
+      required: true,
     },
   },
   {

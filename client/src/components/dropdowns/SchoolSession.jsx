@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllTerms } from "@/api/termAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { useAuth } from "@/hooks/useAuth";
+import { USER_ROLE } from "@/mockup/columns/sessionColumns";
 
 const SchoolSessionDropdown = () => {
   const { pathname } = useLocation();
@@ -33,7 +34,7 @@ const SchoolSessionDropdown = () => {
             ...rest,
           };
         });
-        if (user?.role === "administrator") {
+        if (user?.role === USER_ROLE.ADMIN) {
           return modifieldSessions;
         } else {
           return modifieldSessions.filter((session) => session.active);
@@ -42,10 +43,15 @@ const SchoolSessionDropdown = () => {
       return [];
     },
   });
-  // const currentPath = state?.path || '/';
+
+  // const { isPending, mutateAsync } = useMutation({
+  //   mutationFn: switchTerm,
+  // });
 
   const handleChangeSession = (value) => {
     if (currentSession.termId === value?.termId) return;
+
+   
 
     Swal.fire({
       title: `You are about to change the current session to ${value?.academicYear},${value?.term}`,
@@ -53,9 +59,6 @@ const SchoolSessionDropdown = () => {
       showCancelButton: true,
       backdrop: false,
       allowOutsideClick: false,
-      // customClass: {
-      //   container: "my-swal",
-      // },
     }).then(({ isConfirmed }) => {
       if (isConfirmed) {
         setSessionError("");

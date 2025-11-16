@@ -35,22 +35,18 @@ const SchoolSession = () => {
     refetchOnMount: false,
     select: (sessions) => {
       if (sessions?.length > 0) {
-        const modifieldSessions = sessions?.map(({ core, ...rest }) => {
+        return sessions?.map(({ core, ...rest }) => {
           return {
             ...core,
             ...rest,
           };
         });
-        if (user?.role === "administrator") {
-          return modifieldSessions;
-        } else {
-          return modifieldSessions.filter((session) => session.active);
-        }
       }
       return [];
     },
   });
 
+  console.log(sessions.data);
   const handleSession = () => {
     setLoading(true);
     setSessionError("");

@@ -17,6 +17,10 @@ function ExamsScoreList({ details }) {
       },
     },
     {
+      field: "position",
+      title: "Position",
+    },
+    {
       field: "grade",
       title: "Grade",
     },

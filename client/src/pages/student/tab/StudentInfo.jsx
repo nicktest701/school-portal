@@ -50,6 +50,7 @@ import FormStep from "@/components/FormStep";
 import { readXLSX } from "@/config/readXLSX";
 import moment from "moment";
 import { validateExcelHeaders } from "@/config/helper";
+import { DATA_HEADERS } from "@/mockup/columns/sessionColumns";
 
 const pages = [
   {
@@ -267,19 +268,7 @@ const StudentInfo = () => {
       message: "",
       type: "custom",
     });
-    const headers = [
-      "indexnumber",
-      "firstname",
-      "surname",
-      "othername",
-      "dateofbirth",
-      "gender",
-      "address",
-      "phonenumber",
-      "email",
-      "residence",
-      "nationality",
-    ];
+    const headers = DATA_HEADERS.STUDENTS;
     const file = e.target.files[0];
     const result = await validateExcelHeaders(file, headers);
 

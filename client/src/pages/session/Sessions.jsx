@@ -6,7 +6,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import session_icon from "@/assets/images/header/session_ico.svg";
 import { SCHOOL_SESSION_COLUMN } from "@/mockup/columns/sessionColumns";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
-import { deleteTerm, disableSessionAccount, getAllTerms } from "@/api/termAPI";
+import {
+  deleteTerm,
+  disableSessionAccount,
+  getAllTerms,
+  switchTerm,
+} from "@/api/termAPI";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 import { EMPTY_IMAGES } from "@/config/images";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
@@ -145,6 +150,40 @@ const Sessions = () => {
       }
     });
   };
+  ///Disable or Enable User Account by id
+  const { mutateAsync: switchMutate } = useMutation({
+    mutationFn: switchTerm,
+  });
+  const handleSwitchSession = ({ _id, status }) => {
+    Swal.fire({
+      title: "Switch School Session",
+      text: "Do you wish to make this session your current session?",
+      showCancelButton: true,
+      backdrop: false,
+    }).then((data) => {
+      if (data.isConfirmed) {
+        const info = {
+          id: _id,
+          status,
+        };
+
+        switchMutate(info, {
+          onSuccess: (data) => {
+            queryClient.invalidateQueries(["terms"]);
+            schoolSessionDispatch(alertSuccess(data));
+            if (info?.status === "current") {
+              schoolSessionDispatch(
+                alertSuccess(`Your Current Session has been changed!!!`)
+              );
+            }
+          },
+          onError: (error) => {
+            schoolSessionDispatch(alertError(error));
+          },
+        });
+      }
+    });
+  };
 
   if (sessions.isPending) {
     return <TableSkeleton />;
@@ -168,7 +207,7 @@ const Sessions = () => {
             handleActivateSession,
             handleViewSession,
             handlEditSession,
-            handleDeleteSession
+            handleSwitchSession
           )}
           data={sessions.data ? sessions.data : []}
           actions={[]}

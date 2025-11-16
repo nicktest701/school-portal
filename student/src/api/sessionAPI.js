@@ -1,20 +1,6 @@
 import api from './customAxios';
 
 
-//Get all Students
-export const getAllSessions = async () => {
-  try {
-    const res = await api({
-      method: 'GET',
-      url: `/sessions`,
-    });
-
-    return res.data;
-  } catch (error) {
-    return error.response.data
-  }
-};
-
 export const getSession = async (id) => {
   try {
     const res = await api({

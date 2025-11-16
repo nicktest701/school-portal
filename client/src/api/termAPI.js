@@ -5,27 +5,7 @@ export const getAllTerms = async (session) => {
   try {
     const res = await api({
       method: "GET",
-      url: `/terms`,
-      params: {
-        session,
-      },
-    });
-
-    return res.data;
-  } catch (error) {
-    throw error.response.data;
-  }
-};
-
-//Get all Students
-export const getAllSessions = async (session) => {
-  try {
-    const res = await api({
-      method: "GET",
-      url: `/terms/sessions`,
-      params: {
-        session,
-      },
+      url: `/terms?type=${session || ""}`,
     });
 
     return res.data;
@@ -87,11 +67,11 @@ export const putTerm = async (updatedSession) => {
     throw error.response.data;
   }
 };
-export const putHeadMaster = async (updatedSession) => {
+export const updateTermDetails = async (updatedSession) => {
   try {
     const res = await api({
-      method: "PUT",
-      url: `/terms/headmaster`,
+      method: "PATCH",
+      url: `/terms`,
       data: updatedSession,
     });
 
@@ -128,6 +108,18 @@ export const deleteManyTerms = async (terms) => {
     return res.data;
   } catch (error) {
     throw error.response.data;
+  }
+};
+export const switchTerm = async ({ id, status }) => {
+  try {
+    const res = await api({
+      method: "PATCH",
+      url: `/terms/${id}?status=${status}`,
+    });
+
+    return res.data;
+  } catch (error) {
+    return error.response.data;
   }
 };
 

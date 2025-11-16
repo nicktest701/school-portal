@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import _ from "lodash";
-import { SUBJECTS } from "@/mockup/columns/sessionColumns";
+import { DATA_HEADERS, SUBJECTS } from "@/mockup/columns/sessionColumns";
 
 import SubjectItem from "@/components/list/SubjectItem";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
@@ -33,6 +33,7 @@ import { downloadTemplate } from "@/api/userAPI";
 import { UserContext } from "@/context/providers/UserProvider";
 import { validateExcelHeaders } from "@/config/helper";
 
+
 const AddSubject = ({ open, setOpen }) => {
   const { session } = useContext(UserContext);
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
@@ -43,6 +44,8 @@ const AddSubject = ({ open, setOpen }) => {
     severity: "",
     text: "",
   });
+
+
   const [subjectList, setSubjectList] = useState([]);
 
   const appendSubjectCode = (subject) => {
@@ -120,7 +123,7 @@ const AddSubject = ({ open, setOpen }) => {
 
   const handleFileUpload = async (event) => {
     setError("");
-    const headers = ["code", "name", "isCore"];
+    const headers = DATA_HEADERS.SUBJECTS;
 
     const file = event.target.files[0];
     const result = await validateExcelHeaders(file, headers);
@@ -195,7 +198,7 @@ const AddSubject = ({ open, setOpen }) => {
               options={SUBJECTS}
               disableCloseOnSelect
               getOptionLabel={(option) => option?.name || ""}
-              renderOption={(props, option, state) => {
+              renderOption={(props, option) => {
                 const isSelected = [...subjects, ...subjectList].some(
                   (item) => item.name === option.name
                 );

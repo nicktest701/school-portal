@@ -50,6 +50,16 @@ export const AssignTeacherValidationSchema = object().shape({
     fullname: string().required("Required*"),
   }),
 });
+export const AssignTutorValidationSchema = object().shape({
+  teacher: object({
+    _id: string().required("Required*"),
+    fullName: string().required("Required*"),
+  }),
+  level: object({
+    _id: string().required("Required*"),
+    levelName: string().required("Required*"),
+  }),
+});
 
 export const currentLevelValidationSchema = object().shape({
   _id: string().required("Required*"),

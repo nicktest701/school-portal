@@ -17,7 +17,9 @@ import {
   Chip,
   IconButton,
   ListItemText,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   Tooltip,
   Typography,
@@ -25,7 +27,12 @@ import {
 import _ from "lodash";
 import { Link } from "react-router-dom";
 
-export const SCHOOL_SESSION_COLUMN = (handleActive, handleView, handleEdit) => {
+export const SCHOOL_SESSION_COLUMN = (
+  handleActive,
+  handleView,
+  handleEdit,
+  handleSwitchSession
+) => {
   return [
     {
       field: "termId",
@@ -88,8 +95,47 @@ export const SCHOOL_SESSION_COLUMN = (handleActive, handleView, handleEdit) => {
       hidden: true,
     },
     {
-      field: "active",
       title: "Status",
+      field: "status",
+      render: (rowData) => {
+        return (
+          <Select
+            size="small"
+            sx={{
+              bgcolor: rowData?.status === "current" ? "green" : null,
+              color:
+                rowData?.status === "current"
+                  ? "#fff"
+                  : rowData?.status === "archived"
+                  ? "warning.main"
+                  : rowData?.status === "upcoming"
+                  ? "info.main"
+                  : null,
+            }}
+            value={rowData?.status}
+            onChange={(e) =>
+              handleSwitchSession({
+                _id: rowData?.termId,
+                status: e.target?.value,
+              })
+            }
+          >
+            <MenuItem value="upcoming" sx={{ color: "info.main" }}>
+              Upcoming{" "}
+            </MenuItem>
+            <MenuItem value="current" sx={{ color: "success.main" }}>
+              Current
+            </MenuItem>
+            <MenuItem value="archived" sx={{ color: "warning.main" }}>
+              Archived
+            </MenuItem>
+          </Select>
+        );
+      },
+    },
+    {
+      field: "active",
+      title: "Mode",
       export: false,
       render: ({ termId, active }) => (
         <Button
@@ -356,16 +402,17 @@ export const SUBJECT_OPTIONS = [
   "Music and Dance",
   "Orals and Rhymes",
   "Mathematics",
+  "Numeracy",
   "Integrated Science",
   "Natural Science",
   "Social Studies",
   "History",
-  "Religious and Moral Education",
-  "Creative Arts and Design",
-  "Career Technology",
   "Our World,Our People",
+  "Religious and Moral Education",
   "Information and Communication Technology",
   "Computing",
+  "Creative Arts and Design",
+  "Career Technology",
   "Ghanaian Language",
   "French",
   "Arabic",
@@ -381,8 +428,33 @@ export const SUBJECTS = [
   },
   {
     code: "",
+    name: "READING",
+    isCore: false,
+  },
+  {
+    code: "",
+    name: "WRITING",
+    isCore: false,
+  },
+  {
+    code: "",
+    name: "MUSIC AND DANCE",
+    isCore: false,
+  },
+  {
+    code: "",
+    name: "ORALS AND RHYMES",
+    isCore: false,
+  },
+  {
+    code: "",
     name: "MATHEMATICS",
     isCore: true,
+  },
+  {
+    code: "",
+    name: "NUMERACY",
+    isCore: false,
   },
   {
     code: "",
@@ -396,12 +468,12 @@ export const SUBJECTS = [
   },
   {
     code: "",
-    name: "HISTORY",
+    name: "SOCIAL STUDIES",
     isCore: true,
   },
   {
     code: "",
-    name: "SOCIAL STUDIES",
+    name: "HISTORY",
     isCore: true,
   },
   {
@@ -416,7 +488,17 @@ export const SUBJECTS = [
   },
   {
     code: "",
+    name: "R.M.E",
+    isCore: false,
+  },
+  {
+    code: "",
     name: "INFORMATION AND COMMUNICATION TECHNOLOGY",
+    isCore: false,
+  },
+  {
+    code: "",
+    name: "I.C.T",
     isCore: false,
   },
   {
@@ -451,32 +533,17 @@ export const SUBJECTS = [
   },
   {
     code: "",
-    name: "PHYSICAL AND HEALTH EDUCATION",
-    isCore: false,
-  },
-  {
-    code: "",
     name: "PHYSICAL EDUCATION",
     isCore: false,
   },
   {
     code: "",
-    name: "READING",
+    name: "PHYSICAL AND HEALTH EDUCATION",
     isCore: false,
   },
   {
     code: "",
-    name: "WRITING",
-    isCore: false,
-  },
-  {
-    code: "",
-    name: "MUSIC AND DANCE",
-    isCore: false,
-  },
-  {
-    code: "",
-    name: "ORALS AND RHYMES",
+    name: "P.H.E",
     isCore: false,
   },
 ];
@@ -1771,4 +1838,35 @@ export const USER_PERMISSION = Object.freeze({
   EDIT_EXISTING_NOTES: "Edit existing notes",
   DELETE_NOTES: "Delete notes",
   EXPORT_NOTES_DATA: "Export notes data",
+});
+
+export const DATA_HEADERS = Object.freeze({
+  LEVELS: ["name", "type", "initials"],
+  STUDENTS: [
+    "indexnumber",
+    "firstname",
+    "surname",
+    "othername",
+    "dateofbirth",
+    "gender",
+    "address",
+    "phonenumber",
+    "email",
+    "residence",
+    "nationality",
+  ],
+  TEACHERS: [
+    "firstname",
+    "lastname",
+    "username",
+    "dateofbirth",
+    "gender",
+    "email",
+    "phonenumber",
+    "address",
+    "residence",
+    "nationality",
+  ],
+  SUBJECTS: ["code", "name", "isCore"],
+  GRADES: ["highestMark", "lowestMark", "grade", "remarks"],
 });

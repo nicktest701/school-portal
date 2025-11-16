@@ -66,13 +66,25 @@ ExaminationSchema.virtual("totalScore").get(function () {
   return this.scores.reduce((sum, score) => sum + score.totalScore, 0);
 });
 
+
 // 🔹 Virtual field to calculate totalScore dynamically
 ExaminationSchema.virtual("scoresWithTotal").get(async function () {
   if (this.scores?.length === 0) return [];
 
   const level = await Level.findById(this.level).populate("grades");
+
+  
+
   return this.scores.map((score) => ({
     ...score,
+    subject:
+      score?.subject === "INFORMATION AND COMMUNICATION TECHNOLOGY"
+        ? "I.C.T"
+        : score?.subject === "RELIGIOUS AND MORAL EDUCATION"
+        ? "R.M.E"
+        : score?.subject === "PHYSICAL AND HEALTH EDUCATION"
+        ? "P.H.E"
+        : score?.subject,
     totalScore: score.classScore + score.examsScore, // Auto-generated field
     ...generateCustomGrade(
       Number(score.classScore + score.examsScore),

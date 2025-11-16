@@ -107,7 +107,7 @@ const Report = ({ control, setValue, watch, errors }) => {
             </Typography>
             <FormControl fullWidth>
               <SelectInput
-                label="Term/Semester"
+                label="Dimension"
                 size="small"
                 name="report.dimension"
                 control={control}

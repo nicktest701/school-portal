@@ -1,12 +1,11 @@
 import {
-  getAllSessions,
   getSession,
   postSession,
   putSession,
   deleteSession,
   uploadProfileImage,
 } from './sessionAPI';
-import { getAllTerms, getTerm, postTerm, putTerm, deleteTerm } from './termAPI';
+import {  getTerm, postTerm, putTerm, deleteTerm } from './termAPI';
 import {
   getAllLevels,
   getSubjectsForLevel,
@@ -123,7 +122,6 @@ import {
 
 export default {
   //session
-  getAllSessions,
   getSession,
   postSession,
   putSession,
@@ -131,7 +129,6 @@ export default {
   uploadProfileImage,
 
   //terms
-  getAllTerms,
   getTerm,
   postTerm,
   putTerm,

@@ -17,7 +17,7 @@ import React, { useContext, useState } from "react";
 import CustomDialogTitle from "@/components/dialog/CustomDialogTitle";
 import { Formik } from "formik";
 import { gradesValidationSchema } from "@/config/validationSchema";
-import { GRADES, REMARKS } from "@/mockup/columns/sessionColumns";
+import { DATA_HEADERS, GRADES, REMARKS } from "@/mockup/columns/sessionColumns";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postGrades } from "@/api/gradeAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
@@ -84,7 +84,7 @@ function AddGrade({ open, setOpen }) {
 
   const handleFileUpload = async (e) => {
     setError("");
-    const headers = ["highestMark", "lowestMark", "grade", "remarks"];
+    const headers = DATA_HEADERS.GRADES;
 
     const file = e.target.files[0];
     const result = await validateExcelHeaders(file, headers);
@@ -243,7 +243,7 @@ function AddGrade({ open, setOpen }) {
                       />
                     )}
                   />
-                  <Button  variant="outlined" onClick={handleSubmit}>
+                  <Button variant="outlined" onClick={handleSubmit}>
                     Add
                   </Button>
                 </Stack>
