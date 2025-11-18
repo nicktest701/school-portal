@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   InputAdornment,
-  Skeleton,
   Stack,
   TextField,
   Typography,
@@ -75,7 +74,12 @@ const StudentAcademics = () => {
           <StackedLineChart fontSize="large" />
           Records
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          fontStyle="italic"
+          sx={{ mt: 1 }}
+        >
           View your exam results, grades, and academic progress for each session
           below.
         </Typography>

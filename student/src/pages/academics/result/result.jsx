@@ -24,7 +24,6 @@ import { NoteAltRounded, Person, RefreshRounded } from "@mui/icons-material";
 import { useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getExam } from "@/api/ExaminationAPI";
-import Back from "@/components/Back";
 import CustomTitle from "@/components/custom/CustomTitle";
 import { gradeColor } from "@/config/gradeColor";
 import RecordSkeleton from "@/components/skeleton/RecordSkeleton";
@@ -177,7 +176,7 @@ function Result() {
                 {/* Progress Section */}
                 <Box mt={2}>
                   <Typography variant="body2" color="text.secondary">
-                    Gain insights into students' academic progress and
+                    Gain insights into students&apos; academic progress and
                     achievements. Below is the state of {exams?.data?.fullName}{" "}
                     results in the {session?.academicYear} ,{session?.term}.
                   </Typography>
@@ -263,7 +262,7 @@ function Result() {
                 </Grid2>
                 <Divider sx={{ my: 2 }} />
 
-                <Box py={2} display="flex" justifyContent="flex-end">
+                {/* <Box py={2} display="flex" justifyContent="flex-end">
                   <Button
                     variant="contained"
                     startIcon={<NoteAltRounded />}
@@ -271,7 +270,7 @@ function Result() {
                   >
                     View Report
                   </Button>
-                </Box>
+                </Box> */}
               </CardContent>
             </Card>
 
@@ -282,11 +281,11 @@ function Result() {
         )}
       </>
 
-      <ExamsReport
+      {/* <ExamsReport
         open={openReport}
         setOpen={setOpenReport}
         student={exams.data}
-      />
+      /> */}
     </>
   );
 }

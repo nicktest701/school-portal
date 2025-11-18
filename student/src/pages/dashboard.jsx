@@ -7,37 +7,114 @@ import {
   Avatar,
   Divider,
   Grid,
-  IconButton,
-  Chip,
-  Badge,
   LinearProgress,
-  CircularProgress,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
-import {
-  Notifications,
-  Mail,
-  Settings,
-  School,
-  Event as EventIcon,
-  Assignment,
-  LibraryBooks,
-  Home,
-  Person,
-  TrendingUp,
-  CreditCard,
-} from "@mui/icons-material";
+import { TrendingUp, CreditCard, DockTwoTone } from "@mui/icons-material";
 import DashboardSwiper from "@/components/swiper/DashboardSwiper";
 import Birthday from "@/components/items/Birthday";
 import CustomCard from "@/components/cards/CustomCard";
-import { EMPTY_IMAGES } from "@/config/images";
 import CustomTitle from "@/components/custom/CustomTitle";
 import Announcement from "@/components/calendar/Announcement";
 import Event from "@/components/calendar/Event";
 import { useAuth } from "@/context/AuthProvider";
 import CustomEvent from "@/components/calendar/CustomEvent";
+import { useQuery } from "@tanstack/react-query";
+import { getExamsDashboardAnalytics } from "@/api/ExaminationAPI";
+import { getFeeDashboardInfo } from "@/api/currentFeeAPI";
+import { currencyFormatter } from "@/config/currencyFormatter";
+import moment from "moment";
+import { Line } from "react-chartjs-2";
+
+// Chart options
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "top",
+      labels: {
+        usePointStyle: true,
+        padding: 20,
+      },
+    },
+    tooltip: {
+      backgroundColor: "rgba(255, 255, 255, 0.95)",
+      titleColor: "#333",
+      bodyColor: "#333",
+      borderColor: "#ddd",
+      borderWidth: 1,
+      padding: 12,
+      displayColors: false,
+      callbacks: {
+        label: function (context) {
+          return `${context.dataset.label}: ${context.parsed.y}%`;
+        },
+      },
+    },
+  },
+  scales: {
+    x: {
+      grid: {
+        display: false,
+      },
+    },
+    y: {
+      min: 60,
+      max: 100,
+      grid: {
+        color: "rgba(0, 0, 0, 0.05)",
+      },
+      ticks: {
+        callback: function (value) {
+          return value + "%";
+        },
+      },
+    },
+  },
+  interaction: {
+    mode: "index",
+    intersect: false,
+  },
+  hover: {
+    mode: "nearest",
+    intersect: true,
+  },
+};
 
 const Dashboard = () => {
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("md"));
+
   const { user } = useAuth();
+
+  const analytics = useQuery({
+    queryKey: ["dashboard-analytics", user?._id],
+    queryFn: () => getExamsDashboardAnalytics(user?._id),
+    enabled: !!user?._id,
+    initialData: {
+      averageIndex: 0,
+      chartData: {
+        labels: [""],
+        datasets: [],
+      },
+      trend: "Not enough data",
+    },
+  });
+
+  const feesRecord = useQuery({
+    queryKey: ["feesRecord", user?._id],
+    queryFn: () => getFeeDashboardInfo(user?._id),
+    enabled: !!user?._id,
+    initialData: {
+      totalFees: 0,
+      totalPaid: 0,
+      totalArrears: 0,
+    },
+  });
+
+  // const feeProgress = feesRecord?.data?.totalPaid / feesRecord?.data?.totalFees;
 
   return (
     <>
@@ -72,12 +149,17 @@ const Dashboard = () => {
               >
                 Welcome,{user?.firstname}!
               </Typography>
-              <Typography>Your current dashboard for today!</Typography>
-              {/* <p>
+              {/* <Typography>Your current dashboard for today!</Typography> */}
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                textAlign="right"
+                gutterBottom
+              >
                 This is your dashboard where you can see your academic progress,
                 fees status, and more.
-              </p>
-              <p>
+              </Typography>
+              {/* <p>
                 Use the navigation menu to access different sections of the
                 application.
               </p> */}
@@ -134,34 +216,42 @@ const Dashboard = () => {
               size={{
                 xs: 12,
                 sm: 6,
-                md: 4,
+                md: 6,
               }}
             >
               <CustomCard
-                title="GPA"
-                icon={<TrendingUp fontSize="large" />}
-                bgColor="linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)"
+                title="Performance Index"
+                icon={
+                  analytics?.data?.trend === "📈 Improving" ? (
+                    <TrendingUp fontSize="large" />
+                  ) : analytics?.data?.trend === "📉 Declining" ? (
+                    <TrendingUp fontSize="large" />
+                  ) : (
+                    <DockTwoTone fontSize="large" />
+                  )
+                }
+                bgColor="linear-gradient(135deg, #009fb7 0%, #002025 100%)"
               >
                 <Stack direction="row" alignItems="flex-end" spacing={1}>
-                  <Typography variant="h3" fontWeight={700} color="white">
-                    3.78
+                  <Typography variant="h2" fontWeight={700} color="white">
+                    {analytics.data?.averageIndex || 0}
                   </Typography>
                   <Typography
                     variant="body1"
                     color="rgba(255,255,255,0.8)"
                     pb={0.5}
                   >
-                    /4.0
+                    / 100%
                   </Typography>
                 </Stack>
                 <Typography variant="body2" color="rgba(255,255,255,0.8)">
-                  +0.12 from last semester
+                  {analytics?.data?.trend}
                 </Typography>
               </CustomCard>
             </Grid>
 
             {/* Attendance Card */}
-            <Grid
+            {/* <Grid
               size={{
                 xs: 12,
                 sm: 6,
@@ -206,14 +296,14 @@ const Dashboard = () => {
                   4 absences this semester
                 </Typography>
               </CustomCard>
-            </Grid>
+            </Grid> */}
 
             {/* Fees Card */}
             <Grid
               size={{
                 xs: 12,
                 sm: 6,
-                md: 4,
+                md: 6,
               }}
             >
               <CustomCard
@@ -224,23 +314,35 @@ const Dashboard = () => {
                 <Stack spacing={1} width="100%">
                   <Stack direction="row" justifyContent="space-between">
                     <Typography variant="body2" color="rgba(255,255,255,0.8)">
-                      Paid
+                      Total Fees
                     </Typography>
                     <Typography variant="body2" fontWeight={600} color="white">
-                      ₵1,200
+                      {currencyFormatter(feesRecord?.data?.totalFees || 0)}
                     </Typography>
                   </Stack>
                   <Stack direction="row" justifyContent="space-between">
                     <Typography variant="body2" color="rgba(255,255,255,0.8)">
-                      Balance
+                      Paid
                     </Typography>
                     <Typography variant="body2" fontWeight={600} color="white">
-                      ₵300
+                      {currencyFormatter(feesRecord?.data?.totalPaid || 0)}
+                    </Typography>
+                  </Stack>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="body2" color="rgba(255,255,255,0.8)">
+                      Arreas
+                    </Typography>
+                    <Typography variant="body2" fontWeight={600} color="white">
+                      {currencyFormatter(feesRecord?.data?.totalArrears || 0)}
                     </Typography>
                   </Stack>
                   <LinearProgress
                     variant="determinate"
-                    value={80}
+                    value={
+                      (feesRecord?.data?.totalPaid /
+                        feesRecord?.data?.totalFees) *
+                      100
+                    }
                     sx={{
                       height: 10,
                       borderRadius: 5,
@@ -251,14 +353,38 @@ const Dashboard = () => {
                     }}
                   />
                   <Typography variant="caption" color="rgba(255,255,255,0.8)">
-                    Due: Jan 15, 2024
+                    Due:{" "}
+                    {moment(feesRecord?.data?.lastFeePaid?.createdAt)
+                      .add(2, "week")
+                      .format("LL")}
                   </Typography>
                 </Stack>
               </CustomCard>
             </Grid>
           </Grid>
+          <Divider />
+          <div style={{ marginBottom: "24px", width: "100%" }}>
+            <Typography variant="h4" paragraph>
+              Academic Performance
+            </Typography>
+            <Box
+              sx={{
+                minWidth: 100,
+                width: "100%",
+                height: matches ? 200 : 400,
+              }}
+            >
+              <Line
+                data={{
+                  labels: analytics?.data?.chartData?.labels,
+                  datasets: analytics?.data?.chartData?.datasets,
+                }}
+                options={chartOptions}
+              />
+            </Box>
+          </div>
+          <Divider />
 
-          {/* <Divider /> */}
           <Box sx={{ pt: 4 }}>
             <div style={{ marginBottom: "24px" }}>
               <Typography variant="h4" paragraph>
@@ -277,7 +403,7 @@ const Dashboard = () => {
 
         <Box
           sx={{
-            minWidth: { xs: 0, sm: 270, md: 300 },
+            width: { xs: 0, sm: 250, md: 270 },
 
             // minWidth: { xs: 0, md: 250 },
             display: { xs: "none", md: "block" },

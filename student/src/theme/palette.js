@@ -17,21 +17,21 @@ const GREY = {
 };
 
 const PRIMARY = {
-  lighter: "#93c5fd", // lighter shade of #3B82F6
-  light: "#60a5fa", // light shade of #3B82F6
-  main: "#3B82F6", // main color
-  dark: "#2563eb", // dark shade of #3B82F6
-  darker: "#1d4ed8", // darker shade of #3B82F6
+  lighter: "#66c5d4", // lighter shade of #3B82F6
+  light: "#33b2c5", // light shade of #3B82F6
+  main: "#009fb7", // main color
+  dark: "#007f92", // dark shade of #3B82F6
+  darker: "#003037", // darker shade of #3B82F6
   primary: GREY[0],
   contrastText: GREY[0],
 };
 
 const SECONDARY = {
-  lighter: "#b3c7d6", // lighter shade of #012e54
-  light: "#5a7fa3", // light shade of #012e54
-  main: "#012e54", // main color
-  dark: "#011f3a", // dark shade of #012e54
-  darker: "#011427", // darker shade of #012e54
+  lighter: "#fbd89d", // lighter shade of #012e54
+  light: "#f7b13c", // light shade of #012e54
+  main: "#f59e0b", // main color
+  dark: "#c47e09", // dark shade of #012e54
+  darker: "#492f03", // darker shade of #012e54
   primary: GREY[0],
   contrastText: GREY[0],
 };

@@ -6,6 +6,7 @@ import {
   Box,
   IconButton,
   Tooltip,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import {
@@ -21,7 +22,7 @@ import MiniSidebar from "./MiniSidebar";
 import NotificationDrawer from "@/components/dropdowns/NotificationDrawer";
 import AccountDropdown from "@/components/dropdowns/AccountDropdown";
 import AddSectionDropdown from "@/components/dropdowns/AddSectionDropdown";
-import SchoolSessionDropdown from "@/components/dropdowns/SchoolSession";
+import SchoolSessionDropdown from "@/components/dropdowns/SchoolSessionDropdown";
 import { bgBlur } from "@/theme/css";
 import NoteFormModal from "@/components/notes/NoteForm";
 import { useCreateNote } from "@/hooks/useNotes";
@@ -145,9 +146,9 @@ function Header() {
           <Box
             sx={{
               display: { xs: "none", sm: "inline-flex" },
-              // justifySelf: "flex-start",
-              // flexGrow: 1,
-              // px: 1,
+              // position: "absolute",
+              // top: 30,
+              // right: 0,
             }}
           >
             <SchoolSessionDropdown />

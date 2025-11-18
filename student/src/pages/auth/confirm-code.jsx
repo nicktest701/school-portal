@@ -1,5 +1,5 @@
 // src/components/ConfirmCode.js
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -173,7 +173,7 @@ export default function ConfirmCode() {
                   display: "inline-flex",
                   width: 70,
                   height: 70,
-                  backgroundColor: "#3B82F6",
+                  backgroundColor: "primary.main",
                   borderRadius: 2,
                   alignItems: "center",
                   justifyContent: "center",
@@ -279,7 +279,7 @@ export default function ConfirmCode() {
                                 : "background.paper",
                             border:
                               activeIndex === index
-                                ? "2px solid #3B82F6"
+                                ? "2px solid var(--primary)"
                                 : "1px solid #e0e0e0",
                             boxShadow:
                               activeIndex === index
@@ -327,12 +327,12 @@ export default function ConfirmCode() {
                     borderRadius: 2,
                     fontSize: "1rem",
                     fontWeight: 600,
-                    backgroundColor: "#3B82F6",
+                    backgroundColor: "primary.main",
                     boxShadow: "0 4px 14px rgba(59, 130, 246, 0.4)",
                     "&:hover": {
                       transform: "translateY(-2px)",
                       boxShadow: "0 6px 18px rgba(59, 130, 246, 0.5)",
-                      backgroundColor: "#2563EB",
+                      backgroundColor: "8primary.darker",
                     },
                     transition: "all 0.3s ease",
                     mb: 3,
@@ -359,7 +359,7 @@ export default function ConfirmCode() {
                         underline="hover"
                         sx={{
                           fontWeight: 600,
-                          color: "#3B82F6",
+                          color: "var(--primary)",
                           "&:hover": {
                             color: "#2563EB",
                             cursor: isResending ? "not-allowed" : "pointer",

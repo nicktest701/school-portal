@@ -12,7 +12,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import moment from "moment";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ProfileItem from "@/components/typo/ProfileItem";
 import ChipItem from "@/components/list/ChipItem";
 import ViewPreviousReport from "@/pages/profile/ViewPreviousReport";
@@ -27,9 +27,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-const StudentProfile = ({ levelName, student, parents, medical }) => {
-  const { type } = useParams();
-  const navigate = useNavigate();
+const StudentProfile = ({ student, parents, medical }) => {
   const [openViewParent, setOpenViewParent] = useState(false);
   const [openViewPreviousReport, setOpenViewPreviousReport] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -41,11 +39,6 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
     setSearchParams({
       mi: true,
     });
-  };
-
-  //EDIT Student Info
-  const openStudentEdit = () => {
-    navigate("/profile/edit");
   };
 
   const openPreviousReport = () => {
@@ -82,9 +75,6 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
         >
           {matches ? (
             <>
-              <Button startIcon={<EditRounded />} onClick={openStudentEdit}>
-                Edit
-              </Button>
               <Button
                 startIcon={<Person />}
                 onClick={() => setOpenViewParent(true)}
@@ -100,11 +90,6 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
             </>
           ) : (
             <>
-              <Tooltip title="Edit Profile">
-                <IconButton onClick={openStudentEdit}>
-                  <EditRounded />
-                </IconButton>
-              </Tooltip>
               <Tooltip title="View Parent Info">
                 <IconButton onClick={() => setOpenViewParent(true)}>
                   <Person />
@@ -153,12 +138,12 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
         <Stack py={2}>
           <ProfileItem
             label="Department"
-            // text={student?.academic?.department || "Not Available"}
+            text={student?.academic?.department?.name || "Not Available"}
           />
-          <ProfileItem label="Current Level" text={type || levelName} />
+          <ProfileItem label="Current Level" text={student?.level?.levelName} />
           <ProfileItem
             label="Department"
-            // text={student?.academic?.house || "Not Available"}
+            text={student?.academic?.house?.name || "Not Available"}
           />
           <ProfileItem
             label="Previous School"
@@ -192,7 +177,7 @@ const StudentProfile = ({ levelName, student, parents, medical }) => {
         setOpen={setOpenViewParent}
       />
 
-      <MedicalInformationEdit medical={{ ...medical, id: student?._id }} />
+      <MedicalInformationEdit medical={{ ...medical }} />
 
       <ViewPreviousReport
         report={student?.academic?.previousSchool?.report}

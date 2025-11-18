@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@mui/material";
 import CustomizedMaterialTable from "@/components/tables/CustomizedMaterialTable";
 
@@ -15,6 +16,10 @@ function ExamsScoreList({ details }) {
       cellStyle: {
         color: "red",
       },
+    },
+    {
+      field: "position",
+      title: "Position",
     },
     {
       field: "grade",
@@ -53,6 +58,10 @@ function ExamsScoreList({ details }) {
       search={false}
       // addButtonImg={student_icon}
       addButtonMessage="No Exams Score available"
+      options={{
+        selection: false,
+        showSelectAllCheckbox: false,
+      }}
     />
   );
 }

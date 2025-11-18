@@ -41,17 +41,17 @@ router.get(
     res.json(students);
   })
 );
-//@GET All students
-router.get(
-  "/ids",
-  asyncHandler(async (req, res) => {
-    const existingStudents = await Student.find({
-      school: req.user.school,
-    });
-    const students = _.map(existingStudents, "indexnumber");
-    res.json(students);
-  })
-);
+// //@GET All students
+// router.get(
+//   "/ids",
+//   asyncHandler(async (req, res) => {
+//     const existingStudents = await Student.find({
+//       school: req.user.school,
+//     });
+//     const students = _.map(existingStudents, "indexnumber");
+//     res.json(students);
+//   })
+// );
 
 //@GET All students details
 router.get(
@@ -173,23 +173,6 @@ router.get(
   })
 );
 
-//@GET Parent by student ID
-router.get(
-  "/parent",
-  asyncHandler(async (req, res) => {
-    const { id } = req.query;
-    const parent = await Parent.findOne({
-      student: new ObjectId(id),
-    });
-
-    if (_.isEmpty(parent)) {
-      return res.status(200).json({});
-    }
-
-    res.json(parent);
-  })
-);
-
 //@GET student by student index number
 router.get(
   "/index-number",
@@ -214,8 +197,7 @@ router.get(
     const { id } = req.params;
 
     //Personal Info
-    const student = await Student.findById(id);
-
+    const student = await Student.findById(id).populate("level", ["level"]);
 
     if (_.isEmpty(student)) {
       return res.status(400).json("No Such Student exists");
@@ -291,6 +273,8 @@ router.get(
       student: id,
     });
 
+    // console.log(student)
+
     res.status(200).json({
       profile: student || [],
       fees: feesDetails || [],
@@ -299,7 +283,47 @@ router.get(
     });
   })
 );
+//@GET student by student id
+router.get(
+  "/:id/profile",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
 
+    //Personal Info
+    const student = await Student.findById(id).populate("level", ["level"]);
+
+    if (_.isEmpty(student)) {
+      return res.status(400).json("No Such Student exists");
+    }
+
+    //Parents
+    const parents = await Parent.find({
+      student: id,
+    });
+
+    res.status(200).json({
+      ...student?._doc,
+      parents: parents || [],
+    });
+  })
+);
+
+//@GET Parent by student ID
+router.get(
+  "/:id/parent",
+  asyncHandler(async (req, res) => {
+    const { id } = req.query;
+    const parent = await Parent.findOne({
+      student: new ObjectId(id),
+    });
+
+    if (_.isEmpty(parent)) {
+      return res.status(200).json({});
+    }
+
+    res.json(parent);
+  })
+);
 //@POST students
 router.post(
   "/",
@@ -505,14 +529,51 @@ router.put(
     }
 
     const modifiedStudent = req.body;
-    const updatedStudent = await Student.findByIdAndUpdate(
-      id,
-      modifiedStudent,
-      {
+    let updatedStudent = null;
+    if (req.body?.type === "medical") {
+      updatedStudent = await Student.findByIdAndUpdate(id, {
+        $set: {
+          medical: modifiedStudent.medical,
+        },
+      });
+    }
+    if (req.body?.type === "academic") {
+      updatedStudent = await Student.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            academic: modifiedStudent?.academic,
+            level: modifiedStudent?.level,
+          },
+        },
+        {
+          upsert: true,
+          new: true,
+        }
+      );
+
+      if (updatedStudent.level !== modifiedStudent?.level) {
+        await Level.findByIdAndUpdate(
+          modifiedStudent?.level,
+          { $push: { students: id } },
+          { new: true }
+        );
+      }
+    } else {
+      updatedStudent = await Student.findByIdAndUpdate(id, modifiedStudent, {
         upsert: true,
         new: true,
-      }
-    );
+      });
+
+      await StudentAuth.findOneAndUpdate(
+        { indexnumber: updatedStudent?.indexnumber },
+        {
+          email: updatedStudent?.email,
+          phonenumber: updatedStudent?.phonenumber,
+        }
+      );
+    }
+
     if (_.isEmpty(updatedStudent)) {
       return res
         .status(404)
@@ -520,28 +581,6 @@ router.put(
     }
 
     res.status(200).json("Changes Saved!!!");
-  })
-);
-
-//@POST Update Student medical history
-router.put(
-  "/medical",
-  asyncHandler(async (req, res) => {
-    const { id, ...rest } = req.body;
-
-    const updatedStudent = await Student.findByIdAndUpdate(id, {
-      $set: {
-        medical: rest,
-      },
-    });
-
-    if (_.isEmpty(updatedStudent)) {
-      return res
-        .status(400)
-        .json("Error updating profile image.Try again later.");
-    }
-
-    res.status(201).json("Changes Saved!!!");
   })
 );
 
@@ -610,7 +649,7 @@ router.put(
 );
 
 //@DISABLE Student account
-router.get(
+router.patch(
   "/disable",
   asyncHandler(async (req, res) => {
     const { id, active } = req.query;

@@ -17,7 +17,6 @@ import ForgotPassword from "./pages/auth/forgot-password";
 import ConfirmCode from "./pages/auth/confirm-code";
 import ResetPassword from "./pages/auth/reset-password";
 import Profile from "./pages/profile";
-import ProfileEdit from "./pages/profile/edit";
 import Academics from "./pages/academics";
 import Results from "./pages/academics/results";
 import Result from "./pages/academics/result/result";
@@ -65,7 +64,6 @@ function App() {
       children: [
         { index: true, Component: Dashboard },
         { path: "profile", Component: Profile },
-        { path: "profile/edit", Component: ProfileEdit },
         {
           path: "academics",
           Component: Academics,

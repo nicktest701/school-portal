@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, TextField, useMediaQuery } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useQuery } from "@tanstack/react-query";
@@ -8,10 +8,12 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import { useAuth } from "@/hooks/useAuth";
 import { USER_ROLE } from "@/mockup/columns/sessionColumns";
 
+
 const SchoolSessionDropdown = () => {
   const { pathname } = useLocation();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { userDispatch, user, session: currentSession } = useAuth();
+
 
   const [sessionError, setSessionError] = useState("");
   const [session, setSession] = useState({
@@ -50,8 +52,6 @@ const SchoolSessionDropdown = () => {
 
   const handleChangeSession = (value) => {
     if (currentSession.termId === value?.termId) return;
-
-   
 
     Swal.fire({
       title: `You are about to change the current session to ${value?.academicYear},${value?.term}`,
@@ -98,13 +98,13 @@ const SchoolSessionDropdown = () => {
       getOptionLabel={(option) =>
         option?.termId !== "" ? `${option?.academicYear},${option?.term}` : ""
       }
-      sx={{ width: 250 }}
+      sx={{ width: 200 }}
       renderInput={(params) => (
         <TextField
           {...params}
           label="Current Session"
           error={sessionError !== "" ? true : false}
-          sx={{ width: 250 }}
+          sx={{ width: 200 }}
           helperText={sessionError}
           FormHelperTextProps={{
             sx: { color: "error.main" },

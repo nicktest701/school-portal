@@ -233,7 +233,12 @@ const AcademicDashboard = () => {
           <SchoolIcon fontSize="large" />
           Dashboard
         </Typography>
-        <Typography variant="subtitle1" color="textSecondary" sx={{ mt: 1 }}>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          fontStyle="italic"
+          sx={{ mt: 1 }}
+        >
           Track your academic performance and achievements
         </Typography>
       </Box>
@@ -244,7 +249,7 @@ const AcademicDashboard = () => {
           mb: 4,
           borderRadius: 4,
           boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
-          background: "linear-gradient(135deg, #1976d2 0%, #0d47a1 100%)",
+          background: "linear-gradient(135deg, #009fb7 0%, #0d47a1 100%)",
           color: "white",
         }}
       >
@@ -284,7 +289,7 @@ const AcademicDashboard = () => {
                   }}
                 >
                   <Typography
-                    variant="h2"
+                    variant="h3"
                     component="div"
                     sx={{ fontWeight: 700 }}
                   >
@@ -300,7 +305,7 @@ const AcademicDashboard = () => {
               <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
                 Outstanding Academic Achievement
               </Typography>
-              <Typography variant="body1" sx={{ mb: 3, opacity: 0.9 }}>
+              <Typography variant="body2" sx={{ mb: 3, opacity: 0.9 }}>
                 You&apos;re performing in the top 5% of your class. Your
                 consistent improvement in{" "}
                 {academicRecord?.data?.activeLevel?.level} shows exceptional

@@ -28,8 +28,6 @@ import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider"
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import { NATIONALITY } from "@/mockup/data/nationality";
 import { TOWNS } from "@/mockup/data/towns";
-import CustomAutoComplete from "@/components/inputs/CustomAutoComplete";
-import useLevel from "@/components/hooks/useLevel";
 
 const StudentEdit = () => {
   const queryClient = useQueryClient();
@@ -42,9 +40,6 @@ const StudentEdit = () => {
     studentDispatch,
   } = useContext(StudentContext);
 
-  const { departments, houses, levelLoading, levelsOption} = useLevel();
-  console.log(levelsOption);
-
   const student = editStudentData?.data;
 
   // Initialize form
@@ -53,7 +48,6 @@ const StudentEdit = () => {
     handleSubmit,
     reset,
     formState: { errors },
-    setValue,
   } = useForm({
     resolver: yupResolver(studentEditValidationSchema),
     defaultValues: student,
@@ -81,9 +75,6 @@ const StudentEdit = () => {
   const onSubmit = async (values) => {
     values.dateofbirth = moment(dob).format("L");
     values.profile = profileImage;
-
-    console.log(values);
-    // return;
 
     await mutateAsync(values, {
       onSettled: () => queryClient.invalidateQueries(["student-profile"]),
@@ -177,6 +168,13 @@ const StudentEdit = () => {
                     size="small"
                     error={!!errors.firstname}
                     helperText={errors.firstname?.message}
+                    slotProps={{
+                      htmlInput: {
+                        style: {
+                          textTransform: "capitalize",
+                        },
+                      },
+                    }}
                   />
                 )}
               />
@@ -192,6 +190,13 @@ const StudentEdit = () => {
                     size="small"
                     error={!!errors.surname}
                     helperText={errors.surname?.message}
+                    slotProps={{
+                      htmlInput: {
+                        style: {
+                          textTransform: "capitalize",
+                        },
+                      },
+                    }}
                   />
                 )}
               />
@@ -207,6 +212,13 @@ const StudentEdit = () => {
                     size="small"
                     error={!!errors.othername}
                     helperText={errors.othername?.message}
+                    slotProps={{
+                      htmlInput: {
+                        style: {
+                          textTransform: "capitalize",
+                        },
+                      },
+                    }}
                   />
                 )}
               />
@@ -354,67 +366,6 @@ const StudentEdit = () => {
                 )}
               />
             </CustomFormControl>
-
-            <Typography
-              variant="body2"
-              color="primary.main"
-              sx={{ fontWeight: "bold" }}
-            >
-              Academic
-            </Typography>
-            <Stack spacing={2}>
-              <CustomAutoComplete
-                name="academic.department"
-                control={control}
-                label="Department"
-                data={{
-                  data: departments,
-                  isPending: levelLoading,
-                }}
-              />
-
-              <Controller
-                name="academic.level"
-                control={control}
-                render={({ field }) => (
-                  <Autocomplete
-                    options={[]}
-                    getOptionLabel={(option) => option.type || ""}
-                    isOptionEqualToValue={(option, value) =>
-                      value?._id === option?._id
-                    }
-                    // value={level}
-                    {...field}
-                    onChange={(_, value) =>
-                      setValue("academic.level", {
-                        _id: value?._id,
-                        type: value?.type,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Current Level"
-                        fullWidth
-                        size="small"
-                        error={!!errors.academic?.level}
-                        helperText={errors.academic?.level?._id?.message}
-                      />
-                    )}
-                  />
-                )}
-              />
-
-              <CustomAutoComplete
-                name="academic.house"
-                control={control}
-                label="House/Section"
-                data={{
-                  data: houses,
-                  isPending: levelLoading,
-                }}
-              />
-            </Stack>
           </Stack>
         </DialogContent>
 

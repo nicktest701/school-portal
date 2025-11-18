@@ -32,60 +32,7 @@ export const getAttendance = async (id, { date, session, term }) => {
   }
 };
 
-export const postAttendance = async (newAttendance) => {
-  try {
-    const res = await api({
-      method: "POST",
-      url: `/attendances`,
-      data: newAttendance,
-    });
 
-    return res.data;
-  } catch (error) {
-    return error.response.data;
-  }
-};
-
-export const postStudentAttendance = async (newAttendance) => {
-  try {
-    const res = await api({
-      method: "POST",
-      url: `/attendances/student`,
-      data: newAttendance,
-    });
-
-    return res.data;
-  } catch (error) {
-    return error.response.data;
-  }
-};
-
-export const putAttendance = async (updatedAttendance) => {
-  try {
-    const res = await api({
-      method: "PUT",
-      url: `/attendances`,
-      data: updatedAttendance,
-    });
-
-    return res.data;
-  } catch (error) {
-    return error.response.data;
-  }
-};
-
-export const deleteAttendance = async (id) => {
-  try {
-    const res = await api({
-      method: "DELETE",
-      url: `/attendances/${id}`,
-    });
-
-    return res.data;
-  } catch (error) {
-    return error.response.data;
-  }
-};
 
 export const getAttendanceHistory = async ({ id, session, term }) => {
   try {

@@ -6,7 +6,6 @@ export const StudentContext = React.createContext();
 
 const StudentProvider = ({ children }) => {
   const studentValues = {
-
     showCurrentStudentFeeReportView: {
       show: false,
       data: [],
@@ -29,6 +28,11 @@ const StudentProvider = ({ children }) => {
 
     ///Edit Student data
     editStudentData: {
+      open: false,
+      data: {},
+    },
+    ///Edit Student data
+    studentAcademicData: {
       open: false,
       data: {},
     },

@@ -46,7 +46,7 @@ const SchoolSession = () => {
     },
   });
 
-  console.log(sessions.data);
+
   const handleSession = () => {
     setLoading(true);
     setSessionError("");

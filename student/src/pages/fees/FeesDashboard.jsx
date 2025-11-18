@@ -223,7 +223,12 @@ const FeesDashboard = () => {
           Dashboard
         </Typography>
 
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mt: 0.5 }}>
+        <Typography
+          variant="body2"
+          fontStyle="italic"
+          color="text.secondary"
+          sx={{ mt: 0.5 }}
+        >
           View your fee payments, arrears, and payment history below.
         </Typography>
       </Box>

@@ -38,8 +38,9 @@ router.get(
       return res.status(400).json({ message: "Student ID is required" });
     }
     //Personal Info
-    const student = await Student.findById(id).populate("school");
-
+    const student = await Student.findById(id)
+      .populate("school")
+      .populate("level", ["level"]);
     if (_.isEmpty(student)) {
       return res.status(400).json("No Such Student exists");
     }
@@ -65,8 +66,9 @@ router.post("/login", async (req, res) => {
   if (!isMatch)
     return res.status(401).json({ message: "Invalid student ID or password" });
 
-  const authStudent = await Student.findById(student._id).populate("school");
-
+  const authStudent = await Student.findById(student._id)
+    .populate("school")
+    .populate("level", ["level"]);
   const { school, ...rest } = authStudent?._doc;
 
   const data = {
@@ -126,8 +128,9 @@ router.post("/refresh", async (req, res) => {
     const student = await StudentAuth.findById(decoded.id).select("-password");
 
     if (!student) return res.status(401).json({ message: "Invalid token" });
-    const authStudent = await Student.findById(student._id).populate("school");
-
+    const authStudent = await Student.findById(student._id)
+      .populate("school")
+      .populate("level", ["level"]);
     const { school, ...rest } = authStudent?._doc;
 
     const data = {
@@ -191,7 +194,6 @@ router.post("/reset-password-request", async (req, res) => {
 // ✅ Confirm code
 router.post("/confirm-reset-code", async (req, res) => {
   const { studentId, code } = req.body;
-
 
   const student = await StudentAuth.findOne({
     indexnumber: studentId,

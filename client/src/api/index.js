@@ -23,9 +23,8 @@ import {
 } from './levelAPI';
 
 import {
-  getAllStudents,
-  getAllStudentsForSearch,
-  getAllStudentsByCurrentLevel,
+
+ 
   getAllStudentsDetails,
   getStudent,
   getParentByStudentId,
@@ -166,9 +165,6 @@ export default {
   getSchoolInfo,
 
   //students
-  getAllStudents,
-  getAllStudentsByCurrentLevel,
-  getAllStudentsForSearch,
   getAllStudentsDetails,
   getStudent,
   getParentByStudentId,

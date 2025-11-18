@@ -88,6 +88,7 @@ const StudentDetails = () => {
     return <ProfileSkeleton />;
   }
 
+
   return (
     <Container>
       <Back to={-1} color="primary.main" />
@@ -169,7 +170,7 @@ const StudentDetails = () => {
             <Divider />
             <TabPanel value="1" sx={{ px: 0 }}>
               <StudentProfile
-                levelName={levelName}
+                levelName={student?.profile?.level?.levelName || levelName}
                 parents={student?.parents}
                 student={student?.profile}
               />

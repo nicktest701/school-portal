@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Stack,
@@ -70,7 +70,12 @@ const StudentFees = () => {
           <NoteAlt fontSize="large" />
           Payments
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          fontStyle="italic"
+          sx={{ mt: 1 }}
+        >
           View your fees history, payments, and outstanding balances below.
         </Typography>
       </Box>

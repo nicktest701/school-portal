@@ -60,7 +60,7 @@ const MiniSidebar = ({ open, setOpen }) => {
         <MiniDrawerItem title="Dashboard" to="/" handleClose={handleClose} />
 
         <MiniDrawerItem
-          title="Personal Info"
+          title="Personal Details"
           to="/profile"
           handleClose={handleClose}
         />

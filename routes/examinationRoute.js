@@ -26,6 +26,8 @@ const {
   getTopOverallScores,
   getMyPosition,
   getSubjectPosition,
+  preparePerformanceIndexChartData,
+  getTrend,
 } = require("../config/helpers/examination");
 
 //@GET
@@ -476,6 +478,61 @@ router.get(
       lowScore: lowScore?.course?.totalScore,
       performanceIndex: overallPerformancePercentage.toFixed(1),
       completedResult: isCompletedPercentage.toFixed(0),
+    });
+  })
+);
+
+//@GET students dashboard data
+
+router.get(
+  "/analytics/:id",
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const records = await Examination.find({
+      student: id,
+    })
+      .select(["_id", "level", "term", "scores", "overallScore"])
+      .populate({
+        path: "level",
+        select: ["level"],
+      })
+      .populate({
+        path: "term",
+        select: ["term"],
+      });
+
+    if (_.isEmpty(records)) {
+      return res.status(404).json("No records found for this student");
+    }
+
+    const modifiedRecords = records?.map(async (record) => {
+      const scores = await record?.scoresWithTotal;
+      return {
+        _id: record?._id,
+        level: record?.level?.levelName,
+        term: record?.term?.term,
+        scores: scores,
+        overallScore: record?.overallScore,
+      };
+    });
+    const record = await Promise.all(modifiedRecords);
+    const averageIndex = getAveragePerformanceIndex(record);
+
+    // console.log(averageIndex);
+
+    const chartData = preparePerformanceIndexChartData(record);
+    // console.log(chartData);
+
+    const resultsArray = calculatePerformanceIndex(record);
+
+    const indices = resultsArray.map((i) => i.performanceIndex);
+    const trend = getTrend(indices);
+    console.log(trend);
+
+    res.status(200).json({
+      averageIndex,
+      chartData,
+      trend,
     });
   })
 );

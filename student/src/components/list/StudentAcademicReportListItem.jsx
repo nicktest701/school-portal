@@ -22,7 +22,7 @@ const StudentAcademicReportListItem = ({ item }) => {
           <ListSubheader
             sx={{
               color: "#ffffff",
-              background: "linear-gradient(135deg, #1976d2 0%, #0d47a1 100%)",
+              background: "linear-gradient(135deg, #f59e0b 0%, #492f03 100%)",
             }}
           >
             {item[0]}

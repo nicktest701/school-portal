@@ -109,7 +109,7 @@ function getBestOverallScore(records) {
 }
 
 function getOverallBestSubject(records) {
-  console.log(records);
+  // console.log(records);
   // This function retrieves the best score across all subjects from a list of student records.
   if (!Array.isArray(records) || records.length === 0) {
     return null;
@@ -130,8 +130,6 @@ function getOverallBestSubject(records) {
             term: record.term, // capture the termId
             score: score,
           };
-
-          console.log(best);
         }
       });
     }
@@ -226,8 +224,8 @@ function calculatePerformanceIndex(records) {
     const scores = record.scores || [];
     if (scores.length === 0) {
       return {
-        term: record.term?.term,
-        level: record.level?.levelName,
+        term: record.term?.term || record.term,
+        level: record.level?.levelName || record.level,
         levelType: `${record.level?.levelName} ${record.term?.term}`,
         performanceIndex: 0,
       };
@@ -238,14 +236,21 @@ function calculatePerformanceIndex(records) {
     const performanceIndex = (average / 100) * 100; // normalize to percentage
 
     return {
-      term: record.term?.term,
-      level: record.level?.levelName,
+      term: record.term?.term || record.term,
+      level: record.level?.levelName || record.level,
       levelType: `${record.level?.levelName} ${record.term?.term}`,
       performanceIndex: performanceIndex.toFixed(2), // keep 2 decimal places
     };
   });
 
   return sortByLevelAndTerm(indexes);
+}
+
+// Compute PI for a single term
+function computePerformanceIndex(termRecord) {
+  const subjects = termRecord.scores.length;
+  const maxScore = subjects * 100;
+  return Number(((termRecord.overallScore / maxScore) * 100).toFixed(2));
 }
 
 function getBestPerformanceIndex(records) {
@@ -298,6 +303,49 @@ function getAveragePerformanceIndex(records) {
   });
 
   return count > 0 ? parseFloat((totalPI / count).toFixed(2)) : 0;
+}
+
+function preparePerformanceIndexChartData(records) {
+  return {
+    labels: records.map((r) => `${r.level} - ${r.term}`),
+    datasets: [
+      {
+        label: "Performance Index (%)",
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 159, 64, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        borderWidth: 1,
+        data: records.map(computePerformanceIndex),
+        borderWidth: 2,
+        tension: 0.3,
+      },
+    ],
+  };
+}
+
+// Trend Analysis (Improving / Declining / Stable)
+ function getTrend(indices) {
+  if (indices.length < 2) return "Not enough data";
+
+  const last = indices[indices.length - 1];
+  const previous = indices[indices.length - 2];
+
+  if (last > previous) return "📈 Improving";
+  if (last < previous) return "📉 Declining";
+  return "➖ Stable";
 }
 
 function getTopSubjects(records, limit = 5) {
@@ -467,6 +515,8 @@ module.exports = {
   getBestPerformanceIndex,
   calculatePerformanceIndex,
   getAveragePerformanceIndex,
+  preparePerformanceIndexChartData,
+  getTrend,
   getTopSubjects,
   getTopOverallScores,
   getMyPosition,

@@ -46,6 +46,20 @@ export const getExamsDetails = async (session) => {
   }
 };
 //Get all level exams details
+export const getExamsDashboardAnalytics = async (id) => {
+  try {
+    const res = await api({
+      method: "GET",
+      url: `/examinations/analytics/${id}`,
+    });
+
+    return res.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+//Get all level exams details
 export const getSubjectScore = async (session) => {
   try {
     const res = await api({
@@ -213,8 +227,6 @@ export const getAcademicDashboardInfo = async (id) => {
       url: `/examinations/academic/${id}`,
     });
 
-
- 
     return res.data;
   } catch (error) {
     throw error.response.data;

@@ -12,9 +12,13 @@ import Logout from "@mui/icons-material/Logout";
 import { UserContext } from "@/context/providers/UserProvider";
 import { useNavigate } from "react-router-dom";
 import { USER_ROLE } from "@/mockup/columns/sessionColumns";
+import SchoolSessionDropdown from "./SchoolSessionDropdown";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 export default function AccountDropdown() {
   const { user, logOutUser } = use(UserContext);
+  const { breakpoints } = useTheme();
+  const matches = useMediaQuery(breakpoints.down("sm"));
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -88,6 +92,11 @@ export default function AccountDropdown() {
           },
         }}
       >
+        {matches && (
+          <MenuItem>
+            <SchoolSessionDropdown />
+          </MenuItem>
+        )}
         <MenuItem onClick={() => handleClose("/profile")}>
           <Avatar
             src={user?.profile}

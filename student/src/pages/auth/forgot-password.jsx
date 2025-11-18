@@ -1,5 +1,5 @@
 // src/components/ForgotPassword.js
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -79,7 +79,7 @@ export default function ForgotPassword() {
                 md={6}
                 sx={{
                   background:
-                    "linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)",
+                    "linear-gradient(135deg, var(--primary) 0%, #003037 100%)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -113,7 +113,7 @@ export default function ForgotPassword() {
                 <LockResetIcon
                   sx={{
                     fontSize: 60,
-                    color: "#3B82F6",
+                    color: "var(--primary)",
                     backgroundColor: "rgba(59, 130, 246, 0.1)",
                     borderRadius: "50%",
                     p: 1.5,
@@ -188,12 +188,12 @@ export default function ForgotPassword() {
                       borderRadius: 2,
                       fontSize: "1rem",
                       fontWeight: 600,
-                      backgroundColor: "#3B82F6",
+                      backgroundColor: "var(--primary)",
                       boxShadow: "0 4px 14px rgba(59, 130, 246, 0.4)",
                       "&:hover": {
                         transform: "translateY(-2px)",
                         boxShadow: "0 6px 18px rgba(59, 130, 246, 0.5)",
-                        backgroundColor: "#2563EB",
+                        backgroundColor: "var(--primary)",
                       },
                       transition: "all 0.3s ease",
                     }}
@@ -219,7 +219,7 @@ export default function ForgotPassword() {
                         color: "text.secondary",
                         fontWeight: 500,
                         "&:hover": {
-                          color: "#3B82F6",
+                          color: "var(--primary)",
                         },
                       }}
                     >

@@ -5,6 +5,11 @@ const StudentReducer = (state, action) => {
         ...state,
         editStudentData: action.payload,
       };
+    case "editStudentAcademics":
+      return {
+        ...state,
+        studentAcademicData: action.payload,
+      };
 
     case "editParent":
       return {

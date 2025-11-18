@@ -1,5 +1,5 @@
 // src/components/Login.js
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
@@ -16,12 +16,7 @@ import {
   Fade,
   Link,
 } from "@mui/material";
-import {
-  Visibility,
-  VisibilityOff,
-  Person,
-  Lock,
-} from "@mui/icons-material";
+import { Visibility, VisibilityOff, Person, Lock } from "@mui/icons-material";
 import { useLogin } from "@/hooks/useStudentAuth";
 import { useAuth } from "@/context/AuthProvider";
 import { getSavedLoginInfo, saveLoginInfo } from "@/config/sessionHandler";
@@ -111,7 +106,7 @@ const Login = () => {
                 display: "inline-flex",
                 width: 60,
                 height: 60,
-                backgroundColor: "#3B82F6",
+                backgroundColor: "primary.main",
                 borderRadius: 2,
                 alignItems: "center",
                 justifyContent: "center",
@@ -221,7 +216,7 @@ const Login = () => {
                   fontSize: "0.875rem",
                   fontWeight: 500,
                   color: "text.secondary",
-                  "&:hover": { color: "#3B82F6" },
+                  "&:hover": { color: "primary.main" },
                 }}
               >
                 Forgot password?
@@ -240,12 +235,12 @@ const Login = () => {
                 borderRadius: 2,
                 fontSize: "1rem",
                 fontWeight: 600,
-                backgroundColor: "#3B82F6",
-                boxShadow: "0 4px 14px rgba(59, 130, 246, 0.4)",
+                backgroundColor: "primary.main",
+                boxShadow: "0 4px 14px rgba(9, 68, 43, 0.4)",
                 "&:hover": {
                   transform: "translateY(-2px)",
-                  boxShadow: "0 6px 18px rgba(59, 130, 246, 0.5)",
-                  backgroundColor: "#2563EB",
+                  boxShadow: "0 6px 18px rgba(12, 69, 69, 0.34)",
+                  backgroundColor: "primary.main",
                 },
                 transition: "all 0.3s ease",
               }}

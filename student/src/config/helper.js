@@ -79,3 +79,16 @@ export function generateRGBAColorsBetween(
   return colors;
 }
 
+export function getInitials(name) {
+  if (!name) return "";
+
+  // Split by spaces, filter out empty parts, and map to uppercase initials
+  const initials = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase())
+    .join(".");
+
+  return initials;
+}

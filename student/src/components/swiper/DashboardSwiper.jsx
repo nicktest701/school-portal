@@ -51,7 +51,7 @@ function DashboardSwiper() {
     >
       <SwiperSlide className="swiper-slide">
         <DashboardSwiperContent
-          img="/images/bus.jpg"
+          img="/images/student3.jpg"
           title={school_info?.name}
           content={school_info?.motto}
         />

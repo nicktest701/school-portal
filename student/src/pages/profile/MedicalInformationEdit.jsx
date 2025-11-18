@@ -84,6 +84,11 @@ const MedicalInformationEdit = ({ medical }) => {
                 fullWidth
                 size="small"
                 value={medical?.emergencyContact?.fullname}
+                slotProps={{
+                  htmlInput: {
+                    readOnly: true,
+                  },
+                }}
               />
               <TextField
                 label="Telephone No."
@@ -92,6 +97,11 @@ const MedicalInformationEdit = ({ medical }) => {
                 fullWidth
                 size="small"
                 value={medical?.emergencyContact?.phonenumber}
+                slotProps={{
+                  htmlInput: {
+                    readOnly: true,
+                  },
+                }}
               />
             </CustomFormControl>
 
@@ -103,6 +113,11 @@ const MedicalInformationEdit = ({ medical }) => {
                 row={3}
                 maxRows={3}
                 value={medical?.emergencyContact?.address}
+                slotProps={{
+                  htmlInput: {
+                    readOnly: true,
+                  },
+                }}
               />
             </CustomFormControl>
           </Stack>

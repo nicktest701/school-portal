@@ -96,15 +96,25 @@ export const studentValidationSchema = object().shape({
 export const studentEditValidationSchema = object().shape({
   firstname: string().required("Required*"),
   surname: string().required("Required*"),
-  // dateofbirth: date()
-  //   .required('Required*')
-  //   .max(new Date(), 'Date of birth cannot be in the future'),
+  othername: string().optional(),
   gender: string().required("Required*"),
   email: string().email("Invalid email address!!!"),
   phonenumber: string().matches(phoneRegex, "Invalid Phone number"),
   address: string().required("Required*"),
   residence: string().required("Required*"),
   nationality: string().required("Required*"),
+  department: object({
+    _id: string().required("Required*"),
+    name: string().required("Required*"),
+  }).optional(),
+  house: object({
+    _id: string().required("Required*"),
+    name: string().required("Required*"),
+  }).optional(),
+  level: object({
+    _id: string().required("Required*"),
+    type: string().required("Required*"),
+  }),
 });
 
 export const teacherValidationSchema = object().shape({
@@ -318,8 +328,8 @@ export const newStudentValidationSchema = [
       indexnumber: string().required("Required*"),
       firstname: string().required("Required*"),
       surname: string().required("Required*"),
-      dateofbirth: string().required("Required*"),
       othername: string().optional(),
+      dateofbirth: string().required("Required*"),
       gender: string().required("Required*"),
       email: string().email("Invalid email address!!!").optional(),
       phonenumber: string()

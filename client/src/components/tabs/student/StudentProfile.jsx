@@ -16,10 +16,10 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
 import Swal from "sweetalert2";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StudentContext } from "@/context/providers/StudentProvider";
 import StudentEdit from "@/pages/student/StudentEdit";
-import { disableStudentAccount } from "@/api/studentAPI";
+import { disableStudentAccount, getStudentInfo } from "@/api/studentAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 import moment from "moment";
@@ -31,8 +31,9 @@ import ProfileItem from "@/components/typo/ProfileItem";
 import ChipItem from "@/components/list/ChipItem";
 import { IconButton, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
+import AcademicEdit from "@/pages/student/AcademicEdit";
 const StudentProfile = ({ levelName, student, parents }) => {
-  const { type } = useParams();
+  const { type, studentId } = useParams();
   const { schoolSessionDispatch } = useContext(SchoolSessionContext);
   const { studentDispatch } = useContext(StudentContext);
   const queryClient = useQueryClient();
@@ -42,6 +43,17 @@ const StudentProfile = ({ levelName, student, parents }) => {
   const matches = useMediaQuery(breakpoints.up("md"));
 
   const [_, setSearchParams] = useSearchParams();
+
+  ///
+  const { data } = useQuery({
+    queryKey: ["student/id", studentId],
+    queryFn: () => getStudentInfo(studentId),
+    enabled: !!studentId,
+    initialData: () =>
+      queryClient
+        .getQueryData(["all-students"])
+        ?.find((student) => student?._id === studentId),
+  });
 
   const handleOpenMedicalHistory = () => {
     setSearchParams({
@@ -56,6 +68,36 @@ const StudentProfile = ({ levelName, student, parents }) => {
       payload: {
         open: true,
         data: student,
+      },
+    });
+  };
+
+  //EDIT Student Info
+  const openAcademicEdit = () => {
+    studentDispatch({
+      type: "editStudentAcademics",
+      payload: {
+        open: true,
+        data: {
+          department: {
+            _id: "",
+            name: "",
+          },
+          house: {
+            _id: "",
+            name: "",
+          },
+          level: {
+            _id: student?.level?._id,
+            type: student?.level?.levelName,
+          },
+          previousSchool: {
+            name: "",
+            location: "",
+            report: null,
+          },
+          ...student?.academic,
+        },
       },
     });
   };
@@ -185,6 +227,15 @@ const StudentProfile = ({ levelName, student, parents }) => {
           icon={<EditRounded />}
         />
         <Stack py={2}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<EditRounded />}
+            sx={{ alignSelf: "end" }}
+            onClick={openAcademicEdit}
+          >
+            Edit
+          </Button>
           <ProfileItem
             label="Department"
             text={student?.academic?.department?.name || "Not Available"}
@@ -230,6 +281,7 @@ const StudentProfile = ({ levelName, student, parents }) => {
         </Box>
       </Box>
       <StudentEdit />
+      <AcademicEdit />
       <ViewParent
         parents={parents}
         open={openViewParent}

@@ -20,7 +20,6 @@ const ViewParent = ({ open, setOpen, parents }) => {
   const { studentDispatch } = useContext(StudentContext);
   const [openNewParent, setOpenNewParent] = useState(false);
 
-
   //CLOSE view User Info
   const handleClose = () => setOpen(false);
 
@@ -49,13 +48,11 @@ const ViewParent = ({ open, setOpen, parents }) => {
     });
   };
 
-  //New Parent
-
   return (
     <>
       <Dialog open={open} maxWidth="md" fullWidth onClose={handleClose}>
         <CustomDialogTitle title="Parent Information" onClose={handleClose} />
-        <DialogContent >
+        <DialogContent>
           {parents?.length > 0 ? (
             parents?.map((parent, index) => {
               return (
@@ -117,13 +114,19 @@ const ViewParent = ({ open, setOpen, parents }) => {
               );
             })
           ) : (
+            <></>
+          )}
+
+          {parents?.length <= 2 && (
             <Box
               display="flex"
               flexDirection="column"
               justifyContent="center"
               alignItems="center"
             >
-              <Typography>No Parent info available</Typography>
+              {parents?.length === 0 && (
+                <Typography>No Parent info available</Typography>
+              )}
               <Button
                 startIcon={<Add />}
                 onClick={() => setOpenNewParent(true)}

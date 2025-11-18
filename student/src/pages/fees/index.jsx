@@ -13,6 +13,7 @@ const Fees = () => {
         title="Fees"
         subtitle="Manage and view your fees information"
         img={fee_ico}
+        color="primary.main"
       />
       <FeesNav />
       <AnimatedContainer>

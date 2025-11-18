@@ -1,7 +1,9 @@
 :root {
-  --primary: #3b82f6;
+  /* --primary: #3b82f6; */
+  --primary: #009fb7;
   /* --secondary: #ffc09f; */
-  --secondary: #32d583;
+  --secondary: #f59e0b;
+  /* --secondary: #32d583; */
   --button-background: dodgerblue;
   --button-color: white;
 

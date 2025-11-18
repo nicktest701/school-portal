@@ -64,7 +64,7 @@ function NewEvent() {
     maxSize: 200000,
     multiple: false,
     onDrop: (acceptedFiles) => {
-      console.log(acceptedFiles)
+      // console.log(acceptedFiles)
       if (!_.isEmpty(acceptedFiles)) {
         const reader = new FileReader();
         reader.onload = (event) => {

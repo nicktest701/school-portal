@@ -73,7 +73,7 @@ export default function NotesBoard() {
         title="Notes Board"
         subtitle="Manage user accounts, roles, and permissions to ensure secure and appropriate access to the system."
         img={level_ico}
-        color="text.main"
+         color="primary.main"
         right={
           <>
             <Button

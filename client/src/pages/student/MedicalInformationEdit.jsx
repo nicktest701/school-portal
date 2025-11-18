@@ -11,7 +11,7 @@ import MedicalAllergy from "@/components/items/MedicalAllergy";
 import { medicalValidationSchema } from "@/config/validationSchema";
 import { useSearchParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateStudentMedicalHistory } from "@/api/studentAPI";
+import { putStudent } from "@/api/studentAPI";
 import { SchoolSessionContext } from "@/context/providers/SchoolSessionProvider";
 import { alertError, alertSuccess } from "@/context/actions/globalAlertActions";
 
@@ -22,24 +22,32 @@ const MedicalInformationEdit = ({ medical }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: updateStudentMedicalHistory,
+    mutationFn: putStudent,
   });
   const onSubmit = (values, options) => {
-    // console.log(values);
+    const { id, ...rest } = values;
 
-    mutateAsync(values, {
-      onSettled: () => {
-        queryClient.invalidateQueries(["student-by-id"]);
-        options.setSubmitting(false);
+    mutateAsync(
+      {
+        _id: id,
+        medical: {
+          ...rest,
+        },
       },
-      onSuccess: (data) => {
-        schoolSessionDispatch(alertSuccess(data));
-        handleClose();
-      },
-      onError: (error) => {
-        schoolSessionDispatch(alertError(error));
-      },
-    });
+      {
+        onSettled: () => {
+          queryClient.invalidateQueries(["student-by-id"]);
+          options.setSubmitting(false);
+        },
+        onSuccess: (data) => {
+          schoolSessionDispatch(alertSuccess(data));
+          handleClose();
+        },
+        onError: (error) => {
+          schoolSessionDispatch(alertError(error));
+        },
+      }
+    );
   };
 
   const handleClose = () =>

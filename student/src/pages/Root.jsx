@@ -8,6 +8,29 @@ import Content from "./layouts/Content";
 import { Box } from "@mui/material";
 import LoadingSpinner from "@/components/spinners/LoadingSpinner";
 import HomeLinks from "@/components/HomeLinks";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 function Root() {
   return (

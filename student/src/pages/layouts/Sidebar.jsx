@@ -27,6 +27,7 @@ import {
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthProvider";
 import { styled } from "@mui/material/styles";
+import { getInitials } from "@/config/helper";
 
 const StyledNavLink = styled(NavLink)(({ theme }) => ({
   textDecoration: "none",
@@ -133,20 +134,22 @@ const Sidebar = () => {
                 sx={{
                   width: 48,
                   height: 48,
-                  border: "2px solid #3B82F6",
+                  border: "2px solid var(--primary)",
                   boxShadow: "0 4px 12px rgba(59, 130, 246, 0.25)",
                 }}
-              />
+              >
+                {getInitials(school_info?.name)}
+              </Avatar>
             ) : (
               <SchoolRounded
                 sx={{
                   width: 48,
                   height: 48,
-                  color: "#3B82F6",
+                  color: "var(--primary)",
                   backgroundColor: "rgba(59, 130, 246, 0.1)",
                   borderRadius: "50%",
                   p: 1,
-                  border: "2px solid #3B82F6",
+                  border: "2px solid var(--primary)",
                   boxShadow: "0 4px 12px rgba(59, 130, 246, 0.25)",
                 }}
               />
@@ -202,7 +205,7 @@ const Sidebar = () => {
             />
 
             <DrawerItem
-              title="Personal Info"
+              title="Personal Details"
               icon={<ListAltSharp />}
               to="/profile"
               isSmall={toggleWidth}
