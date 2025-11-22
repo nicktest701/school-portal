@@ -12,7 +12,7 @@ export default function HomeLinks() {
       sx={{
         display: { xs: "none", md: "inline-flex" },
       }}
-      separator="/"
+      separator="▶️"
     >
       <Link component={RouterLink} to="/">
         Home

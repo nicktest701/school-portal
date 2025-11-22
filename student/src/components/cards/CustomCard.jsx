@@ -1,28 +1,15 @@
-// import { MoreHorizRounded } from '@mui/icons-material';
-// import { Card, IconButton, Stack, Typography } from '@mui/material';
-// import React from 'react';
-
-// function CustomCard({ title, children }) {
-//   return (
-//     <Card sx={{ p: 2, minWidth: 200, minHeight: 200 }}>
-
-//       <Stack direction='row' justifyContent='space-between' alignItems='center'>
-//         <Typography variant='subtitle2'>{title}</Typography>
-//         <IconButton color='secondary'>
-//           <MoreHorizRounded />
-//         </IconButton>
-//       </Stack>
-//       {children}
-//     </Card>
-//   );
-// }
-
-// export default CustomCard;
-
-// src/components/cards/CustomCard.js
+import React from "react";
 import { Box, Typography, Stack, Divider } from "@mui/material";
 
-const CustomCard = ({ title, icon, children, bgColor, sx }) => {
+const CustomCard = ({
+  title,
+  subtitle,
+  icon,
+  imgSrc,
+  children,
+  bgColor,
+  sx,
+}) => {
   return (
     <Box
       sx={{
@@ -40,15 +27,29 @@ const CustomCard = ({ title, icon, children, bgColor, sx }) => {
         spacing={1}
         alignItems="center"
         sx={{
-          p: 2.5,
+          p: 2,
           color: bgColor ? "white" : "text.primary",
           backgroundColor: bgColor ? "rgba(0,0,0,0.1)" : "transparent",
         }}
       >
         {icon}
-        <Typography variant="h6" fontWeight={600}>
-          {title}
-        </Typography>
+        {imgSrc && (
+          <img alt="db" src={imgSrc} style={{ width: 28, height: 28 }} />
+        )}
+        <Stack>
+          <Typography variant="h6" fontWeight={600}>
+            {title}
+          </Typography>
+          {subtitle && (
+            <Typography
+              variant="caption"
+              fontStyle="italic"
+              color="text.secondary"
+            >
+              {subtitle}
+            </Typography>
+          )}
+        </Stack>
       </Stack>
 
       {!bgColor && <Divider />}

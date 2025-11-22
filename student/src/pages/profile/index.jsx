@@ -29,7 +29,7 @@ const Profile = () => {
   }
 
   return (
-    <Container>
+    <Container sx={{ p: 0 }}>
       <CustomTitle
         title="Profile Details"
         subtitle="Here you can view and edit your profile information."

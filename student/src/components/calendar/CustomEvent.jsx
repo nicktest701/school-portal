@@ -1,3 +1,4 @@
+import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
@@ -100,6 +101,7 @@ function CustomEvent() {
         editable={true}
         selectable={true}
         // select={handleDateSelect}
+        
         selectMirror={true}
         dayMaxEvents={true}
         initialDate={moment().format("YYYY-MM-DD")}
@@ -119,10 +121,6 @@ function CustomEvent() {
             <Box
               sx={{
                 cursor: "pointer",
-                // width: "20ch",
-                // whiteSpace: "wrap",
-                // width: "12ch",
-                // fontSize: "11px",
                 px: 1,
                 bgcolor:
                   eventInfo?.event?.extendedProps?.type === "holiday"
@@ -134,8 +132,6 @@ function CustomEvent() {
             </Box>
           </Tooltip>
         )}
-        // eventMouseEnter={handleEventMouseEnter}
-        // eventMouseLeave={handleEventMouseLeave}
         eventClick={({ event: { extendedProps } }) => {
           if (["1", "2", "3", "4"].includes(extendedProps?._id)) {
             return;
@@ -145,20 +141,6 @@ function CustomEvent() {
         loading={events.isPending || holidays.isPending}
       />
 
-      {/* <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleEventMouseLeave}
-      >
-        {selectedEvent && (
-          <Typography sx={{ p: 2 }}>
-            <strong>{selectedEvent.title}</strong>
-            <br />
-            <strong>Date:</strong>{" "}
-            {moment(selectedEvent.start).format("MMMM Do, YYYY")}
-          </Typography>
-        )}
-      </Popover> */}
     </Box>
   );
 }

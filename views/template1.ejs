@@ -361,7 +361,7 @@
 
       <!-- Student photo -->
       <div class="student-photo-container">
-        <img class="student-photo" alt="photo" src="<%=report?.profile %>" />
+        <img class="student-photo" alt="photo" src="<%=report.profile %>" />
       </div>
 
       <!-- Student info section -->
@@ -395,10 +395,13 @@
               <span class="report-item-text"><%= report.grade %></span>
             </div>
             <!-- Promoted -->
+
+            <% if (report.isPromotionTerm==="Yes") { %>
             <div class="report-item-container">
               <span class="report-item-title">Promoted :</span>
-              <span class="report-item-text"></span>
+              <span class="report-item-text"> </span>
             </div>
+            <% } %>
           </div>
         </div>
 

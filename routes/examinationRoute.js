@@ -527,7 +527,6 @@ router.get(
 
     const indices = resultsArray.map((i) => i.performanceIndex);
     const trend = getTrend(indices);
-    console.log(trend);
 
     res.status(200).json({
       averageIndex,
@@ -640,10 +639,22 @@ router.get(
           "phonenumber",
           "email",
           "profile",
+          "academic",
         ],
       });
 
-    // console.log(studentRecord);
+    // console.log(studentRecord?.student);
+
+    const scorePreference = studentRecord?.term?.exams?.scorePreference?.split(
+      "/"
+    ) || ["50", "50"];
+
+    const termDetails = {
+      report: studentRecord?.term?.report,
+      class: scorePreference[0],
+      exams: scorePreference[1],
+      headmaster: studentRecord?.term?.headmaster,
+    };
 
     //GET student position
     const position = await getMyPosition(
@@ -677,22 +688,15 @@ router.get(
           bestScoreSubject: _.maxBy(generatedResult?.scores, "totalScore"),
           worstScoreSubject: _.minBy(generatedResult?.scores, "totalScore"),
         },
+
+        session: termDetails,
       };
+      // console.log(generatedResult);
 
       return res.status(200).json(generatedResult);
     }
 
     const school = await School.findById(req.user.school);
-
-    const scorePreference = studentRecord?.term?.exams?.scorePreference?.split(
-      "/"
-    ) || ["50", "50"];
-    const termDetails = {
-      report: studentRecord?.term?.report,
-      class: scorePreference[0],
-      exams: scorePreference[1],
-      headmaster: studentRecord?.term?.headmaster,
-    };
 
     school.termDetails = termDetails;
 
@@ -1057,12 +1061,15 @@ const studentReportDetails = async (
     term: term.term,
     vacationDate: moment(new Date(term.vacationDate)).format("Do MMMM,YYYY"),
     reOpeningDate: moment(new Date(term.reOpeningDate)).format("Do MMMM,YYYY"),
+    isPromotionTerm: term?.isPromotionTerm,
     report_id: `${student?.fullName}_${level?.levelName}_${term.term}`,
     rollNumber: level.noOfStudents,
     totalLevelAttendance: 0,
     indexnumber: _.toUpper(student?.indexnumber),
     phonenumber: student?.phonenumber,
     fullName: student?.fullName,
+    department: student?.academic?.department?.name,
+    house: student?.academic?.house?.name,
     email: student?.email,
     level: `${level?.levelName}`,
     levelId: level?._id,

@@ -18,7 +18,7 @@ import {
   ToggleButtonGroup,
   Stack,
 } from "@mui/material";
-import level_ico from "@/assets/header/level_ico.svg";
+import level_ico from "@/assets/images/header/level_ico.svg";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";

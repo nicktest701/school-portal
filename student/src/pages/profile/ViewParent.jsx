@@ -19,7 +19,11 @@ const ViewParent = ({ open, setOpen, parents }) => {
   return (
     <>
       <Dialog open={open} maxWidth="md" fullWidth onClose={handleClose}>
-        <CustomDialogTitle title="Parent Information" onClose={handleClose} />
+        <CustomDialogTitle
+          title="Parent Information"
+          subtitle="View your parent/guardian information below."
+          onClose={handleClose}
+        />
         <DialogContent>
           {parents?.length > 0 ? (
             parents?.map((parent, index) => {

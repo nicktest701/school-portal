@@ -206,7 +206,13 @@ const FeesDashboard = () => {
   };
 
   return (
-    <Container sx={{ py: 2, margin: "0 auto" }}>
+    <Container
+      // maxWidth="lg"
+      sx={{
+        py: 5,
+        px: 0,
+      }}
+    >
       <Box sx={{ mb: 4 }}>
         <Typography
           variant="h4"
@@ -232,6 +238,7 @@ const FeesDashboard = () => {
           View your fee payments, arrears, and payment history below.
         </Typography>
       </Box>
+
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
           <Grid
@@ -242,314 +249,328 @@ const FeesDashboard = () => {
               md: 4,
             }}
             key={index}
+            sx={{ p: 2, border: "1px solid lightgray", borderRadius: 2 }}
           >
-            <Card sx={{ height: "100%" }}>
-              <CardContent sx={{ display: "flex", alignItems: "center" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 64,
-                    height: 64,
-                    borderRadius: "50%",
-                    backgroundColor: stat.bgColor,
-                    mr: 3,
-                    flexShrink: 0,
-                  }}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 60,
+                  height: 60,
+                  borderRadius: "50%",
+                  backgroundColor: stat.bgColor,
+                  mr: 3,
+                  flexShrink: 0,
+                }}
+              >
+                <Box sx={{ color: stat.color }}>{stat.icon}</Box>
+              </Box>
+              <Box>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ mb: 0.5 }}
                 >
-                  <Box sx={{ color: stat.color }}>{stat.icon}</Box>
-                </Box>
-                <Box>
-                  <Typography
-                    variant="subtitle2"
-                    color="textSecondary"
-                    sx={{ mb: 0.5 }}
-                  >
-                    {stat.title}
-                  </Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-                    {stat.value}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: stat.color, fontWeight: 500 }}
-                  >
-                    {stat.description}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
+                  {stat.title}
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+                  {stat.value}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: stat.color, fontWeight: 500 }}
+                >
+                  {stat.description}
+                </Typography>
+              </Box>
+            </Box>
           </Grid>
         ))}
       </Grid>
       {/* Current Fee Details and Chart */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent>
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 3,
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
-                }}
-              >
-                Current Fee Summary
-              </Typography>
+        <Grid
+          size={{ xs: 12, md: 6 }}
+          sx={{ p: 2, border: "1px solid lightgray", borderRadius: 2 }}
+        >
+          <Box sx={{ height: "100%" }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 3,
+                fontWeight: 600,
+                color: theme.palette.primary.main,
+              }}
+            >
+              Current Fee Summary
+            </Typography>
 
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 12 }}>
-                  <Box
-                    sx={{
-                      textAlign: "center",
-                      p: 2,
-                      borderRadius: 2,
-                      bgcolor: "rgba(0, 0, 0, 0.02)",
-                    }}
-                  >
-                    <Typography variant="subtitle2" color="textSecondary">
-                      Total Fees
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
-                      {feeDetails.total}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 12 }}>
-                  <Box
-                    sx={{
-                      textAlign: "center",
-                      p: 2,
-                      borderRadius: 2,
-                      bgcolor: "rgba(76, 175, 80, 0.05)",
-                      borderLeft: `4px solid ${theme.palette.success.main}`,
-                    }}
-                  >
-                    <Typography variant="subtitle2" color="textSecondary">
-                      Amount Paid
-                    </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 700,
-                        mt: 1,
-                        color: theme.palette.success.main,
-                      }}
-                    >
-                      {feeDetails.paid}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 12 }}>
-                  <Box
-                    sx={{
-                      textAlign: "center",
-                      p: 2,
-                      borderRadius: 2,
-                      bgcolor: "rgba(244, 67, 54, 0.05)",
-                      borderLeft: `4px solid ${theme.palette.error.main}`,
-                    }}
-                  >
-                    <Typography variant="subtitle2" color="textSecondary">
-                      Arrears
-                    </Typography>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 700,
-                        mt: 1,
-                        color: theme.palette.error.main,
-                      }}
-                    >
-                      {feeDetails.arrears}
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-
-              <Box sx={{ mt: 3, position: "relative" }}>
-                <Typography variant="body2" sx={{ mb: 1 }}>
-                  Payment Progress
-                </Typography>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <Box
                   sx={{
-                    height: 12,
-                    width: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.05)",
-                    borderRadius: 6,
-                    overflow: "hidden",
+                    textAlign: "center",
+                    p: 2,
+                    borderRadius: 2,
+                    bgcolor: "rgba(0, 0, 0, 0.02)",
                   }}
                 >
-                  <Box
-                    sx={{
-                      height: "100%",
-                      width: `${feeDetails.percentage}%`,
-                      background: `linear-gradient(90deg, ${theme.palette.success.light}, ${theme.palette.success.main})`,
-                      borderRadius: 6,
-                    }}
-                  />
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Total Fees
+                  </Typography>
+                  <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
+                    {feeDetails.total}
+                  </Typography>
                 </Box>
-                <Typography variant="body2" sx={{ mt: 1, textAlign: "right" }}>
-                  {feeDetails.percentage}% paid
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 12 }}>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    p: 2,
+                    borderRadius: 2,
+                    bgcolor: "rgba(76, 175, 80, 0.05)",
+                    borderLeft: `4px solid ${theme.palette.success.main}`,
+                  }}
+                >
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Amount Paid
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 700,
+                      mt: 1,
+                      color: theme.palette.success.main,
+                    }}
+                  >
+                    {feeDetails.paid}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 12 }}>
+                <Box
+                  sx={{
+                    textAlign: "center",
+                    p: 2,
+                    borderRadius: 2,
+                    bgcolor: "rgba(244, 67, 54, 0.05)",
+                    borderLeft: `4px solid ${theme.palette.error.main}`,
+                  }}
+                >
+                  <Typography variant="subtitle2" color="textSecondary">
+                    Arrears
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 700,
+                      mt: 1,
+                      color: theme.palette.error.main,
+                    }}
+                  >
+                    {feeDetails.arrears}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
 
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Card sx={{ height: "100%" }}>
-            <CardContent>
-              <Typography
-                variant="h6"
+            <Box sx={{ mt: 3, position: "relative" }}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Payment Progress
+              </Typography>
+              <Box
                 sx={{
-                  mb: 3,
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
+                  height: 12,
+                  width: "100%",
+                  backgroundColor: "rgba(0, 0, 0, 0.05)",
+                  borderRadius: 6,
+                  overflow: "hidden",
                 }}
               >
-                Fee Payment History
-              </Typography>
-              <Box sx={{ height: 400 }}>
-                <Line data={paymentHistory} options={chartOptions} />
+                <Box
+                  sx={{
+                    height: "100%",
+                    width: `${feeDetails.percentage}%`,
+                    background: `linear-gradient(90deg, ${theme.palette.success.light}, ${theme.palette.success.main})`,
+                    borderRadius: 6,
+                  }}
+                />
               </Box>
-            </CardContent>
-          </Card>
+              <Typography variant="body2" sx={{ mt: 1, textAlign: "right" }}>
+                {feeDetails.percentage}% paid
+              </Typography>
+            </Box>
+          </Box>
+        </Grid>
+
+        <Grid
+          size={{ xs: 12, md: 6 }}
+          sx={{ p: 2, border: "1px solid lightgray", borderRadius: 2 }}
+        >
+          <Box sx={{ height: "100%" }}>
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 3,
+                fontWeight: 600,
+                color: theme.palette.primary.main,
+              }}
+            >
+              Fee Payment History
+            </Typography>
+            <Box
+              sx={{
+                // minWidth: 100,
+                width: "100%",
+                height: 400,
+              }}
+            >
+              <Line data={paymentHistory} options={chartOptions} />
+            </Box>
+          </Box>
         </Grid>
       </Grid>
       {/* Recent Fees Paid */}
-      <Card>
-        <CardContent>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 3,
-            }}
+      <Box sx={{ p: 2, border: "1px solid lightgray", borderRadius: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: {
+              xs: "column",
+              md: "row",
+            },
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+            gap: 2,
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, color: theme.palette.primary.main }}
           >
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 600, color: theme.palette.primary.main }}
-            >
-              Recent Fees Paid
-            </Typography>
-            <TextField
-              variant="outlined"
-              size="small"
-              placeholder="Search payments..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: isTablet ? "100%" : 300, mt: isTablet ? 2 : 0 }}
-            />
-          </Box>
+            Recent Fees Paid
+          </Typography>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search payments..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            // sx={{ width: isTablet ? "100%" : 300, mt: isTablet ? 2 : 0 }}
+          />
+        </Box>
 
-          <TableContainer
-            component={Paper}
-            sx={{
-              borderRadius: 2,
-              boxShadow: "none",
-              border: "1px solid rgba(0, 0, 0, 0.05)",
-            }}
-          >
-            <Table>
-              <TableHead sx={{ bgcolor: "rgba(0, 0, 0, 0.02)" }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 600 }}>Date Paid</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Amount</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Payment Method</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Receipt No.</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>Paid by.</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredPayments
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((payment) => (
-                    <TableRow
-                      key={payment.id}
-                      hover
+        <TableContainer
+          component={Paper}
+          sx={{
+            borderRadius: 2,
+            boxShadow: "none",
+            border: "1px solid rgba(0, 0, 0, 0.05)",
+            p: 0,
+            width: isTablet ? 300 : "100%",
+            mx: "auto",
+            overflowX: "auto",
+          }}
+        >
+          <Table>
+            <TableHead sx={{ bgcolor: "rgba(0, 0, 0, 0.02)" }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 600 }}>Date Paid</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Amount</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Payment Method</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Receipt No.</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Paid by.</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredPayments
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((payment) => (
+                  <TableRow
+                    key={payment.id}
+                    hover
+                    sx={{
+                      "&:nth-of-type(even)": {
+                        bgcolor: "rgba(0, 0, 0, 0.02)",
+                      },
+                      "&:hover": { bgcolor: "rgba(25, 118, 210, 0.03)" },
+                    }}
+                  >
+                    <TableCell>
+                      {moment(payment.createdAt)?.format("LL")}
+                    </TableCell>
+                    <TableCell
                       sx={{
-                        "&:nth-of-type(even)": {
-                          bgcolor: "rgba(0, 0, 0, 0.02)",
-                        },
-                        "&:hover": { bgcolor: "rgba(25, 118, 210, 0.03)" },
+                        fontWeight: 600,
+                        color: theme.palette.success.main,
                       }}
                     >
-                      <TableCell>
-                        {moment(payment.createdAt)?.format("LL")}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          fontWeight: 600,
-                          color: theme.palette.success.main,
-                        }}
-                      >
-                        {currencyFormatter(payment.paid)}
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          {payment.paymentMethod === "Credit Card" ? (
-                            <CreditCardIcon
-                              sx={{ color: theme.palette.primary.main, mr: 1 }}
-                            />
-                          ) : payment.paymentMethod === "Cash" ? (
-                            <BankIcon
-                              sx={{ color: theme.palette.primary.main, mr: 1 }}
-                            />
-                          ) : payment.paymentMethod === "Bank Transfer" ? (
-                            <BankIcon
-                              sx={{ color: theme.palette.primary.main, mr: 1 }}
-                            />
-                          ) : (
-                            <ReceiptIcon
-                              sx={{ color: theme.palette.primary.main, mr: 1 }}
-                            />
-                          )}
-                          {payment.paymentMethod}
-                        </Box>
-                      </TableCell>
-                      <TableCell sx={{ color: theme.palette.text.secondary }}>
-                        {payment.id}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          color: theme.palette.text.primary,
-                          fontWeight: "bold",
-                          whiteSpace: "no-wrap",
-                        }}
-                      >
-                        {payment.payer?.name} |
-                        <span style={{ fontWeight: "normal" }}>
-                          {payment?.payer?.phonenumber}
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={filteredPayments.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              sx={{ borderTop: "1px solid rgba(0, 0, 0, 0.05)" }}
-            />
-          </TableContainer>
-        </CardContent>
-      </Card>
+                      {currencyFormatter(payment.paid)}
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        {payment.paymentMethod === "Credit Card" ? (
+                          <CreditCardIcon
+                            sx={{ color: theme.palette.primary.main, mr: 1 }}
+                          />
+                        ) : payment.paymentMethod === "Cash" ? (
+                          <BankIcon
+                            sx={{ color: theme.palette.primary.main, mr: 1 }}
+                          />
+                        ) : payment.paymentMethod === "Bank Transfer" ? (
+                          <BankIcon
+                            sx={{ color: theme.palette.primary.main, mr: 1 }}
+                          />
+                        ) : (
+                          <ReceiptIcon
+                            sx={{ color: theme.palette.primary.main, mr: 1 }}
+                          />
+                        )}
+                        {payment.paymentMethod}
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ color: theme.palette.text.secondary }}>
+                      {payment.id}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: theme.palette.text.primary,
+                        fontWeight: "bold",
+                        whiteSpace: "no-wrap",
+                      }}
+                    >
+                      {payment.payer?.name} |
+                      <span style={{ fontWeight: "normal" }}>
+                        {payment?.payer?.phonenumber}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredPayments.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{ borderTop: "1px solid rgba(0, 0, 0, 0.05)" }}
+          />
+        </TableContainer>
+      </Box>
       {/* Bottom status */}
       {feesRecord?.data?.totalArrears > 0 && (
         <Box

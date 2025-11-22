@@ -5,6 +5,7 @@ import _ from "lodash";
 import { getAllEvents } from "@/api/eventAPI";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { EventRounded  } from "@mui/icons-material";
 
 const Event = () => {
   const navigate = useNavigate();
@@ -65,7 +66,8 @@ const Event = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography>No Events </Typography>
+          <EventRounded color="secondary" />
+          <Typography variant="body2">No Events </Typography>
         </Stack>
       )}
     </Box>

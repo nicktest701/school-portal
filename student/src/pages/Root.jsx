@@ -39,6 +39,7 @@ function Root() {
         sx={{
           display: "flex",
           alignItems: "flex-start",
+          justifyContent: "center",
         }}
       >
         <Sidebar />

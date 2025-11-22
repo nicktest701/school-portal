@@ -1,3 +1,4 @@
+import React from "react";
 const ExamsItem = ({ item }) => {
   return (
     <>
@@ -25,10 +26,15 @@ const ExamsItem = ({ item }) => {
         >
           {item.totalScore}
         </td>
-        {/* <td width="10%" style={{ color: "green",fontSize:'12px', fontWeight: "bold" }}>
+        <td
+          width="10%"
+          style={{ color: "green", fontSize: "12px", fontWeight: "bold" }}
+        >
+          {item.position}
+        </td>
+        <td width="10%" style={{ fontSize: "12px" }}>
           {item.grade}
-        </td> */}
-        <td width="10%" style={{ fontSize: "12px" }}>{item.grade}</td>
+        </td>
         <td
           width="14%"
           style={{ color: "green", fontSize: "12px", fontWeight: "bold" }}

@@ -224,12 +224,12 @@ const Sidebar = () => {
               to="/fees"
               isSmall={toggleWidth}
             />
-            <DrawerItem
+            {/* <DrawerItem
               title="Attendance"
               icon={<DetailsRounded />}
               to="/attendance"
               isSmall={toggleWidth}
-            />
+            /> */}
 
             <DrawerItem
               title="Events"

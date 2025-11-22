@@ -111,7 +111,9 @@ const TerminalReport1 = ({ student, classScore, examsScore, ratings }) => {
             <ReportItem title="Class" text={`${student?.level}`} />
             <ReportItem title="No. On Roll" text={student?.rollNumber} />
             <ReportItem title="Grade" text={student?.grade} />
-            <ReportItem title="Promoted" text="" />
+            {student?.isPromotionTerm === "Yes" && (
+              <ReportItem title="Promoted To:" text="" />
+            )}
           </Stack>
         </Box>
         <Box

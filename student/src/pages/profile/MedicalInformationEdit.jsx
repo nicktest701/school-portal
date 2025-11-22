@@ -21,14 +21,25 @@ const MedicalInformationEdit = ({ medical }) => {
   return (
     <Dialog
       open={searchParams.get("mi") === "true"}
-      maxWidth="sm"
+      maxWidth="md"
       fullWidth
       onClose={handleClose}
     >
-      <CustomDialogTitle title="Medical History" onClose={handleClose} />
+      <CustomDialogTitle
+        title="Medical History"
+        subtitle="View your medical information and emergency contact details."
+        onClose={handleClose}
+      />
       <DialogContent sx={{ p: 1 }}>
         <Stack padding={2} spacing={1}>
-          <Stack width={{ xs: "100%", md: "80%" }} py={5}>
+          <Typography
+            variant="body2"
+            color="primary.main"
+            sx={{ fontWeight: "bold" }}
+          >
+            Health Conditions
+          </Typography>
+          <Stack width={{ xs: "100%", md: "80%" }} pb={5}>
             <div
               style={{
                 display: "grid",

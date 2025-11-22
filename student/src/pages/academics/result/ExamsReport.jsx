@@ -8,6 +8,7 @@ const ExamsReport = ({ open, setOpen, student }) => {
   const handleClose = () => {
     setOpen(false);
   };
+  
 
   return (
     <>

@@ -178,8 +178,6 @@
       .remarks-section {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        padding: 5px;
-        margin-top: 10px;
       }
 
       .remark-card {
@@ -196,7 +194,8 @@
       }
 
       .remark-content {
-        color: #555;
+        color: #000000;
+        font-size: 12px;
         font-style: italic;
       }
 
@@ -362,20 +361,25 @@
           <span class="info-label">CLASS</span>
           <span class="info-value"> <%= report.level %></span>
         </div>
-        <!-- <div class="info-item">
-          <span class="info-label">HOUSE</span>
-          <span class="info-value">Aggrey House</span>
+        <div className="info-item">
+          <span className="info-label">DEPARTMENT/PROGRAMME</span>
+          <% if (report.department) { %>
+          <span className="info-value"><%= report?.department %></span>
+          <% } %>
         </div>
-        <div class="info-item">
-          <span class="info-label">PROGRAMME</span>
-          <span class="info-value">SCIENCE</span>
-        </div> -->
+
+        <div className="info-item">
+          <span className="info-label">HOUSE</span>
+          <% if (report.house) { %>
+          <span className="info-value"><%= report?.house %></span>
+          <% } %>
+        </div>
         <div class="info-item">
           <span class="info-label">ACADEMIC YEAR</span>
           <span class="info-value"> <%= report.academicYear %> </span>
         </div>
         <div class="info-item">
-          <span class="info-label">TERM</span>
+          <span class="info-label">TERM/SEMESTER</span>
           <span class="info-value"> <%= report.term %> </span>
         </div>
         <div class="info-item">
@@ -398,6 +402,13 @@
           <span class="info-label">POSITION</span>
           <span class="info-value"> <%= report.position %> </span>
         </div>
+
+        <% if (report.isPromotionTerm==='Yes') { %>
+        <div class="info-item">
+          <span class="info-label">PROMOTED TO:</span>
+          <span class="info-value"></span>
+        </div>
+        <% } %>
       </div>
 
       <table class="subject-table">
@@ -417,21 +428,21 @@
           <!-- subject  -->
           <tr>
             <td
-              width="25%"
+              width="26%"
               style="text-align: left; padding-left: 2px; font-weight: bold"
             >
               <%= score.subject %>
             </td>
 
-            <td width="18%"><%= score.classScore %></td>
-            <td width="18%"><%= score.examsScore %></td>
-            <td width="15%" style="color: #b72338; font-weight: bold">
+            <td width="15%"><%= score.classScore %></td>
+            <td width="15%"><%= score.examsScore %></td>
+            <td width="14%" style="color: #b72338; font-weight: bold">
               <%= score.totalScore %>
             </td>
 
             <td width="10%"><%= score.position%></td>
             <td width="10%"><%= score.grade %></td>
-            <td width="14%" style="color: green"><%= score.remarks %></td>
+            <td width="20%" style="color: green"><%= score.remarks %></td>
           </tr>
 
           <% }) %>
@@ -476,7 +487,7 @@
           flex-direction: column;
           justify-content: center;
           align-items: end;
-          margin-bottom: 4px;
+          margin-bottom: 10px;
         "
       >
         <!-- Only show if signature exists -->
@@ -492,7 +503,7 @@
             transform: scale(2);
           "
         />
-        <span style="border-top: 1px #333 dashed; font-size: 13px">
+        <span style="border-top: 1px #333 dashed; font-size: 12px">
           <%= school.termDetails.headmaster.name %> (Headmaster)
         </span>
         <hr />

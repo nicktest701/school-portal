@@ -49,7 +49,7 @@ const StudentProfile = ({ student, parents, medical }) => {
 
   return (
     <>
-      <Box>
+      <Box sx={{ py: 5 }}>
         <Stack
           sx={{
             pb: 2,
@@ -177,7 +177,7 @@ const StudentProfile = ({ student, parents, medical }) => {
         setOpen={setOpenViewParent}
       />
 
-      <MedicalInformationEdit medical={{ ...medical }} />
+      <MedicalInformationEdit medical={student?.medical} />
 
       <ViewPreviousReport
         report={student?.academic?.previousSchool?.report}

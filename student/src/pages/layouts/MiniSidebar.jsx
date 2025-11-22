@@ -75,11 +75,11 @@ const MiniSidebar = ({ open, setOpen }) => {
           handleClose={handleClose}
         />
 
-        <MiniDrawerItem
+        {/* <MiniDrawerItem
           title="Attendance"
           to="/attendance"
           handleClose={handleClose}
-        />
+        /> */}
         <MiniDrawerItem title="Events" to="/events" handleClose={handleClose} />
 
         <MiniDrawerItem

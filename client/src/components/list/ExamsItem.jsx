@@ -4,7 +4,7 @@ const ExamsItem = ({ item }) => {
     <>
       <tr>
         <td
-          width="25%"
+          width="26%"
           style={{
             textAlign: "left",
             paddingLeft: "2px",
@@ -18,14 +18,14 @@ const ExamsItem = ({ item }) => {
             ? "R.M.E"
             : item?.subject}
         </td>
-        <td width="18%" style={{ fontSize: "12px" }}>
+        <td width="15%" style={{ fontSize: "12px" }}>
           {item.classScore}
         </td>
-        <td width="18%" style={{ fontSize: "12px" }}>
+        <td width="15%" style={{ fontSize: "12px" }}>
           {item.examsScore}
         </td>
         <td
-          width="15%"
+          width="14%"
           style={{ color: "#b72338", fontSize: "12px", fontWeight: "bold" }}
         >
           {item.totalScore}
@@ -40,7 +40,7 @@ const ExamsItem = ({ item }) => {
           {item.grade}
         </td>
         <td
-          width="14%"
+          width="20%"
           style={{ color: "green", fontSize: "12px", fontWeight: "bold" }}
         >
           {item.remarks}

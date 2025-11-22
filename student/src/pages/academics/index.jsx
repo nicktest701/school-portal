@@ -8,12 +8,12 @@ import AnimatedContainer from "@/components/animations/AnimatedContainer";
 
 const Academics = () => {
   return (
-    <Container>
+    <Container sx={{ p: 0 }}>
       <CustomTitle
         title="Academics"
         subtitle="Manage your academic records, view results, and track progress."
         img={exams_ico}
-               color="primary.main"
+        color="primary.main"
       />
       <AcademicsNav />
       <AnimatedContainer>

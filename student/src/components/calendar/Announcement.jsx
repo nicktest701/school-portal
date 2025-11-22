@@ -14,8 +14,8 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllAnnouncements } from "@/api/announcementAPI";
 import dayjs from "dayjs";
-import EmptyDataContainer from "../EmptyDataContainer";
 import { useAuth } from "@/context/AuthProvider";
+import { AnnouncementRounded } from "@mui/icons-material";
 
 const Announcement = () => {
   const { user } = useAuth();
@@ -84,7 +84,8 @@ const Announcement = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography>No Announcement </Typography>
+          <AnnouncementRounded color="secondary" />
+          <Typography variant="body2">No Announcement </Typography>
         </Stack>
       )}
 
@@ -98,7 +99,7 @@ const Announcement = () => {
             transform: "translate(-50%, -50%)",
             bgcolor: "background.paper",
             boxShadow: 24,
-            p: 4,
+            p: 2,
             borderRadius: 2,
             minWidth: 320,
           }}

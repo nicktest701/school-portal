@@ -109,9 +109,17 @@ const TerminalReport1 = ({ student, classScore, examsScore, ratings }) => {
             <ReportItem title="ID" text={_.toUpper(student?.indexnumber)} />
             <ReportItem title="Full Name" text={student?.fullName} />
             <ReportItem title="Class" text={`${student?.level}`} />
+            {student?.department && (
+              <ReportItem title="Department" text={student?.department} />
+            )}
+            {student?.house && (
+              <ReportItem title="House" text={student?.house} />
+            )}
             <ReportItem title="No. On Roll" text={student?.rollNumber} />
             <ReportItem title="Grade" text={student?.grade} />
-            <ReportItem title="Promoted" text="" />
+            {student?.isPromotionTerm === "Yes" && (
+              <ReportItem title="Promoted To:" text="" />
+            )}
           </Stack>
         </Box>
         <Box
@@ -255,9 +263,9 @@ const TerminalReport1 = ({ student, classScore, examsScore, ratings }) => {
             alignItems: "end",
           }}
         >
-          {session?.headmaster?.signature && (
+          {student?.session?.headmaster?.signature && (
             <img
-              src={session?.headmaster?.signature}
+              src={student?.session?.headmaster?.signature}
               alt="headmaster signature"
               style={{
                 maxWidth: "100%",
@@ -276,7 +284,7 @@ const TerminalReport1 = ({ student, classScore, examsScore, ratings }) => {
               fontSize: "13px",
             }}
           >
-            {session?.headmaster?.name || ""} (Headmaster)
+            {student?.session?.headmaster?.name || ""} (Headmaster)
           </span>
           <hr />
         </div>

@@ -4,11 +4,11 @@ import { Outlet } from "react-router-dom";
 import FeesNav from "./FeesNav";
 import CustomTitle from "@/components/custom/CustomTitle";
 import AnimatedContainer from "@/components/animations/AnimatedContainer";
-import fee_ico from "@/assets/header/fee_ico.svg";
+import fee_ico from "@/assets/images/header/fee_ico.svg";
 
 const Fees = () => {
   return (
-    <Container fullWidth>
+    <Container sx={{ p: 0 }}>
       <CustomTitle
         title="Fees"
         subtitle="Manage and view your fees information"

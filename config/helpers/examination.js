@@ -337,8 +337,8 @@ function preparePerformanceIndexChartData(records) {
 }
 
 // Trend Analysis (Improving / Declining / Stable)
- function getTrend(indices) {
-  if (indices.length < 2) return "Not enough data";
+function getTrend(indices) {
+  if (indices.length < 2) return "In Progress";
 
   const last = indices[indices.length - 1];
   const previous = indices[indices.length - 2];
@@ -412,7 +412,7 @@ function getTopOverallScores(records, limit = 5) {
 
     const total = scores.reduce((sum, s) => sum + s.totalScore, 0);
     const average = total / scores.length;
-    const performanceIndex = (average / 100) * 100; // normalize to percentage
+    const performanceIndex = ((average / 100) * 100).toFixed(2); // normalize to percentage
     return {
       term: record.term?.term,
       level: record.level?.levelName,

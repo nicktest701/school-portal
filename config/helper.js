@@ -477,6 +477,34 @@ function getInitials(schoolName) {
     .toUpperCase(); // Convert to uppercase
 }
 
+function getInvoiceId(options = {}) {
+  const {
+    prefix = "INV",
+    length = 4,
+    includeTimestamp = false,
+    separator = "-",
+  } = options;
+
+  // Generate cryptographically secure random values
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+
+  let randomPart = "";
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+  for (let i = 0; i < length; i++) {
+    randomPart += chars[array[i] % chars.length];
+  }
+
+  let invoiceId = prefix + separator + randomPart;
+
+  if (includeTimestamp) {
+    invoiceId += separator + Date.now();
+  }
+
+  return invoiceId;
+}
+
 module.exports = {
   SUBJECT_OPTIONS,
   LEVEL_OPTIONS,
@@ -493,4 +521,5 @@ module.exports = {
   getTotalAttendance,
   getAttendanceByGender,
   processGeneralWeeklyAttendance,
+  getInvoiceId,
 };

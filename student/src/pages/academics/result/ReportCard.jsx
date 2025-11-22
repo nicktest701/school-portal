@@ -1,24 +1,24 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Stack, Button } from "@mui/material";
 import _ from "lodash";
 import { PrintRounded } from "@mui/icons-material";
 import { useReactToPrint } from "react-to-print";
 import { useAuth } from "@/context/AuthProvider";
-import useLevelById from "@/components/hooks/useLevelById";
 import TerminalReport2 from "@/components/reportcards/report-card-2";
 import TerminalReport1 from "@/components/reportcards/report-card-1";
 
 function ReportCard({ student, style }) {
   const componentRef = useRef();
-  const { school_info, session } = useAuth();
-  const { gradeSystem } = useLevelById(student?.levelId);
+  const { school_info } = useAuth();
 
-  const scorePreference = session?.exams?.scorePreference?.split("/");
-  const classScorePreference = !_.isUndefined(scorePreference)
-    ? scorePreference[0]
+  const session = student?.session;
+  console.log(session);
+
+  const classScorePreference = !_.isUndefined(session?.class)
+    ? session?.class
     : 50;
-  const examsScorePreference = !_.isUndefined(scorePreference)
-    ? scorePreference[1]
+  const examsScorePreference = !_.isUndefined(session?.exams)
+    ? session?.exams
     : 50;
 
   const reactToPrintFn = useReactToPrint({
@@ -65,19 +65,20 @@ function ReportCard({ student, style }) {
         >
           Print
         </Button>
+
         {session?.report?.template === "template2" ? (
           <TerminalReport2
             student={student}
             classScore={classScorePreference}
             examsScore={examsScorePreference}
-            ratings={gradeSystem.ratings}
+            ratings={student?.gradingSystem}
           />
         ) : (
           <TerminalReport1
             student={student}
             classScore={classScorePreference}
             examsScore={examsScorePreference}
-            ratings={gradeSystem.ratings}
+            ratings={student?.gradingSystem}
           />
         )}
       </Stack>

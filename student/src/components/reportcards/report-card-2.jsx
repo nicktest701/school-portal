@@ -105,6 +105,7 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
             gap: 10px;
             padding: 5px;
             border-bottom: 1px solid #bdc3c7;
+            // font-size:11px;
           }
 
           .info-item {
@@ -132,7 +133,7 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
           .subject-table th {
             background-color: #34495e;
             color: white;
-            padding: 5px;
+            padding: 3px;
             text-align: left;
             font-weight: 600;
             font-size: 12px;
@@ -156,12 +157,11 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
           .remarks-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            padding: 5px;
-            margin-top: 10px;
+        
           }
 
           .remark-card {
-            padding: 5px;
+            padding: 3px;
           }
 
           .remark-title {
@@ -174,7 +174,7 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
           }
 
           .remark-content {
-            color: #555;
+            color: #333;
             font-style: italic;
             // text-transform: capitalize;
           }
@@ -184,7 +184,7 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
           }
 
           .grades-key h3 {
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             text-align: center;
           }
 
@@ -347,20 +347,24 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
             <span className="info-label">CLASS</span>
             <span className="info-value">{student?.level}</span>
           </div>
-          {/* <div className="info-item">
-            <span className="info-label">HOUSE</span>
-            <span className="info-value">Aggrey House</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">PROGRAMME</span>
-            <span className="info-value">SCIENCE</span>
-          </div> */}
+          {student?.department && (
+            <div className="info-item">
+              <span className="info-label">DEPARTMENT/PROGRAMME</span>
+              <span className="info-value">{student?.department}</span>
+            </div>
+          )}
+          {student?.house && (
+            <div className="info-item">
+              <span className="info-label">HOUSE</span>
+              <span className="info-value">{student?.house}</span>
+            </div>
+          )}
           <div className="info-item">
             <span className="info-label">ACADEMIC YEAR</span>
             <span className="info-value">{student?.academicYear}</span>
           </div>
           <div className="info-item">
-            <span className="info-label">TERM</span>
+            <span className="info-label">TERM/SEMESTER</span>
             <span className="info-value">{student?.term}</span>
           </div>
           <div className="info-item">
@@ -383,21 +387,21 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
             <span className="info-label">POSITION</span>
             <span className="info-value">{student?.position}</span>
           </div>
+          {student?.isPromotionTerm === "Yes" && (
+            <div className="info-item">
+              <span className="info-label">PROMOTED TO:</span>
+              <span className="info-value"></span>
+            </div>
+          )}
         </div>
 
         <table className="subject-table">
           <thead>
             <tr>
               <th>Subject</th>
-              <th>
-                Class Score <br />({classScore}%)
-              </th>
-              <th>
-                Exam Score <br />({examsScore}%)
-              </th>
-              <th>
-                Total Score <br /> 100%
-              </th>
+              <th>Class Score ({classScore}%)</th>
+              <th>Exam Score ({examsScore}%)</th>
+              <th>Total Score 100%</th>
               <th>Position</th>
               <th>Grade</th>
               <th>Remarks</th>
@@ -409,7 +413,7 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
               student?.scores.map((score, index) => (
                 <tr key={index}>
                   <td
-                    width="25%"
+                    width="26%"
                     style={{
                       textAlign: "left",
                       paddingLeft: "2px",
@@ -423,17 +427,17 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
                       ? "R.M.E"
                       : score?.subject}
                   </td>
-                  <td width="18%">{score.classScore}</td>
-                  <td width="18%">{score.examsScore}</td>
+                  <td width="15%">{score.classScore}</td>
+                  <td width="15%">{score.examsScore}</td>
                   <td
-                    width="15%"
+                    width="14%"
                     style={{ color: "#b72338", fontWeight: "bold" }}
                   >
                     {score.totalScore}
                   </td>
                   <td width="10%">{score.position}</td>
                   <td width="10%">{score.grade}</td>
-                  <td width="14%" style={{ color: "green" }}>
+                  <td width="20%" style={{ color: "green" }}>
                     {score.remarks}
                   </td>
                 </tr>
@@ -485,12 +489,12 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
             flexDirection: "column",
             justifyContent: "flex-start",
             alignItems: "end",
-            marginBottom: "4px",
+            marginTop: -20,
           }}
         >
-          {session?.headmaster?.signature && (
+          {student?.session?.headmaster?.signature && (
             <img
-              src={session?.headmaster?.signature}
+              src={student?.session?.headmaster?.signature}
               alt="headmaster signature"
               style={{
                 maxWidth: "100%",
@@ -502,8 +506,8 @@ const TerminalReport2 = ({ student, classScore, examsScore, ratings }) => {
               }}
             />
           )}
-          <span style={{ borderTop: "1px #333 dashed", fontSize: "13px" }}>
-            {session?.headmaster?.name} (Headmaster)
+          <span style={{ borderTop: "1px #333 dashed", fontSize: "12px" }}>
+            {student?.session?.headmaster?.name} (Headmaster)
           </span>
         </div>
         <hr />

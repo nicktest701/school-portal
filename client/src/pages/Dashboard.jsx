@@ -14,7 +14,6 @@ import Announcement from "@/components/calendar/Announcement";
 import Event from "@/components/calendar/Event";
 import { useAuth } from "@/hooks/useAuth";
 
-
 const Dashboard = () => {
   const { user, session } = useAuth();
 
@@ -22,7 +21,6 @@ const Dashboard = () => {
 
   return (
     <>
-     
       <Box
         sx={{
           width: "100%",
@@ -117,13 +115,16 @@ const Dashboard = () => {
             <CustomCard title="Calendar">
               <Calendar onChange={onChange} value={value} />
             </CustomCard>
-            <CustomCard title="Events">
+            <CustomCard
+              title="Events"
+              subtitle="View upcoming events and activities"
+            >
               <Event />
             </CustomCard>
-            <CustomCard title="Birthday">
+            <CustomCard title="Birthday" subtitle="View upcoming birthdays">
               <Birthday />
             </CustomCard>
-            <CustomCard title="Announcements">
+            <CustomCard title="Announcements" subtitle="View announcements">
               <Announcement />
             </CustomCard>
           </Stack>

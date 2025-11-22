@@ -47,6 +47,7 @@ function Result() {
     setOpenReport(true);
   };
 
+
   return (
     <>
       <>
@@ -262,7 +263,7 @@ function Result() {
                 </Grid2>
                 <Divider sx={{ my: 2 }} />
 
-                {/* <Box py={2} display="flex" justifyContent="flex-end">
+                <Box py={2} display="flex" justifyContent="flex-end">
                   <Button
                     variant="contained"
                     startIcon={<NoteAltRounded />}
@@ -270,7 +271,7 @@ function Result() {
                   >
                     View Report
                   </Button>
-                </Box> */}
+                </Box>
               </CardContent>
             </Card>
 
@@ -281,11 +282,11 @@ function Result() {
         )}
       </>
 
-      {/* <ExamsReport
+      <ExamsReport
         open={openReport}
         setOpen={setOpenReport}
         student={exams.data}
-      /> */}
+      />
     </>
   );
 }

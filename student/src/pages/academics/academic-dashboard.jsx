@@ -43,6 +43,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthProvider";
 import { getAcademicDashboardInfo } from "@/api/ExaminationAPI";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 // Register Chart.js components
 ChartJS.register(
@@ -212,9 +213,9 @@ const AcademicDashboard = () => {
 
   return (
     <Container
-      maxWidth="lg"
       sx={{
-        py: 2,
+        py: 5,
+        px: 0,
       }}
     >
       {/* Header */}
@@ -249,7 +250,7 @@ const AcademicDashboard = () => {
           mb: 4,
           borderRadius: 4,
           boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
-          background: "linear-gradient(135deg, #009fb7 0%, #0d47a1 100%)",
+          background: "linear-gradient(135deg, #009fb7 0%, #003037 100%)",
           color: "white",
         }}
       >
@@ -365,12 +366,15 @@ const AcademicDashboard = () => {
       {/* Stat Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {statCards.map((card, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-            <Card
+          <Grid
+            size={{ xs: 12, sm: 6, md: 4 }}
+            sx={{ p: 2, border: "1px solid lightgray", borderRadius: 2 }}
+            key={index}
+          >
+            <Box
               sx={{
                 height: "100%",
                 borderRadius: 3,
-                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-5px)",
@@ -378,7 +382,7 @@ const AcademicDashboard = () => {
                 },
               }}
             >
-              <CardContent sx={{ display: "flex", alignItems: "center" }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Box
                   sx={{
                     display: "flex",
@@ -418,282 +422,273 @@ const AcademicDashboard = () => {
                     {card.description}
                   </Typography>
                 </Box>
-              </CardContent>
-            </Card>
+              </Box>
+            </Box>
           </Grid>
         ))}
       </Grid>
 
       {/* Performance Trend Chart */}
-      <Card
+
+      <Box
         sx={{
           mb: 4,
-          borderRadius: 3,
           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          height: 400,
+          p: 2,
+          border: "1px solid lightgray",
+          borderRadius: 2,
         }}
       >
-        <CardContent
-          sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            mb: 3,
+            justifyContent: "space-between",
+          }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              mb: 3,
-              justifyContent: "space-between",
-            }}
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, display: "flex", alignItems: "center" }}
           >
+            <TrendIcon sx={{ mr: 1, color: theme.palette.primary.main }} />
+            Performance Trend
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1 }}>
             <Typography
-              variant="h6"
-              sx={{ fontWeight: 600, display: "flex", alignItems: "center" }}
+              variant="body2"
+              sx={{
+                borderRadius: 4,
+                bgcolor: "rgba(33, 150, 243, 0.1)",
+                color: theme.palette.primary.main,
+                fontWeight: 500,
+              }}
             >
-              <TrendIcon sx={{ mr: 1, color: theme.palette.primary.main }} />
-              Performance Trend
+              {academicRecord?.data?.activeLevel?.level}
             </Typography>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Typography
-                variant="body2"
-                sx={{
-                  p: "4px 12px",
-                  borderRadius: 4,
-                  bgcolor: "rgba(33, 150, 243, 0.1)",
-                  color: theme.palette.primary.main,
-                  fontWeight: 500,
-                }}
-              >
-                {academicRecord?.data?.activeLevel?.level}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  p: "4px 12px",
-                  borderRadius: 4,
-                  bgcolor: "rgba(0, 0, 0, 0.05)",
-                  color: "text.secondary",
-                  fontWeight: 500,
-                }}
-              >
-                All Classes
-              </Typography>
-            </Box>
+            <Typography
+              variant="body2"
+              sx={{
+                p: "4px 12px",
+                borderRadius: 4,
+                bgcolor: "rgba(0, 0, 0, 0.05)",
+                color: "text.secondary",
+                fontWeight: 500,
+              }}
+            >
+              All Classes
+            </Typography>
           </Box>
+        </Box>{" "}
+        <Box
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            p: 0,
+          }}
+        >
           <Box
             sx={{
               minWidth: 100,
               width: "100%",
-              height: 300,
+              height: 400,
             }}
           >
             <Line data={performanceTrend} options={chartOptions} />
           </Box>
-        </CardContent>
-      </Card>
+        </Box>
+      </Box>
 
       {/* Detailed Tables */}
-      <Card sx={{ borderRadius: 3, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            variant={isTablet ? "scrollable" : "standard"}
-            sx={{ px: 2 }}
-          >
-            <Tab
-              label="Top Subject Scores"
-              icon={<SubjectIcon />}
-              iconPosition="start"
-              sx={{ minHeight: 60 }}
-            />
-            <Tab
-              label="Top Overall Scores"
-              icon={<PersonIcon />}
-              iconPosition="start"
-              sx={{ minHeight: 60 }}
-            />
-          </Tabs>
-        </Box>
+      <TabContext
+        sx={{
+          p: 2,
+        }}
+        value={tabValue}
+      >
+        <TabList
+          allowScrollButtonsMobile
+          scrollButtons
+          sx={{ borderBottom: 1, borderColor: "divider" }}
+          onChange={handleTabChange}
+        >
+          <Tab
+            label="Top Subject Scores"
+            icon={<SubjectIcon />}
+            iconPosition="start"
+          />
+          <Tab
+            label="Top Overall Scores"
+            icon={<PersonIcon />}
+            iconPosition="start"
+          />
+        </TabList>
 
-        <CardContent>
-          {/* Subject Scores Table */}
-          {tabValue === 0 && (
-            <TableContainer
-              component={Paper}
-              sx={{ borderRadius: 2, boxShadow: "none" }}
-            >
-              <Table>
-                <TableHead sx={{ bgcolor: "rgba(0, 0, 0, 0.02)" }}>
-                  <TableRow>
+        <TabPanel value={0} sx={{ p: 0 }}>
+          <TableContainer
+            component={Paper}
+            sx={{ borderRadius: 2, boxShadow: "none" }}
+          >
+            <Table>
+              <TableHead sx={{ bgcolor: "rgba(0, 0, 0, 0.02)" }}>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      fontWeight: 600,
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <SortIcon sx={{ fontSize: 16, mr: 0.5 }} /> Subject
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Class</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>
+                    Term / Semester
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 600 }}>
+                    Score (%)
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {academicRecord.data.bestSubjectsScores?.map((row, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      "&:nth-of-type(odd)": {
+                        bgcolor: "rgba(0, 0, 0, 0.02)",
+                      },
+                      "&:hover": { bgcolor: "rgba(25, 118, 210, 0.03)" },
+                    }}
+                  >
                     <TableCell
                       sx={{
-                        fontWeight: 600,
-                        display: "flex",
-                        alignItems: "center",
+                        fontWeight: row.student === "You" ? 600 : "normal",
                       }}
                     >
-                      <SortIcon sx={{ fontSize: 16, mr: 0.5 }} /> Subject
+                      {row.subject}
                     </TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Class</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>
-                      Term / Semester
-                    </TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 600 }}>
-                      Score (%)
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {academicRecord.data.bestSubjectsScores?.map((row, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        "&:nth-of-type(odd)": {
-                          bgcolor: "rgba(0, 0, 0, 0.02)",
-                        },
-                        "&:hover": { bgcolor: "rgba(25, 118, 210, 0.03)" },
-                      }}
-                    >
-                      <TableCell
+                    <TableCell>{row.level}</TableCell>
+                    <TableCell>{row.term}</TableCell>
+                    <TableCell align="right">
+                      <Box
                         sx={{
-                          fontWeight: row.student === "You" ? 600 : "normal",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          fontWeight: row.student === "You" ? 700 : 600,
+                          color:
+                            row.score >= 95
+                              ? theme.palette.success.main
+                              : row.score >= 90
+                              ? theme.palette.primary.main
+                              : theme.palette.warning.main,
                         }}
                       >
-                        {row.subject}
-                      </TableCell>
-                      <TableCell>{row.level}</TableCell>
-                      <TableCell>{row.term}</TableCell>
-                      <TableCell align="right">
-                        <Box
-                          sx={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            fontWeight: row.student === "You" ? 700 : 600,
-                            color:
-                              row.score >= 95
-                                ? theme.palette.success.main
-                                : row.score >= 90
-                                ? theme.palette.primary.main
-                                : theme.palette.warning.main,
-                          }}
-                        >
-                          {row.score}%
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-
-          {/* Overall Scores Table */}
-          {tabValue === 1 && (
-            <TableContainer
-              component={Paper}
-              sx={{ borderRadius: 2, boxShadow: "none" }}
-            >
-              <Table>
-                <TableHead sx={{ bgcolor: "rgba(0, 0, 0, 0.02)" }}>
-                  <TableRow>
-                    {/* <TableCell sx={{ fontWeight: 600 }}>Position</TableCell> */}
-                    <TableCell sx={{ fontWeight: 600 }}>Class</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>
-                      Term /Semester
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Score</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 600 }}>
-                      Index (%)
+                        {row.score}%
+                      </Box>
                     </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {academicRecord.data?.bestOverallScores?.map((row, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        "&:nth-of-type(odd)": {
-                          bgcolor: "rgba(0, 0, 0, 0.02)",
-                        },
-                        "&:hover": { bgcolor: "rgba(25, 118, 210, 0.03)" },
-                      }}
-                    >
-                      <TableCell>
-                        <Box
-                          sx={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            fontWeight: 700,
-                            color:
-                              row.position === "1st"
-                                ? theme.palette.warning.main
-                                : "inherit",
-                          }}
-                        >
-                          {row.level}
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontWeight: row.name === "You" ? 700 : "normal",
-                            color:
-                              row.name === "You"
-                                ? theme.palette.primary.main
-                                : "inherit",
-                          }}
-                        >
-                          {row.term}
-                          {/* {row.name === "You" && (
-                            <Box
-                              sx={{
-                                ml: 1,
-                                bgcolor: "rgba(33, 150, 243, 0.1)",
-                                color: theme.palette.primary.main,
-                                px: 1,
-                                py: 0.5,
-                                borderRadius: 4,
-                                fontSize: 12,
-                              }}
-                            >
-                              You
-                            </Box>
-                          )} */}
-                        </Box>
-                      </TableCell>
-                      <TableCell>{row.overallScore}</TableCell>
-                      <TableCell align="right">
-                        <Box
-                          sx={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            fontWeight: 700,
-                            color:
-                              row.score >= 94
-                                ? theme.palette.success.main
-                                : row.score >= 90
-                                ? theme.palette.primary.main
-                                : theme.palette.warning.main,
-                          }}
-                        >
-                          {row.performanceIndex}%
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </TabPanel>
+        <TabPanel value={1} sx={{ p: 0 }}>
+          <TableContainer
+            component={Paper}
+            sx={{
+              borderRadius: 2,
+              boxShadow: "none",
+              overflowX: "auto", // Enable horizontal scrolling
+              display: "block", // Needed for proper scrolling behavior
+              whiteSpace: "nowrap", // Prevent content wrapping
+              width: isTablet ? 300 : "100%",
+            }}
+          >
+            <Table>
+              {/* Set minimum width to force scrolling on small screens */}
+              <TableHead sx={{ bgcolor: "rgba(0, 0, 0, 0.02)" }}>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 600 }}>Class</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Term /Semester</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Score</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 600 }}>
+                    Index (%)
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {academicRecord.data?.bestOverallScores?.map((row, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      "&:nth-of-type(odd)": {
+                        bgcolor: "rgba(0, 0, 0, 0.02)",
+                      },
+                      "&:hover": { bgcolor: "rgba(25, 118, 210, 0.03)" },
+                    }}
+                  >
+                    <TableCell>
+                      <Box
+                        sx={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          fontWeight: 700,
+                          color:
+                            row.position === "1st"
+                              ? theme.palette.warning.main
+                              : "inherit",
+                        }}
+                      >
+                        {row.level}
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          fontWeight: row.name === "You" ? 700 : "normal",
+                          color:
+                            row.name === "You"
+                              ? theme.palette.primary.main
+                              : "inherit",
+                        }}
+                      >
+                        {row.term}
+                      </Box>
+                    </TableCell>
+                    <TableCell>{row.overallScore}</TableCell>
+                    <TableCell align="right">
+                      <Box
+                        sx={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          fontWeight: 700,
+                          color:
+                            row.score >= 94
+                              ? theme.palette.success.main
+                              : row.score >= 90
+                              ? theme.palette.primary.main
+                              : theme.palette.warning.main,
+                        }}
+                      >
+                        {row.performanceIndex}%
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </TabPanel>
+      </TabContext>
 
       {/* Footer */}
       <Box
         sx={{
           mt: 4,
-          p: 3,
           borderRadius: 3,
           bgcolor: "rgba(25, 118, 210, 0.05)",
           display: "flex",

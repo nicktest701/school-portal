@@ -13,6 +13,7 @@ const {
   processFeeForTerm,
   processWeeklyFees,
   getTotalFeesForWeek,
+  getInvoiceId,
 } = require("../config/helper");
 const {
   getTotalPaidFees,
@@ -425,7 +426,7 @@ router.post(
       createdAt: new Date(),
       issuerID: req.user.id,
       issuerName: req.user?.fullname,
-      id: randomUUID(),
+      id: getInvoiceId({ includeTimestamp: true }),
     };
 
     //Create new current Fees
