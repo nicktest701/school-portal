@@ -121,7 +121,7 @@ const Dashboard = () => {
             >
               <Event />
             </CustomCard>
-            <CustomCard title="Birthday" subtitle="View upcoming birthdays">
+            <CustomCard title="Birthday" subtitle="View today's birthdays">
               <Birthday />
             </CustomCard>
             <CustomCard title="Announcements" subtitle="View announcements">

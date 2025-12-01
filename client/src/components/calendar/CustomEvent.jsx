@@ -70,6 +70,7 @@ function CustomEvent() {
       _id: "1",
       title: `Start of ${session?.term} (${session?.academicYear})`,
       date: moment(new Date(session?.from)).format("YYYY-MM-DD"),
+      color: theme?.palette?.error?.main,
     },
     {
       _id: "2",
@@ -80,7 +81,7 @@ function CustomEvent() {
       end: moment(new Date(session?.exams?.midTermExams?.to)).format(
         "YYYY-MM-DD"
       ),
-      color: "var(--secondary)",
+      color: theme?.palette?.info?.main,
     },
     {
       _id: "3",
@@ -91,7 +92,7 @@ function CustomEvent() {
       end: moment(new Date(session?.exams?.revisionWeek?.to)).format(
         "YYYY-MM-DD"
       ),
-      color: "lightblue",
+      color: theme?.palette?.warning?.main,
     },
     {
       _id: "4",
@@ -108,11 +109,13 @@ function CustomEvent() {
       _id: "5",
       title: `End of ${session?.term} (${session?.academicYear})`,
       date: moment(new Date(session?.to)).format("YYYY-MM-DD"),
+      color: theme?.palette?.success?.main,
     },
     {
       _id: "6",
       title: `Vacation Date for ${session?.term}`,
       date: moment(new Date(session?.vacationDate)).format("YYYY-MM-DD"),
+      color: theme?.palette?.success?.main,
     },
   ]);
 

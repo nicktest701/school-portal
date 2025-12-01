@@ -64,6 +64,7 @@ router.get(
           createdAt: term?.createdAt,
         };
       }
+      
       const newTerm = {
         core: {
           name: term?.name,

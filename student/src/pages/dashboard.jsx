@@ -428,7 +428,7 @@ const Dashboard = () => {
             </CustomCard>
             <CustomCard
               title="Birthday"
-              subtitle="View upcoming birthdays"
+              subtitle="View today's birthdays"
               imgSrc={birthday_ico}
             >
               <Birthday />

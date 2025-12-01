@@ -1,5 +1,6 @@
 import React from "react";
 import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 // import CalendarEvent from "./CalendarEvent";
@@ -66,18 +67,54 @@ function CustomEvent() {
   const eventDetails = _.union(events?.data, holidays.data, [
     {
       _id: "1",
-      title: `Start of ${session?.term} (${session?.academicYear})`,
-      date: moment(new Date(session?.from)).format("YYYY-MM-DD"),
+      title: `Start of ${session?.core?.term} (${session?.core?.academicYear})`,
+      date: moment(new Date(session?.core?.from)).format("YYYY-MM-DD"),
+      color: theme?.palette?.error?.main,
     },
     {
       _id: "2",
-      title: `End of ${session?.term} (${session?.academicYear})`,
-      date: moment(new Date(session?.to)).format("YYYY-MM-DD"),
+      title: `MidTerm Examination Week`,
+      start: moment(new Date(session?.exams?.midTermExams?.from)).format(
+        "YYYY-MM-DD"
+      ),
+      end: moment(new Date(session?.exams?.midTermExams?.to)).format(
+        "YYYY-MM-DD"
+      ),
+      color: theme?.palette?.info?.main,
     },
     {
       _id: "3",
-      title: `Vacation Date for ${session?.term}`,
-      date: moment(new Date(session?.vacationDate)).format("YYYY-MM-DD"),
+      title: `Revision Week`,
+      start: moment(new Date(session?.exams?.revisionWeek?.from)).format(
+        "YYYY-MM-DD"
+      ),
+      end: moment(new Date(session?.exams?.revisionWeek?.to)).format(
+        "YYYY-MM-DD"
+      ),
+          color: theme?.palette?.warning?.main,
+    },
+    {
+      _id: "4",
+      title: `Examination Week`,
+      start: moment(new Date(session?.exams?.finalExams?.from)).format(
+        "YYYY-MM-DD"
+      ),
+      end: moment(new Date(session?.exams?.finalExams?.to)).format(
+        "YYYY-MM-DD"
+      ),
+      color: "teal",
+    },
+    {
+      _id: "5",
+      title: `End of ${session?.core?.term} (${session?.core?.academicYear})`,
+      date: moment(new Date(session?.core?.to)).format("YYYY-MM-DD"),
+      color: theme?.palette?.success?.main,
+    },
+    {
+      _id: "6",
+      title: `Vacation Date for ${session?.core?.term}`,
+      date: moment(new Date(session?.core?.vacationDate)).format("YYYY-MM-DD"),
+      color: theme?.palette?.success?.main,
     },
   ]);
 
@@ -91,17 +128,17 @@ function CustomEvent() {
       }}
     >
       <FullCalendar
-        plugins={[listPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
         initialView="listWeek"
         headerToolbar={{
           left: matches ? "prev,next,today" : "prev,next",
           center: "title",
-          right: matches ? "listWeek" : "",
+          right: matches ? "dayGridMonth,listWeek" : "",
         }}
         editable={true}
         selectable={true}
         // select={handleDateSelect}
-        
+
         selectMirror={true}
         dayMaxEvents={true}
         initialDate={moment().format("YYYY-MM-DD")}
@@ -133,14 +170,13 @@ function CustomEvent() {
           </Tooltip>
         )}
         eventClick={({ event: { extendedProps } }) => {
-          if (["1", "2", "3", "4"].includes(extendedProps?._id)) {
+          if (["1", "2", "3", "4", "5", "6"].includes(extendedProps?._id)) {
             return;
           }
           navigate(`/events/${extendedProps?._id}`);
         }}
         loading={events.isPending || holidays.isPending}
       />
-
     </Box>
   );
 }

@@ -22,7 +22,6 @@ import {
   AnnouncementRounded,
   ListAltSharp,
   NoteAdd,
-  DetailsRounded,
 } from "@mui/icons-material";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthProvider";

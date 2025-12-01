@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
   Stack,
+  Avatar,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +19,7 @@ import { useAuth } from "@/hooks/useAuth";
 const SchoolSession = () => {
   const [loading, setLoading] = useState(false);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
-  const { user, updateSession, backToLogin } = useAuth();
+  const { user, school_info, updateSession, backToLogin } = useAuth();
   const navigate = useNavigate();
   const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState("");
@@ -102,12 +103,24 @@ const SchoolSession = () => {
             }}
             onClick={handleOpenAddSession}
           >
-            New School Session
+            Create New Session
           </Button>
         )}
-        <SchoolRounded sx={{ width: 80, height: 80 }} />
-        <Typography variant="h4" sx={{ textAlign: "center" }}>
-          School Portal
+        {school_info?.badge ? (
+          <Avatar
+            alt="school logo"
+            loading="lazy"
+            srcSet={school_info?.badge}
+            sx={{
+              width: 80,
+              height: 80,
+            }}
+          />
+        ) : (
+          <SchoolRounded sx={{ width: 100, height: 100 }} />
+        )}
+        <Typography variant="h4" textAlign="center">
+           School Session
         </Typography>
         <Typography variant="body2" paragraph sx={{ textAlign: "center" }}>
           Choose a session (academic term/semester) to begin with.

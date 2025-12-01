@@ -95,8 +95,6 @@ router.get(
       active: user.active,
     };
 
-   
-
     res.status(200).json(loggedInUser);
   })
 );
@@ -232,7 +230,10 @@ router.post(
       newUser.profile = userPhoto;
     }
 
-    const user = await User.create(newUser);
+    const user = await User.create({
+      school: req.user.school,
+      ...newUser,
+    });
     // await knex('users').insert(newUser);
 
     if (!user) {

@@ -3,7 +3,7 @@ import React, { memo } from "react";
 import BirthdayItem from "./BirthdayItem";
 import { useQuery } from "@tanstack/react-query";
 import { getTodaysBirth } from "../../api/levelAPI";
-import db from "../../assets/images/header/bd1.svg";
+// import db from "../../assets/images/header/bd1.svg";
 import BirthdaySkeleton from "../skeleton/BirthdaySkeleton";
 const Birthday = () => {
   const students = useQuery({
@@ -15,15 +15,10 @@ const Birthday = () => {
   if (students.isPending) return <BirthdaySkeleton />;
 
   return (
-    <Card sx={{ p: 2, flexGrow: 1 }}>
-      <List
-        subheader={
-          <Stack direction="row" spacing={2}>
-            <img alt="db" src={db} style={{ width: 30, height: 30 }} />
-            <Typography variant="body2">Today&lsquo;s Birthday</Typography>
-          </Stack>
-        }
-      >
+    <Card sx={{ flexGrow: 1 }}>
+      <List>
+        {students.isPending && <Typography>Loading...</Typography>}
+
         {students?.data?.length !== 0 ? (
           students?.data?.map((student) => (
             <BirthdayItem key={student?._id} {...student} />

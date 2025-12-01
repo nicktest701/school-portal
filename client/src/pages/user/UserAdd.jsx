@@ -111,7 +111,7 @@ function UserAdd() {
                 </Typography>
 
                 <Typography variant="caption" color="text.secondary">
-                  Enter the user's personal details.
+                  Enter the user&apos;s personal details.
                 </Typography>
                 <CustomFormControl>
                   <TextField
@@ -194,7 +194,7 @@ function UserAdd() {
                 </Typography>
 
                 <Typography variant="caption" color="text.secondary">
-                  Enter the user's contact details.
+                  Enter the user&apos;s contact details.
                 </Typography>
                 <CustomFormControl>
                   <TextField

@@ -15,7 +15,7 @@ router.get(
     const events = await Event.find({
       school: req.user.school
     }).populate('createdBy', ['firstname', 'lastname', 'profile']).sort({ createdAt: -1 });
-    // console.log(events)
+ 
 
     res.status(200).json(events);
   })

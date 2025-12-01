@@ -197,6 +197,8 @@ const Login = () => {
                     <TextField
                       fullWidth
                       placeholder="Username here"
+                      label="Username"
+                      autoComplete="no"
                       value={values.username}
                       onChange={handleChange("username")}
                       error={Boolean(touched.username && errors.username)}
@@ -206,6 +208,8 @@ const Login = () => {
                       fullWidth
                       type="password"
                       placeholder="Password here"
+                      label="Password"
+                      autoComplete="no"
                       value={values.password}
                       onChange={handleChange("password")}
                       error={Boolean(touched.password && errors.password)}

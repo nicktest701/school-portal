@@ -7,6 +7,7 @@ const _ = require("lodash");
 const StudentAuth = require("../models/studentAuthModel");
 const { sendVerificationEmail } = require("../config/mail/mails");
 const Student = require("../models/studentModel");
+const Term = require("../models/termModel");
 const expressAsyncHandler = require("express-async-handler");
 const crypto = require("crypto");
 
@@ -39,7 +40,21 @@ router.get(
     }
     //Personal Info
     const student = await Student.findById(id)
-      .populate("school")
+      .populate({
+        path: "school",
+        select: [
+          "address",
+          "badge",
+          "code",
+          "email",
+          "location",
+          "motto",
+          "name",
+          "phonenumber",
+          "region",
+          "website",
+        ],
+      })
       .populate("level", ["level"]);
     if (_.isEmpty(student)) {
       return res.status(400).json("No Such Student exists");
@@ -47,9 +62,34 @@ router.get(
 
     const { school, ...rest } = student;
 
+    const term = await Term.findOne({
+      school: school._id,
+      status: "current",
+      active: true,
+    }).populate("session");
+
+    const currentTerm = {
+      core: {
+        name: term?.name,
+        from: term?.from,
+        to: term?.to,
+        term: term?.term,
+        academicYear: term?.academicYear,
+        vacationDate: term?.vacationDate,
+        reOpeningDate: term?.reOpeningDate,
+        isPromotionTerm: term?.isPromotionTerm,
+      },
+      exams: term?.exams,
+      termId: term._id,
+      sessionId: term?.session?._id,
+      status: term?.status,
+      active: term?.active,
+    };
+
     res.status(200).json({
       student: rest?._doc,
       school: student?.school,
+      session: currentTerm,
     });
   })
 );
@@ -67,9 +107,47 @@ router.post("/login", async (req, res) => {
     return res.status(401).json({ message: "Invalid student ID or password" });
 
   const authStudent = await Student.findById(student._id)
-    .populate("school")
+    .populate({
+      path: "school",
+      select: [
+        "address",
+        "badge",
+        "code",
+        "email",
+        "location",
+        "motto",
+        "name",
+        "phonenumber",
+        "region",
+        "website",
+      ],
+    })
     .populate("level", ["level"]);
   const { school, ...rest } = authStudent?._doc;
+
+  const term = await Term.findOne({
+    school: school._id,
+    status: "current",
+    active: true,
+  }).populate("session");
+
+  const currentTerm = {
+    core: {
+      name: term?.name,
+      from: term?.from,
+      to: term?.to,
+      term: term?.term,
+      academicYear: term?.academicYear,
+      vacationDate: term?.vacationDate,
+      reOpeningDate: term?.reOpeningDate,
+      isPromotionTerm: term?.isPromotionTerm,
+    },
+    exams: term?.exams,
+    termId: term._id,
+    sessionId: term?.session?._id,
+    status: term?.status,
+    active: term?.active,
+  };
 
   const data = {
     _id: authStudent._id,
@@ -80,12 +158,14 @@ router.post("/login", async (req, res) => {
   const fullName =
     _.capitalize(`${rest?.firstname} ${rest?.surname} ${rest?.othername}`) ||
     "No Name";
+
   const authUser = {
     student: {
       ...rest,
       fullName: fullName,
     },
     school: school,
+    session: currentTerm,
   };
   const accessToken = generateAccessToken(data);
   const refreshToken = generateRefreshToken(data);
@@ -129,9 +209,46 @@ router.post("/refresh", async (req, res) => {
 
     if (!student) return res.status(401).json({ message: "Invalid token" });
     const authStudent = await Student.findById(student._id)
-      .populate("school")
+       .populate({
+        path: "school",
+        select: [
+          "address",
+          "badge",
+          "code",
+          "email",
+          "location",
+          "motto",
+          "name",
+          "phonenumber",
+          "region",
+          "website",
+        ],
+      })
       .populate("level", ["level"]);
     const { school, ...rest } = authStudent?._doc;
+    const term = await Term.findOne({
+      school: school._id,
+      status: "current",
+      active: true,
+    }).populate("session");
+
+    const currentTerm = {
+      core: {
+        name: term?.name,
+        from: term?.from,
+        to: term?.to,
+        term: term?.term,
+        academicYear: term?.academicYear,
+        vacationDate: term?.vacationDate,
+        reOpeningDate: term?.reOpeningDate,
+        isPromotionTerm: term?.isPromotionTerm,
+      },
+      exams: term?.exams,
+      termId: term._id,
+      sessionId: term?.session?._id,
+      status: term?.status,
+      active: term?.active,
+    };
 
     const data = {
       _id: authStudent._id,
@@ -142,12 +259,15 @@ router.post("/refresh", async (req, res) => {
     const fullName =
       _.capitalize(`${rest?.firstname} ${rest?.surname} ${rest?.othername}`) ||
       "No Name";
+
+
     const authUser = {
       student: {
         ...rest,
         fullName: fullName,
       },
       school: school,
+      session: currentTerm,
     };
 
     // Generate new access token

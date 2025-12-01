@@ -12,29 +12,21 @@ import {
 import { createContext, useState, useContext, useRef, useEffect } from "react";
 import axios from "axios";
 import GlobalSpinner from "@/components/spinners/GlobalSpinner";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // const storedUser = getUser();
+
   const [user, setUser] = useState(getUser());
   const [accessToken, setAccessToken] = useState(null);
+  const [session, setSession] = useLocalStorage("@school_session", null);
+  const [schoolInformation, setSchoolInformation] = useLocalStorage(
+    "@school_info",
+    null
+  );
   const [loading, setLoading] = useState(true);
   const refreshTimeoutRef = useRef(null);
-
-  // //get user with use query
-  // const userInfo = useQuery({
-  //   queryKey: ["user", user?._id],
-  //   queryFn: async () => {
-  //     const res = await api.get(`/student-auth/${user?._id}`);
-  //     return res.data;
-  //   },
-  //   initialData: getUser(),
-  //   enabled: !!user?.id,
-  //   refetchOnWindowFocus: false,
-  //   refetchOnReconnect: false,
-  //   refetchOnMount: false,
-  // });
 
   // Only runs once on mount
   useEffect(() => {
@@ -94,18 +86,20 @@ export const AuthProvider = ({ children }) => {
       );
 
       const token = res.data.token;
-      const details = res.data.data;
+      const { student, school, session } = res.data.data;
       if (token) {
         api.defaults.headers.Authorization = `Bearer ${token}`;
         axios.defaults.headers.Authorization = `Bearer ${token}`;
 
         const parsed = parseJwt(token);
 
-        setUser(details);
+        setSchoolInformation(school);
+        setUser(student);
         saveUser({
           id: parsed?.id,
           _id: parsed?._id,
         });
+        setSession(session);
 
         setAccessToken(token);
         scheduleRefresh(token);
@@ -140,7 +134,9 @@ export const AuthProvider = ({ children }) => {
   const login = (token, details) => {
     const parsed = parseJwt(token);
 
-    setUser(details);
+    setUser(details?.student);
+    setSession(details?.session);
+    setSchoolInformation(details?.school);
     saveUser({
       id: parsed?.id,
       _id: parsed?._id,
@@ -165,13 +161,13 @@ export const AuthProvider = ({ children }) => {
       delete api.defaults.headers.common["Authorization"];
     }
   };
-  // console.log(user.student);
 
   return (
     <AuthContext.Provider
       value={{
-        user: user?.student,
-        school_info: user?.school,
+        user: user,
+        school_info: schoolInformation,
+        session: session,
         accessToken,
         loading,
         login,
