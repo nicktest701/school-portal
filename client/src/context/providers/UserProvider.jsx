@@ -116,7 +116,7 @@ const UserProvider = ({ children }) => {
       const user = parseJwt(token);
       setUser(user);
       saveUser({ _id: user?.id, id: user?.id });
-    } catch (err) {
+    } catch (e) {
       setAccessToken(null);
       setUser(null);
       setSession(null);
@@ -124,6 +124,7 @@ const UserProvider = ({ children }) => {
       if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
       setLoading(false);
       // alert(err?.message);
+      console.log(e?.message);
 
       // Show a warning and redirect to login
       Swal.fire({
@@ -186,10 +187,10 @@ const UserProvider = ({ children }) => {
           {},
           {
             onSettled: () => {
-              deleteUser();
-              setAccessToken(null);
-              setUser(null);
               setSession(null);
+              setUser(null);
+              setAccessToken(null);
+              deleteUser();
               if (refreshTimeoutRef.current) {
                 clearTimeout(refreshTimeoutRef.current);
               }
@@ -218,6 +219,15 @@ const UserProvider = ({ children }) => {
     });
   };
 
+  //Back to login
+  const backToLogin = () => {
+    deleteUser();
+    setAccessToken(null);
+    setUser(null);
+    setSession(null);
+    navigate("/login");
+  };
+
   const updateAccessToken = (token) => {
     setAccessToken(token);
   };
@@ -225,7 +235,7 @@ const UserProvider = ({ children }) => {
   // const authLoading = loading || userInfo.isPending;
   return (
     <>
-      <UserContext
+      <UserContext.Provider
         value={{
           userState,
           school_info: schoolInformation,
@@ -238,6 +248,7 @@ const UserProvider = ({ children }) => {
           updateSchoolInformation,
           schoolInformation,
           switchAccount,
+          backToLogin,
           userDispatch,
           students: [],
           accessToken,
@@ -245,7 +256,7 @@ const UserProvider = ({ children }) => {
         }}
       >
         {children}
-      </UserContext>
+      </UserContext.Provider>
 
       {loading && <GlobalSpinner />}
       {isPending && <LoadingSpinner value="Signing Out" />}

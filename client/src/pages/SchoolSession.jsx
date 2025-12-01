@@ -18,7 +18,7 @@ import { useAuth } from "@/hooks/useAuth";
 const SchoolSession = () => {
   const [loading, setLoading] = useState(false);
   const { schoolSessionDispatch } = use(SchoolSessionContext);
-  const { user, updateSession } = useAuth();
+  const { user, updateSession, backToLogin } = useAuth();
   const navigate = useNavigate();
   const [openAddSession, setOpenAddSession] = useState(false);
   const [sessionError, setSessionError] = useState("");
@@ -45,7 +45,6 @@ const SchoolSession = () => {
       return [];
     },
   });
-
 
   const handleSession = () => {
     setLoading(true);
@@ -154,6 +153,18 @@ const SchoolSession = () => {
           disabled={!session?.termId}
         >
           Continue
+        </Button>
+
+        <Button
+          variant="text"
+          onClick={() => backToLogin()}
+          color="#fff"
+          sx={{
+            textDecoration: "underline",
+            // color: "#fff",
+          }}
+        >
+          Go back
         </Button>
 
         <AddSchoolSession open={openAddSession} setOpen={setOpenAddSession} />
